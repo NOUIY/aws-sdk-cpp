@@ -44,8 +44,8 @@ namespace Redshift
   {
     public:
       typedef Aws::Client::AWSXMLClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
 
       typedef RedshiftClientConfiguration ClientConfigurationType;
       typedef RedshiftEndpointProvider EndpointProviderType;
@@ -55,14 +55,14 @@ namespace Redshift
         * is not specified, it will be initialized to default values.
         */
         RedshiftClient(const Aws::Redshift::RedshiftClientConfiguration& clientConfiguration = Aws::Redshift::RedshiftClientConfiguration(),
-                       std::shared_ptr<RedshiftEndpointProviderBase> endpointProvider = Aws::MakeShared<RedshiftEndpointProvider>(ALLOCATION_TAG));
+                       std::shared_ptr<RedshiftEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         RedshiftClient(const Aws::Auth::AWSCredentials& credentials,
-                       std::shared_ptr<RedshiftEndpointProviderBase> endpointProvider = Aws::MakeShared<RedshiftEndpointProvider>(ALLOCATION_TAG),
+                       std::shared_ptr<RedshiftEndpointProviderBase> endpointProvider = nullptr,
                        const Aws::Redshift::RedshiftClientConfiguration& clientConfiguration = Aws::Redshift::RedshiftClientConfiguration());
 
        /**
@@ -70,7 +70,7 @@ namespace Redshift
         * the default http client factory will be used
         */
         RedshiftClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                       std::shared_ptr<RedshiftEndpointProviderBase> endpointProvider = Aws::MakeShared<RedshiftEndpointProvider>(ALLOCATION_TAG),
+                       std::shared_ptr<RedshiftEndpointProviderBase> endpointProvider = nullptr,
                        const Aws::Redshift::RedshiftClientConfiguration& clientConfiguration = Aws::Redshift::RedshiftClientConfiguration());
 
 
@@ -458,6 +458,17 @@ namespace Redshift
          * clusters, go to <a
          * href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html">Amazon
          * Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management
+         * Guide</i>.</p> <p>VPC Block Public Access (BPA) enables you to block resources
+         * in VPCs and subnets that you own in a Region from reaching or being reached from
+         * the internet through internet gateways and egress-only internet gateways. If a
+         * subnet group for a provisioned cluster is in an account with VPC BPA turned on,
+         * the following capabilities are blocked:</p> <ul> <li> <p>Creating a public
+         * cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying
+         * a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA
+         * turned on to the subnet group when there's at least one public cluster within
+         * the group</p> </li> </ul> <p>For more information about VPC BPA, see <a
+         * href="https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html">Block
+         * public access to VPCs and subnets</a> in the <i>Amazon VPC User
          * Guide</i>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/CreateCluster">AWS
          * API Reference</a></p>
@@ -608,6 +619,33 @@ namespace Redshift
         }
 
         /**
+         * <p>Used to create a custom domain name for a cluster. Properties include the
+         * custom domain name, the cluster the custom domain is associated with, and the
+         * certificate Amazon Resource Name (ARN).</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/CreateCustomDomainAssociation">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateCustomDomainAssociationOutcome CreateCustomDomainAssociation(const Model::CreateCustomDomainAssociationRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateCustomDomainAssociation that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateCustomDomainAssociationRequestT = Model::CreateCustomDomainAssociationRequest>
+        Model::CreateCustomDomainAssociationOutcomeCallable CreateCustomDomainAssociationCallable(const CreateCustomDomainAssociationRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::CreateCustomDomainAssociation, request);
+        }
+
+        /**
+         * An Async wrapper for CreateCustomDomainAssociation that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateCustomDomainAssociationRequestT = Model::CreateCustomDomainAssociationRequest>
+        void CreateCustomDomainAssociationAsync(const CreateCustomDomainAssociationRequestT& request, const CreateCustomDomainAssociationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::CreateCustomDomainAssociation, request, handler, context);
+        }
+
+        /**
          * <p>Creates a Redshift-managed VPC endpoint.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/CreateEndpointAccess">AWS
          * API Reference</a></p>
@@ -744,6 +782,58 @@ namespace Redshift
         }
 
         /**
+         * <p>Creates a zero-ETL integration or S3 event integration with Amazon
+         * Redshift.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/CreateIntegration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateIntegrationOutcome CreateIntegration(const Model::CreateIntegrationRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateIntegration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateIntegrationRequestT = Model::CreateIntegrationRequest>
+        Model::CreateIntegrationOutcomeCallable CreateIntegrationCallable(const CreateIntegrationRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::CreateIntegration, request);
+        }
+
+        /**
+         * An Async wrapper for CreateIntegration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateIntegrationRequestT = Model::CreateIntegrationRequest>
+        void CreateIntegrationAsync(const CreateIntegrationRequestT& request, const CreateIntegrationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::CreateIntegration, request, handler, context);
+        }
+
+        /**
+         * <p>Creates an Amazon Redshift application for use with IAM Identity
+         * Center.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/CreateRedshiftIdcApplication">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateRedshiftIdcApplicationOutcome CreateRedshiftIdcApplication(const Model::CreateRedshiftIdcApplicationRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateRedshiftIdcApplication that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateRedshiftIdcApplicationRequestT = Model::CreateRedshiftIdcApplicationRequest>
+        Model::CreateRedshiftIdcApplicationOutcomeCallable CreateRedshiftIdcApplicationCallable(const CreateRedshiftIdcApplicationRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::CreateRedshiftIdcApplication, request);
+        }
+
+        /**
+         * An Async wrapper for CreateRedshiftIdcApplication that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateRedshiftIdcApplicationRequestT = Model::CreateRedshiftIdcApplicationRequest>
+        void CreateRedshiftIdcApplicationAsync(const CreateRedshiftIdcApplicationRequestT& request, const CreateRedshiftIdcApplicationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::CreateRedshiftIdcApplication, request, handler, context);
+        }
+
+        /**
          * <p>Creates a scheduled action. A scheduled action contains a schedule and an
          * Amazon Redshift API action. For example, you can create a schedule of when to
          * run the <code>ResizeCluster</code> API operation. </p><p><h3>See Also:</h3>   <a
@@ -807,13 +897,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/CreateSnapshotSchedule">AWS
          * API Reference</a></p>
          */
-        virtual Model::CreateSnapshotScheduleOutcome CreateSnapshotSchedule(const Model::CreateSnapshotScheduleRequest& request) const;
+        virtual Model::CreateSnapshotScheduleOutcome CreateSnapshotSchedule(const Model::CreateSnapshotScheduleRequest& request = {}) const;
 
         /**
          * A Callable wrapper for CreateSnapshotSchedule that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename CreateSnapshotScheduleRequestT = Model::CreateSnapshotScheduleRequest>
-        Model::CreateSnapshotScheduleOutcomeCallable CreateSnapshotScheduleCallable(const CreateSnapshotScheduleRequestT& request) const
+        Model::CreateSnapshotScheduleOutcomeCallable CreateSnapshotScheduleCallable(const CreateSnapshotScheduleRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::CreateSnapshotSchedule, request);
         }
@@ -822,7 +912,7 @@ namespace Redshift
          * An Async wrapper for CreateSnapshotSchedule that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename CreateSnapshotScheduleRequestT = Model::CreateSnapshotScheduleRequest>
-        void CreateSnapshotScheduleAsync(const CreateSnapshotScheduleRequestT& request, const CreateSnapshotScheduleResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void CreateSnapshotScheduleAsync(const CreateSnapshotScheduleResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const CreateSnapshotScheduleRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::CreateSnapshotSchedule, request, handler, context);
         }
@@ -1091,6 +1181,32 @@ namespace Redshift
         }
 
         /**
+         * <p>Contains information about deleting a custom domain association for a
+         * cluster.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DeleteCustomDomainAssociation">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteCustomDomainAssociationOutcome DeleteCustomDomainAssociation(const Model::DeleteCustomDomainAssociationRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteCustomDomainAssociation that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteCustomDomainAssociationRequestT = Model::DeleteCustomDomainAssociationRequest>
+        Model::DeleteCustomDomainAssociationOutcomeCallable DeleteCustomDomainAssociationCallable(const DeleteCustomDomainAssociationRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::DeleteCustomDomainAssociation, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteCustomDomainAssociation that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteCustomDomainAssociationRequestT = Model::DeleteCustomDomainAssociationRequest>
+        void DeleteCustomDomainAssociationAsync(const DeleteCustomDomainAssociationRequestT& request, const DeleteCustomDomainAssociationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::DeleteCustomDomainAssociation, request, handler, context);
+        }
+
+        /**
          * <p>Deletes a Redshift-managed VPC endpoint.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DeleteEndpointAccess">AWS
          * API Reference</a></p>
@@ -1193,6 +1309,32 @@ namespace Redshift
         }
 
         /**
+         * <p>Deletes a zero-ETL integration or S3 event integration with Amazon
+         * Redshift.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DeleteIntegration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteIntegrationOutcome DeleteIntegration(const Model::DeleteIntegrationRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteIntegration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteIntegrationRequestT = Model::DeleteIntegrationRequest>
+        Model::DeleteIntegrationOutcomeCallable DeleteIntegrationCallable(const DeleteIntegrationRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::DeleteIntegration, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteIntegration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteIntegrationRequestT = Model::DeleteIntegrationRequest>
+        void DeleteIntegrationAsync(const DeleteIntegrationRequestT& request, const DeleteIntegrationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::DeleteIntegration, request, handler, context);
+        }
+
+        /**
          * <p>Deletes a partner integration from a cluster. Data can still flow to the
          * cluster until the integration is deleted at the partner's website.</p><p><h3>See
          * Also:</h3>   <a
@@ -1217,6 +1359,58 @@ namespace Redshift
         void DeletePartnerAsync(const DeletePartnerRequestT& request, const DeletePartnerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&RedshiftClient::DeletePartner, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes an Amazon Redshift IAM Identity Center application.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DeleteRedshiftIdcApplication">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteRedshiftIdcApplicationOutcome DeleteRedshiftIdcApplication(const Model::DeleteRedshiftIdcApplicationRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteRedshiftIdcApplication that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteRedshiftIdcApplicationRequestT = Model::DeleteRedshiftIdcApplicationRequest>
+        Model::DeleteRedshiftIdcApplicationOutcomeCallable DeleteRedshiftIdcApplicationCallable(const DeleteRedshiftIdcApplicationRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::DeleteRedshiftIdcApplication, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteRedshiftIdcApplication that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteRedshiftIdcApplicationRequestT = Model::DeleteRedshiftIdcApplicationRequest>
+        void DeleteRedshiftIdcApplicationAsync(const DeleteRedshiftIdcApplicationRequestT& request, const DeleteRedshiftIdcApplicationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::DeleteRedshiftIdcApplication, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes the resource policy for a specified resource.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DeleteResourcePolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteResourcePolicyOutcome DeleteResourcePolicy(const Model::DeleteResourcePolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteResourcePolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteResourcePolicyRequestT = Model::DeleteResourcePolicyRequest>
+        Model::DeleteResourcePolicyOutcomeCallable DeleteResourcePolicyCallable(const DeleteResourcePolicyRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::DeleteResourcePolicy, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteResourcePolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteResourcePolicyRequestT = Model::DeleteResourcePolicyRequest>
+        void DeleteResourcePolicyAsync(const DeleteResourcePolicyRequestT& request, const DeleteResourcePolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::DeleteResourcePolicy, request, handler, context);
         }
 
         /**
@@ -1346,18 +1540,44 @@ namespace Redshift
         }
 
         /**
+         * <p>Deregisters a cluster or serverless namespace from the Amazon Web Services
+         * Glue Data Catalog.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DeregisterNamespace">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeregisterNamespaceOutcome DeregisterNamespace(const Model::DeregisterNamespaceRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeregisterNamespace that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeregisterNamespaceRequestT = Model::DeregisterNamespaceRequest>
+        Model::DeregisterNamespaceOutcomeCallable DeregisterNamespaceCallable(const DeregisterNamespaceRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::DeregisterNamespace, request);
+        }
+
+        /**
+         * An Async wrapper for DeregisterNamespace that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeregisterNamespaceRequestT = Model::DeregisterNamespaceRequest>
+        void DeregisterNamespaceAsync(const DeregisterNamespaceRequestT& request, const DeregisterNamespaceResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::DeregisterNamespace, request, handler, context);
+        }
+
+        /**
          * <p>Returns a list of attributes attached to an account</p><p><h3>See Also:</h3> 
          * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeAccountAttributes">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeAccountAttributesOutcome DescribeAccountAttributes(const Model::DescribeAccountAttributesRequest& request) const;
+        virtual Model::DescribeAccountAttributesOutcome DescribeAccountAttributes(const Model::DescribeAccountAttributesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeAccountAttributes that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeAccountAttributesRequestT = Model::DescribeAccountAttributesRequest>
-        Model::DescribeAccountAttributesOutcomeCallable DescribeAccountAttributesCallable(const DescribeAccountAttributesRequestT& request) const
+        Model::DescribeAccountAttributesOutcomeCallable DescribeAccountAttributesCallable(const DescribeAccountAttributesRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeAccountAttributes, request);
         }
@@ -1366,7 +1586,7 @@ namespace Redshift
          * An Async wrapper for DescribeAccountAttributes that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeAccountAttributesRequestT = Model::DescribeAccountAttributesRequest>
-        void DescribeAccountAttributesAsync(const DescribeAccountAttributesRequestT& request, const DescribeAccountAttributesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeAccountAttributesAsync(const DescribeAccountAttributesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeAccountAttributesRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeAccountAttributes, request, handler, context);
         }
@@ -1376,13 +1596,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeAuthenticationProfiles">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeAuthenticationProfilesOutcome DescribeAuthenticationProfiles(const Model::DescribeAuthenticationProfilesRequest& request) const;
+        virtual Model::DescribeAuthenticationProfilesOutcome DescribeAuthenticationProfiles(const Model::DescribeAuthenticationProfilesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeAuthenticationProfiles that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeAuthenticationProfilesRequestT = Model::DescribeAuthenticationProfilesRequest>
-        Model::DescribeAuthenticationProfilesOutcomeCallable DescribeAuthenticationProfilesCallable(const DescribeAuthenticationProfilesRequestT& request) const
+        Model::DescribeAuthenticationProfilesOutcomeCallable DescribeAuthenticationProfilesCallable(const DescribeAuthenticationProfilesRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeAuthenticationProfiles, request);
         }
@@ -1391,7 +1611,7 @@ namespace Redshift
          * An Async wrapper for DescribeAuthenticationProfiles that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeAuthenticationProfilesRequestT = Model::DescribeAuthenticationProfilesRequest>
-        void DescribeAuthenticationProfilesAsync(const DescribeAuthenticationProfilesRequestT& request, const DescribeAuthenticationProfilesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeAuthenticationProfilesAsync(const DescribeAuthenticationProfilesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeAuthenticationProfilesRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeAuthenticationProfiles, request, handler, context);
         }
@@ -1402,13 +1622,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeClusterDbRevisions">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeClusterDbRevisionsOutcome DescribeClusterDbRevisions(const Model::DescribeClusterDbRevisionsRequest& request) const;
+        virtual Model::DescribeClusterDbRevisionsOutcome DescribeClusterDbRevisions(const Model::DescribeClusterDbRevisionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeClusterDbRevisions that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeClusterDbRevisionsRequestT = Model::DescribeClusterDbRevisionsRequest>
-        Model::DescribeClusterDbRevisionsOutcomeCallable DescribeClusterDbRevisionsCallable(const DescribeClusterDbRevisionsRequestT& request) const
+        Model::DescribeClusterDbRevisionsOutcomeCallable DescribeClusterDbRevisionsCallable(const DescribeClusterDbRevisionsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeClusterDbRevisions, request);
         }
@@ -1417,7 +1637,7 @@ namespace Redshift
          * An Async wrapper for DescribeClusterDbRevisions that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeClusterDbRevisionsRequestT = Model::DescribeClusterDbRevisionsRequest>
-        void DescribeClusterDbRevisionsAsync(const DescribeClusterDbRevisionsRequestT& request, const DescribeClusterDbRevisionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeClusterDbRevisionsAsync(const DescribeClusterDbRevisionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeClusterDbRevisionsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeClusterDbRevisions, request, handler, context);
         }
@@ -1442,13 +1662,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeClusterParameterGroups">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeClusterParameterGroupsOutcome DescribeClusterParameterGroups(const Model::DescribeClusterParameterGroupsRequest& request) const;
+        virtual Model::DescribeClusterParameterGroupsOutcome DescribeClusterParameterGroups(const Model::DescribeClusterParameterGroupsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeClusterParameterGroups that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeClusterParameterGroupsRequestT = Model::DescribeClusterParameterGroupsRequest>
-        Model::DescribeClusterParameterGroupsOutcomeCallable DescribeClusterParameterGroupsCallable(const DescribeClusterParameterGroupsRequestT& request) const
+        Model::DescribeClusterParameterGroupsOutcomeCallable DescribeClusterParameterGroupsCallable(const DescribeClusterParameterGroupsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeClusterParameterGroups, request);
         }
@@ -1457,7 +1677,7 @@ namespace Redshift
          * An Async wrapper for DescribeClusterParameterGroups that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeClusterParameterGroupsRequestT = Model::DescribeClusterParameterGroupsRequest>
-        void DescribeClusterParameterGroupsAsync(const DescribeClusterParameterGroupsRequestT& request, const DescribeClusterParameterGroupsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeClusterParameterGroupsAsync(const DescribeClusterParameterGroupsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeClusterParameterGroupsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeClusterParameterGroups, request, handler, context);
         }
@@ -1517,13 +1737,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeClusterSecurityGroups">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeClusterSecurityGroupsOutcome DescribeClusterSecurityGroups(const Model::DescribeClusterSecurityGroupsRequest& request) const;
+        virtual Model::DescribeClusterSecurityGroupsOutcome DescribeClusterSecurityGroups(const Model::DescribeClusterSecurityGroupsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeClusterSecurityGroups that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeClusterSecurityGroupsRequestT = Model::DescribeClusterSecurityGroupsRequest>
-        Model::DescribeClusterSecurityGroupsOutcomeCallable DescribeClusterSecurityGroupsCallable(const DescribeClusterSecurityGroupsRequestT& request) const
+        Model::DescribeClusterSecurityGroupsOutcomeCallable DescribeClusterSecurityGroupsCallable(const DescribeClusterSecurityGroupsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeClusterSecurityGroups, request);
         }
@@ -1532,7 +1752,7 @@ namespace Redshift
          * An Async wrapper for DescribeClusterSecurityGroups that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeClusterSecurityGroupsRequestT = Model::DescribeClusterSecurityGroupsRequest>
-        void DescribeClusterSecurityGroupsAsync(const DescribeClusterSecurityGroupsRequestT& request, const DescribeClusterSecurityGroupsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeClusterSecurityGroupsAsync(const DescribeClusterSecurityGroupsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeClusterSecurityGroupsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeClusterSecurityGroups, request, handler, context);
         }
@@ -1555,13 +1775,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeClusterSnapshots">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeClusterSnapshotsOutcome DescribeClusterSnapshots(const Model::DescribeClusterSnapshotsRequest& request) const;
+        virtual Model::DescribeClusterSnapshotsOutcome DescribeClusterSnapshots(const Model::DescribeClusterSnapshotsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeClusterSnapshots that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeClusterSnapshotsRequestT = Model::DescribeClusterSnapshotsRequest>
-        Model::DescribeClusterSnapshotsOutcomeCallable DescribeClusterSnapshotsCallable(const DescribeClusterSnapshotsRequestT& request) const
+        Model::DescribeClusterSnapshotsOutcomeCallable DescribeClusterSnapshotsCallable(const DescribeClusterSnapshotsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeClusterSnapshots, request);
         }
@@ -1570,7 +1790,7 @@ namespace Redshift
          * An Async wrapper for DescribeClusterSnapshots that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeClusterSnapshotsRequestT = Model::DescribeClusterSnapshotsRequest>
-        void DescribeClusterSnapshotsAsync(const DescribeClusterSnapshotsRequestT& request, const DescribeClusterSnapshotsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeClusterSnapshotsAsync(const DescribeClusterSnapshotsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeClusterSnapshotsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeClusterSnapshots, request, handler, context);
         }
@@ -1590,13 +1810,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeClusterSubnetGroups">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeClusterSubnetGroupsOutcome DescribeClusterSubnetGroups(const Model::DescribeClusterSubnetGroupsRequest& request) const;
+        virtual Model::DescribeClusterSubnetGroupsOutcome DescribeClusterSubnetGroups(const Model::DescribeClusterSubnetGroupsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeClusterSubnetGroups that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeClusterSubnetGroupsRequestT = Model::DescribeClusterSubnetGroupsRequest>
-        Model::DescribeClusterSubnetGroupsOutcomeCallable DescribeClusterSubnetGroupsCallable(const DescribeClusterSubnetGroupsRequestT& request) const
+        Model::DescribeClusterSubnetGroupsOutcomeCallable DescribeClusterSubnetGroupsCallable(const DescribeClusterSubnetGroupsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeClusterSubnetGroups, request);
         }
@@ -1605,7 +1825,7 @@ namespace Redshift
          * An Async wrapper for DescribeClusterSubnetGroups that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeClusterSubnetGroupsRequestT = Model::DescribeClusterSubnetGroupsRequest>
-        void DescribeClusterSubnetGroupsAsync(const DescribeClusterSubnetGroupsRequestT& request, const DescribeClusterSubnetGroupsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeClusterSubnetGroupsAsync(const DescribeClusterSubnetGroupsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeClusterSubnetGroupsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeClusterSubnetGroups, request, handler, context);
         }
@@ -1616,13 +1836,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeClusterTracks">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeClusterTracksOutcome DescribeClusterTracks(const Model::DescribeClusterTracksRequest& request) const;
+        virtual Model::DescribeClusterTracksOutcome DescribeClusterTracks(const Model::DescribeClusterTracksRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeClusterTracks that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeClusterTracksRequestT = Model::DescribeClusterTracksRequest>
-        Model::DescribeClusterTracksOutcomeCallable DescribeClusterTracksCallable(const DescribeClusterTracksRequestT& request) const
+        Model::DescribeClusterTracksOutcomeCallable DescribeClusterTracksCallable(const DescribeClusterTracksRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeClusterTracks, request);
         }
@@ -1631,7 +1851,7 @@ namespace Redshift
          * An Async wrapper for DescribeClusterTracks that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeClusterTracksRequestT = Model::DescribeClusterTracksRequest>
-        void DescribeClusterTracksAsync(const DescribeClusterTracksRequestT& request, const DescribeClusterTracksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeClusterTracksAsync(const DescribeClusterTracksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeClusterTracksRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeClusterTracks, request, handler, context);
         }
@@ -1647,13 +1867,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeClusterVersions">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeClusterVersionsOutcome DescribeClusterVersions(const Model::DescribeClusterVersionsRequest& request) const;
+        virtual Model::DescribeClusterVersionsOutcome DescribeClusterVersions(const Model::DescribeClusterVersionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeClusterVersions that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeClusterVersionsRequestT = Model::DescribeClusterVersionsRequest>
-        Model::DescribeClusterVersionsOutcomeCallable DescribeClusterVersionsCallable(const DescribeClusterVersionsRequestT& request) const
+        Model::DescribeClusterVersionsOutcomeCallable DescribeClusterVersionsCallable(const DescribeClusterVersionsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeClusterVersions, request);
         }
@@ -1662,7 +1882,7 @@ namespace Redshift
          * An Async wrapper for DescribeClusterVersions that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeClusterVersionsRequestT = Model::DescribeClusterVersionsRequest>
-        void DescribeClusterVersionsAsync(const DescribeClusterVersionsRequestT& request, const DescribeClusterVersionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeClusterVersionsAsync(const DescribeClusterVersionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeClusterVersionsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeClusterVersions, request, handler, context);
         }
@@ -1685,13 +1905,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeClusters">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeClustersOutcome DescribeClusters(const Model::DescribeClustersRequest& request) const;
+        virtual Model::DescribeClustersOutcome DescribeClusters(const Model::DescribeClustersRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeClusters that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeClustersRequestT = Model::DescribeClustersRequest>
-        Model::DescribeClustersOutcomeCallable DescribeClustersCallable(const DescribeClustersRequestT& request) const
+        Model::DescribeClustersOutcomeCallable DescribeClustersCallable(const DescribeClustersRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeClusters, request);
         }
@@ -1700,9 +1920,35 @@ namespace Redshift
          * An Async wrapper for DescribeClusters that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeClustersRequestT = Model::DescribeClustersRequest>
-        void DescribeClustersAsync(const DescribeClustersRequestT& request, const DescribeClustersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeClustersAsync(const DescribeClustersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeClustersRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeClusters, request, handler, context);
+        }
+
+        /**
+         * <p>Contains information about custom domain associations for a
+         * cluster.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeCustomDomainAssociations">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeCustomDomainAssociationsOutcome DescribeCustomDomainAssociations(const Model::DescribeCustomDomainAssociationsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for DescribeCustomDomainAssociations that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeCustomDomainAssociationsRequestT = Model::DescribeCustomDomainAssociationsRequest>
+        Model::DescribeCustomDomainAssociationsOutcomeCallable DescribeCustomDomainAssociationsCallable(const DescribeCustomDomainAssociationsRequestT& request = {}) const
+        {
+            return SubmitCallable(&RedshiftClient::DescribeCustomDomainAssociations, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeCustomDomainAssociations that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeCustomDomainAssociationsRequestT = Model::DescribeCustomDomainAssociationsRequest>
+        void DescribeCustomDomainAssociationsAsync(const DescribeCustomDomainAssociationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeCustomDomainAssociationsRequestT& request = {}) const
+        {
+            return SubmitAsync(&RedshiftClient::DescribeCustomDomainAssociations, request, handler, context);
         }
 
         /**
@@ -1711,13 +1957,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeDataShares">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeDataSharesOutcome DescribeDataShares(const Model::DescribeDataSharesRequest& request) const;
+        virtual Model::DescribeDataSharesOutcome DescribeDataShares(const Model::DescribeDataSharesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeDataShares that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeDataSharesRequestT = Model::DescribeDataSharesRequest>
-        Model::DescribeDataSharesOutcomeCallable DescribeDataSharesCallable(const DescribeDataSharesRequestT& request) const
+        Model::DescribeDataSharesOutcomeCallable DescribeDataSharesCallable(const DescribeDataSharesRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeDataShares, request);
         }
@@ -1726,7 +1972,7 @@ namespace Redshift
          * An Async wrapper for DescribeDataShares that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeDataSharesRequestT = Model::DescribeDataSharesRequest>
-        void DescribeDataSharesAsync(const DescribeDataSharesRequestT& request, const DescribeDataSharesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeDataSharesAsync(const DescribeDataSharesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeDataSharesRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeDataShares, request, handler, context);
         }
@@ -1737,13 +1983,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeDataSharesForConsumer">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeDataSharesForConsumerOutcome DescribeDataSharesForConsumer(const Model::DescribeDataSharesForConsumerRequest& request) const;
+        virtual Model::DescribeDataSharesForConsumerOutcome DescribeDataSharesForConsumer(const Model::DescribeDataSharesForConsumerRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeDataSharesForConsumer that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeDataSharesForConsumerRequestT = Model::DescribeDataSharesForConsumerRequest>
-        Model::DescribeDataSharesForConsumerOutcomeCallable DescribeDataSharesForConsumerCallable(const DescribeDataSharesForConsumerRequestT& request) const
+        Model::DescribeDataSharesForConsumerOutcomeCallable DescribeDataSharesForConsumerCallable(const DescribeDataSharesForConsumerRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeDataSharesForConsumer, request);
         }
@@ -1752,7 +1998,7 @@ namespace Redshift
          * An Async wrapper for DescribeDataSharesForConsumer that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeDataSharesForConsumerRequestT = Model::DescribeDataSharesForConsumerRequest>
-        void DescribeDataSharesForConsumerAsync(const DescribeDataSharesForConsumerRequestT& request, const DescribeDataSharesForConsumerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeDataSharesForConsumerAsync(const DescribeDataSharesForConsumerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeDataSharesForConsumerRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeDataSharesForConsumer, request, handler, context);
         }
@@ -1763,13 +2009,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeDataSharesForProducer">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeDataSharesForProducerOutcome DescribeDataSharesForProducer(const Model::DescribeDataSharesForProducerRequest& request) const;
+        virtual Model::DescribeDataSharesForProducerOutcome DescribeDataSharesForProducer(const Model::DescribeDataSharesForProducerRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeDataSharesForProducer that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeDataSharesForProducerRequestT = Model::DescribeDataSharesForProducerRequest>
-        Model::DescribeDataSharesForProducerOutcomeCallable DescribeDataSharesForProducerCallable(const DescribeDataSharesForProducerRequestT& request) const
+        Model::DescribeDataSharesForProducerOutcomeCallable DescribeDataSharesForProducerCallable(const DescribeDataSharesForProducerRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeDataSharesForProducer, request);
         }
@@ -1778,7 +2024,7 @@ namespace Redshift
          * An Async wrapper for DescribeDataSharesForProducer that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeDataSharesForProducerRequestT = Model::DescribeDataSharesForProducerRequest>
-        void DescribeDataSharesForProducerAsync(const DescribeDataSharesForProducerRequestT& request, const DescribeDataSharesForProducerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeDataSharesForProducerAsync(const DescribeDataSharesForProducerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeDataSharesForProducerRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeDataSharesForProducer, request, handler, context);
         }
@@ -1818,13 +2064,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeEndpointAccess">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeEndpointAccessOutcome DescribeEndpointAccess(const Model::DescribeEndpointAccessRequest& request) const;
+        virtual Model::DescribeEndpointAccessOutcome DescribeEndpointAccess(const Model::DescribeEndpointAccessRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeEndpointAccess that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeEndpointAccessRequestT = Model::DescribeEndpointAccessRequest>
-        Model::DescribeEndpointAccessOutcomeCallable DescribeEndpointAccessCallable(const DescribeEndpointAccessRequestT& request) const
+        Model::DescribeEndpointAccessOutcomeCallable DescribeEndpointAccessCallable(const DescribeEndpointAccessRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeEndpointAccess, request);
         }
@@ -1833,7 +2079,7 @@ namespace Redshift
          * An Async wrapper for DescribeEndpointAccess that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeEndpointAccessRequestT = Model::DescribeEndpointAccessRequest>
-        void DescribeEndpointAccessAsync(const DescribeEndpointAccessRequestT& request, const DescribeEndpointAccessResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeEndpointAccessAsync(const DescribeEndpointAccessResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeEndpointAccessRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeEndpointAccess, request, handler, context);
         }
@@ -1843,13 +2089,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeEndpointAuthorization">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeEndpointAuthorizationOutcome DescribeEndpointAuthorization(const Model::DescribeEndpointAuthorizationRequest& request) const;
+        virtual Model::DescribeEndpointAuthorizationOutcome DescribeEndpointAuthorization(const Model::DescribeEndpointAuthorizationRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeEndpointAuthorization that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeEndpointAuthorizationRequestT = Model::DescribeEndpointAuthorizationRequest>
-        Model::DescribeEndpointAuthorizationOutcomeCallable DescribeEndpointAuthorizationCallable(const DescribeEndpointAuthorizationRequestT& request) const
+        Model::DescribeEndpointAuthorizationOutcomeCallable DescribeEndpointAuthorizationCallable(const DescribeEndpointAuthorizationRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeEndpointAuthorization, request);
         }
@@ -1858,7 +2104,7 @@ namespace Redshift
          * An Async wrapper for DescribeEndpointAuthorization that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeEndpointAuthorizationRequestT = Model::DescribeEndpointAuthorizationRequest>
-        void DescribeEndpointAuthorizationAsync(const DescribeEndpointAuthorizationRequestT& request, const DescribeEndpointAuthorizationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeEndpointAuthorizationAsync(const DescribeEndpointAuthorizationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeEndpointAuthorizationRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeEndpointAuthorization, request, handler, context);
         }
@@ -1872,13 +2118,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeEventCategories">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeEventCategoriesOutcome DescribeEventCategories(const Model::DescribeEventCategoriesRequest& request) const;
+        virtual Model::DescribeEventCategoriesOutcome DescribeEventCategories(const Model::DescribeEventCategoriesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeEventCategories that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeEventCategoriesRequestT = Model::DescribeEventCategoriesRequest>
-        Model::DescribeEventCategoriesOutcomeCallable DescribeEventCategoriesCallable(const DescribeEventCategoriesRequestT& request) const
+        Model::DescribeEventCategoriesOutcomeCallable DescribeEventCategoriesCallable(const DescribeEventCategoriesRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeEventCategories, request);
         }
@@ -1887,7 +2133,7 @@ namespace Redshift
          * An Async wrapper for DescribeEventCategories that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeEventCategoriesRequestT = Model::DescribeEventCategoriesRequest>
-        void DescribeEventCategoriesAsync(const DescribeEventCategoriesRequestT& request, const DescribeEventCategoriesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeEventCategoriesAsync(const DescribeEventCategoriesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeEventCategoriesRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeEventCategories, request, handler, context);
         }
@@ -1907,13 +2153,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeEventSubscriptions">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeEventSubscriptionsOutcome DescribeEventSubscriptions(const Model::DescribeEventSubscriptionsRequest& request) const;
+        virtual Model::DescribeEventSubscriptionsOutcome DescribeEventSubscriptions(const Model::DescribeEventSubscriptionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeEventSubscriptions that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeEventSubscriptionsRequestT = Model::DescribeEventSubscriptionsRequest>
-        Model::DescribeEventSubscriptionsOutcomeCallable DescribeEventSubscriptionsCallable(const DescribeEventSubscriptionsRequestT& request) const
+        Model::DescribeEventSubscriptionsOutcomeCallable DescribeEventSubscriptionsCallable(const DescribeEventSubscriptionsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeEventSubscriptions, request);
         }
@@ -1922,7 +2168,7 @@ namespace Redshift
          * An Async wrapper for DescribeEventSubscriptions that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeEventSubscriptionsRequestT = Model::DescribeEventSubscriptionsRequest>
-        void DescribeEventSubscriptionsAsync(const DescribeEventSubscriptionsRequestT& request, const DescribeEventSubscriptionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeEventSubscriptionsAsync(const DescribeEventSubscriptionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeEventSubscriptionsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeEventSubscriptions, request, handler, context);
         }
@@ -1936,13 +2182,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeEvents">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeEventsOutcome DescribeEvents(const Model::DescribeEventsRequest& request) const;
+        virtual Model::DescribeEventsOutcome DescribeEvents(const Model::DescribeEventsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeEvents that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeEventsRequestT = Model::DescribeEventsRequest>
-        Model::DescribeEventsOutcomeCallable DescribeEventsCallable(const DescribeEventsRequestT& request) const
+        Model::DescribeEventsOutcomeCallable DescribeEventsCallable(const DescribeEventsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeEvents, request);
         }
@@ -1951,7 +2197,7 @@ namespace Redshift
          * An Async wrapper for DescribeEvents that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeEventsRequestT = Model::DescribeEventsRequest>
-        void DescribeEventsAsync(const DescribeEventsRequestT& request, const DescribeEventsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeEventsAsync(const DescribeEventsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeEventsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeEvents, request, handler, context);
         }
@@ -1971,13 +2217,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeHsmClientCertificates">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeHsmClientCertificatesOutcome DescribeHsmClientCertificates(const Model::DescribeHsmClientCertificatesRequest& request) const;
+        virtual Model::DescribeHsmClientCertificatesOutcome DescribeHsmClientCertificates(const Model::DescribeHsmClientCertificatesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeHsmClientCertificates that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeHsmClientCertificatesRequestT = Model::DescribeHsmClientCertificatesRequest>
-        Model::DescribeHsmClientCertificatesOutcomeCallable DescribeHsmClientCertificatesCallable(const DescribeHsmClientCertificatesRequestT& request) const
+        Model::DescribeHsmClientCertificatesOutcomeCallable DescribeHsmClientCertificatesCallable(const DescribeHsmClientCertificatesRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeHsmClientCertificates, request);
         }
@@ -1986,7 +2232,7 @@ namespace Redshift
          * An Async wrapper for DescribeHsmClientCertificates that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeHsmClientCertificatesRequestT = Model::DescribeHsmClientCertificatesRequest>
-        void DescribeHsmClientCertificatesAsync(const DescribeHsmClientCertificatesRequestT& request, const DescribeHsmClientCertificatesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeHsmClientCertificatesAsync(const DescribeHsmClientCertificatesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeHsmClientCertificatesRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeHsmClientCertificates, request, handler, context);
         }
@@ -2006,13 +2252,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeHsmConfigurations">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeHsmConfigurationsOutcome DescribeHsmConfigurations(const Model::DescribeHsmConfigurationsRequest& request) const;
+        virtual Model::DescribeHsmConfigurationsOutcome DescribeHsmConfigurations(const Model::DescribeHsmConfigurationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeHsmConfigurations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeHsmConfigurationsRequestT = Model::DescribeHsmConfigurationsRequest>
-        Model::DescribeHsmConfigurationsOutcomeCallable DescribeHsmConfigurationsCallable(const DescribeHsmConfigurationsRequestT& request) const
+        Model::DescribeHsmConfigurationsOutcomeCallable DescribeHsmConfigurationsCallable(const DescribeHsmConfigurationsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeHsmConfigurations, request);
         }
@@ -2021,9 +2267,60 @@ namespace Redshift
          * An Async wrapper for DescribeHsmConfigurations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeHsmConfigurationsRequestT = Model::DescribeHsmConfigurationsRequest>
-        void DescribeHsmConfigurationsAsync(const DescribeHsmConfigurationsRequestT& request, const DescribeHsmConfigurationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeHsmConfigurationsAsync(const DescribeHsmConfigurationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeHsmConfigurationsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeHsmConfigurations, request, handler, context);
+        }
+
+        /**
+         * <p>Returns a list of inbound integrations.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeInboundIntegrations">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeInboundIntegrationsOutcome DescribeInboundIntegrations(const Model::DescribeInboundIntegrationsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for DescribeInboundIntegrations that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeInboundIntegrationsRequestT = Model::DescribeInboundIntegrationsRequest>
+        Model::DescribeInboundIntegrationsOutcomeCallable DescribeInboundIntegrationsCallable(const DescribeInboundIntegrationsRequestT& request = {}) const
+        {
+            return SubmitCallable(&RedshiftClient::DescribeInboundIntegrations, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeInboundIntegrations that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeInboundIntegrationsRequestT = Model::DescribeInboundIntegrationsRequest>
+        void DescribeInboundIntegrationsAsync(const DescribeInboundIntegrationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeInboundIntegrationsRequestT& request = {}) const
+        {
+            return SubmitAsync(&RedshiftClient::DescribeInboundIntegrations, request, handler, context);
+        }
+
+        /**
+         * <p>Describes one or more zero-ETL or S3 event integrations with Amazon
+         * Redshift.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeIntegrations">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeIntegrationsOutcome DescribeIntegrations(const Model::DescribeIntegrationsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for DescribeIntegrations that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeIntegrationsRequestT = Model::DescribeIntegrationsRequest>
+        Model::DescribeIntegrationsOutcomeCallable DescribeIntegrationsCallable(const DescribeIntegrationsRequestT& request = {}) const
+        {
+            return SubmitCallable(&RedshiftClient::DescribeIntegrations, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeIntegrations that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeIntegrationsRequestT = Model::DescribeIntegrationsRequest>
+        void DescribeIntegrationsAsync(const DescribeIntegrationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeIntegrationsRequestT& request = {}) const
+        {
+            return SubmitAsync(&RedshiftClient::DescribeIntegrations, request, handler, context);
         }
 
         /**
@@ -2094,13 +2391,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeOrderableClusterOptions">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeOrderableClusterOptionsOutcome DescribeOrderableClusterOptions(const Model::DescribeOrderableClusterOptionsRequest& request) const;
+        virtual Model::DescribeOrderableClusterOptionsOutcome DescribeOrderableClusterOptions(const Model::DescribeOrderableClusterOptionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeOrderableClusterOptions that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeOrderableClusterOptionsRequestT = Model::DescribeOrderableClusterOptionsRequest>
-        Model::DescribeOrderableClusterOptionsOutcomeCallable DescribeOrderableClusterOptionsCallable(const DescribeOrderableClusterOptionsRequestT& request) const
+        Model::DescribeOrderableClusterOptionsOutcomeCallable DescribeOrderableClusterOptionsCallable(const DescribeOrderableClusterOptionsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeOrderableClusterOptions, request);
         }
@@ -2109,7 +2406,7 @@ namespace Redshift
          * An Async wrapper for DescribeOrderableClusterOptions that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeOrderableClusterOptionsRequestT = Model::DescribeOrderableClusterOptionsRequest>
-        void DescribeOrderableClusterOptionsAsync(const DescribeOrderableClusterOptionsRequestT& request, const DescribeOrderableClusterOptionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeOrderableClusterOptionsAsync(const DescribeOrderableClusterOptionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeOrderableClusterOptionsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeOrderableClusterOptions, request, handler, context);
         }
@@ -2141,19 +2438,45 @@ namespace Redshift
         }
 
         /**
+         * <p>Lists the Amazon Redshift IAM Identity Center applications.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeRedshiftIdcApplications">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeRedshiftIdcApplicationsOutcome DescribeRedshiftIdcApplications(const Model::DescribeRedshiftIdcApplicationsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for DescribeRedshiftIdcApplications that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeRedshiftIdcApplicationsRequestT = Model::DescribeRedshiftIdcApplicationsRequest>
+        Model::DescribeRedshiftIdcApplicationsOutcomeCallable DescribeRedshiftIdcApplicationsCallable(const DescribeRedshiftIdcApplicationsRequestT& request = {}) const
+        {
+            return SubmitCallable(&RedshiftClient::DescribeRedshiftIdcApplications, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeRedshiftIdcApplications that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeRedshiftIdcApplicationsRequestT = Model::DescribeRedshiftIdcApplicationsRequest>
+        void DescribeRedshiftIdcApplicationsAsync(const DescribeRedshiftIdcApplicationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeRedshiftIdcApplicationsRequestT& request = {}) const
+        {
+            return SubmitAsync(&RedshiftClient::DescribeRedshiftIdcApplications, request, handler, context);
+        }
+
+        /**
          * <p>Returns exchange status details and associated metadata for a reserved-node
          * exchange. Statuses include such values as in progress and
          * requested.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeReservedNodeExchangeStatus">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeReservedNodeExchangeStatusOutcome DescribeReservedNodeExchangeStatus(const Model::DescribeReservedNodeExchangeStatusRequest& request) const;
+        virtual Model::DescribeReservedNodeExchangeStatusOutcome DescribeReservedNodeExchangeStatus(const Model::DescribeReservedNodeExchangeStatusRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeReservedNodeExchangeStatus that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeReservedNodeExchangeStatusRequestT = Model::DescribeReservedNodeExchangeStatusRequest>
-        Model::DescribeReservedNodeExchangeStatusOutcomeCallable DescribeReservedNodeExchangeStatusCallable(const DescribeReservedNodeExchangeStatusRequestT& request) const
+        Model::DescribeReservedNodeExchangeStatusOutcomeCallable DescribeReservedNodeExchangeStatusCallable(const DescribeReservedNodeExchangeStatusRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeReservedNodeExchangeStatus, request);
         }
@@ -2162,7 +2485,7 @@ namespace Redshift
          * An Async wrapper for DescribeReservedNodeExchangeStatus that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeReservedNodeExchangeStatusRequestT = Model::DescribeReservedNodeExchangeStatusRequest>
-        void DescribeReservedNodeExchangeStatusAsync(const DescribeReservedNodeExchangeStatusRequestT& request, const DescribeReservedNodeExchangeStatusResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeReservedNodeExchangeStatusAsync(const DescribeReservedNodeExchangeStatusResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeReservedNodeExchangeStatusRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeReservedNodeExchangeStatus, request, handler, context);
         }
@@ -2182,13 +2505,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeReservedNodeOfferings">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeReservedNodeOfferingsOutcome DescribeReservedNodeOfferings(const Model::DescribeReservedNodeOfferingsRequest& request) const;
+        virtual Model::DescribeReservedNodeOfferingsOutcome DescribeReservedNodeOfferings(const Model::DescribeReservedNodeOfferingsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeReservedNodeOfferings that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeReservedNodeOfferingsRequestT = Model::DescribeReservedNodeOfferingsRequest>
-        Model::DescribeReservedNodeOfferingsOutcomeCallable DescribeReservedNodeOfferingsCallable(const DescribeReservedNodeOfferingsRequestT& request) const
+        Model::DescribeReservedNodeOfferingsOutcomeCallable DescribeReservedNodeOfferingsCallable(const DescribeReservedNodeOfferingsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeReservedNodeOfferings, request);
         }
@@ -2197,7 +2520,7 @@ namespace Redshift
          * An Async wrapper for DescribeReservedNodeOfferings that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeReservedNodeOfferingsRequestT = Model::DescribeReservedNodeOfferingsRequest>
-        void DescribeReservedNodeOfferingsAsync(const DescribeReservedNodeOfferingsRequestT& request, const DescribeReservedNodeOfferingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeReservedNodeOfferingsAsync(const DescribeReservedNodeOfferingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeReservedNodeOfferingsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeReservedNodeOfferings, request, handler, context);
         }
@@ -2207,13 +2530,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeReservedNodes">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeReservedNodesOutcome DescribeReservedNodes(const Model::DescribeReservedNodesRequest& request) const;
+        virtual Model::DescribeReservedNodesOutcome DescribeReservedNodes(const Model::DescribeReservedNodesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeReservedNodes that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeReservedNodesRequestT = Model::DescribeReservedNodesRequest>
-        Model::DescribeReservedNodesOutcomeCallable DescribeReservedNodesCallable(const DescribeReservedNodesRequestT& request) const
+        Model::DescribeReservedNodesOutcomeCallable DescribeReservedNodesCallable(const DescribeReservedNodesRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeReservedNodes, request);
         }
@@ -2222,7 +2545,7 @@ namespace Redshift
          * An Async wrapper for DescribeReservedNodes that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeReservedNodesRequestT = Model::DescribeReservedNodesRequest>
-        void DescribeReservedNodesAsync(const DescribeReservedNodesRequestT& request, const DescribeReservedNodesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeReservedNodesAsync(const DescribeReservedNodesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeReservedNodesRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeReservedNodes, request, handler, context);
         }
@@ -2263,13 +2586,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeScheduledActions">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeScheduledActionsOutcome DescribeScheduledActions(const Model::DescribeScheduledActionsRequest& request) const;
+        virtual Model::DescribeScheduledActionsOutcome DescribeScheduledActions(const Model::DescribeScheduledActionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeScheduledActions that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeScheduledActionsRequestT = Model::DescribeScheduledActionsRequest>
-        Model::DescribeScheduledActionsOutcomeCallable DescribeScheduledActionsCallable(const DescribeScheduledActionsRequestT& request) const
+        Model::DescribeScheduledActionsOutcomeCallable DescribeScheduledActionsCallable(const DescribeScheduledActionsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeScheduledActions, request);
         }
@@ -2278,7 +2601,7 @@ namespace Redshift
          * An Async wrapper for DescribeScheduledActions that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeScheduledActionsRequestT = Model::DescribeScheduledActionsRequest>
-        void DescribeScheduledActionsAsync(const DescribeScheduledActionsRequestT& request, const DescribeScheduledActionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeScheduledActionsAsync(const DescribeScheduledActionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeScheduledActionsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeScheduledActions, request, handler, context);
         }
@@ -2293,13 +2616,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeSnapshotCopyGrants">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeSnapshotCopyGrantsOutcome DescribeSnapshotCopyGrants(const Model::DescribeSnapshotCopyGrantsRequest& request) const;
+        virtual Model::DescribeSnapshotCopyGrantsOutcome DescribeSnapshotCopyGrants(const Model::DescribeSnapshotCopyGrantsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeSnapshotCopyGrants that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeSnapshotCopyGrantsRequestT = Model::DescribeSnapshotCopyGrantsRequest>
-        Model::DescribeSnapshotCopyGrantsOutcomeCallable DescribeSnapshotCopyGrantsCallable(const DescribeSnapshotCopyGrantsRequestT& request) const
+        Model::DescribeSnapshotCopyGrantsOutcomeCallable DescribeSnapshotCopyGrantsCallable(const DescribeSnapshotCopyGrantsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeSnapshotCopyGrants, request);
         }
@@ -2308,7 +2631,7 @@ namespace Redshift
          * An Async wrapper for DescribeSnapshotCopyGrants that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeSnapshotCopyGrantsRequestT = Model::DescribeSnapshotCopyGrantsRequest>
-        void DescribeSnapshotCopyGrantsAsync(const DescribeSnapshotCopyGrantsRequestT& request, const DescribeSnapshotCopyGrantsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeSnapshotCopyGrantsAsync(const DescribeSnapshotCopyGrantsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeSnapshotCopyGrantsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeSnapshotCopyGrants, request, handler, context);
         }
@@ -2318,13 +2641,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeSnapshotSchedules">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeSnapshotSchedulesOutcome DescribeSnapshotSchedules(const Model::DescribeSnapshotSchedulesRequest& request) const;
+        virtual Model::DescribeSnapshotSchedulesOutcome DescribeSnapshotSchedules(const Model::DescribeSnapshotSchedulesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeSnapshotSchedules that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeSnapshotSchedulesRequestT = Model::DescribeSnapshotSchedulesRequest>
-        Model::DescribeSnapshotSchedulesOutcomeCallable DescribeSnapshotSchedulesCallable(const DescribeSnapshotSchedulesRequestT& request) const
+        Model::DescribeSnapshotSchedulesOutcomeCallable DescribeSnapshotSchedulesCallable(const DescribeSnapshotSchedulesRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeSnapshotSchedules, request);
         }
@@ -2333,7 +2656,7 @@ namespace Redshift
          * An Async wrapper for DescribeSnapshotSchedules that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeSnapshotSchedulesRequestT = Model::DescribeSnapshotSchedulesRequest>
-        void DescribeSnapshotSchedulesAsync(const DescribeSnapshotSchedulesRequestT& request, const DescribeSnapshotSchedulesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeSnapshotSchedulesAsync(const DescribeSnapshotSchedulesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeSnapshotSchedulesRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeSnapshotSchedules, request, handler, context);
         }
@@ -2344,13 +2667,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeStorage">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeStorageOutcome DescribeStorage(const Model::DescribeStorageRequest& request) const;
+        virtual Model::DescribeStorageOutcome DescribeStorage(const Model::DescribeStorageRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeStorage that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeStorageRequestT = Model::DescribeStorageRequest>
-        Model::DescribeStorageOutcomeCallable DescribeStorageCallable(const DescribeStorageRequestT& request) const
+        Model::DescribeStorageOutcomeCallable DescribeStorageCallable(const DescribeStorageRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeStorage, request);
         }
@@ -2359,7 +2682,7 @@ namespace Redshift
          * An Async wrapper for DescribeStorage that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeStorageRequestT = Model::DescribeStorageRequest>
-        void DescribeStorageAsync(const DescribeStorageRequestT& request, const DescribeStorageResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeStorageAsync(const DescribeStorageResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeStorageRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeStorage, request, handler, context);
         }
@@ -2376,13 +2699,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeTableRestoreStatus">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeTableRestoreStatusOutcome DescribeTableRestoreStatus(const Model::DescribeTableRestoreStatusRequest& request) const;
+        virtual Model::DescribeTableRestoreStatusOutcome DescribeTableRestoreStatus(const Model::DescribeTableRestoreStatusRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeTableRestoreStatus that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeTableRestoreStatusRequestT = Model::DescribeTableRestoreStatusRequest>
-        Model::DescribeTableRestoreStatusOutcomeCallable DescribeTableRestoreStatusCallable(const DescribeTableRestoreStatusRequestT& request) const
+        Model::DescribeTableRestoreStatusOutcomeCallable DescribeTableRestoreStatusCallable(const DescribeTableRestoreStatusRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeTableRestoreStatus, request);
         }
@@ -2391,7 +2714,7 @@ namespace Redshift
          * An Async wrapper for DescribeTableRestoreStatus that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeTableRestoreStatusRequestT = Model::DescribeTableRestoreStatusRequest>
-        void DescribeTableRestoreStatusAsync(const DescribeTableRestoreStatusRequestT& request, const DescribeTableRestoreStatusResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeTableRestoreStatusAsync(const DescribeTableRestoreStatusResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeTableRestoreStatusRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeTableRestoreStatus, request, handler, context);
         }
@@ -2416,13 +2739,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeTags">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeTagsOutcome DescribeTags(const Model::DescribeTagsRequest& request) const;
+        virtual Model::DescribeTagsOutcome DescribeTags(const Model::DescribeTagsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeTags that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeTagsRequestT = Model::DescribeTagsRequest>
-        Model::DescribeTagsOutcomeCallable DescribeTagsCallable(const DescribeTagsRequestT& request) const
+        Model::DescribeTagsOutcomeCallable DescribeTagsCallable(const DescribeTagsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeTags, request);
         }
@@ -2431,7 +2754,7 @@ namespace Redshift
          * An Async wrapper for DescribeTags that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeTagsRequestT = Model::DescribeTagsRequest>
-        void DescribeTagsAsync(const DescribeTagsRequestT& request, const DescribeTagsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeTagsAsync(const DescribeTagsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeTagsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeTags, request, handler, context);
         }
@@ -2451,13 +2774,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/DescribeUsageLimits">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeUsageLimitsOutcome DescribeUsageLimits(const Model::DescribeUsageLimitsRequest& request) const;
+        virtual Model::DescribeUsageLimitsOutcome DescribeUsageLimits(const Model::DescribeUsageLimitsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeUsageLimits that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeUsageLimitsRequestT = Model::DescribeUsageLimitsRequest>
-        Model::DescribeUsageLimitsOutcomeCallable DescribeUsageLimitsCallable(const DescribeUsageLimitsRequestT& request) const
+        Model::DescribeUsageLimitsOutcomeCallable DescribeUsageLimitsCallable(const DescribeUsageLimitsRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::DescribeUsageLimits, request);
         }
@@ -2466,7 +2789,7 @@ namespace Redshift
          * An Async wrapper for DescribeUsageLimits that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeUsageLimitsRequestT = Model::DescribeUsageLimitsRequest>
-        void DescribeUsageLimitsAsync(const DescribeUsageLimitsRequestT& request, const DescribeUsageLimitsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeUsageLimitsAsync(const DescribeUsageLimitsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeUsageLimitsRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::DescribeUsageLimits, request, handler, context);
         }
@@ -2605,6 +2928,32 @@ namespace Redshift
         }
 
         /**
+         * <p>Fails over the primary compute unit of the specified Multi-AZ cluster to
+         * another Availability Zone.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/FailoverPrimaryCompute">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::FailoverPrimaryComputeOutcome FailoverPrimaryCompute(const Model::FailoverPrimaryComputeRequest& request) const;
+
+        /**
+         * A Callable wrapper for FailoverPrimaryCompute that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename FailoverPrimaryComputeRequestT = Model::FailoverPrimaryComputeRequest>
+        Model::FailoverPrimaryComputeOutcomeCallable FailoverPrimaryComputeCallable(const FailoverPrimaryComputeRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::FailoverPrimaryCompute, request);
+        }
+
+        /**
+         * An Async wrapper for FailoverPrimaryCompute that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename FailoverPrimaryComputeRequestT = Model::FailoverPrimaryComputeRequest>
+        void FailoverPrimaryComputeAsync(const FailoverPrimaryComputeRequestT& request, const FailoverPrimaryComputeResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::FailoverPrimaryCompute, request, handler, context);
+        }
+
+        /**
          * <p>Returns a database user name and temporary password with temporary
          * authorization to log on to an Amazon Redshift database. The action returns the
          * database user name prefixed with <code>IAM:</code> if <code>AutoCreate</code> is
@@ -2669,13 +3018,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/GetClusterCredentialsWithIAM">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetClusterCredentialsWithIAMOutcome GetClusterCredentialsWithIAM(const Model::GetClusterCredentialsWithIAMRequest& request) const;
+        virtual Model::GetClusterCredentialsWithIAMOutcome GetClusterCredentialsWithIAM(const Model::GetClusterCredentialsWithIAMRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetClusterCredentialsWithIAM that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetClusterCredentialsWithIAMRequestT = Model::GetClusterCredentialsWithIAMRequest>
-        Model::GetClusterCredentialsWithIAMOutcomeCallable GetClusterCredentialsWithIAMCallable(const GetClusterCredentialsWithIAMRequestT& request) const
+        Model::GetClusterCredentialsWithIAMOutcomeCallable GetClusterCredentialsWithIAMCallable(const GetClusterCredentialsWithIAMRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::GetClusterCredentialsWithIAM, request);
         }
@@ -2684,7 +3033,7 @@ namespace Redshift
          * An Async wrapper for GetClusterCredentialsWithIAM that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetClusterCredentialsWithIAMRequestT = Model::GetClusterCredentialsWithIAMRequest>
-        void GetClusterCredentialsWithIAMAsync(const GetClusterCredentialsWithIAMRequestT& request, const GetClusterCredentialsWithIAMResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetClusterCredentialsWithIAMAsync(const GetClusterCredentialsWithIAMResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetClusterCredentialsWithIAMRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::GetClusterCredentialsWithIAM, request, handler, context);
         }
@@ -2742,6 +3091,59 @@ namespace Redshift
         void GetReservedNodeExchangeOfferingsAsync(const GetReservedNodeExchangeOfferingsRequestT& request, const GetReservedNodeExchangeOfferingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&RedshiftClient::GetReservedNodeExchangeOfferings, request, handler, context);
+        }
+
+        /**
+         * <p>Get the resource policy for a specified resource.</p><p><h3>See Also:</h3>  
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/GetResourcePolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetResourcePolicyOutcome GetResourcePolicy(const Model::GetResourcePolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetResourcePolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetResourcePolicyRequestT = Model::GetResourcePolicyRequest>
+        Model::GetResourcePolicyOutcomeCallable GetResourcePolicyCallable(const GetResourcePolicyRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::GetResourcePolicy, request);
+        }
+
+        /**
+         * An Async wrapper for GetResourcePolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetResourcePolicyRequestT = Model::GetResourcePolicyRequest>
+        void GetResourcePolicyAsync(const GetResourcePolicyRequestT& request, const GetResourcePolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::GetResourcePolicy, request, handler, context);
+        }
+
+        /**
+         * <p>List the Amazon Redshift Advisor recommendations for one or multiple Amazon
+         * Redshift clusters in an Amazon Web Services account.</p><p><h3>See Also:</h3>  
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/ListRecommendations">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListRecommendationsOutcome ListRecommendations(const Model::ListRecommendationsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListRecommendations that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListRecommendationsRequestT = Model::ListRecommendationsRequest>
+        Model::ListRecommendationsOutcomeCallable ListRecommendationsCallable(const ListRecommendationsRequestT& request = {}) const
+        {
+            return SubmitCallable(&RedshiftClient::ListRecommendations, request);
+        }
+
+        /**
+         * An Async wrapper for ListRecommendations that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListRecommendationsRequestT = Model::ListRecommendationsRequest>
+        void ListRecommendationsAsync(const ListRecommendationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListRecommendationsRequestT& request = {}) const
+        {
+            return SubmitAsync(&RedshiftClient::ListRecommendations, request, handler, context);
         }
 
         /**
@@ -2807,6 +3209,17 @@ namespace Redshift
          * effect. For more information about managing clusters, go to <a
          * href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html">Amazon
          * Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management
+         * Guide</i>.</p> <p>VPC Block Public Access (BPA) enables you to block resources
+         * in VPCs and subnets that you own in a Region from reaching or being reached from
+         * the internet through internet gateways and egress-only internet gateways. If a
+         * subnet group for a provisioned cluster is in an account with VPC BPA turned on,
+         * the following capabilities are blocked:</p> <ul> <li> <p>Creating a public
+         * cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying
+         * a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA
+         * turned on to the subnet group when there's at least one public cluster within
+         * the group</p> </li> </ul> <p>For more information about VPC BPA, see <a
+         * href="https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html">Block
+         * public access to VPCs and subnets</a> in the <i>Amazon VPC User
          * Guide</i>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/ModifyCluster">AWS
          * API Reference</a></p>
@@ -2999,7 +3412,18 @@ namespace Redshift
         /**
          * <p>Modifies a cluster subnet group to include the specified list of VPC subnets.
          * The operation replaces the existing list of subnets with the new list of
-         * subnets.</p><p><h3>See Also:</h3>   <a
+         * subnets.</p> <p>VPC Block Public Access (BPA) enables you to block resources in
+         * VPCs and subnets that you own in a Region from reaching or being reached from
+         * the internet through internet gateways and egress-only internet gateways. If a
+         * subnet group for a provisioned cluster is in an account with VPC BPA turned on,
+         * the following capabilities are blocked:</p> <ul> <li> <p>Creating a public
+         * cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying
+         * a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA
+         * turned on to the subnet group when there's at least one public cluster within
+         * the group</p> </li> </ul> <p>For more information about VPC BPA, see <a
+         * href="https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html">Block
+         * public access to VPCs and subnets</a> in the <i>Amazon VPC User
+         * Guide</i>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/ModifyClusterSubnetGroup">AWS
          * API Reference</a></p>
          */
@@ -3021,6 +3445,32 @@ namespace Redshift
         void ModifyClusterSubnetGroupAsync(const ModifyClusterSubnetGroupRequestT& request, const ModifyClusterSubnetGroupResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&RedshiftClient::ModifyClusterSubnetGroup, request, handler, context);
+        }
+
+        /**
+         * <p>Contains information for changing a custom domain association.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/ModifyCustomDomainAssociation">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ModifyCustomDomainAssociationOutcome ModifyCustomDomainAssociation(const Model::ModifyCustomDomainAssociationRequest& request) const;
+
+        /**
+         * A Callable wrapper for ModifyCustomDomainAssociation that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ModifyCustomDomainAssociationRequestT = Model::ModifyCustomDomainAssociationRequest>
+        Model::ModifyCustomDomainAssociationOutcomeCallable ModifyCustomDomainAssociationCallable(const ModifyCustomDomainAssociationRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::ModifyCustomDomainAssociation, request);
+        }
+
+        /**
+         * An Async wrapper for ModifyCustomDomainAssociation that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ModifyCustomDomainAssociationRequestT = Model::ModifyCustomDomainAssociationRequest>
+        void ModifyCustomDomainAssociationAsync(const ModifyCustomDomainAssociationRequestT& request, const ModifyCustomDomainAssociationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::ModifyCustomDomainAssociation, request, handler, context);
         }
 
         /**
@@ -3072,6 +3522,58 @@ namespace Redshift
         void ModifyEventSubscriptionAsync(const ModifyEventSubscriptionRequestT& request, const ModifyEventSubscriptionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&RedshiftClient::ModifyEventSubscription, request, handler, context);
+        }
+
+        /**
+         * <p>Modifies a zero-ETL integration or S3 event integration with Amazon
+         * Redshift.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/ModifyIntegration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ModifyIntegrationOutcome ModifyIntegration(const Model::ModifyIntegrationRequest& request) const;
+
+        /**
+         * A Callable wrapper for ModifyIntegration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ModifyIntegrationRequestT = Model::ModifyIntegrationRequest>
+        Model::ModifyIntegrationOutcomeCallable ModifyIntegrationCallable(const ModifyIntegrationRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::ModifyIntegration, request);
+        }
+
+        /**
+         * An Async wrapper for ModifyIntegration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ModifyIntegrationRequestT = Model::ModifyIntegrationRequest>
+        void ModifyIntegrationAsync(const ModifyIntegrationRequestT& request, const ModifyIntegrationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::ModifyIntegration, request, handler, context);
+        }
+
+        /**
+         * <p>Changes an existing Amazon Redshift IAM Identity Center
+         * application.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/ModifyRedshiftIdcApplication">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ModifyRedshiftIdcApplicationOutcome ModifyRedshiftIdcApplication(const Model::ModifyRedshiftIdcApplicationRequest& request) const;
+
+        /**
+         * A Callable wrapper for ModifyRedshiftIdcApplication that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ModifyRedshiftIdcApplicationRequestT = Model::ModifyRedshiftIdcApplicationRequest>
+        Model::ModifyRedshiftIdcApplicationOutcomeCallable ModifyRedshiftIdcApplicationCallable(const ModifyRedshiftIdcApplicationRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::ModifyRedshiftIdcApplication, request);
+        }
+
+        /**
+         * An Async wrapper for ModifyRedshiftIdcApplication that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ModifyRedshiftIdcApplicationRequestT = Model::ModifyRedshiftIdcApplicationRequest>
+        void ModifyRedshiftIdcApplicationAsync(const ModifyRedshiftIdcApplicationRequestT& request, const ModifyRedshiftIdcApplicationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::ModifyRedshiftIdcApplication, request, handler, context);
         }
 
         /**
@@ -3242,6 +3744,32 @@ namespace Redshift
         }
 
         /**
+         * <p>Updates the resource policy for a specified resource.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/PutResourcePolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::PutResourcePolicyOutcome PutResourcePolicy(const Model::PutResourcePolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for PutResourcePolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename PutResourcePolicyRequestT = Model::PutResourcePolicyRequest>
+        Model::PutResourcePolicyOutcomeCallable PutResourcePolicyCallable(const PutResourcePolicyRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::PutResourcePolicy, request);
+        }
+
+        /**
+         * An Async wrapper for PutResourcePolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename PutResourcePolicyRequestT = Model::PutResourcePolicyRequest>
+        void PutResourcePolicyAsync(const PutResourcePolicyRequestT& request, const PutResourcePolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::PutResourcePolicy, request, handler, context);
+        }
+
+        /**
          * <p>Reboots a cluster. This action is taken as soon as possible. It results in a
          * momentary outage to the cluster, during which the cluster status is set to
          * <code>rebooting</code>. A cluster event is created when the reboot is completed.
@@ -3271,6 +3799,32 @@ namespace Redshift
         void RebootClusterAsync(const RebootClusterRequestT& request, const RebootClusterResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&RedshiftClient::RebootCluster, request, handler, context);
+        }
+
+        /**
+         * <p>Registers a cluster or serverless namespace to the Amazon Web Services Glue
+         * Data Catalog.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/RegisterNamespace">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::RegisterNamespaceOutcome RegisterNamespace(const Model::RegisterNamespaceRequest& request) const;
+
+        /**
+         * A Callable wrapper for RegisterNamespace that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename RegisterNamespaceRequestT = Model::RegisterNamespaceRequest>
+        Model::RegisterNamespaceOutcomeCallable RegisterNamespaceCallable(const RegisterNamespaceRequestT& request) const
+        {
+            return SubmitCallable(&RedshiftClient::RegisterNamespace, request);
+        }
+
+        /**
+         * An Async wrapper for RegisterNamespace that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename RegisterNamespaceRequestT = Model::RegisterNamespaceRequest>
+        void RegisterNamespaceAsync(const RegisterNamespaceRequestT& request, const RegisterNamespaceResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&RedshiftClient::RegisterNamespace, request, handler, context);
         }
 
         /**
@@ -3334,10 +3888,8 @@ namespace Redshift
          * method. With an elastic resize, your cluster is available for read and write
          * operations more quickly than with the classic resize method. </p> <p>Elastic
          * resize operations have the following restrictions:</p> <ul> <li> <p>You can only
-         * resize clusters of the following types:</p> <ul> <li> <p>dc1.large (if your
-         * cluster is in a VPC)</p> </li> <li> <p>dc1.8xlarge (if your cluster is in a
-         * VPC)</p> </li> <li> <p>dc2.large</p> </li> <li> <p>dc2.8xlarge</p> </li> <li>
-         * <p>ds2.xlarge</p> </li> <li> <p>ds2.8xlarge</p> </li> <li> <p>ra3.xlplus</p>
+         * resize clusters of the following types:</p> <ul> <li> <p>dc2.large</p> </li>
+         * <li> <p>dc2.8xlarge</p> </li> <li> <p>ra3.large</p> </li> <li> <p>ra3.xlplus</p>
          * </li> <li> <p>ra3.4xlarge</p> </li> <li> <p>ra3.16xlarge</p> </li> </ul> </li>
          * <li> <p>The type of nodes that you add must match the node type for the
          * cluster.</p> </li> </ul><p><h3>See Also:</h3>   <a
@@ -3373,8 +3925,19 @@ namespace Redshift
          * security group and different parameter group with the restored cluster. If you
          * are using a DS node type, you can also choose to change to another DS node type
          * of the same size during restore.</p> <p>If you restore a cluster into a VPC, you
-         * must provide a cluster subnet group where you want the cluster restored.</p> <p>
-         * For more information about working with snapshots, go to <a
+         * must provide a cluster subnet group where you want the cluster restored.</p>
+         * <p>VPC Block Public Access (BPA) enables you to block resources in VPCs and
+         * subnets that you own in a Region from reaching or being reached from the
+         * internet through internet gateways and egress-only internet gateways. If a
+         * subnet group for a provisioned cluster is in an account with VPC BPA turned on,
+         * the following capabilities are blocked:</p> <ul> <li> <p>Creating a public
+         * cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying
+         * a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA
+         * turned on to the subnet group when there's at least one public cluster within
+         * the group</p> </li> </ul> <p>For more information about VPC BPA, see <a
+         * href="https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html">Block
+         * public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>
+         * <p> For more information about working with snapshots, go to <a
          * href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html">Amazon
          * Redshift Snapshots</a> in the <i>Amazon Redshift Cluster Management
          * Guide</i>.</p><p><h3>See Also:</h3>   <a
@@ -3501,13 +4064,13 @@ namespace Redshift
          * href="http://docs.aws.amazon.com/goto/WebAPI/redshift-2012-12-01/RevokeEndpointAccess">AWS
          * API Reference</a></p>
          */
-        virtual Model::RevokeEndpointAccessOutcome RevokeEndpointAccess(const Model::RevokeEndpointAccessRequest& request) const;
+        virtual Model::RevokeEndpointAccessOutcome RevokeEndpointAccess(const Model::RevokeEndpointAccessRequest& request = {}) const;
 
         /**
          * A Callable wrapper for RevokeEndpointAccess that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename RevokeEndpointAccessRequestT = Model::RevokeEndpointAccessRequest>
-        Model::RevokeEndpointAccessOutcomeCallable RevokeEndpointAccessCallable(const RevokeEndpointAccessRequestT& request) const
+        Model::RevokeEndpointAccessOutcomeCallable RevokeEndpointAccessCallable(const RevokeEndpointAccessRequestT& request = {}) const
         {
             return SubmitCallable(&RedshiftClient::RevokeEndpointAccess, request);
         }
@@ -3516,7 +4079,7 @@ namespace Redshift
          * An Async wrapper for RevokeEndpointAccess that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename RevokeEndpointAccessRequestT = Model::RevokeEndpointAccessRequest>
-        void RevokeEndpointAccessAsync(const RevokeEndpointAccessRequestT& request, const RevokeEndpointAccessResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void RevokeEndpointAccessAsync(const RevokeEndpointAccessResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const RevokeEndpointAccessRequestT& request = {}) const
         {
             return SubmitAsync(&RedshiftClient::RevokeEndpointAccess, request, handler, context);
         }
@@ -3610,7 +4173,6 @@ namespace Redshift
         void init(const RedshiftClientConfiguration& clientConfiguration);
 
         RedshiftClientConfiguration m_clientConfiguration;
-        std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
         std::shared_ptr<RedshiftEndpointProviderBase> m_endpointProvider;
   };
 

@@ -23,9 +23,8 @@ GetQuantumTaskResult::GetQuantumTaskResult() :
 {
 }
 
-GetQuantumTaskResult::GetQuantumTaskResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_shots(0),
-    m_status(QuantumTaskStatus::NOT_SET)
+GetQuantumTaskResult::GetQuantumTaskResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetQuantumTaskResult()
 {
   *this = result;
 }
@@ -33,6 +32,15 @@ GetQuantumTaskResult::GetQuantumTaskResult(const Aws::AmazonWebServiceResult<Jso
 GetQuantumTaskResult& GetQuantumTaskResult::operator =(const Aws::AmazonWebServiceResult<JsonValue>& result)
 {
   JsonView jsonValue = result.GetPayload().View();
+  if(jsonValue.ValueExists("associations"))
+  {
+    Aws::Utils::Array<JsonView> associationsJsonList = jsonValue.GetArray("associations");
+    for(unsigned associationsIndex = 0; associationsIndex < associationsJsonList.GetLength(); ++associationsIndex)
+    {
+      m_associations.push_back(associationsJsonList[associationsIndex].AsObject());
+    }
+  }
+
   if(jsonValue.ValueExists("createdAt"))
   {
     m_createdAt = jsonValue.GetString("createdAt");
@@ -84,6 +92,12 @@ GetQuantumTaskResult& GetQuantumTaskResult::operator =(const Aws::AmazonWebServi
   if(jsonValue.ValueExists("quantumTaskArn"))
   {
     m_quantumTaskArn = jsonValue.GetString("quantumTaskArn");
+
+  }
+
+  if(jsonValue.ValueExists("queueInfo"))
+  {
+    m_queueInfo = jsonValue.GetObject("queueInfo");
 
   }
 

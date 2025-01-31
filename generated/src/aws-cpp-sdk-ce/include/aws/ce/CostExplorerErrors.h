@@ -47,7 +47,9 @@ enum class CostExplorerErrors
   UNKNOWN = 100,
   ///////////////////////////////////////////////////////////////////////////////////////////
 
-  BILL_EXPIRATION= static_cast<int>(Aws::Client::CoreErrors::SERVICE_EXTENSION_START_RANGE) + 1,
+  ANALYSIS_NOT_FOUND= static_cast<int>(Aws::Client::CoreErrors::SERVICE_EXTENSION_START_RANGE) + 1,
+  BACKFILL_LIMIT_EXCEEDED,
+  BILL_EXPIRATION,
   DATA_UNAVAILABLE,
   GENERATION_EXISTS,
   INVALID_NEXT_TOKEN,

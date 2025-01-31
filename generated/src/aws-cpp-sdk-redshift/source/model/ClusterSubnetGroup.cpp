@@ -26,17 +26,13 @@ ClusterSubnetGroup::ClusterSubnetGroup() :
     m_vpcIdHasBeenSet(false),
     m_subnetGroupStatusHasBeenSet(false),
     m_subnetsHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+    m_tagsHasBeenSet(false),
+    m_supportedClusterIpAddressTypesHasBeenSet(false)
 {
 }
 
-ClusterSubnetGroup::ClusterSubnetGroup(const XmlNode& xmlNode) : 
-    m_clusterSubnetGroupNameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_vpcIdHasBeenSet(false),
-    m_subnetGroupStatusHasBeenSet(false),
-    m_subnetsHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+ClusterSubnetGroup::ClusterSubnetGroup(const XmlNode& xmlNode)
+  : ClusterSubnetGroup()
 {
   *this = xmlNode;
 }
@@ -95,6 +91,18 @@ ClusterSubnetGroup& ClusterSubnetGroup::operator =(const XmlNode& xmlNode)
 
       m_tagsHasBeenSet = true;
     }
+    XmlNode supportedClusterIpAddressTypesNode = resultNode.FirstChild("SupportedClusterIpAddressTypes");
+    if(!supportedClusterIpAddressTypesNode.IsNull())
+    {
+      XmlNode supportedClusterIpAddressTypesMember = supportedClusterIpAddressTypesNode.FirstChild("item");
+      while(!supportedClusterIpAddressTypesMember.IsNull())
+      {
+        m_supportedClusterIpAddressTypes.push_back(supportedClusterIpAddressTypesMember.GetText());
+        supportedClusterIpAddressTypesMember = supportedClusterIpAddressTypesMember.NextNode("item");
+      }
+
+      m_supportedClusterIpAddressTypesHasBeenSet = true;
+    }
   }
 
   return *this;
@@ -128,7 +136,7 @@ void ClusterSubnetGroup::OutputToStream(Aws::OStream& oStream, const char* locat
       for(auto& item : m_subnets)
       {
         Aws::StringStream subnetsSs;
-        subnetsSs << location << index << locationValue << ".Subnet." << subnetsIdx++;
+        subnetsSs << location << index << locationValue << ".Subnets.Subnet." << subnetsIdx++;
         item.OutputToStream(oStream, subnetsSs.str().c_str());
       }
   }
@@ -139,8 +147,17 @@ void ClusterSubnetGroup::OutputToStream(Aws::OStream& oStream, const char* locat
       for(auto& item : m_tags)
       {
         Aws::StringStream tagsSs;
-        tagsSs << location << index << locationValue << ".Tag." << tagsIdx++;
+        tagsSs << location << index << locationValue << ".Tags.Tag." << tagsIdx++;
         item.OutputToStream(oStream, tagsSs.str().c_str());
+      }
+  }
+
+  if(m_supportedClusterIpAddressTypesHasBeenSet)
+  {
+      unsigned supportedClusterIpAddressTypesIdx = 1;
+      for(auto& item : m_supportedClusterIpAddressTypes)
+      {
+        oStream << location << index << locationValue << ".SupportedClusterIpAddressTypes.item." << supportedClusterIpAddressTypesIdx++ << "=" << StringUtils::URLEncode(item.c_str()) << "&";
       }
   }
 
@@ -182,6 +199,14 @@ void ClusterSubnetGroup::OutputToStream(Aws::OStream& oStream, const char* locat
         Aws::StringStream tagsSs;
         tagsSs << location <<  ".Tag." << tagsIdx++;
         item.OutputToStream(oStream, tagsSs.str().c_str());
+      }
+  }
+  if(m_supportedClusterIpAddressTypesHasBeenSet)
+  {
+      unsigned supportedClusterIpAddressTypesIdx = 1;
+      for(auto& item : m_supportedClusterIpAddressTypes)
+      {
+        oStream << location << ".item." << supportedClusterIpAddressTypesIdx++ << "=" << StringUtils::URLEncode(item.c_str()) << "&";
       }
   }
 }

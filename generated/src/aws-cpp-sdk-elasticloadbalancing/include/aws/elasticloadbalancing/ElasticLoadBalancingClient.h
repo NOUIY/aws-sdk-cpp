@@ -42,8 +42,8 @@ namespace ElasticLoadBalancing
   {
     public:
       typedef Aws::Client::AWSXMLClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
 
       typedef ElasticLoadBalancingClientConfiguration ClientConfigurationType;
       typedef ElasticLoadBalancingEndpointProvider EndpointProviderType;
@@ -53,14 +53,14 @@ namespace ElasticLoadBalancing
         * is not specified, it will be initialized to default values.
         */
         ElasticLoadBalancingClient(const Aws::ElasticLoadBalancing::ElasticLoadBalancingClientConfiguration& clientConfiguration = Aws::ElasticLoadBalancing::ElasticLoadBalancingClientConfiguration(),
-                                   std::shared_ptr<ElasticLoadBalancingEndpointProviderBase> endpointProvider = Aws::MakeShared<ElasticLoadBalancingEndpointProvider>(ALLOCATION_TAG));
+                                   std::shared_ptr<ElasticLoadBalancingEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         ElasticLoadBalancingClient(const Aws::Auth::AWSCredentials& credentials,
-                                   std::shared_ptr<ElasticLoadBalancingEndpointProviderBase> endpointProvider = Aws::MakeShared<ElasticLoadBalancingEndpointProvider>(ALLOCATION_TAG),
+                                   std::shared_ptr<ElasticLoadBalancingEndpointProviderBase> endpointProvider = nullptr,
                                    const Aws::ElasticLoadBalancing::ElasticLoadBalancingClientConfiguration& clientConfiguration = Aws::ElasticLoadBalancing::ElasticLoadBalancingClientConfiguration());
 
        /**
@@ -68,7 +68,7 @@ namespace ElasticLoadBalancing
         * the default http client factory will be used
         */
         ElasticLoadBalancingClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                   std::shared_ptr<ElasticLoadBalancingEndpointProviderBase> endpointProvider = Aws::MakeShared<ElasticLoadBalancingEndpointProvider>(ALLOCATION_TAG),
+                                   std::shared_ptr<ElasticLoadBalancingEndpointProviderBase> endpointProvider = nullptr,
                                    const Aws::ElasticLoadBalancing::ElasticLoadBalancingClientConfiguration& clientConfiguration = Aws::ElasticLoadBalancing::ElasticLoadBalancingClientConfiguration());
 
 
@@ -518,13 +518,13 @@ namespace ElasticLoadBalancing
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancing-2012-06-01/DescribeAccountLimits">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeAccountLimitsOutcome DescribeAccountLimits(const Model::DescribeAccountLimitsRequest& request) const;
+        virtual Model::DescribeAccountLimitsOutcome DescribeAccountLimits(const Model::DescribeAccountLimitsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeAccountLimits that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeAccountLimitsRequestT = Model::DescribeAccountLimitsRequest>
-        Model::DescribeAccountLimitsOutcomeCallable DescribeAccountLimitsCallable(const DescribeAccountLimitsRequestT& request) const
+        Model::DescribeAccountLimitsOutcomeCallable DescribeAccountLimitsCallable(const DescribeAccountLimitsRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticLoadBalancingClient::DescribeAccountLimits, request);
         }
@@ -533,7 +533,7 @@ namespace ElasticLoadBalancing
          * An Async wrapper for DescribeAccountLimits that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeAccountLimitsRequestT = Model::DescribeAccountLimitsRequest>
-        void DescribeAccountLimitsAsync(const DescribeAccountLimitsRequestT& request, const DescribeAccountLimitsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeAccountLimitsAsync(const DescribeAccountLimitsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeAccountLimitsRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticLoadBalancingClient::DescribeAccountLimits, request, handler, context);
         }
@@ -605,13 +605,13 @@ namespace ElasticLoadBalancing
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancing-2012-06-01/DescribeLoadBalancerPolicies">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeLoadBalancerPoliciesOutcome DescribeLoadBalancerPolicies(const Model::DescribeLoadBalancerPoliciesRequest& request) const;
+        virtual Model::DescribeLoadBalancerPoliciesOutcome DescribeLoadBalancerPolicies(const Model::DescribeLoadBalancerPoliciesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeLoadBalancerPolicies that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeLoadBalancerPoliciesRequestT = Model::DescribeLoadBalancerPoliciesRequest>
-        Model::DescribeLoadBalancerPoliciesOutcomeCallable DescribeLoadBalancerPoliciesCallable(const DescribeLoadBalancerPoliciesRequestT& request) const
+        Model::DescribeLoadBalancerPoliciesOutcomeCallable DescribeLoadBalancerPoliciesCallable(const DescribeLoadBalancerPoliciesRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticLoadBalancingClient::DescribeLoadBalancerPolicies, request);
         }
@@ -620,7 +620,7 @@ namespace ElasticLoadBalancing
          * An Async wrapper for DescribeLoadBalancerPolicies that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeLoadBalancerPoliciesRequestT = Model::DescribeLoadBalancerPoliciesRequest>
-        void DescribeLoadBalancerPoliciesAsync(const DescribeLoadBalancerPoliciesRequestT& request, const DescribeLoadBalancerPoliciesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeLoadBalancerPoliciesAsync(const DescribeLoadBalancerPoliciesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeLoadBalancerPoliciesRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticLoadBalancingClient::DescribeLoadBalancerPolicies, request, handler, context);
         }
@@ -638,13 +638,13 @@ namespace ElasticLoadBalancing
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancing-2012-06-01/DescribeLoadBalancerPolicyTypes">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeLoadBalancerPolicyTypesOutcome DescribeLoadBalancerPolicyTypes(const Model::DescribeLoadBalancerPolicyTypesRequest& request) const;
+        virtual Model::DescribeLoadBalancerPolicyTypesOutcome DescribeLoadBalancerPolicyTypes(const Model::DescribeLoadBalancerPolicyTypesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeLoadBalancerPolicyTypes that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeLoadBalancerPolicyTypesRequestT = Model::DescribeLoadBalancerPolicyTypesRequest>
-        Model::DescribeLoadBalancerPolicyTypesOutcomeCallable DescribeLoadBalancerPolicyTypesCallable(const DescribeLoadBalancerPolicyTypesRequestT& request) const
+        Model::DescribeLoadBalancerPolicyTypesOutcomeCallable DescribeLoadBalancerPolicyTypesCallable(const DescribeLoadBalancerPolicyTypesRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticLoadBalancingClient::DescribeLoadBalancerPolicyTypes, request);
         }
@@ -653,7 +653,7 @@ namespace ElasticLoadBalancing
          * An Async wrapper for DescribeLoadBalancerPolicyTypes that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeLoadBalancerPolicyTypesRequestT = Model::DescribeLoadBalancerPolicyTypesRequest>
-        void DescribeLoadBalancerPolicyTypesAsync(const DescribeLoadBalancerPolicyTypesRequestT& request, const DescribeLoadBalancerPolicyTypesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeLoadBalancerPolicyTypesAsync(const DescribeLoadBalancerPolicyTypesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeLoadBalancerPolicyTypesRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticLoadBalancingClient::DescribeLoadBalancerPolicyTypes, request, handler, context);
         }
@@ -665,13 +665,13 @@ namespace ElasticLoadBalancing
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancing-2012-06-01/DescribeLoadBalancers">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeLoadBalancersOutcome DescribeLoadBalancers(const Model::DescribeLoadBalancersRequest& request) const;
+        virtual Model::DescribeLoadBalancersOutcome DescribeLoadBalancers(const Model::DescribeLoadBalancersRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeLoadBalancers that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeLoadBalancersRequestT = Model::DescribeLoadBalancersRequest>
-        Model::DescribeLoadBalancersOutcomeCallable DescribeLoadBalancersCallable(const DescribeLoadBalancersRequestT& request) const
+        Model::DescribeLoadBalancersOutcomeCallable DescribeLoadBalancersCallable(const DescribeLoadBalancersRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticLoadBalancingClient::DescribeLoadBalancers, request);
         }
@@ -680,7 +680,7 @@ namespace ElasticLoadBalancing
          * An Async wrapper for DescribeLoadBalancers that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeLoadBalancersRequestT = Model::DescribeLoadBalancersRequest>
-        void DescribeLoadBalancersAsync(const DescribeLoadBalancersRequestT& request, const DescribeLoadBalancersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeLoadBalancersAsync(const DescribeLoadBalancersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeLoadBalancersRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticLoadBalancingClient::DescribeLoadBalancers, request, handler, context);
         }
@@ -1031,7 +1031,6 @@ namespace ElasticLoadBalancing
         void init(const ElasticLoadBalancingClientConfiguration& clientConfiguration);
 
         ElasticLoadBalancingClientConfiguration m_clientConfiguration;
-        std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
         std::shared_ptr<ElasticLoadBalancingEndpointProviderBase> m_endpointProvider;
   };
 

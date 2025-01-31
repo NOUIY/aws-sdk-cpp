@@ -19,7 +19,9 @@ UpdateTaskRequest::UpdateTaskRequest() :
     m_scheduleHasBeenSet(false),
     m_nameHasBeenSet(false),
     m_cloudWatchLogGroupArnHasBeenSet(false),
-    m_includesHasBeenSet(false)
+    m_includesHasBeenSet(false),
+    m_manifestConfigHasBeenSet(false),
+    m_taskReportConfigHasBeenSet(false)
 {
 }
 
@@ -76,6 +78,18 @@ Aws::String UpdateTaskRequest::SerializePayload() const
      includesJsonList[includesIndex].AsObject(m_includes[includesIndex].Jsonize());
    }
    payload.WithArray("Includes", std::move(includesJsonList));
+
+  }
+
+  if(m_manifestConfigHasBeenSet)
+  {
+   payload.WithObject("ManifestConfig", m_manifestConfig.Jsonize());
+
+  }
+
+  if(m_taskReportConfigHasBeenSet)
+  {
+   payload.WithObject("TaskReportConfig", m_taskReportConfig.Jsonize());
 
   }
 

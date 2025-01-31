@@ -24,19 +24,14 @@ ECSServiceRecommendationOption::ECSServiceRecommendationOption() :
     m_cpu(0),
     m_cpuHasBeenSet(false),
     m_savingsOpportunityHasBeenSet(false),
+    m_savingsOpportunityAfterDiscountsHasBeenSet(false),
     m_projectedUtilizationMetricsHasBeenSet(false),
     m_containerRecommendationsHasBeenSet(false)
 {
 }
 
-ECSServiceRecommendationOption::ECSServiceRecommendationOption(JsonView jsonValue) : 
-    m_memory(0),
-    m_memoryHasBeenSet(false),
-    m_cpu(0),
-    m_cpuHasBeenSet(false),
-    m_savingsOpportunityHasBeenSet(false),
-    m_projectedUtilizationMetricsHasBeenSet(false),
-    m_containerRecommendationsHasBeenSet(false)
+ECSServiceRecommendationOption::ECSServiceRecommendationOption(JsonView jsonValue)
+  : ECSServiceRecommendationOption()
 {
   *this = jsonValue;
 }
@@ -62,6 +57,13 @@ ECSServiceRecommendationOption& ECSServiceRecommendationOption::operator =(JsonV
     m_savingsOpportunity = jsonValue.GetObject("savingsOpportunity");
 
     m_savingsOpportunityHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("savingsOpportunityAfterDiscounts"))
+  {
+    m_savingsOpportunityAfterDiscounts = jsonValue.GetObject("savingsOpportunityAfterDiscounts");
+
+    m_savingsOpportunityAfterDiscountsHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("projectedUtilizationMetrics"))
@@ -106,6 +108,12 @@ JsonValue ECSServiceRecommendationOption::Jsonize() const
   if(m_savingsOpportunityHasBeenSet)
   {
    payload.WithObject("savingsOpportunity", m_savingsOpportunity.Jsonize());
+
+  }
+
+  if(m_savingsOpportunityAfterDiscountsHasBeenSet)
+  {
+   payload.WithObject("savingsOpportunityAfterDiscounts", m_savingsOpportunityAfterDiscounts.Jsonize());
 
   }
 

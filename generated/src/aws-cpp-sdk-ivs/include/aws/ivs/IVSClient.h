@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/ivs/IVS_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/ivs/IVSServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/ivs/IVSErrorMarshaller.h>
 
 namespace Aws
 {
 namespace IVS
 {
+  AWS_IVS_API extern const char SERVICE_NAME[];
   /**
    * <p> <b>Introduction</b> </p> <p>The Amazon Interactive Video Service (IVS) API
    * is REST compatible, using a standard HTTP API and an Amazon Web Services
@@ -29,38 +33,38 @@ namespace IVS
    * Document History</a>.</p> <p> <b>Allowed Header Values</b> </p> <ul> <li> <p>
    * <code> <b>Accept:</b> </code> application/json</p> </li> <li> <p> <code>
    * <b>Accept-Encoding:</b> </code> gzip, deflate</p> </li> <li> <p> <code>
-   * <b>Content-Type:</b> </code>application/json</p> </li> </ul> <p>
-   * <b>Resources</b> </p> <p>The following resources contain information about your
-   * IVS live stream (see <a
-   * href="https://docs.aws.amazon.com/ivs/latest/userguide/getting-started.html">
-   * Getting Started with Amazon IVS</a>):</p> <ul> <li> <p> <b>Channel</b> — Stores
-   * configuration data related to your live stream. You first create a channel and
-   * then use the channel’s stream key to start your live stream. See the Channel
-   * endpoints for more information. </p> </li> <li> <p> <b>Stream key</b> — An
-   * identifier assigned by Amazon IVS when you create a channel, which is then used
-   * to authorize streaming. See the StreamKey endpoints for more information. <i>
-   * <b>Treat the stream key like a secret, since it allows anyone to stream to the
-   * channel.</b> </i> </p> </li> <li> <p> <b>Playback key pair</b> — Video playback
-   * may be restricted using playback-authorization tokens, which use public-key
-   * encryption. A playback key pair is the public-private pair of keys used to sign
-   * and validate the playback-authorization token. See the PlaybackKeyPair endpoints
-   * for more information.</p> </li> <li> <p> <b>Recording configuration</b> — Stores
-   * configuration related to recording a live stream and where to store the recorded
-   * content. Multiple channels can reference the same recording configuration. See
-   * the Recording Configuration endpoints for more information.</p> </li> </ul> <p>
-   * <b>Tagging</b> </p> <p>A <i>tag</i> is a metadata label that you assign to an
-   * Amazon Web Services resource. A tag comprises a <i>key</i> and a <i>value</i>,
-   * both set by you. For example, you might set a tag as <code>topic:nature</code>
-   * to label a particular video category. See <a
-   * href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging
-   * Amazon Web Services Resources</a> for more information, including restrictions
-   * that apply to tags and "Tag naming limits and requirements"; Amazon IVS has no
-   * service-specific constraints beyond what is documented there.</p> <p>Tags can
-   * help you identify and organize your Amazon Web Services resources. For example,
-   * you can use the same tag for different resources to indicate that they are
-   * related. You can also use tags to manage access (see <a
+   * <b>Content-Type:</b> </code>application/json</p> </li> </ul> <p> <b>Key
+   * Concepts</b> </p> <ul> <li> <p> <b>Channel</b> — Stores configuration data
+   * related to your live stream. You first create a channel and then use the
+   * channel’s stream key to start your live stream.</p> </li> <li> <p> <b>Stream
+   * key</b> — An identifier assigned by Amazon IVS when you create a channel, which
+   * is then used to authorize streaming. <i> <b>Treat the stream key like a secret,
+   * since it allows anyone to stream to the channel.</b> </i> </p> </li> <li> <p>
+   * <b>Playback key pair</b> — Video playback may be restricted using
+   * playback-authorization tokens, which use public-key encryption. A playback key
+   * pair is the public-private pair of keys used to sign and validate the
+   * playback-authorization token.</p> </li> <li> <p> <b>Recording configuration</b>
+   * — Stores configuration related to recording a live stream and where to store the
+   * recorded content. Multiple channels can reference the same recording
+   * configuration.</p> </li> <li> <p> <b>Playback restriction policy</b> — Restricts
+   * playback by countries and/or origin sites.</p> </li> </ul> <p>For more
+   * information about your IVS live stream, also see <a
+   * href="https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/getting-started.html">Getting
+   * Started with IVS Low-Latency Streaming</a>.</p> <p> <b>Tagging</b> </p> <p>A
+   * <i>tag</i> is a metadata label that you assign to an Amazon Web Services
+   * resource. A tag comprises a <i>key</i> and a <i>value</i>, both set by you. For
+   * example, you might set a tag as <code>topic:nature</code> to label a particular
+   * video category. See <a
+   * href="https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html">Best
+   * practices and strategies</a> in <i>Tagging Amazon Web Services Resources and Tag
+   * Editor</i> for details, including restrictions that apply to tags and "Tag
+   * naming limits and requirements"; Amazon IVS has no service-specific constraints
+   * beyond what is documented there.</p> <p>Tags can help you identify and organize
+   * your Amazon Web Services resources. For example, you can use the same tag for
+   * different resources to indicate that they are related. You can also use tags to
+   * manage access (see <a
    * href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html"> Access
-   * Tags</a>). </p> <p>The Amazon IVS API has these tag-related endpoints:
+   * Tags</a>). </p> <p>The Amazon IVS API has these tag-related operations:
    * <a>TagResource</a>, <a>UntagResource</a>, and <a>ListTagsForResource</a>. The
    * following resources support tagging: Channels, Stream Keys, Playback Key Pairs,
    * and Recording Configurations.</p> <p>At most 50 tags can be applied to a
@@ -93,81 +97,22 @@ namespace IVS
    * resource unambiguously across all of AWS, such as in IAM policies and API calls.
    * For more information, see <a
    * href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon
-   * Resource Names</a> in the <i>AWS General Reference</i>.</p> <p> <b>Channel
-   * Endpoints</b> </p> <ul> <li> <p> <a>CreateChannel</a> — Creates a new channel
-   * and an associated stream key to start streaming.</p> </li> <li> <p>
-   * <a>GetChannel</a> — Gets the channel configuration for the specified channel
-   * ARN.</p> </li> <li> <p> <a>BatchGetChannel</a> — Performs <a>GetChannel</a> on
-   * multiple ARNs simultaneously.</p> </li> <li> <p> <a>ListChannels</a> — Gets
-   * summary information about all channels in your account, in the Amazon Web
-   * Services region where the API request is processed. This list can be filtered to
-   * match a specified name or recording-configuration ARN. Filters are mutually
-   * exclusive and cannot be used together. If you try to use both filters, you will
-   * get an error (409 Conflict Exception).</p> </li> <li> <p> <a>UpdateChannel</a> —
-   * Updates a channel's configuration. This does not affect an ongoing stream of
-   * this channel. You must stop and restart the stream for the changes to take
-   * effect.</p> </li> <li> <p> <a>DeleteChannel</a> — Deletes the specified
-   * channel.</p> </li> </ul> <p> <b>StreamKey Endpoints</b> </p> <ul> <li> <p>
-   * <a>CreateStreamKey</a> — Creates a stream key, used to initiate a stream, for
-   * the specified channel ARN.</p> </li> <li> <p> <a>GetStreamKey</a> — Gets stream
-   * key information for the specified ARN.</p> </li> <li> <p>
-   * <a>BatchGetStreamKey</a> — Performs <a>GetStreamKey</a> on multiple ARNs
-   * simultaneously.</p> </li> <li> <p> <a>ListStreamKeys</a> — Gets summary
-   * information about stream keys for the specified channel.</p> </li> <li> <p>
-   * <a>DeleteStreamKey</a> — Deletes the stream key for the specified ARN, so it can
-   * no longer be used to stream.</p> </li> </ul> <p> <b>Stream Endpoints</b> </p>
-   * <ul> <li> <p> <a>GetStream</a> — Gets information about the active (live) stream
-   * on a specified channel.</p> </li> <li> <p> <a>GetStreamSession</a> — Gets
-   * metadata on a specified stream.</p> </li> <li> <p> <a>ListStreams</a> — Gets
-   * summary information about live streams in your account, in the Amazon Web
-   * Services region where the API request is processed.</p> </li> <li> <p>
-   * <a>ListStreamSessions</a> — Gets a summary of current and previous streams for a
-   * specified channel in your account, in the AWS region where the API request is
-   * processed.</p> </li> <li> <p> <a>StopStream</a> — Disconnects the incoming RTMPS
-   * stream for the specified channel. Can be used in conjunction with
-   * <a>DeleteStreamKey</a> to prevent further streaming to a channel.</p> </li> <li>
-   * <p> <a>PutMetadata</a> — Inserts metadata into the active stream of the
-   * specified channel. At most 5 requests per second per channel are allowed, each
-   * with a maximum 1 KB payload. (If 5 TPS is not sufficient for your needs, we
-   * recommend batching your data into a single PutMetadata call.) At most 155
-   * requests per second per account are allowed.</p> </li> </ul> <p>
-   * <b>PlaybackKeyPair Endpoints</b> </p> <p>For more information, see <a
-   * href="https://docs.aws.amazon.com/ivs/latest/userguide/private-channels.html">Setting
-   * Up Private Channels</a> in the <i>Amazon IVS User Guide</i>.</p> <ul> <li> <p>
-   * <a>ImportPlaybackKeyPair</a> — Imports the public portion of a new key pair and
-   * returns its <code>arn</code> and <code>fingerprint</code>. The
-   * <code>privateKey</code> can then be used to generate viewer authorization
-   * tokens, to grant viewers access to private channels (channels enabled for
-   * playback authorization).</p> </li> <li> <p> <a>GetPlaybackKeyPair</a> — Gets a
-   * specified playback authorization key pair and returns the <code>arn</code> and
-   * <code>fingerprint</code>. The <code>privateKey</code> held by the caller can be
-   * used to generate viewer authorization tokens, to grant viewers access to private
-   * channels.</p> </li> <li> <p> <a>ListPlaybackKeyPairs</a> — Gets summary
-   * information about playback key pairs.</p> </li> <li> <p>
-   * <a>DeletePlaybackKeyPair</a> — Deletes a specified authorization key pair. This
-   * invalidates future viewer tokens generated using the key pair’s
-   * <code>privateKey</code>.</p> </li> </ul> <p> <b>RecordingConfiguration
-   * Endpoints</b> </p> <ul> <li> <p> <a>CreateRecordingConfiguration</a> — Creates a
-   * new recording configuration, used to enable recording to Amazon S3.</p> </li>
-   * <li> <p> <a>GetRecordingConfiguration</a> — Gets the recording-configuration
-   * metadata for the specified ARN.</p> </li> <li> <p>
-   * <a>ListRecordingConfigurations</a> — Gets summary information about all
-   * recording configurations in your account, in the Amazon Web Services region
-   * where the API request is processed.</p> </li> <li> <p>
-   * <a>DeleteRecordingConfiguration</a> — Deletes the recording configuration for
-   * the specified ARN.</p> </li> </ul> <p> <b>Amazon Web Services Tags Endpoints</b>
-   * </p> <ul> <li> <p> <a>TagResource</a> — Adds or updates tags for the Amazon Web
-   * Services resource with the specified ARN.</p> </li> <li> <p>
-   * <a>UntagResource</a> — Removes tags from the resource with the specified
-   * ARN.</p> </li> <li> <p> <a>ListTagsForResource</a> — Gets information about
-   * Amazon Web Services tags for the specified ARN.</p> </li> </ul>
+   * Resource Names</a> in the <i>AWS General Reference</i>.</p>
    */
-  class AWS_IVS_API IVSClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<IVSClient>
+  class AWS_IVS_API IVSClient : smithy::client::AwsSmithyClientT<Aws::IVS::SERVICE_NAME,
+      Aws::IVS::IVSClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      IVSEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::IVSErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<IVSClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "ivs"; }
 
       typedef IVSClientConfiguration ClientConfigurationType;
       typedef IVSEndpointProvider EndpointProviderType;
@@ -177,14 +122,14 @@ namespace IVS
         * is not specified, it will be initialized to default values.
         */
         IVSClient(const Aws::IVS::IVSClientConfiguration& clientConfiguration = Aws::IVS::IVSClientConfiguration(),
-                  std::shared_ptr<IVSEndpointProviderBase> endpointProvider = Aws::MakeShared<IVSEndpointProvider>(ALLOCATION_TAG));
+                  std::shared_ptr<IVSEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         IVSClient(const Aws::Auth::AWSCredentials& credentials,
-                  std::shared_ptr<IVSEndpointProviderBase> endpointProvider = Aws::MakeShared<IVSEndpointProvider>(ALLOCATION_TAG),
+                  std::shared_ptr<IVSEndpointProviderBase> endpointProvider = nullptr,
                   const Aws::IVS::IVSClientConfiguration& clientConfiguration = Aws::IVS::IVSClientConfiguration());
 
        /**
@@ -192,7 +137,7 @@ namespace IVS
         * the default http client factory will be used
         */
         IVSClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                  std::shared_ptr<IVSEndpointProviderBase> endpointProvider = Aws::MakeShared<IVSEndpointProvider>(ALLOCATION_TAG),
+                  std::shared_ptr<IVSEndpointProviderBase> endpointProvider = nullptr,
                   const Aws::IVS::IVSClientConfiguration& clientConfiguration = Aws::IVS::IVSClientConfiguration());
 
 
@@ -273,18 +218,44 @@ namespace IVS
         }
 
         /**
+         * <p>Performs <a>StartViewerSessionRevocation</a> on multiple channel ARN and
+         * viewer ID pairs simultaneously.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ivs-2020-07-14/BatchStartViewerSessionRevocation">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::BatchStartViewerSessionRevocationOutcome BatchStartViewerSessionRevocation(const Model::BatchStartViewerSessionRevocationRequest& request) const;
+
+        /**
+         * A Callable wrapper for BatchStartViewerSessionRevocation that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename BatchStartViewerSessionRevocationRequestT = Model::BatchStartViewerSessionRevocationRequest>
+        Model::BatchStartViewerSessionRevocationOutcomeCallable BatchStartViewerSessionRevocationCallable(const BatchStartViewerSessionRevocationRequestT& request) const
+        {
+            return SubmitCallable(&IVSClient::BatchStartViewerSessionRevocation, request);
+        }
+
+        /**
+         * An Async wrapper for BatchStartViewerSessionRevocation that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename BatchStartViewerSessionRevocationRequestT = Model::BatchStartViewerSessionRevocationRequest>
+        void BatchStartViewerSessionRevocationAsync(const BatchStartViewerSessionRevocationRequestT& request, const BatchStartViewerSessionRevocationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&IVSClient::BatchStartViewerSessionRevocation, request, handler, context);
+        }
+
+        /**
          * <p>Creates a new channel and an associated stream key to start
          * streaming.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/ivs-2020-07-14/CreateChannel">AWS
          * API Reference</a></p>
          */
-        virtual Model::CreateChannelOutcome CreateChannel(const Model::CreateChannelRequest& request) const;
+        virtual Model::CreateChannelOutcome CreateChannel(const Model::CreateChannelRequest& request = {}) const;
 
         /**
          * A Callable wrapper for CreateChannel that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename CreateChannelRequestT = Model::CreateChannelRequest>
-        Model::CreateChannelOutcomeCallable CreateChannelCallable(const CreateChannelRequestT& request) const
+        Model::CreateChannelOutcomeCallable CreateChannelCallable(const CreateChannelRequestT& request = {}) const
         {
             return SubmitCallable(&IVSClient::CreateChannel, request);
         }
@@ -293,9 +264,35 @@ namespace IVS
          * An Async wrapper for CreateChannel that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename CreateChannelRequestT = Model::CreateChannelRequest>
-        void CreateChannelAsync(const CreateChannelRequestT& request, const CreateChannelResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void CreateChannelAsync(const CreateChannelResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const CreateChannelRequestT& request = {}) const
         {
             return SubmitAsync(&IVSClient::CreateChannel, request, handler, context);
+        }
+
+        /**
+         * <p>Creates a new playback restriction policy, for constraining playback by
+         * countries and/or origins.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ivs-2020-07-14/CreatePlaybackRestrictionPolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreatePlaybackRestrictionPolicyOutcome CreatePlaybackRestrictionPolicy(const Model::CreatePlaybackRestrictionPolicyRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for CreatePlaybackRestrictionPolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreatePlaybackRestrictionPolicyRequestT = Model::CreatePlaybackRestrictionPolicyRequest>
+        Model::CreatePlaybackRestrictionPolicyOutcomeCallable CreatePlaybackRestrictionPolicyCallable(const CreatePlaybackRestrictionPolicyRequestT& request = {}) const
+        {
+            return SubmitCallable(&IVSClient::CreatePlaybackRestrictionPolicy, request);
+        }
+
+        /**
+         * An Async wrapper for CreatePlaybackRestrictionPolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreatePlaybackRestrictionPolicyRequestT = Model::CreatePlaybackRestrictionPolicyRequest>
+        void CreatePlaybackRestrictionPolicyAsync(const CreatePlaybackRestrictionPolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const CreatePlaybackRestrictionPolicyRequestT& request = {}) const
+        {
+            return SubmitAsync(&IVSClient::CreatePlaybackRestrictionPolicy, request, handler, context);
         }
 
         /**
@@ -425,6 +422,32 @@ namespace IVS
         }
 
         /**
+         * <p>Deletes the specified playback restriction policy.</p><p><h3>See Also:</h3>  
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ivs-2020-07-14/DeletePlaybackRestrictionPolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeletePlaybackRestrictionPolicyOutcome DeletePlaybackRestrictionPolicy(const Model::DeletePlaybackRestrictionPolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeletePlaybackRestrictionPolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeletePlaybackRestrictionPolicyRequestT = Model::DeletePlaybackRestrictionPolicyRequest>
+        Model::DeletePlaybackRestrictionPolicyOutcomeCallable DeletePlaybackRestrictionPolicyCallable(const DeletePlaybackRestrictionPolicyRequestT& request) const
+        {
+            return SubmitCallable(&IVSClient::DeletePlaybackRestrictionPolicy, request);
+        }
+
+        /**
+         * An Async wrapper for DeletePlaybackRestrictionPolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeletePlaybackRestrictionPolicyRequestT = Model::DeletePlaybackRestrictionPolicyRequest>
+        void DeletePlaybackRestrictionPolicyAsync(const DeletePlaybackRestrictionPolicyRequestT& request, const DeletePlaybackRestrictionPolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&IVSClient::DeletePlaybackRestrictionPolicy, request, handler, context);
+        }
+
+        /**
          * <p>Deletes the recording configuration for the specified ARN.</p> <p>If you try
          * to delete a recording configuration that is associated with a channel, you will
          * get an error (409 ConflictException). To avoid this, for all channels that
@@ -535,6 +558,31 @@ namespace IVS
         void GetPlaybackKeyPairAsync(const GetPlaybackKeyPairRequestT& request, const GetPlaybackKeyPairResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&IVSClient::GetPlaybackKeyPair, request, handler, context);
+        }
+
+        /**
+         * <p>Gets the specified playback restriction policy.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ivs-2020-07-14/GetPlaybackRestrictionPolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetPlaybackRestrictionPolicyOutcome GetPlaybackRestrictionPolicy(const Model::GetPlaybackRestrictionPolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetPlaybackRestrictionPolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetPlaybackRestrictionPolicyRequestT = Model::GetPlaybackRestrictionPolicyRequest>
+        Model::GetPlaybackRestrictionPolicyOutcomeCallable GetPlaybackRestrictionPolicyCallable(const GetPlaybackRestrictionPolicyRequestT& request) const
+        {
+            return SubmitCallable(&IVSClient::GetPlaybackRestrictionPolicy, request);
+        }
+
+        /**
+         * An Async wrapper for GetPlaybackRestrictionPolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetPlaybackRestrictionPolicyRequestT = Model::GetPlaybackRestrictionPolicyRequest>
+        void GetPlaybackRestrictionPolicyAsync(const GetPlaybackRestrictionPolicyRequestT& request, const GetPlaybackRestrictionPolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&IVSClient::GetPlaybackRestrictionPolicy, request, handler, context);
         }
 
         /**
@@ -679,13 +727,13 @@ namespace IVS
          * href="http://docs.aws.amazon.com/goto/WebAPI/ivs-2020-07-14/ListChannels">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListChannelsOutcome ListChannels(const Model::ListChannelsRequest& request) const;
+        virtual Model::ListChannelsOutcome ListChannels(const Model::ListChannelsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListChannels that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListChannelsRequestT = Model::ListChannelsRequest>
-        Model::ListChannelsOutcomeCallable ListChannelsCallable(const ListChannelsRequestT& request) const
+        Model::ListChannelsOutcomeCallable ListChannelsCallable(const ListChannelsRequestT& request = {}) const
         {
             return SubmitCallable(&IVSClient::ListChannels, request);
         }
@@ -694,7 +742,7 @@ namespace IVS
          * An Async wrapper for ListChannels that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListChannelsRequestT = Model::ListChannelsRequest>
-        void ListChannelsAsync(const ListChannelsRequestT& request, const ListChannelsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListChannelsAsync(const ListChannelsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListChannelsRequestT& request = {}) const
         {
             return SubmitAsync(&IVSClient::ListChannels, request, handler, context);
         }
@@ -708,13 +756,13 @@ namespace IVS
          * href="http://docs.aws.amazon.com/goto/WebAPI/ivs-2020-07-14/ListPlaybackKeyPairs">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListPlaybackKeyPairsOutcome ListPlaybackKeyPairs(const Model::ListPlaybackKeyPairsRequest& request) const;
+        virtual Model::ListPlaybackKeyPairsOutcome ListPlaybackKeyPairs(const Model::ListPlaybackKeyPairsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListPlaybackKeyPairs that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListPlaybackKeyPairsRequestT = Model::ListPlaybackKeyPairsRequest>
-        Model::ListPlaybackKeyPairsOutcomeCallable ListPlaybackKeyPairsCallable(const ListPlaybackKeyPairsRequestT& request) const
+        Model::ListPlaybackKeyPairsOutcomeCallable ListPlaybackKeyPairsCallable(const ListPlaybackKeyPairsRequestT& request = {}) const
         {
             return SubmitCallable(&IVSClient::ListPlaybackKeyPairs, request);
         }
@@ -723,9 +771,35 @@ namespace IVS
          * An Async wrapper for ListPlaybackKeyPairs that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListPlaybackKeyPairsRequestT = Model::ListPlaybackKeyPairsRequest>
-        void ListPlaybackKeyPairsAsync(const ListPlaybackKeyPairsRequestT& request, const ListPlaybackKeyPairsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListPlaybackKeyPairsAsync(const ListPlaybackKeyPairsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListPlaybackKeyPairsRequestT& request = {}) const
         {
             return SubmitAsync(&IVSClient::ListPlaybackKeyPairs, request, handler, context);
+        }
+
+        /**
+         * <p>Gets summary information about playback restriction policies.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ivs-2020-07-14/ListPlaybackRestrictionPolicies">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListPlaybackRestrictionPoliciesOutcome ListPlaybackRestrictionPolicies(const Model::ListPlaybackRestrictionPoliciesRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListPlaybackRestrictionPolicies that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListPlaybackRestrictionPoliciesRequestT = Model::ListPlaybackRestrictionPoliciesRequest>
+        Model::ListPlaybackRestrictionPoliciesOutcomeCallable ListPlaybackRestrictionPoliciesCallable(const ListPlaybackRestrictionPoliciesRequestT& request = {}) const
+        {
+            return SubmitCallable(&IVSClient::ListPlaybackRestrictionPolicies, request);
+        }
+
+        /**
+         * An Async wrapper for ListPlaybackRestrictionPolicies that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListPlaybackRestrictionPoliciesRequestT = Model::ListPlaybackRestrictionPoliciesRequest>
+        void ListPlaybackRestrictionPoliciesAsync(const ListPlaybackRestrictionPoliciesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListPlaybackRestrictionPoliciesRequestT& request = {}) const
+        {
+            return SubmitAsync(&IVSClient::ListPlaybackRestrictionPolicies, request, handler, context);
         }
 
         /**
@@ -735,13 +809,13 @@ namespace IVS
          * href="http://docs.aws.amazon.com/goto/WebAPI/ivs-2020-07-14/ListRecordingConfigurations">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListRecordingConfigurationsOutcome ListRecordingConfigurations(const Model::ListRecordingConfigurationsRequest& request) const;
+        virtual Model::ListRecordingConfigurationsOutcome ListRecordingConfigurations(const Model::ListRecordingConfigurationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListRecordingConfigurations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListRecordingConfigurationsRequestT = Model::ListRecordingConfigurationsRequest>
-        Model::ListRecordingConfigurationsOutcomeCallable ListRecordingConfigurationsCallable(const ListRecordingConfigurationsRequestT& request) const
+        Model::ListRecordingConfigurationsOutcomeCallable ListRecordingConfigurationsCallable(const ListRecordingConfigurationsRequestT& request = {}) const
         {
             return SubmitCallable(&IVSClient::ListRecordingConfigurations, request);
         }
@@ -750,7 +824,7 @@ namespace IVS
          * An Async wrapper for ListRecordingConfigurations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListRecordingConfigurationsRequestT = Model::ListRecordingConfigurationsRequest>
-        void ListRecordingConfigurationsAsync(const ListRecordingConfigurationsRequestT& request, const ListRecordingConfigurationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListRecordingConfigurationsAsync(const ListRecordingConfigurationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListRecordingConfigurationsRequestT& request = {}) const
         {
             return SubmitAsync(&IVSClient::ListRecordingConfigurations, request, handler, context);
         }
@@ -814,13 +888,13 @@ namespace IVS
          * <a href="http://docs.aws.amazon.com/goto/WebAPI/ivs-2020-07-14/ListStreams">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListStreamsOutcome ListStreams(const Model::ListStreamsRequest& request) const;
+        virtual Model::ListStreamsOutcome ListStreams(const Model::ListStreamsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListStreams that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListStreamsRequestT = Model::ListStreamsRequest>
-        Model::ListStreamsOutcomeCallable ListStreamsCallable(const ListStreamsRequestT& request) const
+        Model::ListStreamsOutcomeCallable ListStreamsCallable(const ListStreamsRequestT& request = {}) const
         {
             return SubmitCallable(&IVSClient::ListStreams, request);
         }
@@ -829,7 +903,7 @@ namespace IVS
          * An Async wrapper for ListStreams that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListStreamsRequestT = Model::ListStreamsRequest>
-        void ListStreamsAsync(const ListStreamsRequestT& request, const ListStreamsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListStreamsAsync(const ListStreamsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListStreamsRequestT& request = {}) const
         {
             return SubmitAsync(&IVSClient::ListStreams, request, handler, context);
         }
@@ -890,6 +964,36 @@ namespace IVS
         void PutMetadataAsync(const PutMetadataRequestT& request, const PutMetadataResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&IVSClient::PutMetadata, request, handler, context);
+        }
+
+        /**
+         * <p>Starts the process of revoking the viewer session associated with a specified
+         * channel ARN and viewer ID. Optionally, you can provide a version to revoke
+         * viewer sessions less than and including that version. For instructions on
+         * associating a viewer ID with a viewer session, see <a
+         * href="https://docs.aws.amazon.com/ivs/latest/userguide/private-channels.html">Setting
+         * Up Private Channels</a>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ivs-2020-07-14/StartViewerSessionRevocation">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::StartViewerSessionRevocationOutcome StartViewerSessionRevocation(const Model::StartViewerSessionRevocationRequest& request) const;
+
+        /**
+         * A Callable wrapper for StartViewerSessionRevocation that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename StartViewerSessionRevocationRequestT = Model::StartViewerSessionRevocationRequest>
+        Model::StartViewerSessionRevocationOutcomeCallable StartViewerSessionRevocationCallable(const StartViewerSessionRevocationRequestT& request) const
+        {
+            return SubmitCallable(&IVSClient::StartViewerSessionRevocation, request);
+        }
+
+        /**
+         * An Async wrapper for StartViewerSessionRevocation that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename StartViewerSessionRevocationRequestT = Model::StartViewerSessionRevocationRequest>
+        void StartViewerSessionRevocationAsync(const StartViewerSessionRevocationRequestT& request, const StartViewerSessionRevocationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&IVSClient::StartViewerSessionRevocation, request, handler, context);
         }
 
         /**
@@ -975,9 +1079,9 @@ namespace IVS
         }
 
         /**
-         * <p>Updates a channel's configuration. This does not affect an ongoing stream of
-         * this channel. You must stop and restart the stream for the changes to take
-         * effect.</p><p><h3>See Also:</h3>   <a
+         * <p>Updates a channel's configuration. Live channels cannot be updated. You must
+         * stop the ongoing stream, update the channel, and restart the stream for the
+         * changes to take effect.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/ivs-2020-07-14/UpdateChannel">AWS
          * API Reference</a></p>
          */
@@ -1001,16 +1105,38 @@ namespace IVS
             return SubmitAsync(&IVSClient::UpdateChannel, request, handler, context);
         }
 
+        /**
+         * <p>Updates a specified playback restriction policy.</p><p><h3>See Also:</h3>  
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ivs-2020-07-14/UpdatePlaybackRestrictionPolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdatePlaybackRestrictionPolicyOutcome UpdatePlaybackRestrictionPolicy(const Model::UpdatePlaybackRestrictionPolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdatePlaybackRestrictionPolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdatePlaybackRestrictionPolicyRequestT = Model::UpdatePlaybackRestrictionPolicyRequest>
+        Model::UpdatePlaybackRestrictionPolicyOutcomeCallable UpdatePlaybackRestrictionPolicyCallable(const UpdatePlaybackRestrictionPolicyRequestT& request) const
+        {
+            return SubmitCallable(&IVSClient::UpdatePlaybackRestrictionPolicy, request);
+        }
+
+        /**
+         * An Async wrapper for UpdatePlaybackRestrictionPolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdatePlaybackRestrictionPolicyRequestT = Model::UpdatePlaybackRestrictionPolicyRequest>
+        void UpdatePlaybackRestrictionPolicyAsync(const UpdatePlaybackRestrictionPolicyRequestT& request, const UpdatePlaybackRestrictionPolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&IVSClient::UpdatePlaybackRestrictionPolicy, request, handler, context);
+        }
+
 
       void OverrideEndpoint(const Aws::String& endpoint);
       std::shared_ptr<IVSEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<IVSClient>;
-      void init(const IVSClientConfiguration& clientConfiguration);
 
-      IVSClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<IVSEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace IVS

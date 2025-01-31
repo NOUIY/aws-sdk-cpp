@@ -38,31 +38,16 @@ ProductionVariant::ProductionVariant() :
     m_containerStartupHealthCheckTimeoutInSeconds(0),
     m_containerStartupHealthCheckTimeoutInSecondsHasBeenSet(false),
     m_enableSSMAccess(false),
-    m_enableSSMAccessHasBeenSet(false)
+    m_enableSSMAccessHasBeenSet(false),
+    m_managedInstanceScalingHasBeenSet(false),
+    m_routingConfigHasBeenSet(false),
+    m_inferenceAmiVersion(ProductionVariantInferenceAmiVersion::NOT_SET),
+    m_inferenceAmiVersionHasBeenSet(false)
 {
 }
 
-ProductionVariant::ProductionVariant(JsonView jsonValue) : 
-    m_variantNameHasBeenSet(false),
-    m_modelNameHasBeenSet(false),
-    m_initialInstanceCount(0),
-    m_initialInstanceCountHasBeenSet(false),
-    m_instanceType(ProductionVariantInstanceType::NOT_SET),
-    m_instanceTypeHasBeenSet(false),
-    m_initialVariantWeight(0.0),
-    m_initialVariantWeightHasBeenSet(false),
-    m_acceleratorType(ProductionVariantAcceleratorType::NOT_SET),
-    m_acceleratorTypeHasBeenSet(false),
-    m_coreDumpConfigHasBeenSet(false),
-    m_serverlessConfigHasBeenSet(false),
-    m_volumeSizeInGB(0),
-    m_volumeSizeInGBHasBeenSet(false),
-    m_modelDataDownloadTimeoutInSeconds(0),
-    m_modelDataDownloadTimeoutInSecondsHasBeenSet(false),
-    m_containerStartupHealthCheckTimeoutInSeconds(0),
-    m_containerStartupHealthCheckTimeoutInSecondsHasBeenSet(false),
-    m_enableSSMAccess(false),
-    m_enableSSMAccessHasBeenSet(false)
+ProductionVariant::ProductionVariant(JsonView jsonValue)
+  : ProductionVariant()
 {
   *this = jsonValue;
 }
@@ -153,6 +138,27 @@ ProductionVariant& ProductionVariant::operator =(JsonView jsonValue)
     m_enableSSMAccessHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ManagedInstanceScaling"))
+  {
+    m_managedInstanceScaling = jsonValue.GetObject("ManagedInstanceScaling");
+
+    m_managedInstanceScalingHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("RoutingConfig"))
+  {
+    m_routingConfig = jsonValue.GetObject("RoutingConfig");
+
+    m_routingConfigHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("InferenceAmiVersion"))
+  {
+    m_inferenceAmiVersion = ProductionVariantInferenceAmiVersionMapper::GetProductionVariantInferenceAmiVersionForName(jsonValue.GetString("InferenceAmiVersion"));
+
+    m_inferenceAmiVersionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -228,6 +234,23 @@ JsonValue ProductionVariant::Jsonize() const
   {
    payload.WithBool("EnableSSMAccess", m_enableSSMAccess);
 
+  }
+
+  if(m_managedInstanceScalingHasBeenSet)
+  {
+   payload.WithObject("ManagedInstanceScaling", m_managedInstanceScaling.Jsonize());
+
+  }
+
+  if(m_routingConfigHasBeenSet)
+  {
+   payload.WithObject("RoutingConfig", m_routingConfig.Jsonize());
+
+  }
+
+  if(m_inferenceAmiVersionHasBeenSet)
+  {
+   payload.WithString("InferenceAmiVersion", ProductionVariantInferenceAmiVersionMapper::GetNameForProductionVariantInferenceAmiVersion(m_inferenceAmiVersion));
   }
 
   return payload;

@@ -21,7 +21,10 @@ namespace Model
     PollForSourceChanges,
     Webhook,
     CloudWatchEvent,
-    PutActionRevision
+    PutActionRevision,
+    WebhookV2,
+    ManualRollback,
+    AutomatedRollback
   };
 
 namespace TriggerTypeMapper

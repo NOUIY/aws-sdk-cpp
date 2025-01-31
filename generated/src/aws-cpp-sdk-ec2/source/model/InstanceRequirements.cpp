@@ -49,40 +49,15 @@ InstanceRequirements::InstanceRequirements() :
     m_acceleratorNamesHasBeenSet(false),
     m_acceleratorTotalMemoryMiBHasBeenSet(false),
     m_networkBandwidthGbpsHasBeenSet(false),
-    m_allowedInstanceTypesHasBeenSet(false)
+    m_allowedInstanceTypesHasBeenSet(false),
+    m_maxSpotPriceAsPercentageOfOptimalOnDemandPrice(0),
+    m_maxSpotPriceAsPercentageOfOptimalOnDemandPriceHasBeenSet(false),
+    m_baselinePerformanceFactorsHasBeenSet(false)
 {
 }
 
-InstanceRequirements::InstanceRequirements(const XmlNode& xmlNode) : 
-    m_vCpuCountHasBeenSet(false),
-    m_memoryMiBHasBeenSet(false),
-    m_cpuManufacturersHasBeenSet(false),
-    m_memoryGiBPerVCpuHasBeenSet(false),
-    m_excludedInstanceTypesHasBeenSet(false),
-    m_instanceGenerationsHasBeenSet(false),
-    m_spotMaxPricePercentageOverLowestPrice(0),
-    m_spotMaxPricePercentageOverLowestPriceHasBeenSet(false),
-    m_onDemandMaxPricePercentageOverLowestPrice(0),
-    m_onDemandMaxPricePercentageOverLowestPriceHasBeenSet(false),
-    m_bareMetal(BareMetal::NOT_SET),
-    m_bareMetalHasBeenSet(false),
-    m_burstablePerformance(BurstablePerformance::NOT_SET),
-    m_burstablePerformanceHasBeenSet(false),
-    m_requireHibernateSupport(false),
-    m_requireHibernateSupportHasBeenSet(false),
-    m_networkInterfaceCountHasBeenSet(false),
-    m_localStorage(LocalStorage::NOT_SET),
-    m_localStorageHasBeenSet(false),
-    m_localStorageTypesHasBeenSet(false),
-    m_totalLocalStorageGBHasBeenSet(false),
-    m_baselineEbsBandwidthMbpsHasBeenSet(false),
-    m_acceleratorTypesHasBeenSet(false),
-    m_acceleratorCountHasBeenSet(false),
-    m_acceleratorManufacturersHasBeenSet(false),
-    m_acceleratorNamesHasBeenSet(false),
-    m_acceleratorTotalMemoryMiBHasBeenSet(false),
-    m_networkBandwidthGbpsHasBeenSet(false),
-    m_allowedInstanceTypesHasBeenSet(false)
+InstanceRequirements::InstanceRequirements(const XmlNode& xmlNode)
+  : InstanceRequirements()
 {
   *this = xmlNode;
 }
@@ -279,6 +254,18 @@ InstanceRequirements& InstanceRequirements::operator =(const XmlNode& xmlNode)
 
       m_allowedInstanceTypesHasBeenSet = true;
     }
+    XmlNode maxSpotPriceAsPercentageOfOptimalOnDemandPriceNode = resultNode.FirstChild("maxSpotPriceAsPercentageOfOptimalOnDemandPrice");
+    if(!maxSpotPriceAsPercentageOfOptimalOnDemandPriceNode.IsNull())
+    {
+      m_maxSpotPriceAsPercentageOfOptimalOnDemandPrice = StringUtils::ConvertToInt32(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(maxSpotPriceAsPercentageOfOptimalOnDemandPriceNode.GetText()).c_str()).c_str());
+      m_maxSpotPriceAsPercentageOfOptimalOnDemandPriceHasBeenSet = true;
+    }
+    XmlNode baselinePerformanceFactorsNode = resultNode.FirstChild("baselinePerformanceFactors");
+    if(!baselinePerformanceFactorsNode.IsNull())
+    {
+      m_baselinePerformanceFactors = baselinePerformanceFactorsNode;
+      m_baselinePerformanceFactorsHasBeenSet = true;
+    }
   }
 
   return *this;
@@ -451,6 +438,18 @@ void InstanceRequirements::OutputToStream(Aws::OStream& oStream, const char* loc
       }
   }
 
+  if(m_maxSpotPriceAsPercentageOfOptimalOnDemandPriceHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".MaxSpotPriceAsPercentageOfOptimalOnDemandPrice=" << m_maxSpotPriceAsPercentageOfOptimalOnDemandPrice << "&";
+  }
+
+  if(m_baselinePerformanceFactorsHasBeenSet)
+  {
+      Aws::StringStream baselinePerformanceFactorsLocationAndMemberSs;
+      baselinePerformanceFactorsLocationAndMemberSs << location << index << locationValue << ".BaselinePerformanceFactors";
+      m_baselinePerformanceFactors.OutputToStream(oStream, baselinePerformanceFactorsLocationAndMemberSs.str().c_str());
+  }
+
 }
 
 void InstanceRequirements::OutputToStream(Aws::OStream& oStream, const char* location) const
@@ -596,6 +595,16 @@ void InstanceRequirements::OutputToStream(Aws::OStream& oStream, const char* loc
       {
         oStream << location << ".AllowedInstanceTypeSet." << allowedInstanceTypesIdx++ << "=" << StringUtils::URLEncode(item.c_str()) << "&";
       }
+  }
+  if(m_maxSpotPriceAsPercentageOfOptimalOnDemandPriceHasBeenSet)
+  {
+      oStream << location << ".MaxSpotPriceAsPercentageOfOptimalOnDemandPrice=" << m_maxSpotPriceAsPercentageOfOptimalOnDemandPrice << "&";
+  }
+  if(m_baselinePerformanceFactorsHasBeenSet)
+  {
+      Aws::String baselinePerformanceFactorsLocationAndMember(location);
+      baselinePerformanceFactorsLocationAndMember += ".BaselinePerformanceFactors";
+      m_baselinePerformanceFactors.OutputToStream(oStream, baselinePerformanceFactorsLocationAndMember.c_str());
   }
 }
 

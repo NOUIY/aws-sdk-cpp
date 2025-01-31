@@ -20,13 +20,13 @@ namespace Model
 
 TextFieldControlDisplayOptions::TextFieldControlDisplayOptions() : 
     m_titleOptionsHasBeenSet(false),
-    m_placeholderOptionsHasBeenSet(false)
+    m_placeholderOptionsHasBeenSet(false),
+    m_infoIconLabelOptionsHasBeenSet(false)
 {
 }
 
-TextFieldControlDisplayOptions::TextFieldControlDisplayOptions(JsonView jsonValue) : 
-    m_titleOptionsHasBeenSet(false),
-    m_placeholderOptionsHasBeenSet(false)
+TextFieldControlDisplayOptions::TextFieldControlDisplayOptions(JsonView jsonValue)
+  : TextFieldControlDisplayOptions()
 {
   *this = jsonValue;
 }
@@ -47,6 +47,13 @@ TextFieldControlDisplayOptions& TextFieldControlDisplayOptions::operator =(JsonV
     m_placeholderOptionsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("InfoIconLabelOptions"))
+  {
+    m_infoIconLabelOptions = jsonValue.GetObject("InfoIconLabelOptions");
+
+    m_infoIconLabelOptionsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +70,12 @@ JsonValue TextFieldControlDisplayOptions::Jsonize() const
   if(m_placeholderOptionsHasBeenSet)
   {
    payload.WithObject("PlaceholderOptions", m_placeholderOptions.Jsonize());
+
+  }
+
+  if(m_infoIconLabelOptionsHasBeenSet)
+  {
+   payload.WithObject("InfoIconLabelOptions", m_infoIconLabelOptions.Jsonize());
 
   }
 

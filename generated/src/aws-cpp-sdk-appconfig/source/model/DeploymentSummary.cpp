@@ -36,29 +36,13 @@ DeploymentSummary::DeploymentSummary() :
     m_percentageComplete(0.0),
     m_percentageCompleteHasBeenSet(false),
     m_startedAtHasBeenSet(false),
-    m_completedAtHasBeenSet(false)
+    m_completedAtHasBeenSet(false),
+    m_versionLabelHasBeenSet(false)
 {
 }
 
-DeploymentSummary::DeploymentSummary(JsonView jsonValue) : 
-    m_deploymentNumber(0),
-    m_deploymentNumberHasBeenSet(false),
-    m_configurationNameHasBeenSet(false),
-    m_configurationVersionHasBeenSet(false),
-    m_deploymentDurationInMinutes(0),
-    m_deploymentDurationInMinutesHasBeenSet(false),
-    m_growthType(GrowthType::NOT_SET),
-    m_growthTypeHasBeenSet(false),
-    m_growthFactor(0.0),
-    m_growthFactorHasBeenSet(false),
-    m_finalBakeTimeInMinutes(0),
-    m_finalBakeTimeInMinutesHasBeenSet(false),
-    m_state(DeploymentState::NOT_SET),
-    m_stateHasBeenSet(false),
-    m_percentageComplete(0.0),
-    m_percentageCompleteHasBeenSet(false),
-    m_startedAtHasBeenSet(false),
-    m_completedAtHasBeenSet(false)
+DeploymentSummary::DeploymentSummary(JsonView jsonValue)
+  : DeploymentSummary()
 {
   *this = jsonValue;
 }
@@ -142,6 +126,13 @@ DeploymentSummary& DeploymentSummary::operator =(JsonView jsonValue)
     m_completedAtHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("VersionLabel"))
+  {
+    m_versionLabel = jsonValue.GetString("VersionLabel");
+
+    m_versionLabelHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -209,6 +200,12 @@ JsonValue DeploymentSummary::Jsonize() const
   if(m_completedAtHasBeenSet)
   {
    payload.WithString("CompletedAt", m_completedAt.ToGmtString(Aws::Utils::DateFormat::ISO_8601));
+  }
+
+  if(m_versionLabelHasBeenSet)
+  {
+   payload.WithString("VersionLabel", m_versionLabel);
+
   }
 
   return payload;

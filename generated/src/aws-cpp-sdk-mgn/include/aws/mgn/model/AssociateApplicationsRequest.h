@@ -6,8 +6,8 @@
 #pragma once
 #include <aws/mgn/Mgn_EXPORTS.h>
 #include <aws/mgn/MgnRequest.h>
-#include <aws/core/utils/memory/stl/AWSVector.h>
 #include <aws/core/utils/memory/stl/AWSString.h>
+#include <aws/core/utils/memory/stl/AWSVector.h>
 #include <utility>
 
 namespace Aws
@@ -33,93 +33,52 @@ namespace Model
     AWS_MGN_API Aws::String SerializePayload() const override;
 
 
+    ///@{
+    /**
+     * <p>Account ID.</p>
+     */
+    inline const Aws::String& GetAccountID() const{ return m_accountID; }
+    inline bool AccountIDHasBeenSet() const { return m_accountIDHasBeenSet; }
+    inline void SetAccountID(const Aws::String& value) { m_accountIDHasBeenSet = true; m_accountID = value; }
+    inline void SetAccountID(Aws::String&& value) { m_accountIDHasBeenSet = true; m_accountID = std::move(value); }
+    inline void SetAccountID(const char* value) { m_accountIDHasBeenSet = true; m_accountID.assign(value); }
+    inline AssociateApplicationsRequest& WithAccountID(const Aws::String& value) { SetAccountID(value); return *this;}
+    inline AssociateApplicationsRequest& WithAccountID(Aws::String&& value) { SetAccountID(std::move(value)); return *this;}
+    inline AssociateApplicationsRequest& WithAccountID(const char* value) { SetAccountID(value); return *this;}
+    ///@}
+
+    ///@{
     /**
      * <p>Application IDs list.</p>
      */
     inline const Aws::Vector<Aws::String>& GetApplicationIDs() const{ return m_applicationIDs; }
-
-    /**
-     * <p>Application IDs list.</p>
-     */
     inline bool ApplicationIDsHasBeenSet() const { return m_applicationIDsHasBeenSet; }
-
-    /**
-     * <p>Application IDs list.</p>
-     */
     inline void SetApplicationIDs(const Aws::Vector<Aws::String>& value) { m_applicationIDsHasBeenSet = true; m_applicationIDs = value; }
-
-    /**
-     * <p>Application IDs list.</p>
-     */
     inline void SetApplicationIDs(Aws::Vector<Aws::String>&& value) { m_applicationIDsHasBeenSet = true; m_applicationIDs = std::move(value); }
-
-    /**
-     * <p>Application IDs list.</p>
-     */
     inline AssociateApplicationsRequest& WithApplicationIDs(const Aws::Vector<Aws::String>& value) { SetApplicationIDs(value); return *this;}
-
-    /**
-     * <p>Application IDs list.</p>
-     */
     inline AssociateApplicationsRequest& WithApplicationIDs(Aws::Vector<Aws::String>&& value) { SetApplicationIDs(std::move(value)); return *this;}
-
-    /**
-     * <p>Application IDs list.</p>
-     */
     inline AssociateApplicationsRequest& AddApplicationIDs(const Aws::String& value) { m_applicationIDsHasBeenSet = true; m_applicationIDs.push_back(value); return *this; }
-
-    /**
-     * <p>Application IDs list.</p>
-     */
     inline AssociateApplicationsRequest& AddApplicationIDs(Aws::String&& value) { m_applicationIDsHasBeenSet = true; m_applicationIDs.push_back(std::move(value)); return *this; }
-
-    /**
-     * <p>Application IDs list.</p>
-     */
     inline AssociateApplicationsRequest& AddApplicationIDs(const char* value) { m_applicationIDsHasBeenSet = true; m_applicationIDs.push_back(value); return *this; }
+    ///@}
 
-
+    ///@{
     /**
      * <p>Wave ID.</p>
      */
     inline const Aws::String& GetWaveID() const{ return m_waveID; }
-
-    /**
-     * <p>Wave ID.</p>
-     */
     inline bool WaveIDHasBeenSet() const { return m_waveIDHasBeenSet; }
-
-    /**
-     * <p>Wave ID.</p>
-     */
     inline void SetWaveID(const Aws::String& value) { m_waveIDHasBeenSet = true; m_waveID = value; }
-
-    /**
-     * <p>Wave ID.</p>
-     */
     inline void SetWaveID(Aws::String&& value) { m_waveIDHasBeenSet = true; m_waveID = std::move(value); }
-
-    /**
-     * <p>Wave ID.</p>
-     */
     inline void SetWaveID(const char* value) { m_waveIDHasBeenSet = true; m_waveID.assign(value); }
-
-    /**
-     * <p>Wave ID.</p>
-     */
     inline AssociateApplicationsRequest& WithWaveID(const Aws::String& value) { SetWaveID(value); return *this;}
-
-    /**
-     * <p>Wave ID.</p>
-     */
     inline AssociateApplicationsRequest& WithWaveID(Aws::String&& value) { SetWaveID(std::move(value)); return *this;}
-
-    /**
-     * <p>Wave ID.</p>
-     */
     inline AssociateApplicationsRequest& WithWaveID(const char* value) { SetWaveID(value); return *this;}
-
+    ///@}
   private:
+
+    Aws::String m_accountID;
+    bool m_accountIDHasBeenSet = false;
 
     Aws::Vector<Aws::String> m_applicationIDs;
     bool m_applicationIDsHasBeenSet = false;

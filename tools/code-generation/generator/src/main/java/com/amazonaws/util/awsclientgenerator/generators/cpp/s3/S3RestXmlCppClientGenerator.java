@@ -13,40 +13,159 @@ import com.amazonaws.util.awsclientgenerator.domainmodels.codegeneration.ShapeMe
 import com.amazonaws.util.awsclientgenerator.domainmodels.codegeneration.cpp.CppShapeInformation;
 import com.amazonaws.util.awsclientgenerator.domainmodels.codegeneration.cpp.CppViewHelper;
 import com.amazonaws.util.awsclientgenerator.generators.cpp.RestXmlCppClientGenerator;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class S3RestXmlCppClientGenerator  extends RestXmlCppClientGenerator {
+public class S3RestXmlCppClientGenerator extends RestXmlCppClientGenerator {
 
     private static Set<String> opsThatDoNotSupportVirtualAddressing = new HashSet<>();
     private static Set<String> opsThatDoNotSupportArnEndpoint = new HashSet<>();
     private static Set<String> s3CrtEnabledOps = new HashSet<>(); // All other ops are in fact regular SDK calls
     private static Set<String> bucketLocationConstraints = new HashSet<>();
     private Set<String> functionsWithEmbeddedErrors = ImmutableSet.of(
-            "CompleteMultipartUploadRequest",
-            "CopyObjectRequest",
-            "UploadPartCopyRequest"
+
+    "AbortMultipartUploadRequest",
+    "CompleteMultipartUploadRequest",
+    "CopyObjectRequest",
+    "CreateBucketRequest",
+    "CreateMultipartUploadRequest",
+    "CreateSessionRequest",
+    "DeleteBucketRequest",
+    "DeleteBucketAnaxlyticsConfigurationRequest",
+    "DeleteBucketCorsRequest",
+    "DeleteBucketEncryptionRequest",
+    "DeleteBucketIntelligentTieringConfigurationRequest",
+    "DeleteBucketInventoryConfigurationRequest",
+    "DeleteBucketLifecycleRequest",
+    "DeleteBucketMetricsConfigurationRequest",
+    "DeleteBucketOwnershipControlsRequest",
+    "DeleteBucketPolicyRequest",
+    "DeleteBucketReplicationRequest",
+    "DeleteBucketTaggingRequest",
+    "DeleteBucketWebsiteRequest",
+    "DeleteObjectRequest",
+    "DeleteObjectTaggingRequest",
+    "DeleteObjectsRequest",
+    "DeletePublicAccessBlockRequest",
+    "GetBucketAccelerateConfigurationRequest",
+    "GetBucketAclRequest",
+    "GetBucketAnalyticsConfigurationRequest",
+    "GetBucketCorsRequest",
+    "GetBucketEncryptionRequest",
+    "GetBucketIntelligentTieringConfigurationRequest",
+    "GetBucketInventoryConfigurationRequest",
+    "GetBucketLifecycleConfigurationRequest",
+    "GetBucketLocationRequest",
+    "GetBucketLoggingRequest",
+    "GetBucketMetricsConfigurationRequest",
+    "GetBucketNotificationConfigurationRequest",
+    "GetBucketOwnershipControlsRequest",
+    "GetBucketPolicyRequest",
+    "GetBucketPolicyStatusRequest",
+    "GetBucketReplicationRequest",
+    "GetBucketRequestPaymentRequest",
+    "GetBucketTaggingRequest",
+    "GetBucketVersioningRequest",
+    "GetBucketWebsiteRequest",
+    "GetObjectAclRequest",
+    "GetObjectAttributesRequest",
+    "GetObjectLegalHoldRequest",
+    "GetObjectLockConfigurationRequest",
+    "GetObjectRetentionRequest",
+    "GetObjectTaggingRequest",
+    "GetPublicAccessBlockRequest",
+    "HeadBucketRequest",
+    "HeadObjectRequest",
+    "ListBucketAnalyticsConfigurationsRequest",
+    "ListBucketIntelligentTieringConfigurationsRequest",
+    "ListBucketInventoryConfigurationsRequest",
+    "ListBucketMetricsConfigurationsRequest",
+    "ListBucketsRequest",
+    "ListDirectoryBucketsRequest",
+    "ListMultipartUploadsRequest",
+    "ListObjectVersionsRequest",
+    "ListObjectsRequest",
+    "ListObjectsV2Request",
+    "ListPartsRequest",
+    "PutBucketAccelerateConfigurationRequest",
+    "PutBucketAclRequest",
+    "PutBucketAnalyticsConfigurationRequest",
+    "PutBucketCorsRequest",
+    "PutBucketEncryptionRequest",
+    "PutBucketIntelligentTieringConfigurationRequest",
+    "PutBucketInventoryConfigurationRequest",
+    "PutBucketLifecycleConfigurationRequest",
+    "PutBucketLoggingRequest",
+    "PutBucketMetricsConfigurationRequest",
+    "PutBucketNotificationConfigurationRequest",
+    "PutBucketOwnershipControlsRequest",
+    "PutBucketPolicyRequest",
+    "PutBucketReplicationRequest",
+    "PutBucketRequestPaymentRequest",
+    "PutBucketTaggingRequest",
+    "PutBucketVersioningRequest",
+    "PutBucketWebsiteRequest",
+    "PutObjectRequest",
+    "PutObjectAclRequest",
+    "PutObjectLegalHoldRequest",
+    "PutObjectLockConfigurationRequest",
+    "PutObjectRetentionRequest",
+    "PutObjectTaggingRequest",
+    "PutPublicAccessBlockRequest",
+    "RestoreObjectRequest",
+    "SelectObjectContentRequest",
+    "UploadPartRequest",
+    "UploadPartCopyRequest",
+    "WriteGetObjectResponseRequest"
+    );
+
+    private final Set<String> opsThatDoNotSupportBucketArguments = ImmutableSet.of(
+            "ListBuckets",
+            "ListDirectoryBuckets",
+            "WriteGetObjectResponse"
+    );
+
+    private static final Set<String> REQUESTS_TO_OVERRIDE_STREAMING = ImmutableSet.of(
+            "PutBucketPolicyRequest"
+    );
+
+    private static final Map<String, String> CHECKSUM_MEMBERS_ENUMS = ImmutableMap.of(
+            "ChecksumCRC32", "CRC32",
+            "ChecksumCRC32C", "CRC32C",
+            "ChecksumSHA1", "SHA1",
+            "ChecksumSHA256", "SHA256"
     );
 
     static {
         opsThatDoNotSupportVirtualAddressing.add("CreateBucket");
         opsThatDoNotSupportVirtualAddressing.add("ListBuckets");
+        opsThatDoNotSupportVirtualAddressing.add("ListDirectoryBuckets");
         opsThatDoNotSupportVirtualAddressing.add("WriteGetObjectResponse");
 
         opsThatDoNotSupportArnEndpoint.add("CreateBucket");
         opsThatDoNotSupportArnEndpoint.add("ListBuckets");
+        opsThatDoNotSupportArnEndpoint.add("ListDirectoryBuckets");
         opsThatDoNotSupportArnEndpoint.add("WriteGetObjectResponse");
 
         s3CrtEnabledOps.add("GetObject");
         s3CrtEnabledOps.add("PutObject");
+        s3CrtEnabledOps.add("CopyObject");
 
         bucketLocationConstraints.add("us-east-1");
         bucketLocationConstraints.add("us-east-2");
@@ -79,6 +198,7 @@ public class S3RestXmlCppClientGenerator  extends RestXmlCppClientGenerator {
 
         // Add ID2 and RequestId to GetObjectResult
         hackGetObjectOutputResponse(serviceModel);
+        addExpiresCustomization(serviceModel);
 
         //size and content length should ALWAYS be 64 bit integers, if they aren't set them as that now.
         serviceModel.getShapes().entrySet().stream().filter(shapeEntry -> shapeEntry.getKey().toLowerCase().equals("contentlength") || shapeEntry.getKey().toLowerCase().equals("size"))
@@ -101,21 +221,12 @@ public class S3RestXmlCppClientGenerator  extends RestXmlCppClientGenerator {
                 });
 
         serviceModel.getOperations().values().stream()
-                .filter(operationEntry -> operationEntry.getName().equals("WriteGetObjectResponse"))
+                .filter(operationEntry -> operationEntry != null && operationEntry.getName() != null && "WriteGetObjectResponse".equals(operationEntry.getName() ))
                 .forEach(operationEntry -> {
                     operationEntry.setRequiresServiceNameOverride(true);
                     operationEntry.setServiceNameOverride("s3-object-lambda");
                     operationEntry.setSupportsChunkedEncoding(true);
                 });
-
-        serviceModel.getOperations().values().stream()
-                .filter(operationEntry -> operationEntry.getName().equals("WriteGetObjectResponse"))
-                .forEach(operationEntry -> {
-                    operationEntry.setRequiresServiceNameOverride(true);
-                    operationEntry.setServiceNameOverride("s3-object-lambda");
-                    operationEntry.setSupportsChunkedEncoding(true);
-                });
-
 
         if (serviceModel.getMetadata().getServiceId().equalsIgnoreCase("S3") ||
                 serviceModel.getMetadata().getServiceId().equalsIgnoreCase("S3-CRT")) {
@@ -132,18 +243,43 @@ public class S3RestXmlCppClientGenerator  extends RestXmlCppClientGenerator {
                     .forEach(enumEntry -> locationConstraints.getEnumValues().add(enumEntry));
         }
 
-        // Fix the typo of enum: "COMPLETE" for ReplicationStatus in API description, and "COMPLETED" is expected defined by S3 service.
-        // https://github.com/aws/aws-sdk-cpp/issues/859
-        Shape replicationStatus = serviceModel.getShapes().get("ReplicationStatus");
-        int indexOfComplete = replicationStatus.getEnumValues().indexOf("COMPLETE");
-        if (indexOfComplete != -1) {
-            replicationStatus.getEnumValues().set(indexOfComplete, "COMPLETED");
+        // We created a customization for transforming an incorrect "COMPLETE" to "COMPLETED" enum
+        // value in the past https://github.com/aws/aws-sdk-cpp/issues/859. S3 is fixing their model
+        // for other SDKs that have this modeling issue. They will include both COMPLETED and COMPLETE
+        // in the model for other SDK backwards compat. For C++ we will remove the "COMPLETED" value
+        // to preserve backwards compat and keep the existing customization.
+        //
+        // If "COMPLETE" is removed from the model we will execute none of this customization, and it
+        // is the safe to remove it.
+        final Shape replicationStatus = serviceModel.getShapes().get("ReplicationStatus");
+        final boolean hasCompleted = replicationStatus.getEnumValues().contains("COMPLETED");
+        final boolean hasComplete = replicationStatus.getEnumValues().contains("COMPLETE");
+        if (hasCompleted && hasComplete) {
+            // If we have both we remove the additional COMPLETED to preserve backwards compat
+            replicationStatus.setEnumValues(replicationStatus.getEnumValues().stream()
+                    .filter(value -> !"COMPLETED".equals(value))
+                    .collect(Collectors.toList()));
+        }
+        if (hasComplete) {
+            // Preserve existing customization to transform COMPLETE to COMPLETED
+            int indexOfComplete = replicationStatus.getEnumValues().indexOf("COMPLETE");
+            if (indexOfComplete != -1) {
+                replicationStatus.getEnumValues().set(indexOfComplete, "COMPLETED");
+            }
         }
 
         // Some S3 operations have embedded errors, and we need to search for errors in the response.
         serviceModel.getShapes().values().stream()
                 .filter(shape -> functionsWithEmbeddedErrors.contains(shape.getName()))
                 .forEach(shape -> shape.setEmbeddedErrors(true));
+
+        serviceModel.getOperations().entrySet().stream()
+                .filter(entry -> !opsThatDoNotSupportBucketArguments.contains(entry.getValue().getName()))
+                .forEach(entry -> entry.getValue().setShouldUsePropertyBag(true));
+
+        serviceModel.getShapes().values().stream()
+                .filter(shape -> REQUESTS_TO_OVERRIDE_STREAMING.contains(shape.getName()))
+                .forEach(shape -> shape.setOverrideStreaming(true));
 
         // Customized Log Information
         Shape logTagKeyShape = new Shape();
@@ -188,11 +324,25 @@ public class S3RestXmlCppClientGenerator  extends RestXmlCppClientGenerator {
             }
         });
 
-        return super.generateSourceFiles(serviceModel);
+        serviceModel.getOperations().values().stream()
+                .filter(Operation::hasRequest)
+                .map(Operation::getRequest)
+                .map(ShapeMember::getShape)
+                .filter(requestShape -> requestShape.hasMember("ChecksumAlgorithm"))
+                .forEach(requestShape -> requestShape.getMembers().values().stream()
+                        .filter(member -> CHECKSUM_MEMBERS_ENUMS.containsKey(member.getShape().getName()))
+                        .forEach(member -> {
+                            member.setChecksumMember(true);
+                            member.setChecksumEnumMember(CHECKSUM_MEMBERS_ENUMS.get(member.getShape().getName()));
+                        }));
+
+        return Stream.concat(generateS3ExpressFiles(serviceModel).stream(),
+                        Arrays.stream(super.generateSourceFiles(serviceModel)))
+                .toArray(SdkFileEntry[]::new);
     }
 
     protected void hackGetObjectOutputResponse(ServiceModel serviceModel) {
-        Shape getObjectResult  = serviceModel.getShapes().get("GetObjectResult");
+        Shape getObjectResult = serviceModel.getShapes().get("GetObjectResult");
         if (getObjectResult == null) return;
 
         Shape id2 = new Shape();
@@ -230,7 +380,61 @@ public class S3RestXmlCppClientGenerator  extends RestXmlCppClientGenerator {
         if (getObjectResult.getMembers().get("RequestId") == null) {
             getObjectResult.getMembers().put("RequestId", requestIdShapeMember);
         }
-	}
+    }
+
+    /**
+     * Originally, Expires shape member was modeled as a timestamp without a timestamp format specified.
+     * This customization creates an "ExpiresString" shape and members in the model to hold the same response value
+     * as a string.
+     * Original "Expires" members will be-remodelled into a "string" type in some future model update
+     * and this is a customization to keep the SDK backward compatible with existing applications.
+     * @param serviceModel
+     */
+    protected void addExpiresCustomization(ServiceModel serviceModel) {
+        final String EXPIRES = "Expires";
+        final String EXPIRES_STRING = "ExpiresString";
+
+        // Existing SDKs that currently model Expires as timestamp MUST add customization to ensure it stays as timestamp
+        serviceModel.getShapes().get(EXPIRES).setType("timestamp");
+
+        // The SDKs MUST add a customization to generate a synthetic member,
+        // named ExpiresString that returns the unparsed value of Expires
+        Shape expiresString = new Shape();
+        expiresString.setName(EXPIRES_STRING);
+        expiresString.setType("string");
+        serviceModel.getShapes().put(EXPIRES_STRING, expiresString);
+
+        // MUST only target structures that contain a member named Expires AND are used as the _output_ of an operation
+        serviceModel.getOperations().values().stream()
+                .filter(operation -> operation.getResult() != null)
+                .map(Operation::getResult)
+                .map(ShapeMember::getShape)
+                .filter(shape -> shape.hasMember(EXPIRES))
+                .forEach(shape->{
+                    ShapeMember expiresStringMember = shape.getMembers().get(EXPIRES).toBuilder().build();
+                    expiresStringMember.setShape(expiresString);
+                    shape.getMembers().put(EXPIRES_STRING, expiresStringMember);
+                });
+
+        // Add deprecated notice
+        Set<ShapeMember> expiresMembers =
+                serviceModel.getOperations().values().stream()
+                        .filter(operation -> operation.getResult() != null)
+                        .map(Operation::getResult)
+                        .map(ShapeMember::getShape)
+                        .filter(shape -> shape.hasMember(EXPIRES))
+                        .map(shape-> shape.getMembers().get(EXPIRES))
+                        .collect(Collectors.toSet());
+
+        expiresMembers.parallelStream()
+                .forEach(shapeMember -> {
+                    String doc = shapeMember.getDocumentation();
+                    if (!doc.toLowerCase().contains("deprecated")) {
+                        shapeMember.setDocumentation("Deprecated: Please use ExpiresString instead. " +
+                                                     System.lineSeparator() + "     * " + doc);
+                    }
+                });
+    }
 
     @Override
     protected SdkFileEntry generateClientHeaderFile(final ServiceModel serviceModel) throws Exception {
@@ -246,30 +450,72 @@ public class S3RestXmlCppClientGenerator  extends RestXmlCppClientGenerator {
     }
 
     @Override
-    protected SdkFileEntry generateClientSourceFile(final ServiceModel serviceModel) throws Exception {
-        Template template = velocityEngine.getTemplate("/com/amazonaws/util/awsclientgenerator/velocity/cpp/s3/S3ClientSource.vm");
+    protected List<SdkFileEntry> generateClientSourceFile(final List<ServiceModel> serviceModels) throws Exception {
+        List<SdkFileEntry> sourceFiles = new ArrayList<>();
+        for (int i = 0; i < serviceModels.size(); i++) {
+            Template template = velocityEngine.getTemplate("/com/amazonaws/util/awsclientgenerator/velocity/cpp/s3/S3ClientSource.vm");
 
-        Map<String, String> templateOverride = new HashMap<>();
-        if ("S3-CRT".equalsIgnoreCase(serviceModel.getMetadata().getProjectName())) {
-            templateOverride.put("ServiceClientSourceInit_template",
-                    "/com/amazonaws/util/awsclientgenerator/velocity/cpp/s3/s3-crt/S3CrtServiceClientSourceInit.vm");
+            Map<String, String> templateOverride = new HashMap<>();
+            if ("S3-CRT".equalsIgnoreCase(serviceModels.get(i).getMetadata().getProjectName())) {
+                templateOverride.put("ServiceClientSourceInit_template",
+                        "/com/amazonaws/util/awsclientgenerator/velocity/cpp/s3/s3-crt/S3CrtServiceClientSourceInit.vm");
+            }
+            VelocityContext context = createContext(serviceModels.get(i));
+            context.put("CppViewHelper", CppViewHelper.class);
+            context.put("TemplateOverride", templateOverride);
+
+            final String fileName;
+            if (i == 0) {
+                context.put("onlyGeneratedOperations", false);
+                fileName = String.format("source/%sClient.cpp", serviceModels.get(i).getMetadata().getClassNamePrefix());
+            } else {
+                context.put("onlyGeneratedOperations", true);
+                fileName = String.format("source/%sClient%d.cpp", serviceModels.get(i).getMetadata().getClassNamePrefix(), i);
+            }
+
+            sourceFiles.add(makeFile(template, context, fileName, true));
         }
-        VelocityContext context = createContext(serviceModel);
+        return sourceFiles;
+    }
+
+    private List<SdkFileEntry> generateS3ExpressFiles(final ServiceModel serviceModel) {
+        final String projectName = serviceModel.getMetadata().getProjectName();
+        // Only generate S3Express files for s3.
+        if (!ImmutableSet.of("s3", "s3-crt").contains(projectName)) {
+            return ImmutableList.of();
+        }
+        final String vmFilePrefixFormat = "/com/amazonaws/util/awsclientgenerator/velocity/cpp/s3/%s";
+        final String includePath = String.format("include/aws/%s/", projectName);
+        final VelocityContext context = createContext(serviceModel);
         context.put("CppViewHelper", CppViewHelper.class);
-        context.put("TemplateOverride", templateOverride);
+        Stream<Pair<String, String>> crtAdapters = Optional.of(projectName)
+                .filter("s3-crt"::equals)
+                .map(__ -> Stream.of(Pair.of(includePath + "S3CrtIdentityProviderAdapter.h", String.format(vmFilePrefixFormat, "S3CrtIdentityProviderAdapterHeader.vm")),
+                        Pair.of("source/S3CrtIdentityProviderAdapter.cpp", String.format(vmFilePrefixFormat, "S3CrtIdentityProviderAdapterSource.vm"))))
+                .orElse(Stream.of());
 
-
-        String fileName = String.format("source/%sClient.cpp", serviceModel.getMetadata().getClassNamePrefix());
-
-        return makeFile(template, context, fileName, true);
+        return Stream.concat(
+                        Stream.of(Pair.of(includePath + "S3ExpressIdentity.h", String.format(vmFilePrefixFormat, "S3ExpressIdentityHeader.vm")),
+                                Pair.of(includePath + "S3ExpressIdentityProvider.h", String.format(vmFilePrefixFormat, "S3ExpressIdentityProviderHeader.vm")),
+                                Pair.of(includePath + "S3ExpressSigner.h", String.format(vmFilePrefixFormat, "S3ExpressSignerHeader.vm")),
+                                Pair.of(includePath + "S3ExpressSignerProvider.h", String.format(vmFilePrefixFormat, "S3ExpressSignerProviderHeader.vm")),
+                                Pair.of("source/S3ExpressIdentityProvider.cpp", String.format(vmFilePrefixFormat, "S3ExpressIdentityProviderSource.vm")),
+                                Pair.of("source/S3ExpressSigner.cpp", String.format(vmFilePrefixFormat, "S3ExpressSignerSource.vm")),
+                                Pair.of("source/S3ExpressSignerProvider.cpp", String.format(vmFilePrefixFormat, "S3ExpressSignerProviderSource.vm"))),
+                        crtAdapters)
+                .map(codeGenPair -> makeFile(velocityEngine.getTemplate(codeGenPair.getValue()),
+                        context,
+                        codeGenPair.getKey(),
+                        true))
+                .collect(Collectors.toList());
     }
 
     @Override
-    protected SdkFileEntry generateModelSourceFile(ServiceModel serviceModel, Map.Entry<String, Shape> shapeEntry) throws Exception {
+    protected SdkFileEntry generateModelSourceFile(ServiceModel serviceModel, Map.Entry<String, Shape> shapeEntry) {
         Template template = null;
         String fileName = "";
 
-        switch(shapeEntry.getKey()) {
+        switch (shapeEntry.getKey()) {
             case "GetBucketLocationResult": {
                 template = velocityEngine.getTemplate("/com/amazonaws/util/awsclientgenerator/velocity/cpp/s3/GetBucketLocationResult.vm", StandardCharsets.UTF_8.name());
                 fileName = "source/model/GetBucketLocationResult.cpp";
@@ -287,15 +533,7 @@ public class S3RestXmlCppClientGenerator  extends RestXmlCppClientGenerator {
         Shape shape = shapeEntry.getValue();
         VelocityContext context = createContext(serviceModel);
         context.put("shape", shape);
-        if (shape.isRequest()) {
-            for (Map.Entry<String, Operation> opEntry : serviceModel.getOperations().entrySet()) {
-                Operation op = opEntry.getValue();
-                if (op.getRequest() != null && op.getRequest().getShape().getName() == shape.getName()) {
-                    context.put("operation", op);
-                    break;
-                }
-            }
-        }
+        context.put("operation", serviceModel.getOperationForRequestShapeName(shape.getName()));
         context.put("typeInfo", new CppShapeInformation(shape, serviceModel));
         context.put("CppViewHelper", CppViewHelper.class);
         return makeFile(template, context, fileName, true);
@@ -378,7 +616,7 @@ public class S3RestXmlCppClientGenerator  extends RestXmlCppClientGenerator {
     @Override
     protected SdkFileEntry generateClientConfigurationFile(final ServiceModel serviceModel) throws Exception {
         if ("S3-CRT".equalsIgnoreCase(serviceModel.getMetadata().getProjectName())) {
-            Template template = velocityEngine.getTemplate("/com/amazonaws/util/awsclientgenerator/velocity/cpp/s3/s3-crt/S3CrtClientConfig.vm", StandardCharsets.UTF_8.name());
+            Template template = velocityEngine.getTemplate("/com/amazonaws/util/awsclientgenerator/velocity/cpp/s3/s3-crt/S3CrtClientConfigLegacy.vm", StandardCharsets.UTF_8.name());
 
             VelocityContext context = createContext(serviceModel);
             context.put("exportValue", String.format("AWS_%s_API", serviceModel.getMetadata().getClassNamePrefix().toUpperCase()));
@@ -393,22 +631,6 @@ public class S3RestXmlCppClientGenerator  extends RestXmlCppClientGenerator {
 
     @Override
     protected void addRequestIdToResults(final ServiceModel serviceModel) {
-        serviceModel.getShapes().values().stream()
-                .filter(Shape::isResult)
-                .filter(shape -> !shape.getMembers().containsKey("requestId"))
-                .forEach(shape -> {
-                    Shape requestId = new Shape();
-                    requestId.setName("RequestId");
-                    requestId.setType("string");
-                    requestId.hasHeaderMembers();
-                    requestId.setMembers(ImmutableMap.of());
-
-                    ShapeMember requestIdMember = new ShapeMember();
-                    requestIdMember.setShape(requestId);
-                    requestIdMember.setLocation("header");
-                    //S3 uses a different header location than other services.
-                    requestIdMember.setLocationName("x-amz-request-id");
-                    shape.getMembers().put("RequestId", requestIdMember);
-                });
+        addToAllResultsShape(serviceModel, "requestId", "RequestId", "x-amz-request-id", "");
     }
 }

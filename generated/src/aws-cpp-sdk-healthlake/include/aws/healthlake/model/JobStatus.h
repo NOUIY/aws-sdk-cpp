@@ -17,10 +17,15 @@ namespace Model
   {
     NOT_SET,
     SUBMITTED,
+    QUEUED,
     IN_PROGRESS,
     COMPLETED_WITH_ERRORS,
     COMPLETED,
-    FAILED
+    FAILED,
+    CANCEL_SUBMITTED,
+    CANCEL_IN_PROGRESS,
+    CANCEL_COMPLETED,
+    CANCEL_FAILED
   };
 
 namespace JobStatusMapper

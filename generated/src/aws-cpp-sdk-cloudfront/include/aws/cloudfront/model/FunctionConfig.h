@@ -7,6 +7,7 @@
 #include <aws/cloudfront/CloudFront_EXPORTS.h>
 #include <aws/core/utils/memory/stl/AWSString.h>
 #include <aws/cloudfront/model/FunctionRuntime.h>
+#include <aws/cloudfront/model/KeyValueStoreAssociations.h>
 #include <utility>
 
 namespace Aws
@@ -39,83 +40,43 @@ namespace Model
     AWS_CLOUDFRONT_API void AddToNode(Aws::Utils::Xml::XmlNode& parentNode) const;
 
 
+    ///@{
     /**
      * <p>A comment to describe the function.</p>
      */
     inline const Aws::String& GetComment() const{ return m_comment; }
-
-    /**
-     * <p>A comment to describe the function.</p>
-     */
     inline bool CommentHasBeenSet() const { return m_commentHasBeenSet; }
-
-    /**
-     * <p>A comment to describe the function.</p>
-     */
     inline void SetComment(const Aws::String& value) { m_commentHasBeenSet = true; m_comment = value; }
-
-    /**
-     * <p>A comment to describe the function.</p>
-     */
     inline void SetComment(Aws::String&& value) { m_commentHasBeenSet = true; m_comment = std::move(value); }
-
-    /**
-     * <p>A comment to describe the function.</p>
-     */
     inline void SetComment(const char* value) { m_commentHasBeenSet = true; m_comment.assign(value); }
-
-    /**
-     * <p>A comment to describe the function.</p>
-     */
     inline FunctionConfig& WithComment(const Aws::String& value) { SetComment(value); return *this;}
-
-    /**
-     * <p>A comment to describe the function.</p>
-     */
     inline FunctionConfig& WithComment(Aws::String&& value) { SetComment(std::move(value)); return *this;}
-
-    /**
-     * <p>A comment to describe the function.</p>
-     */
     inline FunctionConfig& WithComment(const char* value) { SetComment(value); return *this;}
+    ///@}
 
-
+    ///@{
     /**
-     * <p>The function's runtime environment. The only valid value is
-     * <code>cloudfront-js-1.0</code>.</p>
+     * <p>The function's runtime environment version.</p>
      */
     inline const FunctionRuntime& GetRuntime() const{ return m_runtime; }
-
-    /**
-     * <p>The function's runtime environment. The only valid value is
-     * <code>cloudfront-js-1.0</code>.</p>
-     */
     inline bool RuntimeHasBeenSet() const { return m_runtimeHasBeenSet; }
-
-    /**
-     * <p>The function's runtime environment. The only valid value is
-     * <code>cloudfront-js-1.0</code>.</p>
-     */
     inline void SetRuntime(const FunctionRuntime& value) { m_runtimeHasBeenSet = true; m_runtime = value; }
-
-    /**
-     * <p>The function's runtime environment. The only valid value is
-     * <code>cloudfront-js-1.0</code>.</p>
-     */
     inline void SetRuntime(FunctionRuntime&& value) { m_runtimeHasBeenSet = true; m_runtime = std::move(value); }
-
-    /**
-     * <p>The function's runtime environment. The only valid value is
-     * <code>cloudfront-js-1.0</code>.</p>
-     */
     inline FunctionConfig& WithRuntime(const FunctionRuntime& value) { SetRuntime(value); return *this;}
-
-    /**
-     * <p>The function's runtime environment. The only valid value is
-     * <code>cloudfront-js-1.0</code>.</p>
-     */
     inline FunctionConfig& WithRuntime(FunctionRuntime&& value) { SetRuntime(std::move(value)); return *this;}
+    ///@}
 
+    ///@{
+    /**
+     * <p>The configuration for the key value store associations.</p>
+     */
+    inline const KeyValueStoreAssociations& GetKeyValueStoreAssociations() const{ return m_keyValueStoreAssociations; }
+    inline bool KeyValueStoreAssociationsHasBeenSet() const { return m_keyValueStoreAssociationsHasBeenSet; }
+    inline void SetKeyValueStoreAssociations(const KeyValueStoreAssociations& value) { m_keyValueStoreAssociationsHasBeenSet = true; m_keyValueStoreAssociations = value; }
+    inline void SetKeyValueStoreAssociations(KeyValueStoreAssociations&& value) { m_keyValueStoreAssociationsHasBeenSet = true; m_keyValueStoreAssociations = std::move(value); }
+    inline FunctionConfig& WithKeyValueStoreAssociations(const KeyValueStoreAssociations& value) { SetKeyValueStoreAssociations(value); return *this;}
+    inline FunctionConfig& WithKeyValueStoreAssociations(KeyValueStoreAssociations&& value) { SetKeyValueStoreAssociations(std::move(value)); return *this;}
+    ///@}
   private:
 
     Aws::String m_comment;
@@ -123,6 +84,9 @@ namespace Model
 
     FunctionRuntime m_runtime;
     bool m_runtimeHasBeenSet = false;
+
+    KeyValueStoreAssociations m_keyValueStoreAssociations;
+    bool m_keyValueStoreAssociationsHasBeenSet = false;
   };
 
 } // namespace Model

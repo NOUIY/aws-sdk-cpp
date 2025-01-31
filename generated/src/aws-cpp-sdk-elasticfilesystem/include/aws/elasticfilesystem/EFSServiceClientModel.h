@@ -37,6 +37,12 @@
 #include <aws/elasticfilesystem/model/PutFileSystemPolicyResult.h>
 #include <aws/elasticfilesystem/model/PutLifecycleConfigurationResult.h>
 #include <aws/elasticfilesystem/model/UpdateFileSystemResult.h>
+#include <aws/elasticfilesystem/model/UpdateFileSystemProtectionResult.h>
+#include <aws/elasticfilesystem/model/DescribeAccessPointsRequest.h>
+#include <aws/elasticfilesystem/model/DescribeAccountPreferencesRequest.h>
+#include <aws/elasticfilesystem/model/DescribeReplicationConfigurationsRequest.h>
+#include <aws/elasticfilesystem/model/DescribeFileSystemsRequest.h>
+#include <aws/elasticfilesystem/model/DescribeMountTargetsRequest.h>
 #include <aws/core/NoResult.h>
 /* End of service model headers required in EFSClient header */
 
@@ -71,7 +77,7 @@ namespace Aws
 
   namespace EFS
   {
-    using EFSClientConfiguration = Aws::Client::GenericClientConfiguration<false>;
+    using EFSClientConfiguration = Aws::Client::GenericClientConfiguration;
     using EFSEndpointProviderBase = Aws::EFS::Endpoint::EFSEndpointProviderBase;
     using EFSEndpointProvider = Aws::EFS::Endpoint::EFSEndpointProvider;
 
@@ -105,6 +111,7 @@ namespace Aws
       class TagResourceRequest;
       class UntagResourceRequest;
       class UpdateFileSystemRequest;
+      class UpdateFileSystemProtectionRequest;
       /* End of service model forward declarations required in EFSClient header */
 
       /* Service model Outcome class definitions */
@@ -135,6 +142,7 @@ namespace Aws
       typedef Aws::Utils::Outcome<Aws::NoResult, EFSError> TagResourceOutcome;
       typedef Aws::Utils::Outcome<Aws::NoResult, EFSError> UntagResourceOutcome;
       typedef Aws::Utils::Outcome<UpdateFileSystemResult, EFSError> UpdateFileSystemOutcome;
+      typedef Aws::Utils::Outcome<UpdateFileSystemProtectionResult, EFSError> UpdateFileSystemProtectionOutcome;
       /* End of service model Outcome class definitions */
 
       /* Service model Outcome callable definitions */
@@ -165,6 +173,7 @@ namespace Aws
       typedef std::future<TagResourceOutcome> TagResourceOutcomeCallable;
       typedef std::future<UntagResourceOutcome> UntagResourceOutcomeCallable;
       typedef std::future<UpdateFileSystemOutcome> UpdateFileSystemOutcomeCallable;
+      typedef std::future<UpdateFileSystemProtectionOutcome> UpdateFileSystemProtectionOutcomeCallable;
       /* End of service model Outcome callable definitions */
     } // namespace Model
 
@@ -198,6 +207,7 @@ namespace Aws
     typedef std::function<void(const EFSClient*, const Model::TagResourceRequest&, const Model::TagResourceOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > TagResourceResponseReceivedHandler;
     typedef std::function<void(const EFSClient*, const Model::UntagResourceRequest&, const Model::UntagResourceOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > UntagResourceResponseReceivedHandler;
     typedef std::function<void(const EFSClient*, const Model::UpdateFileSystemRequest&, const Model::UpdateFileSystemOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > UpdateFileSystemResponseReceivedHandler;
+    typedef std::function<void(const EFSClient*, const Model::UpdateFileSystemProtectionRequest&, const Model::UpdateFileSystemProtectionOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > UpdateFileSystemProtectionResponseReceivedHandler;
     /* End of service model async handlers definitions */
   } // namespace EFS
 } // namespace Aws

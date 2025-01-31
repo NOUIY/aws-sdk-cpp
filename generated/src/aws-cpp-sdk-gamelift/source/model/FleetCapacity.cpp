@@ -24,17 +24,13 @@ FleetCapacity::FleetCapacity() :
     m_instanceType(EC2InstanceType::NOT_SET),
     m_instanceTypeHasBeenSet(false),
     m_instanceCountsHasBeenSet(false),
-    m_locationHasBeenSet(false)
+    m_locationHasBeenSet(false),
+    m_gameServerContainerGroupCountsHasBeenSet(false)
 {
 }
 
-FleetCapacity::FleetCapacity(JsonView jsonValue) : 
-    m_fleetIdHasBeenSet(false),
-    m_fleetArnHasBeenSet(false),
-    m_instanceType(EC2InstanceType::NOT_SET),
-    m_instanceTypeHasBeenSet(false),
-    m_instanceCountsHasBeenSet(false),
-    m_locationHasBeenSet(false)
+FleetCapacity::FleetCapacity(JsonView jsonValue)
+  : FleetCapacity()
 {
   *this = jsonValue;
 }
@@ -76,6 +72,13 @@ FleetCapacity& FleetCapacity::operator =(JsonView jsonValue)
     m_locationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("GameServerContainerGroupCounts"))
+  {
+    m_gameServerContainerGroupCounts = jsonValue.GetObject("GameServerContainerGroupCounts");
+
+    m_gameServerContainerGroupCountsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -109,6 +112,12 @@ JsonValue FleetCapacity::Jsonize() const
   if(m_locationHasBeenSet)
   {
    payload.WithString("Location", m_location);
+
+  }
+
+  if(m_gameServerContainerGroupCountsHasBeenSet)
+  {
+   payload.WithObject("GameServerContainerGroupCounts", m_gameServerContainerGroupCounts.Jsonize());
 
   }
 

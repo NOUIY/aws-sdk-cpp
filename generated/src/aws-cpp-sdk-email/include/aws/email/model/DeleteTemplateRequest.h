@@ -19,7 +19,7 @@ namespace Model
   /**
    * <p>Represents a request to delete an email template. For more information, see
    * the <a
-   * href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-personalized-email-api.html">Amazon
+   * href="https://docs.aws.amazon.com/ses/latest/dg/send-personalized-email-api.html">Amazon
    * SES Developer Guide</a>.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/email-2010-12-01/DeleteTemplateRequest">AWS
    * API Reference</a></p>
@@ -42,46 +42,19 @@ namespace Model
 
   public:
 
+    ///@{
     /**
      * <p>The name of the template to be deleted.</p>
      */
     inline const Aws::String& GetTemplateName() const{ return m_templateName; }
-
-    /**
-     * <p>The name of the template to be deleted.</p>
-     */
     inline bool TemplateNameHasBeenSet() const { return m_templateNameHasBeenSet; }
-
-    /**
-     * <p>The name of the template to be deleted.</p>
-     */
     inline void SetTemplateName(const Aws::String& value) { m_templateNameHasBeenSet = true; m_templateName = value; }
-
-    /**
-     * <p>The name of the template to be deleted.</p>
-     */
     inline void SetTemplateName(Aws::String&& value) { m_templateNameHasBeenSet = true; m_templateName = std::move(value); }
-
-    /**
-     * <p>The name of the template to be deleted.</p>
-     */
     inline void SetTemplateName(const char* value) { m_templateNameHasBeenSet = true; m_templateName.assign(value); }
-
-    /**
-     * <p>The name of the template to be deleted.</p>
-     */
     inline DeleteTemplateRequest& WithTemplateName(const Aws::String& value) { SetTemplateName(value); return *this;}
-
-    /**
-     * <p>The name of the template to be deleted.</p>
-     */
     inline DeleteTemplateRequest& WithTemplateName(Aws::String&& value) { SetTemplateName(std::move(value)); return *this;}
-
-    /**
-     * <p>The name of the template to be deleted.</p>
-     */
     inline DeleteTemplateRequest& WithTemplateName(const char* value) { SetTemplateName(value); return *this;}
-
+    ///@}
   private:
 
     Aws::String m_templateName;

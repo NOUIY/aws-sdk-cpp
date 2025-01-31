@@ -45,36 +45,13 @@ Host::Host() :
     m_memberOfServiceLinkedResourceGroupHasBeenSet(false),
     m_outpostArnHasBeenSet(false),
     m_hostMaintenance(HostMaintenance::NOT_SET),
-    m_hostMaintenanceHasBeenSet(false)
+    m_hostMaintenanceHasBeenSet(false),
+    m_assetIdHasBeenSet(false)
 {
 }
 
-Host::Host(const XmlNode& xmlNode) : 
-    m_autoPlacement(AutoPlacement::NOT_SET),
-    m_autoPlacementHasBeenSet(false),
-    m_availabilityZoneHasBeenSet(false),
-    m_availableCapacityHasBeenSet(false),
-    m_clientTokenHasBeenSet(false),
-    m_hostIdHasBeenSet(false),
-    m_hostPropertiesHasBeenSet(false),
-    m_hostReservationIdHasBeenSet(false),
-    m_instancesHasBeenSet(false),
-    m_state(AllocationState::NOT_SET),
-    m_stateHasBeenSet(false),
-    m_allocationTimeHasBeenSet(false),
-    m_releaseTimeHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_hostRecovery(HostRecovery::NOT_SET),
-    m_hostRecoveryHasBeenSet(false),
-    m_allowsMultipleInstanceTypes(AllowsMultipleInstanceTypes::NOT_SET),
-    m_allowsMultipleInstanceTypesHasBeenSet(false),
-    m_ownerIdHasBeenSet(false),
-    m_availabilityZoneIdHasBeenSet(false),
-    m_memberOfServiceLinkedResourceGroup(false),
-    m_memberOfServiceLinkedResourceGroupHasBeenSet(false),
-    m_outpostArnHasBeenSet(false),
-    m_hostMaintenance(HostMaintenance::NOT_SET),
-    m_hostMaintenanceHasBeenSet(false)
+Host::Host(const XmlNode& xmlNode)
+  : Host()
 {
   *this = xmlNode;
 }
@@ -211,6 +188,12 @@ Host& Host::operator =(const XmlNode& xmlNode)
       m_hostMaintenance = HostMaintenanceMapper::GetHostMaintenanceForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(hostMaintenanceNode.GetText()).c_str()).c_str());
       m_hostMaintenanceHasBeenSet = true;
     }
+    XmlNode assetIdNode = resultNode.FirstChild("assetId");
+    if(!assetIdNode.IsNull())
+    {
+      m_assetId = Aws::Utils::Xml::DecodeEscapedXmlText(assetIdNode.GetText());
+      m_assetIdHasBeenSet = true;
+    }
   }
 
   return *this;
@@ -329,6 +312,11 @@ void Host::OutputToStream(Aws::OStream& oStream, const char* location, unsigned 
       oStream << location << index << locationValue << ".HostMaintenance=" << HostMaintenanceMapper::GetNameForHostMaintenance(m_hostMaintenance) << "&";
   }
 
+  if(m_assetIdHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".AssetId=" << StringUtils::URLEncode(m_assetId.c_str()) << "&";
+  }
+
 }
 
 void Host::OutputToStream(Aws::OStream& oStream, const char* location) const
@@ -424,6 +412,10 @@ void Host::OutputToStream(Aws::OStream& oStream, const char* location) const
   if(m_hostMaintenanceHasBeenSet)
   {
       oStream << location << ".HostMaintenance=" << HostMaintenanceMapper::GetNameForHostMaintenance(m_hostMaintenance) << "&";
+  }
+  if(m_assetIdHasBeenSet)
+  {
+      oStream << location << ".AssetId=" << StringUtils::URLEncode(m_assetId.c_str()) << "&";
   }
 }
 

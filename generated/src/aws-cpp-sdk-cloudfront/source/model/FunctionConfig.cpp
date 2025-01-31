@@ -23,14 +23,13 @@ namespace Model
 FunctionConfig::FunctionConfig() : 
     m_commentHasBeenSet(false),
     m_runtime(FunctionRuntime::NOT_SET),
-    m_runtimeHasBeenSet(false)
+    m_runtimeHasBeenSet(false),
+    m_keyValueStoreAssociationsHasBeenSet(false)
 {
 }
 
-FunctionConfig::FunctionConfig(const XmlNode& xmlNode) : 
-    m_commentHasBeenSet(false),
-    m_runtime(FunctionRuntime::NOT_SET),
-    m_runtimeHasBeenSet(false)
+FunctionConfig::FunctionConfig(const XmlNode& xmlNode)
+  : FunctionConfig()
 {
   *this = xmlNode;
 }
@@ -53,6 +52,12 @@ FunctionConfig& FunctionConfig::operator =(const XmlNode& xmlNode)
       m_runtime = FunctionRuntimeMapper::GetFunctionRuntimeForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(runtimeNode.GetText()).c_str()).c_str());
       m_runtimeHasBeenSet = true;
     }
+    XmlNode keyValueStoreAssociationsNode = resultNode.FirstChild("KeyValueStoreAssociations");
+    if(!keyValueStoreAssociationsNode.IsNull())
+    {
+      m_keyValueStoreAssociations = keyValueStoreAssociationsNode;
+      m_keyValueStoreAssociationsHasBeenSet = true;
+    }
   }
 
   return *this;
@@ -71,6 +76,12 @@ void FunctionConfig::AddToNode(XmlNode& parentNode) const
   {
    XmlNode runtimeNode = parentNode.CreateChildElement("Runtime");
    runtimeNode.SetText(FunctionRuntimeMapper::GetNameForFunctionRuntime(m_runtime));
+  }
+
+  if(m_keyValueStoreAssociationsHasBeenSet)
+  {
+   XmlNode keyValueStoreAssociationsNode = parentNode.CreateChildElement("KeyValueStoreAssociations");
+   m_keyValueStoreAssociations.AddToNode(keyValueStoreAssociationsNode);
   }
 
 }

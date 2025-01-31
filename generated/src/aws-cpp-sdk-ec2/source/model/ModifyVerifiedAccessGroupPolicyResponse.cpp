@@ -22,8 +22,8 @@ ModifyVerifiedAccessGroupPolicyResponse::ModifyVerifiedAccessGroupPolicyResponse
 {
 }
 
-ModifyVerifiedAccessGroupPolicyResponse::ModifyVerifiedAccessGroupPolicyResponse(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
-    m_policyEnabled(false)
+ModifyVerifiedAccessGroupPolicyResponse::ModifyVerifiedAccessGroupPolicyResponse(const Aws::AmazonWebServiceResult<XmlDocument>& result)
+  : ModifyVerifiedAccessGroupPolicyResponse()
 {
   *this = result;
 }
@@ -49,6 +49,11 @@ ModifyVerifiedAccessGroupPolicyResponse& ModifyVerifiedAccessGroupPolicyResponse
     if(!policyDocumentNode.IsNull())
     {
       m_policyDocument = Aws::Utils::Xml::DecodeEscapedXmlText(policyDocumentNode.GetText());
+    }
+    XmlNode sseSpecificationNode = resultNode.FirstChild("sseSpecification");
+    if(!sseSpecificationNode.IsNull())
+    {
+      m_sseSpecification = sseSpecificationNode;
     }
   }
 

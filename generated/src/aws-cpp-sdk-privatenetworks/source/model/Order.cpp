@@ -25,20 +25,14 @@ Order::Order() :
     m_networkArnHasBeenSet(false),
     m_networkSiteArnHasBeenSet(false),
     m_orderArnHasBeenSet(false),
+    m_orderedResourcesHasBeenSet(false),
     m_shippingAddressHasBeenSet(false),
     m_trackingInformationHasBeenSet(false)
 {
 }
 
-Order::Order(JsonView jsonValue) : 
-    m_acknowledgmentStatus(AcknowledgmentStatus::NOT_SET),
-    m_acknowledgmentStatusHasBeenSet(false),
-    m_createdAtHasBeenSet(false),
-    m_networkArnHasBeenSet(false),
-    m_networkSiteArnHasBeenSet(false),
-    m_orderArnHasBeenSet(false),
-    m_shippingAddressHasBeenSet(false),
-    m_trackingInformationHasBeenSet(false)
+Order::Order(JsonView jsonValue)
+  : Order()
 {
   *this = jsonValue;
 }
@@ -78,6 +72,16 @@ Order& Order::operator =(JsonView jsonValue)
     m_orderArn = jsonValue.GetString("orderArn");
 
     m_orderArnHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("orderedResources"))
+  {
+    Aws::Utils::Array<JsonView> orderedResourcesJsonList = jsonValue.GetArray("orderedResources");
+    for(unsigned orderedResourcesIndex = 0; orderedResourcesIndex < orderedResourcesJsonList.GetLength(); ++orderedResourcesIndex)
+    {
+      m_orderedResources.push_back(orderedResourcesJsonList[orderedResourcesIndex].AsObject());
+    }
+    m_orderedResourcesHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("shippingAddress"))
@@ -129,6 +133,17 @@ JsonValue Order::Jsonize() const
   if(m_orderArnHasBeenSet)
   {
    payload.WithString("orderArn", m_orderArn);
+
+  }
+
+  if(m_orderedResourcesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> orderedResourcesJsonList(m_orderedResources.size());
+   for(unsigned orderedResourcesIndex = 0; orderedResourcesIndex < orderedResourcesJsonList.GetLength(); ++orderedResourcesIndex)
+   {
+     orderedResourcesJsonList[orderedResourcesIndex].AsObject(m_orderedResources[orderedResourcesIndex].Jsonize());
+   }
+   payload.WithArray("orderedResources", std::move(orderedResourcesJsonList));
 
   }
 

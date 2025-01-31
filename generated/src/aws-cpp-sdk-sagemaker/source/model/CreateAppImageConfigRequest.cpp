@@ -15,7 +15,9 @@ using namespace Aws::Utils;
 CreateAppImageConfigRequest::CreateAppImageConfigRequest() : 
     m_appImageConfigNameHasBeenSet(false),
     m_tagsHasBeenSet(false),
-    m_kernelGatewayImageConfigHasBeenSet(false)
+    m_kernelGatewayImageConfigHasBeenSet(false),
+    m_jupyterLabAppImageConfigHasBeenSet(false),
+    m_codeEditorAppImageConfigHasBeenSet(false)
 {
 }
 
@@ -43,6 +45,18 @@ Aws::String CreateAppImageConfigRequest::SerializePayload() const
   if(m_kernelGatewayImageConfigHasBeenSet)
   {
    payload.WithObject("KernelGatewayImageConfig", m_kernelGatewayImageConfig.Jsonize());
+
+  }
+
+  if(m_jupyterLabAppImageConfigHasBeenSet)
+  {
+   payload.WithObject("JupyterLabAppImageConfig", m_jupyterLabAppImageConfig.Jsonize());
+
+  }
+
+  if(m_codeEditorAppImageConfigHasBeenSet)
+  {
+   payload.WithObject("CodeEditorAppImageConfig", m_codeEditorAppImageConfig.Jsonize());
 
   }
 

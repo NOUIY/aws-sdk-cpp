@@ -23,16 +23,13 @@ ResourceInfo::ResourceInfo() :
     m_arnHasBeenSet(false),
     m_resourceType(ResourceType::NOT_SET),
     m_resourceTypeHasBeenSet(false),
-    m_resourceDetailsHasBeenSet(false)
+    m_resourceDetailsHasBeenSet(false),
+    m_optionsHasBeenSet(false)
 {
 }
 
-ResourceInfo::ResourceInfo(JsonView jsonValue) : 
-    m_nameHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_resourceType(ResourceType::NOT_SET),
-    m_resourceTypeHasBeenSet(false),
-    m_resourceDetailsHasBeenSet(false)
+ResourceInfo::ResourceInfo(JsonView jsonValue)
+  : ResourceInfo()
 {
   *this = jsonValue;
 }
@@ -67,6 +64,16 @@ ResourceInfo& ResourceInfo::operator =(JsonView jsonValue)
     m_resourceDetailsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("options"))
+  {
+    Aws::Utils::Array<JsonView> optionsJsonList = jsonValue.GetArray("options");
+    for(unsigned optionsIndex = 0; optionsIndex < optionsJsonList.GetLength(); ++optionsIndex)
+    {
+      m_options.push_back(AssociationOptionMapper::GetAssociationOptionForName(optionsJsonList[optionsIndex].AsString()));
+    }
+    m_optionsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -94,6 +101,17 @@ JsonValue ResourceInfo::Jsonize() const
   if(m_resourceDetailsHasBeenSet)
   {
    payload.WithObject("resourceDetails", m_resourceDetails.Jsonize());
+
+  }
+
+  if(m_optionsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> optionsJsonList(m_options.size());
+   for(unsigned optionsIndex = 0; optionsIndex < optionsJsonList.GetLength(); ++optionsIndex)
+   {
+     optionsJsonList[optionsIndex].AsString(AssociationOptionMapper::GetNameForAssociationOption(m_options[optionsIndex]));
+   }
+   payload.WithArray("options", std::move(optionsJsonList));
 
   }
 

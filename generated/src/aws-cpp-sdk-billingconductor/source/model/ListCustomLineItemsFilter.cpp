@@ -21,14 +21,13 @@ namespace Model
 ListCustomLineItemsFilter::ListCustomLineItemsFilter() : 
     m_namesHasBeenSet(false),
     m_billingGroupsHasBeenSet(false),
-    m_arnsHasBeenSet(false)
+    m_arnsHasBeenSet(false),
+    m_accountIdsHasBeenSet(false)
 {
 }
 
-ListCustomLineItemsFilter::ListCustomLineItemsFilter(JsonView jsonValue) : 
-    m_namesHasBeenSet(false),
-    m_billingGroupsHasBeenSet(false),
-    m_arnsHasBeenSet(false)
+ListCustomLineItemsFilter::ListCustomLineItemsFilter(JsonView jsonValue)
+  : ListCustomLineItemsFilter()
 {
   *this = jsonValue;
 }
@@ -63,6 +62,16 @@ ListCustomLineItemsFilter& ListCustomLineItemsFilter::operator =(JsonView jsonVa
       m_arns.push_back(arnsJsonList[arnsIndex].AsString());
     }
     m_arnsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AccountIds"))
+  {
+    Aws::Utils::Array<JsonView> accountIdsJsonList = jsonValue.GetArray("AccountIds");
+    for(unsigned accountIdsIndex = 0; accountIdsIndex < accountIdsJsonList.GetLength(); ++accountIdsIndex)
+    {
+      m_accountIds.push_back(accountIdsJsonList[accountIdsIndex].AsString());
+    }
+    m_accountIdsHasBeenSet = true;
   }
 
   return *this;
@@ -102,6 +111,17 @@ JsonValue ListCustomLineItemsFilter::Jsonize() const
      arnsJsonList[arnsIndex].AsString(m_arns[arnsIndex]);
    }
    payload.WithArray("Arns", std::move(arnsJsonList));
+
+  }
+
+  if(m_accountIdsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> accountIdsJsonList(m_accountIds.size());
+   for(unsigned accountIdsIndex = 0; accountIdsIndex < accountIdsJsonList.GetLength(); ++accountIdsIndex)
+   {
+     accountIdsJsonList[accountIdsIndex].AsString(m_accountIds[accountIdsIndex]);
+   }
+   payload.WithArray("AccountIds", std::move(accountIdsJsonList));
 
   }
 

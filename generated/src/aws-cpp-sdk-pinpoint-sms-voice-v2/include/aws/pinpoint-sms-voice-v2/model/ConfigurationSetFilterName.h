@@ -19,7 +19,9 @@ namespace Model
     event_destination_name,
     matching_event_types,
     default_message_type,
-    default_sender_id
+    default_sender_id,
+    default_message_feedback_enabled,
+    protect_configuration_id
   };
 
 namespace ConfigurationSetFilterNameMapper

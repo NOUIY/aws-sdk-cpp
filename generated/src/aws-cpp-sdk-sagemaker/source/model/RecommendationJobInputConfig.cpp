@@ -20,6 +20,7 @@ namespace Model
 
 RecommendationJobInputConfig::RecommendationJobInputConfig() : 
     m_modelPackageVersionArnHasBeenSet(false),
+    m_modelNameHasBeenSet(false),
     m_jobDurationInSeconds(0),
     m_jobDurationInSecondsHasBeenSet(false),
     m_trafficPatternHasBeenSet(false),
@@ -28,23 +29,12 @@ RecommendationJobInputConfig::RecommendationJobInputConfig() :
     m_volumeKmsKeyIdHasBeenSet(false),
     m_containerConfigHasBeenSet(false),
     m_endpointsHasBeenSet(false),
-    m_vpcConfigHasBeenSet(false),
-    m_modelNameHasBeenSet(false)
+    m_vpcConfigHasBeenSet(false)
 {
 }
 
-RecommendationJobInputConfig::RecommendationJobInputConfig(JsonView jsonValue) : 
-    m_modelPackageVersionArnHasBeenSet(false),
-    m_jobDurationInSeconds(0),
-    m_jobDurationInSecondsHasBeenSet(false),
-    m_trafficPatternHasBeenSet(false),
-    m_resourceLimitHasBeenSet(false),
-    m_endpointConfigurationsHasBeenSet(false),
-    m_volumeKmsKeyIdHasBeenSet(false),
-    m_containerConfigHasBeenSet(false),
-    m_endpointsHasBeenSet(false),
-    m_vpcConfigHasBeenSet(false),
-    m_modelNameHasBeenSet(false)
+RecommendationJobInputConfig::RecommendationJobInputConfig(JsonView jsonValue)
+  : RecommendationJobInputConfig()
 {
   *this = jsonValue;
 }
@@ -56,6 +46,13 @@ RecommendationJobInputConfig& RecommendationJobInputConfig::operator =(JsonView 
     m_modelPackageVersionArn = jsonValue.GetString("ModelPackageVersionArn");
 
     m_modelPackageVersionArnHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("ModelName"))
+  {
+    m_modelName = jsonValue.GetString("ModelName");
+
+    m_modelNameHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("JobDurationInSeconds"))
@@ -120,13 +117,6 @@ RecommendationJobInputConfig& RecommendationJobInputConfig::operator =(JsonView 
     m_vpcConfigHasBeenSet = true;
   }
 
-  if(jsonValue.ValueExists("ModelName"))
-  {
-    m_modelName = jsonValue.GetString("ModelName");
-
-    m_modelNameHasBeenSet = true;
-  }
-
   return *this;
 }
 
@@ -137,6 +127,12 @@ JsonValue RecommendationJobInputConfig::Jsonize() const
   if(m_modelPackageVersionArnHasBeenSet)
   {
    payload.WithString("ModelPackageVersionArn", m_modelPackageVersionArn);
+
+  }
+
+  if(m_modelNameHasBeenSet)
+  {
+   payload.WithString("ModelName", m_modelName);
 
   }
 
@@ -195,12 +191,6 @@ JsonValue RecommendationJobInputConfig::Jsonize() const
   if(m_vpcConfigHasBeenSet)
   {
    payload.WithObject("VpcConfig", m_vpcConfig.Jsonize());
-
-  }
-
-  if(m_modelNameHasBeenSet)
-  {
-   payload.WithString("ModelName", m_modelName);
 
   }
 

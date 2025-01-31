@@ -25,18 +25,13 @@ AdBreak::AdBreak() :
     m_offsetMillisHasBeenSet(false),
     m_slateHasBeenSet(false),
     m_spliceInsertMessageHasBeenSet(false),
-    m_timeSignalMessageHasBeenSet(false)
+    m_timeSignalMessageHasBeenSet(false),
+    m_adBreakMetadataHasBeenSet(false)
 {
 }
 
-AdBreak::AdBreak(JsonView jsonValue) : 
-    m_messageType(MessageType::NOT_SET),
-    m_messageTypeHasBeenSet(false),
-    m_offsetMillis(0),
-    m_offsetMillisHasBeenSet(false),
-    m_slateHasBeenSet(false),
-    m_spliceInsertMessageHasBeenSet(false),
-    m_timeSignalMessageHasBeenSet(false)
+AdBreak::AdBreak(JsonView jsonValue)
+  : AdBreak()
 {
   *this = jsonValue;
 }
@@ -78,6 +73,16 @@ AdBreak& AdBreak::operator =(JsonView jsonValue)
     m_timeSignalMessageHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("AdBreakMetadata"))
+  {
+    Aws::Utils::Array<JsonView> adBreakMetadataJsonList = jsonValue.GetArray("AdBreakMetadata");
+    for(unsigned adBreakMetadataIndex = 0; adBreakMetadataIndex < adBreakMetadataJsonList.GetLength(); ++adBreakMetadataIndex)
+    {
+      m_adBreakMetadata.push_back(adBreakMetadataJsonList[adBreakMetadataIndex].AsObject());
+    }
+    m_adBreakMetadataHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -111,6 +116,17 @@ JsonValue AdBreak::Jsonize() const
   if(m_timeSignalMessageHasBeenSet)
   {
    payload.WithObject("TimeSignalMessage", m_timeSignalMessage.Jsonize());
+
+  }
+
+  if(m_adBreakMetadataHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> adBreakMetadataJsonList(m_adBreakMetadata.size());
+   for(unsigned adBreakMetadataIndex = 0; adBreakMetadataIndex < adBreakMetadataJsonList.GetLength(); ++adBreakMetadataIndex)
+   {
+     adBreakMetadataJsonList[adBreakMetadataIndex].AsObject(m_adBreakMetadata[adBreakMetadataIndex].Jsonize());
+   }
+   payload.WithArray("AdBreakMetadata", std::move(adBreakMetadataJsonList));
 
   }
 

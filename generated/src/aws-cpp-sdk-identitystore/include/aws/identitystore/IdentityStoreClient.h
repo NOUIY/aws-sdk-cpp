@@ -6,37 +6,44 @@
 #pragma once
 #include <aws/identitystore/IdentityStore_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/identitystore/IdentityStoreServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/identitystore/IdentityStoreErrorMarshaller.h>
 
 namespace Aws
 {
 namespace IdentityStore
 {
+  AWS_IDENTITYSTORE_API extern const char SERVICE_NAME[];
   /**
-   * <p>The Identity Store service used by AWS IAM Identity Center (successor to AWS
-   * Single Sign-On) provides a single place to retrieve all of your identities
-   * (users and groups). For more information, see the <a
+   * <p>The Identity Store service used by IAM Identity Center provides a single
+   * place to retrieve all of your identities (users and groups). For more
+   * information, see the <a
    * href="https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html">IAM
-   * Identity Center User Guide</a>.</p> <pre><code> &lt;note&gt; &lt;p&gt;Although
-   * AWS Single Sign-On was renamed, the &lt;code&gt;sso&lt;/code&gt; and
-   * &lt;code&gt;identitystore&lt;/code&gt; API namespaces will continue to retain
-   * their original name for backward compatibility purposes. For more information,
-   * see &lt;a
-   * href=&quot;https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html#renamed&quot;&gt;IAM
-   * Identity Center rename&lt;/a&gt;.&lt;/p&gt; &lt;/note&gt; &lt;p&gt;This
-   * reference guide describes the identity store operations that you can call
-   * programatically and includes detailed information about data types and
-   * errors.&lt;/p&gt; </code></pre>
+   * Identity Center User Guide</a>.</p> <p>This reference guide describes the
+   * identity store operations that you can call programmatically and includes
+   * detailed information about data types and errors.</p>  <p>IAM Identity
+   * Center uses the <code>sso</code> and <code>identitystore</code> API
+   * namespaces.</p> 
    */
-  class AWS_IDENTITYSTORE_API IdentityStoreClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<IdentityStoreClient>
+  class AWS_IDENTITYSTORE_API IdentityStoreClient : smithy::client::AwsSmithyClientT<Aws::IdentityStore::SERVICE_NAME,
+      Aws::IdentityStore::IdentityStoreClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      IdentityStoreEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::IdentityStoreErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<IdentityStoreClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "identitystore"; }
 
       typedef IdentityStoreClientConfiguration ClientConfigurationType;
       typedef IdentityStoreEndpointProvider EndpointProviderType;
@@ -46,14 +53,14 @@ namespace IdentityStore
         * is not specified, it will be initialized to default values.
         */
         IdentityStoreClient(const Aws::IdentityStore::IdentityStoreClientConfiguration& clientConfiguration = Aws::IdentityStore::IdentityStoreClientConfiguration(),
-                            std::shared_ptr<IdentityStoreEndpointProviderBase> endpointProvider = Aws::MakeShared<IdentityStoreEndpointProvider>(ALLOCATION_TAG));
+                            std::shared_ptr<IdentityStoreEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         IdentityStoreClient(const Aws::Auth::AWSCredentials& credentials,
-                            std::shared_ptr<IdentityStoreEndpointProviderBase> endpointProvider = Aws::MakeShared<IdentityStoreEndpointProvider>(ALLOCATION_TAG),
+                            std::shared_ptr<IdentityStoreEndpointProviderBase> endpointProvider = nullptr,
                             const Aws::IdentityStore::IdentityStoreClientConfiguration& clientConfiguration = Aws::IdentityStore::IdentityStoreClientConfiguration());
 
        /**
@@ -61,7 +68,7 @@ namespace IdentityStore
         * the default http client factory will be used
         */
         IdentityStoreClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                            std::shared_ptr<IdentityStoreEndpointProviderBase> endpointProvider = Aws::MakeShared<IdentityStoreEndpointProvider>(ALLOCATION_TAG),
+                            std::shared_ptr<IdentityStoreEndpointProviderBase> endpointProvider = nullptr,
                             const Aws::IdentityStore::IdentityStoreClientConfiguration& clientConfiguration = Aws::IdentityStore::IdentityStoreClientConfiguration());
 
 
@@ -249,7 +256,11 @@ namespace IdentityStore
 
         /**
          * <p>Retrieves the group metadata and attributes from <code>GroupId</code> in an
-         * identity store.</p><p><h3>See Also:</h3>   <a
+         * identity store.</p>  <p>If you have administrator access to a member
+         * account, you can use this API from the member account. Read about <a
+         * href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html">member
+         * accounts</a> in the <i>Organizations User Guide</i>. </p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/identitystore-2020-06-15/DescribeGroup">AWS
          * API Reference</a></p>
          */
@@ -275,7 +286,11 @@ namespace IdentityStore
 
         /**
          * <p>Retrieves membership metadata and attributes from <code>MembershipId</code>
-         * in an identity store.</p><p><h3>See Also:</h3>   <a
+         * in an identity store.</p>  <p>If you have administrator access to a member
+         * account, you can use this API from the member account. Read about <a
+         * href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html">member
+         * accounts</a> in the <i>Organizations User Guide</i>. </p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/identitystore-2020-06-15/DescribeGroupMembership">AWS
          * API Reference</a></p>
          */
@@ -301,7 +316,11 @@ namespace IdentityStore
 
         /**
          * <p>Retrieves the user metadata and attributes from the <code>UserId</code> in an
-         * identity store.</p><p><h3>See Also:</h3>   <a
+         * identity store.</p>  <p>If you have administrator access to a member
+         * account, you can use this API from the member account. Read about <a
+         * href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html">member
+         * accounts</a> in the <i>Organizations User Guide</i>. </p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/identitystore-2020-06-15/DescribeUser">AWS
          * API Reference</a></p>
          */
@@ -326,8 +345,12 @@ namespace IdentityStore
         }
 
         /**
-         * <p>Retrieves <code>GroupId</code> in an identity store.</p><p><h3>See Also:</h3>
-         * <a
+         * <p>Retrieves <code>GroupId</code> in an identity store.</p>  <p>If you
+         * have administrator access to a member account, you can use this API from the
+         * member account. Read about <a
+         * href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html">member
+         * accounts</a> in the <i>Organizations User Guide</i>. </p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/identitystore-2020-06-15/GetGroupId">AWS
          * API Reference</a></p>
          */
@@ -352,7 +375,11 @@ namespace IdentityStore
         }
 
         /**
-         * <p>Retrieves the <code>MembershipId</code> in an identity store.</p><p><h3>See
+         * <p>Retrieves the <code>MembershipId</code> in an identity store.</p> 
+         * <p>If you have administrator access to a member account, you can use this API
+         * from the member account. Read about <a
+         * href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html">member
+         * accounts</a> in the <i>Organizations User Guide</i>. </p> <p><h3>See
          * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/identitystore-2020-06-15/GetGroupMembershipId">AWS
          * API Reference</a></p>
@@ -378,7 +405,11 @@ namespace IdentityStore
         }
 
         /**
-         * <p>Retrieves the <code>UserId</code> in an identity store.</p><p><h3>See
+         * <p>Retrieves the <code>UserId</code> in an identity store.</p>  <p>If you
+         * have administrator access to a member account, you can use this API from the
+         * member account. Read about <a
+         * href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html">member
+         * accounts</a> in the <i>Organizations User Guide</i>. </p> <p><h3>See
          * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/identitystore-2020-06-15/GetUserId">AWS
          * API Reference</a></p>
@@ -405,7 +436,12 @@ namespace IdentityStore
 
         /**
          * <p>Checks the user's membership in all requested groups and returns if the
-         * member exists in all queried groups.</p><p><h3>See Also:</h3>   <a
+         * member exists in all queried groups.</p>  <p>If you have administrator
+         * access to a member account, you can use this API from the member account. Read
+         * about <a
+         * href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html">member
+         * accounts</a> in the <i>Organizations User Guide</i>. </p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/identitystore-2020-06-15/IsMemberInGroups">AWS
          * API Reference</a></p>
          */
@@ -432,7 +468,11 @@ namespace IdentityStore
         /**
          * <p>For the specified group in the specified identity store, returns the list of
          * all <code>GroupMembership</code> objects and returns results in paginated
-         * form.</p><p><h3>See Also:</h3>   <a
+         * form.</p>  <p>If you have administrator access to a member account, you
+         * can use this API from the member account. Read about <a
+         * href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html">member
+         * accounts</a> in the <i>Organizations User Guide</i>. </p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/identitystore-2020-06-15/ListGroupMemberships">AWS
          * API Reference</a></p>
          */
@@ -459,7 +499,11 @@ namespace IdentityStore
         /**
          * <p>For the specified member in the specified identity store, returns the list of
          * all <code>GroupMembership</code> objects and returns results in paginated
-         * form.</p><p><h3>See Also:</h3>   <a
+         * form.</p>  <p>If you have administrator access to a member account, you
+         * can use this API from the member account. Read about <a
+         * href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html">member
+         * accounts</a> in the <i>Organizations User Guide</i>. </p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/identitystore-2020-06-15/ListGroupMembershipsForMember">AWS
          * API Reference</a></p>
          */
@@ -487,7 +531,12 @@ namespace IdentityStore
          * <p>Lists all groups in the identity store. Returns a paginated list of complete
          * <code>Group</code> objects. Filtering for a <code>Group</code> by the
          * <code>DisplayName</code> attribute is deprecated. Instead, use the
-         * <code>GetGroupId</code> API action.</p><p><h3>See Also:</h3>   <a
+         * <code>GetGroupId</code> API action.</p>  <p>If you have administrator
+         * access to a member account, you can use this API from the member account. Read
+         * about <a
+         * href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html">member
+         * accounts</a> in the <i>Organizations User Guide</i>. </p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/identitystore-2020-06-15/ListGroups">AWS
          * API Reference</a></p>
          */
@@ -515,7 +564,12 @@ namespace IdentityStore
          * <p>Lists all users in the identity store. Returns a paginated list of complete
          * <code>User</code> objects. Filtering for a <code>User</code> by the
          * <code>UserName</code> attribute is deprecated. Instead, use the
-         * <code>GetUserId</code> API action.</p><p><h3>See Also:</h3>   <a
+         * <code>GetUserId</code> API action.</p>  <p>If you have administrator
+         * access to a member account, you can use this API from the member account. Read
+         * about <a
+         * href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html">member
+         * accounts</a> in the <i>Organizations User Guide</i>.</p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/identitystore-2020-06-15/ListUsers">AWS
          * API Reference</a></p>
          */
@@ -596,11 +650,7 @@ namespace IdentityStore
       std::shared_ptr<IdentityStoreEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<IdentityStoreClient>;
-      void init(const IdentityStoreClientConfiguration& clientConfiguration);
 
-      IdentityStoreClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<IdentityStoreEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace IdentityStore

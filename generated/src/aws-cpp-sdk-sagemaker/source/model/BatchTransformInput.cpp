@@ -32,25 +32,13 @@ BatchTransformInput::BatchTransformInput() :
     m_probabilityThresholdAttribute(0.0),
     m_probabilityThresholdAttributeHasBeenSet(false),
     m_startTimeOffsetHasBeenSet(false),
-    m_endTimeOffsetHasBeenSet(false)
+    m_endTimeOffsetHasBeenSet(false),
+    m_excludeFeaturesAttributeHasBeenSet(false)
 {
 }
 
-BatchTransformInput::BatchTransformInput(JsonView jsonValue) : 
-    m_dataCapturedDestinationS3UriHasBeenSet(false),
-    m_datasetFormatHasBeenSet(false),
-    m_localPathHasBeenSet(false),
-    m_s3InputMode(ProcessingS3InputMode::NOT_SET),
-    m_s3InputModeHasBeenSet(false),
-    m_s3DataDistributionType(ProcessingS3DataDistributionType::NOT_SET),
-    m_s3DataDistributionTypeHasBeenSet(false),
-    m_featuresAttributeHasBeenSet(false),
-    m_inferenceAttributeHasBeenSet(false),
-    m_probabilityAttributeHasBeenSet(false),
-    m_probabilityThresholdAttribute(0.0),
-    m_probabilityThresholdAttributeHasBeenSet(false),
-    m_startTimeOffsetHasBeenSet(false),
-    m_endTimeOffsetHasBeenSet(false)
+BatchTransformInput::BatchTransformInput(JsonView jsonValue)
+  : BatchTransformInput()
 {
   *this = jsonValue;
 }
@@ -134,6 +122,13 @@ BatchTransformInput& BatchTransformInput::operator =(JsonView jsonValue)
     m_endTimeOffsetHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ExcludeFeaturesAttribute"))
+  {
+    m_excludeFeaturesAttribute = jsonValue.GetString("ExcludeFeaturesAttribute");
+
+    m_excludeFeaturesAttributeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -202,6 +197,12 @@ JsonValue BatchTransformInput::Jsonize() const
   if(m_endTimeOffsetHasBeenSet)
   {
    payload.WithString("EndTimeOffset", m_endTimeOffset);
+
+  }
+
+  if(m_excludeFeaturesAttributeHasBeenSet)
+  {
+   payload.WithString("ExcludeFeaturesAttribute", m_excludeFeaturesAttribute);
 
   }
 

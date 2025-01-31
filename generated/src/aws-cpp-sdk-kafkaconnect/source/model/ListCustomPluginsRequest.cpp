@@ -18,7 +18,8 @@ using namespace Aws::Http;
 ListCustomPluginsRequest::ListCustomPluginsRequest() : 
     m_maxResults(0),
     m_maxResultsHasBeenSet(false),
-    m_nextTokenHasBeenSet(false)
+    m_nextTokenHasBeenSet(false),
+    m_namePrefixHasBeenSet(false)
 {
 }
 
@@ -41,6 +42,13 @@ void ListCustomPluginsRequest::AddQueryStringParameters(URI& uri) const
     {
       ss << m_nextToken;
       uri.AddQueryStringParameter("nextToken", ss.str());
+      ss.str("");
+    }
+
+    if(m_namePrefixHasBeenSet)
+    {
+      ss << m_namePrefix;
+      uri.AddQueryStringParameter("namePrefix", ss.str());
       ss.str("");
     }
 

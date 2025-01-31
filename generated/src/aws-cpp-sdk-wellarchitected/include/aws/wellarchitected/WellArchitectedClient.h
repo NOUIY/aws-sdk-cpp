@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/wellarchitected/WellArchitected_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/wellarchitected/WellArchitectedServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/wellarchitected/WellArchitectedErrorMarshaller.h>
 
 namespace Aws
 {
 namespace WellArchitected
 {
+  AWS_WELLARCHITECTED_API extern const char SERVICE_NAME[];
   /**
    * <fullname>Well-Architected Tool</fullname> <p>This is the <i>Well-Architected
    * Tool API Reference</i>. The WA Tool API provides programmatic access to the <a
@@ -25,12 +29,20 @@ namespace WellArchitected
    * href="https://docs.aws.amazon.com/wellarchitected/latest/userguide/intro.html">Well-Architected
    * Tool User Guide</a>.</p>
    */
-  class AWS_WELLARCHITECTED_API WellArchitectedClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<WellArchitectedClient>
+  class AWS_WELLARCHITECTED_API WellArchitectedClient : smithy::client::AwsSmithyClientT<Aws::WellArchitected::SERVICE_NAME,
+      Aws::WellArchitected::WellArchitectedClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      WellArchitectedEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::WellArchitectedErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<WellArchitectedClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "WellArchitected"; }
 
       typedef WellArchitectedClientConfiguration ClientConfigurationType;
       typedef WellArchitectedEndpointProvider EndpointProviderType;
@@ -40,14 +52,14 @@ namespace WellArchitected
         * is not specified, it will be initialized to default values.
         */
         WellArchitectedClient(const Aws::WellArchitected::WellArchitectedClientConfiguration& clientConfiguration = Aws::WellArchitected::WellArchitectedClientConfiguration(),
-                              std::shared_ptr<WellArchitectedEndpointProviderBase> endpointProvider = Aws::MakeShared<WellArchitectedEndpointProvider>(ALLOCATION_TAG));
+                              std::shared_ptr<WellArchitectedEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         WellArchitectedClient(const Aws::Auth::AWSCredentials& credentials,
-                              std::shared_ptr<WellArchitectedEndpointProviderBase> endpointProvider = Aws::MakeShared<WellArchitectedEndpointProvider>(ALLOCATION_TAG),
+                              std::shared_ptr<WellArchitectedEndpointProviderBase> endpointProvider = nullptr,
                               const Aws::WellArchitected::WellArchitectedClientConfiguration& clientConfiguration = Aws::WellArchitected::WellArchitectedClientConfiguration());
 
        /**
@@ -55,7 +67,7 @@ namespace WellArchitected
         * the default http client factory will be used
         */
         WellArchitectedClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                              std::shared_ptr<WellArchitectedEndpointProviderBase> endpointProvider = Aws::MakeShared<WellArchitectedEndpointProvider>(ALLOCATION_TAG),
+                              std::shared_ptr<WellArchitectedEndpointProviderBase> endpointProvider = nullptr,
                               const Aws::WellArchitected::WellArchitectedClientConfiguration& clientConfiguration = Aws::WellArchitected::WellArchitectedClientConfiguration());
 
 
@@ -112,6 +124,31 @@ namespace WellArchitected
         void AssociateLensesAsync(const AssociateLensesRequestT& request, const AssociateLensesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&WellArchitectedClient::AssociateLenses, request, handler, context);
+        }
+
+        /**
+         * <p>Associate a profile with a workload.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/AssociateProfiles">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::AssociateProfilesOutcome AssociateProfiles(const Model::AssociateProfilesRequest& request) const;
+
+        /**
+         * A Callable wrapper for AssociateProfiles that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename AssociateProfilesRequestT = Model::AssociateProfilesRequest>
+        Model::AssociateProfilesOutcomeCallable AssociateProfilesCallable(const AssociateProfilesRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::AssociateProfiles, request);
+        }
+
+        /**
+         * An Async wrapper for AssociateProfiles that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename AssociateProfilesRequestT = Model::AssociateProfilesRequest>
+        void AssociateProfilesAsync(const AssociateProfilesRequestT& request, const AssociateProfilesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::AssociateProfiles, request, handler, context);
         }
 
         /**
@@ -209,6 +246,122 @@ namespace WellArchitected
         }
 
         /**
+         * <p>Create a profile.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/CreateProfile">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateProfileOutcome CreateProfile(const Model::CreateProfileRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateProfile that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateProfileRequestT = Model::CreateProfileRequest>
+        Model::CreateProfileOutcomeCallable CreateProfileCallable(const CreateProfileRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::CreateProfile, request);
+        }
+
+        /**
+         * An Async wrapper for CreateProfile that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateProfileRequestT = Model::CreateProfileRequest>
+        void CreateProfileAsync(const CreateProfileRequestT& request, const CreateProfileResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::CreateProfile, request, handler, context);
+        }
+
+        /**
+         * <p>Create a profile share.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/CreateProfileShare">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateProfileShareOutcome CreateProfileShare(const Model::CreateProfileShareRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateProfileShare that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateProfileShareRequestT = Model::CreateProfileShareRequest>
+        Model::CreateProfileShareOutcomeCallable CreateProfileShareCallable(const CreateProfileShareRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::CreateProfileShare, request);
+        }
+
+        /**
+         * An Async wrapper for CreateProfileShare that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateProfileShareRequestT = Model::CreateProfileShareRequest>
+        void CreateProfileShareAsync(const CreateProfileShareRequestT& request, const CreateProfileShareResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::CreateProfileShare, request, handler, context);
+        }
+
+        /**
+         * <p>Create a review template.</p>  <p> <b>Disclaimer</b> </p> <p>Do not
+         * include or gather personal identifiable information (PII) of end users or other
+         * identifiable individuals in or via your review templates. If your review
+         * template or those shared with you and used in your account do include or collect
+         * PII you are responsible for: ensuring that the included PII is processed in
+         * accordance with applicable law, providing adequate privacy notices, and
+         * obtaining necessary consents for processing such data.</p> <p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/CreateReviewTemplate">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateReviewTemplateOutcome CreateReviewTemplate(const Model::CreateReviewTemplateRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateReviewTemplate that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateReviewTemplateRequestT = Model::CreateReviewTemplateRequest>
+        Model::CreateReviewTemplateOutcomeCallable CreateReviewTemplateCallable(const CreateReviewTemplateRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::CreateReviewTemplate, request);
+        }
+
+        /**
+         * An Async wrapper for CreateReviewTemplate that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateReviewTemplateRequestT = Model::CreateReviewTemplateRequest>
+        void CreateReviewTemplateAsync(const CreateReviewTemplateRequestT& request, const CreateReviewTemplateResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::CreateReviewTemplate, request, handler, context);
+        }
+
+        /**
+         * <p>Create a review template share.</p> <p>The owner of a review template can
+         * share it with other Amazon Web Services accounts, users, an organization, and
+         * organizational units (OUs) in the same Amazon Web Services Region. </p> <p>
+         * Shared access to a review template is not removed until the review template
+         * share invitation is deleted.</p> <p>If you share a review template with an
+         * organization or OU, all accounts in the organization or OU are granted access to
+         * the review template.</p>  <p> <b>Disclaimer</b> </p> <p>By sharing your
+         * review template with other Amazon Web Services accounts, you acknowledge that
+         * Amazon Web Services will make your review template available to those other
+         * accounts.</p> <p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/CreateTemplateShare">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateTemplateShareOutcome CreateTemplateShare(const Model::CreateTemplateShareRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateTemplateShare that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateTemplateShareRequestT = Model::CreateTemplateShareRequest>
+        Model::CreateTemplateShareOutcomeCallable CreateTemplateShareCallable(const CreateTemplateShareRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::CreateTemplateShare, request);
+        }
+
+        /**
+         * An Async wrapper for CreateTemplateShare that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateTemplateShareRequestT = Model::CreateTemplateShareRequest>
+        void CreateTemplateShareAsync(const CreateTemplateShareRequestT& request, const CreateTemplateShareResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::CreateTemplateShare, request, handler, context);
+        }
+
+        /**
          * <p>Create a new workload.</p> <p>The owner of a workload can share the workload
          * with other Amazon Web Services accounts, users, an organization, and
          * organizational units (OUs) in the same Amazon Web Services Region. Only the
@@ -218,7 +371,13 @@ namespace WellArchitected
          * <p>Either <code>AwsRegions</code>, <code>NonAwsRegions</code>, or both must be
          * specified when creating a workload.</p> <p>You also must specify
          * <code>ReviewOwner</code>, even though the parameter is listed as not being
-         * required in the following section. </p> <p><h3>See Also:</h3>   <a
+         * required in the following section. </p>  <p>When creating a workload
+         * using a review template, you must have the following IAM permissions:</p> <ul>
+         * <li> <p> <code>wellarchitected:GetReviewTemplate</code> </p> </li> <li> <p>
+         * <code>wellarchitected:GetReviewTemplateAnswer</code> </p> </li> <li> <p>
+         * <code>wellarchitected:ListReviewTemplateAnswers</code> </p> </li> <li> <p>
+         * <code>wellarchitected:GetReviewTemplateLensReview</code> </p> </li>
+         * </ul><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/CreateWorkload">AWS
          * API Reference</a></p>
          */
@@ -344,6 +503,118 @@ namespace WellArchitected
         }
 
         /**
+         * <p>Delete a profile.</p>  <p> <b>Disclaimer</b> </p> <p>By sharing your
+         * profile with other Amazon Web Services accounts, you acknowledge that Amazon Web
+         * Services will make your profile available to those other accounts. Those other
+         * accounts may continue to access and use your shared profile even if you delete
+         * the profile from your own Amazon Web Services account or terminate your Amazon
+         * Web Services account.</p> <p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/DeleteProfile">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteProfileOutcome DeleteProfile(const Model::DeleteProfileRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteProfile that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteProfileRequestT = Model::DeleteProfileRequest>
+        Model::DeleteProfileOutcomeCallable DeleteProfileCallable(const DeleteProfileRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::DeleteProfile, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteProfile that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteProfileRequestT = Model::DeleteProfileRequest>
+        void DeleteProfileAsync(const DeleteProfileRequestT& request, const DeleteProfileResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::DeleteProfile, request, handler, context);
+        }
+
+        /**
+         * <p>Delete a profile share.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/DeleteProfileShare">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteProfileShareOutcome DeleteProfileShare(const Model::DeleteProfileShareRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteProfileShare that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteProfileShareRequestT = Model::DeleteProfileShareRequest>
+        Model::DeleteProfileShareOutcomeCallable DeleteProfileShareCallable(const DeleteProfileShareRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::DeleteProfileShare, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteProfileShare that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteProfileShareRequestT = Model::DeleteProfileShareRequest>
+        void DeleteProfileShareAsync(const DeleteProfileShareRequestT& request, const DeleteProfileShareResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::DeleteProfileShare, request, handler, context);
+        }
+
+        /**
+         * <p>Delete a review template.</p> <p>Only the owner of a review template can
+         * delete it.</p> <p>After the review template is deleted, Amazon Web Services
+         * accounts, users, organizations, and organizational units (OUs) that you shared
+         * the review template with will no longer be able to apply it to new
+         * workloads.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/DeleteReviewTemplate">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteReviewTemplateOutcome DeleteReviewTemplate(const Model::DeleteReviewTemplateRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteReviewTemplate that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteReviewTemplateRequestT = Model::DeleteReviewTemplateRequest>
+        Model::DeleteReviewTemplateOutcomeCallable DeleteReviewTemplateCallable(const DeleteReviewTemplateRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::DeleteReviewTemplate, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteReviewTemplate that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteReviewTemplateRequestT = Model::DeleteReviewTemplateRequest>
+        void DeleteReviewTemplateAsync(const DeleteReviewTemplateRequestT& request, const DeleteReviewTemplateResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::DeleteReviewTemplate, request, handler, context);
+        }
+
+        /**
+         * <p>Delete a review template share.</p> <p>After the review template share is
+         * deleted, Amazon Web Services accounts, users, organizations, and organizational
+         * units (OUs) that you shared the review template with will no longer be able to
+         * apply it to new workloads.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/DeleteTemplateShare">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteTemplateShareOutcome DeleteTemplateShare(const Model::DeleteTemplateShareRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteTemplateShare that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteTemplateShareRequestT = Model::DeleteTemplateShareRequest>
+        Model::DeleteTemplateShareOutcomeCallable DeleteTemplateShareCallable(const DeleteTemplateShareRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::DeleteTemplateShare, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteTemplateShare that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteTemplateShareRequestT = Model::DeleteTemplateShareRequest>
+        void DeleteTemplateShareAsync(const DeleteTemplateShareRequestT& request, const DeleteTemplateShareResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::DeleteTemplateShare, request, handler, context);
+        }
+
+        /**
          * <p>Delete an existing workload.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/DeleteWorkload">AWS
          * API Reference</a></p>
@@ -420,6 +691,31 @@ namespace WellArchitected
         void DisassociateLensesAsync(const DisassociateLensesRequestT& request, const DisassociateLensesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&WellArchitectedClient::DisassociateLenses, request, handler, context);
+        }
+
+        /**
+         * <p>Disassociate a profile from a workload.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/DisassociateProfiles">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DisassociateProfilesOutcome DisassociateProfiles(const Model::DisassociateProfilesRequest& request) const;
+
+        /**
+         * A Callable wrapper for DisassociateProfiles that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DisassociateProfilesRequestT = Model::DisassociateProfilesRequest>
+        Model::DisassociateProfilesOutcomeCallable DisassociateProfilesCallable(const DisassociateProfilesRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::DisassociateProfiles, request);
+        }
+
+        /**
+         * An Async wrapper for DisassociateProfiles that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DisassociateProfilesRequestT = Model::DisassociateProfilesRequest>
+        void DisassociateProfilesAsync(const DisassociateProfilesRequestT& request, const DisassociateProfilesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::DisassociateProfiles, request, handler, context);
         }
 
         /**
@@ -510,6 +806,31 @@ namespace WellArchitected
         void GetConsolidatedReportAsync(const GetConsolidatedReportRequestT& request, const GetConsolidatedReportResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&WellArchitectedClient::GetConsolidatedReport, request, handler, context);
+        }
+
+        /**
+         * <p>Global settings for all workloads.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/GetGlobalSettings">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetGlobalSettingsOutcome GetGlobalSettings(const Model::GetGlobalSettingsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for GetGlobalSettings that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetGlobalSettingsRequestT = Model::GetGlobalSettingsRequest>
+        Model::GetGlobalSettingsOutcomeCallable GetGlobalSettingsCallable(const GetGlobalSettingsRequestT& request = {}) const
+        {
+            return SubmitCallable(&WellArchitectedClient::GetGlobalSettings, request);
+        }
+
+        /**
+         * An Async wrapper for GetGlobalSettings that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetGlobalSettingsRequestT = Model::GetGlobalSettingsRequest>
+        void GetGlobalSettingsAsync(const GetGlobalSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetGlobalSettingsRequestT& request = {}) const
+        {
+            return SubmitAsync(&WellArchitectedClient::GetGlobalSettings, request, handler, context);
         }
 
         /**
@@ -635,6 +956,132 @@ namespace WellArchitected
         void GetMilestoneAsync(const GetMilestoneRequestT& request, const GetMilestoneResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&WellArchitectedClient::GetMilestone, request, handler, context);
+        }
+
+        /**
+         * <p>Get profile information.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/GetProfile">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetProfileOutcome GetProfile(const Model::GetProfileRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetProfile that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetProfileRequestT = Model::GetProfileRequest>
+        Model::GetProfileOutcomeCallable GetProfileCallable(const GetProfileRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::GetProfile, request);
+        }
+
+        /**
+         * An Async wrapper for GetProfile that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetProfileRequestT = Model::GetProfileRequest>
+        void GetProfileAsync(const GetProfileRequestT& request, const GetProfileResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::GetProfile, request, handler, context);
+        }
+
+        /**
+         * <p>Get profile template.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/GetProfileTemplate">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetProfileTemplateOutcome GetProfileTemplate(const Model::GetProfileTemplateRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for GetProfileTemplate that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetProfileTemplateRequestT = Model::GetProfileTemplateRequest>
+        Model::GetProfileTemplateOutcomeCallable GetProfileTemplateCallable(const GetProfileTemplateRequestT& request = {}) const
+        {
+            return SubmitCallable(&WellArchitectedClient::GetProfileTemplate, request);
+        }
+
+        /**
+         * An Async wrapper for GetProfileTemplate that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetProfileTemplateRequestT = Model::GetProfileTemplateRequest>
+        void GetProfileTemplateAsync(const GetProfileTemplateResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetProfileTemplateRequestT& request = {}) const
+        {
+            return SubmitAsync(&WellArchitectedClient::GetProfileTemplate, request, handler, context);
+        }
+
+        /**
+         * <p>Get review template.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/GetReviewTemplate">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetReviewTemplateOutcome GetReviewTemplate(const Model::GetReviewTemplateRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetReviewTemplate that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetReviewTemplateRequestT = Model::GetReviewTemplateRequest>
+        Model::GetReviewTemplateOutcomeCallable GetReviewTemplateCallable(const GetReviewTemplateRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::GetReviewTemplate, request);
+        }
+
+        /**
+         * An Async wrapper for GetReviewTemplate that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetReviewTemplateRequestT = Model::GetReviewTemplateRequest>
+        void GetReviewTemplateAsync(const GetReviewTemplateRequestT& request, const GetReviewTemplateResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::GetReviewTemplate, request, handler, context);
+        }
+
+        /**
+         * <p>Get review template answer.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/GetReviewTemplateAnswer">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetReviewTemplateAnswerOutcome GetReviewTemplateAnswer(const Model::GetReviewTemplateAnswerRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetReviewTemplateAnswer that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetReviewTemplateAnswerRequestT = Model::GetReviewTemplateAnswerRequest>
+        Model::GetReviewTemplateAnswerOutcomeCallable GetReviewTemplateAnswerCallable(const GetReviewTemplateAnswerRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::GetReviewTemplateAnswer, request);
+        }
+
+        /**
+         * An Async wrapper for GetReviewTemplateAnswer that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetReviewTemplateAnswerRequestT = Model::GetReviewTemplateAnswerRequest>
+        void GetReviewTemplateAnswerAsync(const GetReviewTemplateAnswerRequestT& request, const GetReviewTemplateAnswerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::GetReviewTemplateAnswer, request, handler, context);
+        }
+
+        /**
+         * <p>Get a lens review associated with a review template.</p><p><h3>See Also:</h3>
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/GetReviewTemplateLensReview">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetReviewTemplateLensReviewOutcome GetReviewTemplateLensReview(const Model::GetReviewTemplateLensReviewRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetReviewTemplateLensReview that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetReviewTemplateLensReviewRequestT = Model::GetReviewTemplateLensReviewRequest>
+        Model::GetReviewTemplateLensReviewOutcomeCallable GetReviewTemplateLensReviewCallable(const GetReviewTemplateLensReviewRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::GetReviewTemplateLensReview, request);
+        }
+
+        /**
+         * An Async wrapper for GetReviewTemplateLensReview that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetReviewTemplateLensReviewRequestT = Model::GetReviewTemplateLensReviewRequest>
+        void GetReviewTemplateLensReviewAsync(const GetReviewTemplateLensReviewRequestT& request, const GetReviewTemplateLensReviewResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::GetReviewTemplateLensReview, request, handler, context);
         }
 
         /**
@@ -782,7 +1229,8 @@ namespace WellArchitected
         }
 
         /**
-         * <p>List lens review improvements.</p><p><h3>See Also:</h3>   <a
+         * <p>List the improvements of a particular lens review.</p><p><h3>See Also:</h3>  
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/ListLensReviewImprovements">AWS
          * API Reference</a></p>
          */
@@ -861,13 +1309,13 @@ namespace WellArchitected
          * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/ListLenses">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListLensesOutcome ListLenses(const Model::ListLensesRequest& request) const;
+        virtual Model::ListLensesOutcome ListLenses(const Model::ListLensesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListLenses that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListLensesRequestT = Model::ListLensesRequest>
-        Model::ListLensesOutcomeCallable ListLensesCallable(const ListLensesRequestT& request) const
+        Model::ListLensesOutcomeCallable ListLensesCallable(const ListLensesRequestT& request = {}) const
         {
             return SubmitCallable(&WellArchitectedClient::ListLenses, request);
         }
@@ -876,7 +1324,7 @@ namespace WellArchitected
          * An Async wrapper for ListLenses that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListLensesRequestT = Model::ListLensesRequest>
-        void ListLensesAsync(const ListLensesRequestT& request, const ListLensesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListLensesAsync(const ListLensesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListLensesRequestT& request = {}) const
         {
             return SubmitAsync(&WellArchitectedClient::ListLenses, request, handler, context);
         }
@@ -911,13 +1359,13 @@ namespace WellArchitected
          * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/ListNotifications">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListNotificationsOutcome ListNotifications(const Model::ListNotificationsRequest& request) const;
+        virtual Model::ListNotificationsOutcome ListNotifications(const Model::ListNotificationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListNotifications that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListNotificationsRequestT = Model::ListNotificationsRequest>
-        Model::ListNotificationsOutcomeCallable ListNotificationsCallable(const ListNotificationsRequestT& request) const
+        Model::ListNotificationsOutcomeCallable ListNotificationsCallable(const ListNotificationsRequestT& request = {}) const
         {
             return SubmitCallable(&WellArchitectedClient::ListNotifications, request);
         }
@@ -926,23 +1374,151 @@ namespace WellArchitected
          * An Async wrapper for ListNotifications that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListNotificationsRequestT = Model::ListNotificationsRequest>
-        void ListNotificationsAsync(const ListNotificationsRequestT& request, const ListNotificationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListNotificationsAsync(const ListNotificationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListNotificationsRequestT& request = {}) const
         {
             return SubmitAsync(&WellArchitectedClient::ListNotifications, request, handler, context);
         }
 
         /**
-         * <p>List the workload invitations.</p><p><h3>See Also:</h3>   <a
+         * <p>List profile notifications.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/ListProfileNotifications">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListProfileNotificationsOutcome ListProfileNotifications(const Model::ListProfileNotificationsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListProfileNotifications that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListProfileNotificationsRequestT = Model::ListProfileNotificationsRequest>
+        Model::ListProfileNotificationsOutcomeCallable ListProfileNotificationsCallable(const ListProfileNotificationsRequestT& request = {}) const
+        {
+            return SubmitCallable(&WellArchitectedClient::ListProfileNotifications, request);
+        }
+
+        /**
+         * An Async wrapper for ListProfileNotifications that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListProfileNotificationsRequestT = Model::ListProfileNotificationsRequest>
+        void ListProfileNotificationsAsync(const ListProfileNotificationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListProfileNotificationsRequestT& request = {}) const
+        {
+            return SubmitAsync(&WellArchitectedClient::ListProfileNotifications, request, handler, context);
+        }
+
+        /**
+         * <p>List profile shares.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/ListProfileShares">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListProfileSharesOutcome ListProfileShares(const Model::ListProfileSharesRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListProfileShares that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListProfileSharesRequestT = Model::ListProfileSharesRequest>
+        Model::ListProfileSharesOutcomeCallable ListProfileSharesCallable(const ListProfileSharesRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::ListProfileShares, request);
+        }
+
+        /**
+         * An Async wrapper for ListProfileShares that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListProfileSharesRequestT = Model::ListProfileSharesRequest>
+        void ListProfileSharesAsync(const ListProfileSharesRequestT& request, const ListProfileSharesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::ListProfileShares, request, handler, context);
+        }
+
+        /**
+         * <p>List profiles.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/ListProfiles">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListProfilesOutcome ListProfiles(const Model::ListProfilesRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListProfiles that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListProfilesRequestT = Model::ListProfilesRequest>
+        Model::ListProfilesOutcomeCallable ListProfilesCallable(const ListProfilesRequestT& request = {}) const
+        {
+            return SubmitCallable(&WellArchitectedClient::ListProfiles, request);
+        }
+
+        /**
+         * An Async wrapper for ListProfiles that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListProfilesRequestT = Model::ListProfilesRequest>
+        void ListProfilesAsync(const ListProfilesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListProfilesRequestT& request = {}) const
+        {
+            return SubmitAsync(&WellArchitectedClient::ListProfiles, request, handler, context);
+        }
+
+        /**
+         * <p>List the answers of a review template.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/ListReviewTemplateAnswers">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListReviewTemplateAnswersOutcome ListReviewTemplateAnswers(const Model::ListReviewTemplateAnswersRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListReviewTemplateAnswers that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListReviewTemplateAnswersRequestT = Model::ListReviewTemplateAnswersRequest>
+        Model::ListReviewTemplateAnswersOutcomeCallable ListReviewTemplateAnswersCallable(const ListReviewTemplateAnswersRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::ListReviewTemplateAnswers, request);
+        }
+
+        /**
+         * An Async wrapper for ListReviewTemplateAnswers that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListReviewTemplateAnswersRequestT = Model::ListReviewTemplateAnswersRequest>
+        void ListReviewTemplateAnswersAsync(const ListReviewTemplateAnswersRequestT& request, const ListReviewTemplateAnswersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::ListReviewTemplateAnswers, request, handler, context);
+        }
+
+        /**
+         * <p>List review templates.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/ListReviewTemplates">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListReviewTemplatesOutcome ListReviewTemplates(const Model::ListReviewTemplatesRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListReviewTemplates that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListReviewTemplatesRequestT = Model::ListReviewTemplatesRequest>
+        Model::ListReviewTemplatesOutcomeCallable ListReviewTemplatesCallable(const ListReviewTemplatesRequestT& request = {}) const
+        {
+            return SubmitCallable(&WellArchitectedClient::ListReviewTemplates, request);
+        }
+
+        /**
+         * An Async wrapper for ListReviewTemplates that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListReviewTemplatesRequestT = Model::ListReviewTemplatesRequest>
+        void ListReviewTemplatesAsync(const ListReviewTemplatesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListReviewTemplatesRequestT& request = {}) const
+        {
+            return SubmitAsync(&WellArchitectedClient::ListReviewTemplates, request, handler, context);
+        }
+
+        /**
+         * <p>List the share invitations.</p> <p> <code>WorkloadNamePrefix</code>,
+         * <code>LensNamePrefix</code>, <code>ProfileNamePrefix</code>, and
+         * <code>TemplateNamePrefix</code> are mutually exclusive. Use the parameter that
+         * matches your <code>ShareResourceType</code>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/ListShareInvitations">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListShareInvitationsOutcome ListShareInvitations(const Model::ListShareInvitationsRequest& request) const;
+        virtual Model::ListShareInvitationsOutcome ListShareInvitations(const Model::ListShareInvitationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListShareInvitations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListShareInvitationsRequestT = Model::ListShareInvitationsRequest>
-        Model::ListShareInvitationsOutcomeCallable ListShareInvitationsCallable(const ListShareInvitationsRequestT& request) const
+        Model::ListShareInvitationsOutcomeCallable ListShareInvitationsCallable(const ListShareInvitationsRequestT& request = {}) const
         {
             return SubmitCallable(&WellArchitectedClient::ListShareInvitations, request);
         }
@@ -951,15 +1527,15 @@ namespace WellArchitected
          * An Async wrapper for ListShareInvitations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListShareInvitationsRequestT = Model::ListShareInvitationsRequest>
-        void ListShareInvitationsAsync(const ListShareInvitationsRequestT& request, const ListShareInvitationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListShareInvitationsAsync(const ListShareInvitationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListShareInvitationsRequestT& request = {}) const
         {
             return SubmitAsync(&WellArchitectedClient::ListShareInvitations, request, handler, context);
         }
 
         /**
          * <p>List the tags for a resource.</p>  <p>The WorkloadArn parameter can be
-         * either a workload ARN or a custom lens ARN.</p> <p><h3>See Also:</h3>  
-         * <a
+         * a workload ARN, a custom lens ARN, a profile ARN, or review template ARN.</p>
+         * <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/ListTagsForResource">AWS
          * API Reference</a></p>
          */
@@ -981,6 +1557,31 @@ namespace WellArchitected
         void ListTagsForResourceAsync(const ListTagsForResourceRequestT& request, const ListTagsForResourceResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&WellArchitectedClient::ListTagsForResource, request, handler, context);
+        }
+
+        /**
+         * <p>List review template shares.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/ListTemplateShares">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListTemplateSharesOutcome ListTemplateShares(const Model::ListTemplateSharesRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListTemplateShares that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListTemplateSharesRequestT = Model::ListTemplateSharesRequest>
+        Model::ListTemplateSharesOutcomeCallable ListTemplateSharesCallable(const ListTemplateSharesRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::ListTemplateShares, request);
+        }
+
+        /**
+         * An Async wrapper for ListTemplateShares that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListTemplateSharesRequestT = Model::ListTemplateSharesRequest>
+        void ListTemplateSharesAsync(const ListTemplateSharesRequestT& request, const ListTemplateSharesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::ListTemplateShares, request, handler, context);
         }
 
         /**
@@ -1014,13 +1615,13 @@ namespace WellArchitected
          * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/ListWorkloads">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListWorkloadsOutcome ListWorkloads(const Model::ListWorkloadsRequest& request) const;
+        virtual Model::ListWorkloadsOutcome ListWorkloads(const Model::ListWorkloadsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListWorkloads that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListWorkloadsRequestT = Model::ListWorkloadsRequest>
-        Model::ListWorkloadsOutcomeCallable ListWorkloadsCallable(const ListWorkloadsRequestT& request) const
+        Model::ListWorkloadsOutcomeCallable ListWorkloadsCallable(const ListWorkloadsRequestT& request = {}) const
         {
             return SubmitCallable(&WellArchitectedClient::ListWorkloads, request);
         }
@@ -1029,15 +1630,15 @@ namespace WellArchitected
          * An Async wrapper for ListWorkloads that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListWorkloadsRequestT = Model::ListWorkloadsRequest>
-        void ListWorkloadsAsync(const ListWorkloadsRequestT& request, const ListWorkloadsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListWorkloadsAsync(const ListWorkloadsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListWorkloadsRequestT& request = {}) const
         {
             return SubmitAsync(&WellArchitectedClient::ListWorkloads, request, handler, context);
         }
 
         /**
          * <p>Adds one or more tags to the specified resource.</p>  <p>The
-         * WorkloadArn parameter can be either a workload ARN or a custom lens ARN.</p>
-         * <p><h3>See Also:</h3>   <a
+         * WorkloadArn parameter can be a workload ARN, a custom lens ARN, a profile ARN,
+         * or review template ARN.</p> <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/TagResource">AWS
          * API Reference</a></p>
          */
@@ -1063,10 +1664,11 @@ namespace WellArchitected
 
         /**
          * <p>Deletes specified tags from a resource.</p>  <p>The WorkloadArn
-         * parameter can be either a workload ARN or a custom lens ARN.</p>  <p>To
-         * specify multiple tags, use separate <b>tagKeys</b> parameters, for example:</p>
-         * <p> <code>DELETE /tags/WorkloadArn?tagKeys=key1&amp;tagKeys=key2</code>
-         * </p><p><h3>See Also:</h3>   <a
+         * parameter can be a workload ARN, a custom lens ARN, a profile ARN, or review
+         * template ARN.</p>  <p>To specify multiple tags, use separate
+         * <b>tagKeys</b> parameters, for example:</p> <p> <code>DELETE
+         * /tags/WorkloadArn?tagKeys=key1&amp;tagKeys=key2</code> </p><p><h3>See Also:</h3>
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/UntagResource">AWS
          * API Reference</a></p>
          */
@@ -1117,18 +1719,18 @@ namespace WellArchitected
         }
 
         /**
-         * <p>Updates whether the Amazon Web Services account is opted into organization
+         * <p>Update whether the Amazon Web Services account is opted into organization
          * sharing and discovery integration features.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/UpdateGlobalSettings">AWS
          * API Reference</a></p>
          */
-        virtual Model::UpdateGlobalSettingsOutcome UpdateGlobalSettings(const Model::UpdateGlobalSettingsRequest& request) const;
+        virtual Model::UpdateGlobalSettingsOutcome UpdateGlobalSettings(const Model::UpdateGlobalSettingsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for UpdateGlobalSettings that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename UpdateGlobalSettingsRequestT = Model::UpdateGlobalSettingsRequest>
-        Model::UpdateGlobalSettingsOutcomeCallable UpdateGlobalSettingsCallable(const UpdateGlobalSettingsRequestT& request) const
+        Model::UpdateGlobalSettingsOutcomeCallable UpdateGlobalSettingsCallable(const UpdateGlobalSettingsRequestT& request = {}) const
         {
             return SubmitCallable(&WellArchitectedClient::UpdateGlobalSettings, request);
         }
@@ -1137,9 +1739,34 @@ namespace WellArchitected
          * An Async wrapper for UpdateGlobalSettings that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename UpdateGlobalSettingsRequestT = Model::UpdateGlobalSettingsRequest>
-        void UpdateGlobalSettingsAsync(const UpdateGlobalSettingsRequestT& request, const UpdateGlobalSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void UpdateGlobalSettingsAsync(const UpdateGlobalSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const UpdateGlobalSettingsRequestT& request = {}) const
         {
             return SubmitAsync(&WellArchitectedClient::UpdateGlobalSettings, request, handler, context);
+        }
+
+        /**
+         * <p>Update integration features.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/UpdateIntegration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateIntegrationOutcome UpdateIntegration(const Model::UpdateIntegrationRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateIntegration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateIntegrationRequestT = Model::UpdateIntegrationRequest>
+        Model::UpdateIntegrationOutcomeCallable UpdateIntegrationCallable(const UpdateIntegrationRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::UpdateIntegration, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateIntegration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateIntegrationRequestT = Model::UpdateIntegrationRequest>
+        void UpdateIntegrationAsync(const UpdateIntegrationRequestT& request, const UpdateIntegrationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::UpdateIntegration, request, handler, context);
         }
 
         /**
@@ -1165,6 +1792,107 @@ namespace WellArchitected
         void UpdateLensReviewAsync(const UpdateLensReviewRequestT& request, const UpdateLensReviewResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&WellArchitectedClient::UpdateLensReview, request, handler, context);
+        }
+
+        /**
+         * <p>Update a profile.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/UpdateProfile">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateProfileOutcome UpdateProfile(const Model::UpdateProfileRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateProfile that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateProfileRequestT = Model::UpdateProfileRequest>
+        Model::UpdateProfileOutcomeCallable UpdateProfileCallable(const UpdateProfileRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::UpdateProfile, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateProfile that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateProfileRequestT = Model::UpdateProfileRequest>
+        void UpdateProfileAsync(const UpdateProfileRequestT& request, const UpdateProfileResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::UpdateProfile, request, handler, context);
+        }
+
+        /**
+         * <p>Update a review template.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/UpdateReviewTemplate">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateReviewTemplateOutcome UpdateReviewTemplate(const Model::UpdateReviewTemplateRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateReviewTemplate that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateReviewTemplateRequestT = Model::UpdateReviewTemplateRequest>
+        Model::UpdateReviewTemplateOutcomeCallable UpdateReviewTemplateCallable(const UpdateReviewTemplateRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::UpdateReviewTemplate, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateReviewTemplate that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateReviewTemplateRequestT = Model::UpdateReviewTemplateRequest>
+        void UpdateReviewTemplateAsync(const UpdateReviewTemplateRequestT& request, const UpdateReviewTemplateResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::UpdateReviewTemplate, request, handler, context);
+        }
+
+        /**
+         * <p>Update a review template answer.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/UpdateReviewTemplateAnswer">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateReviewTemplateAnswerOutcome UpdateReviewTemplateAnswer(const Model::UpdateReviewTemplateAnswerRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateReviewTemplateAnswer that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateReviewTemplateAnswerRequestT = Model::UpdateReviewTemplateAnswerRequest>
+        Model::UpdateReviewTemplateAnswerOutcomeCallable UpdateReviewTemplateAnswerCallable(const UpdateReviewTemplateAnswerRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::UpdateReviewTemplateAnswer, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateReviewTemplateAnswer that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateReviewTemplateAnswerRequestT = Model::UpdateReviewTemplateAnswerRequest>
+        void UpdateReviewTemplateAnswerAsync(const UpdateReviewTemplateAnswerRequestT& request, const UpdateReviewTemplateAnswerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::UpdateReviewTemplateAnswer, request, handler, context);
+        }
+
+        /**
+         * <p>Update a lens review associated with a review template.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/UpdateReviewTemplateLensReview">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateReviewTemplateLensReviewOutcome UpdateReviewTemplateLensReview(const Model::UpdateReviewTemplateLensReviewRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateReviewTemplateLensReview that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateReviewTemplateLensReviewRequestT = Model::UpdateReviewTemplateLensReviewRequest>
+        Model::UpdateReviewTemplateLensReviewOutcomeCallable UpdateReviewTemplateLensReviewCallable(const UpdateReviewTemplateLensReviewRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::UpdateReviewTemplateLensReview, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateReviewTemplateLensReview that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateReviewTemplateLensReviewRequestT = Model::UpdateReviewTemplateLensReviewRequest>
+        void UpdateReviewTemplateLensReviewAsync(const UpdateReviewTemplateLensReviewRequestT& request, const UpdateReviewTemplateLensReviewResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::UpdateReviewTemplateLensReview, request, handler, context);
         }
 
         /**
@@ -1270,16 +1998,62 @@ namespace WellArchitected
             return SubmitAsync(&WellArchitectedClient::UpgradeLensReview, request, handler, context);
         }
 
+        /**
+         * <p>Upgrade a profile.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/UpgradeProfileVersion">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpgradeProfileVersionOutcome UpgradeProfileVersion(const Model::UpgradeProfileVersionRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpgradeProfileVersion that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpgradeProfileVersionRequestT = Model::UpgradeProfileVersionRequest>
+        Model::UpgradeProfileVersionOutcomeCallable UpgradeProfileVersionCallable(const UpgradeProfileVersionRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::UpgradeProfileVersion, request);
+        }
+
+        /**
+         * An Async wrapper for UpgradeProfileVersion that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpgradeProfileVersionRequestT = Model::UpgradeProfileVersionRequest>
+        void UpgradeProfileVersionAsync(const UpgradeProfileVersionRequestT& request, const UpgradeProfileVersionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::UpgradeProfileVersion, request, handler, context);
+        }
+
+        /**
+         * <p>Upgrade the lens review of a review template.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wellarchitected-2020-03-31/UpgradeReviewTemplateLensReview">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpgradeReviewTemplateLensReviewOutcome UpgradeReviewTemplateLensReview(const Model::UpgradeReviewTemplateLensReviewRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpgradeReviewTemplateLensReview that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpgradeReviewTemplateLensReviewRequestT = Model::UpgradeReviewTemplateLensReviewRequest>
+        Model::UpgradeReviewTemplateLensReviewOutcomeCallable UpgradeReviewTemplateLensReviewCallable(const UpgradeReviewTemplateLensReviewRequestT& request) const
+        {
+            return SubmitCallable(&WellArchitectedClient::UpgradeReviewTemplateLensReview, request);
+        }
+
+        /**
+         * An Async wrapper for UpgradeReviewTemplateLensReview that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpgradeReviewTemplateLensReviewRequestT = Model::UpgradeReviewTemplateLensReviewRequest>
+        void UpgradeReviewTemplateLensReviewAsync(const UpgradeReviewTemplateLensReviewRequestT& request, const UpgradeReviewTemplateLensReviewResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WellArchitectedClient::UpgradeReviewTemplateLensReview, request, handler, context);
+        }
+
 
       void OverrideEndpoint(const Aws::String& endpoint);
       std::shared_ptr<WellArchitectedEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<WellArchitectedClient>;
-      void init(const WellArchitectedClientConfiguration& clientConfiguration);
 
-      WellArchitectedClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<WellArchitectedEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace WellArchitected

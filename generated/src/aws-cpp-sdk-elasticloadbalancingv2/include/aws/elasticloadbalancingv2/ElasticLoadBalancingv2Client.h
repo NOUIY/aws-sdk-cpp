@@ -44,8 +44,8 @@ namespace ElasticLoadBalancingv2
   {
     public:
       typedef Aws::Client::AWSXMLClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
 
       typedef ElasticLoadBalancingv2ClientConfiguration ClientConfigurationType;
       typedef ElasticLoadBalancingv2EndpointProvider EndpointProviderType;
@@ -55,14 +55,14 @@ namespace ElasticLoadBalancingv2
         * is not specified, it will be initialized to default values.
         */
         ElasticLoadBalancingv2Client(const Aws::ElasticLoadBalancingv2::ElasticLoadBalancingv2ClientConfiguration& clientConfiguration = Aws::ElasticLoadBalancingv2::ElasticLoadBalancingv2ClientConfiguration(),
-                                     std::shared_ptr<ElasticLoadBalancingv2EndpointProviderBase> endpointProvider = Aws::MakeShared<ElasticLoadBalancingv2EndpointProvider>(ALLOCATION_TAG));
+                                     std::shared_ptr<ElasticLoadBalancingv2EndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         ElasticLoadBalancingv2Client(const Aws::Auth::AWSCredentials& credentials,
-                                     std::shared_ptr<ElasticLoadBalancingv2EndpointProviderBase> endpointProvider = Aws::MakeShared<ElasticLoadBalancingv2EndpointProvider>(ALLOCATION_TAG),
+                                     std::shared_ptr<ElasticLoadBalancingv2EndpointProviderBase> endpointProvider = nullptr,
                                      const Aws::ElasticLoadBalancingv2::ElasticLoadBalancingv2ClientConfiguration& clientConfiguration = Aws::ElasticLoadBalancingv2::ElasticLoadBalancingv2ClientConfiguration());
 
        /**
@@ -70,7 +70,7 @@ namespace ElasticLoadBalancingv2
         * the default http client factory will be used
         */
         ElasticLoadBalancingv2Client(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                     std::shared_ptr<ElasticLoadBalancingv2EndpointProviderBase> endpointProvider = Aws::MakeShared<ElasticLoadBalancingv2EndpointProvider>(ALLOCATION_TAG),
+                                     std::shared_ptr<ElasticLoadBalancingv2EndpointProviderBase> endpointProvider = nullptr,
                                      const Aws::ElasticLoadBalancingv2::ElasticLoadBalancingv2ClientConfiguration& clientConfiguration = Aws::ElasticLoadBalancingv2::ElasticLoadBalancingv2ClientConfiguration());
 
 
@@ -141,9 +141,10 @@ namespace ElasticLoadBalancingv2
         /**
          * <p>Adds the specified tags to the specified Elastic Load Balancing resource. You
          * can tag your Application Load Balancers, Network Load Balancers, Gateway Load
-         * Balancers, target groups, listeners, and rules.</p> <p>Each tag consists of a
-         * key and an optional value. If a resource already has a tag with the same key,
-         * <code>AddTags</code> updates its value.</p><p><h3>See Also:</h3>   <a
+         * Balancers, target groups, trust stores, listeners, and rules.</p> <p>Each tag
+         * consists of a key and an optional value. If a resource already has a tag with
+         * the same key, <code>AddTags</code> updates its value.</p><p><h3>See Also:</h3>  
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/AddTags">AWS
          * API Reference</a></p>
          */
@@ -165,6 +166,32 @@ namespace ElasticLoadBalancingv2
         void AddTagsAsync(const AddTagsRequestT& request, const AddTagsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ElasticLoadBalancingv2Client::AddTags, request, handler, context);
+        }
+
+        /**
+         * <p>Adds the specified revocation file to the specified trust
+         * store.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/AddTrustStoreRevocations">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::AddTrustStoreRevocationsOutcome AddTrustStoreRevocations(const Model::AddTrustStoreRevocationsRequest& request) const;
+
+        /**
+         * A Callable wrapper for AddTrustStoreRevocations that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename AddTrustStoreRevocationsRequestT = Model::AddTrustStoreRevocationsRequest>
+        Model::AddTrustStoreRevocationsOutcomeCallable AddTrustStoreRevocationsCallable(const AddTrustStoreRevocationsRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::AddTrustStoreRevocations, request);
+        }
+
+        /**
+         * An Async wrapper for AddTrustStoreRevocations that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename AddTrustStoreRevocationsRequestT = Model::AddTrustStoreRevocationsRequest>
+        void AddTrustStoreRevocationsAsync(const AddTrustStoreRevocationsRequestT& request, const AddTrustStoreRevocationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::AddTrustStoreRevocations, request, handler, context);
         }
 
         /**
@@ -307,6 +334,31 @@ namespace ElasticLoadBalancingv2
         }
 
         /**
+         * <p>Creates a trust store.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/CreateTrustStore">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateTrustStoreOutcome CreateTrustStore(const Model::CreateTrustStoreRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateTrustStore that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateTrustStoreRequestT = Model::CreateTrustStoreRequest>
+        Model::CreateTrustStoreOutcomeCallable CreateTrustStoreCallable(const CreateTrustStoreRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::CreateTrustStore, request);
+        }
+
+        /**
+         * An Async wrapper for CreateTrustStore that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateTrustStoreRequestT = Model::CreateTrustStoreRequest>
+        void CreateTrustStoreAsync(const CreateTrustStoreRequestT& request, const CreateTrustStoreResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::CreateTrustStore, request, handler, context);
+        }
+
+        /**
          * <p>Deletes the specified listener.</p> <p>Alternatively, your listener is
          * deleted when you delete the load balancer to which it is attached.</p><p><h3>See
          * Also:</h3>   <a
@@ -392,6 +444,31 @@ namespace ElasticLoadBalancingv2
         }
 
         /**
+         * <p>Deletes a shared trust store association.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DeleteSharedTrustStoreAssociation">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteSharedTrustStoreAssociationOutcome DeleteSharedTrustStoreAssociation(const Model::DeleteSharedTrustStoreAssociationRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteSharedTrustStoreAssociation that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteSharedTrustStoreAssociationRequestT = Model::DeleteSharedTrustStoreAssociationRequest>
+        Model::DeleteSharedTrustStoreAssociationOutcomeCallable DeleteSharedTrustStoreAssociationCallable(const DeleteSharedTrustStoreAssociationRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::DeleteSharedTrustStoreAssociation, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteSharedTrustStoreAssociation that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteSharedTrustStoreAssociationRequestT = Model::DeleteSharedTrustStoreAssociationRequest>
+        void DeleteSharedTrustStoreAssociationAsync(const DeleteSharedTrustStoreAssociationRequestT& request, const DeleteSharedTrustStoreAssociationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::DeleteSharedTrustStoreAssociation, request, handler, context);
+        }
+
+        /**
          * <p>Deletes the specified target group.</p> <p>You can delete a target group if
          * it is not referenced by any actions. Deleting a target group also deletes any
          * associated health checks. Deleting a target group does not affect its registered
@@ -421,9 +498,48 @@ namespace ElasticLoadBalancingv2
         }
 
         /**
+         * <p>Deletes a trust store.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DeleteTrustStore">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteTrustStoreOutcome DeleteTrustStore(const Model::DeleteTrustStoreRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteTrustStore that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteTrustStoreRequestT = Model::DeleteTrustStoreRequest>
+        Model::DeleteTrustStoreOutcomeCallable DeleteTrustStoreCallable(const DeleteTrustStoreRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::DeleteTrustStore, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteTrustStore that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteTrustStoreRequestT = Model::DeleteTrustStoreRequest>
+        void DeleteTrustStoreAsync(const DeleteTrustStoreRequestT& request, const DeleteTrustStoreResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::DeleteTrustStore, request, handler, context);
+        }
+
+        /**
          * <p>Deregisters the specified targets from the specified target group. After the
          * targets are deregistered, they no longer receive traffic from the load
-         * balancer.</p><p><h3>See Also:</h3>   <a
+         * balancer.</p> <p>The load balancer stops sending requests to targets that are
+         * deregistering, but uses connection draining to ensure that in-flight traffic
+         * completes on the existing connections. This deregistration delay is configured
+         * by default but can be updated for each target group.</p> <p>For more
+         * information, see the following:</p> <ul> <li> <p> <a
+         * href="https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#deregistration-delay">
+         * Deregistration delay</a> in the <i>Application Load Balancers User Guide</i>
+         * </p> </li> <li> <p> <a
+         * href="https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#deregistration-delay">
+         * Deregistration delay</a> in the <i>Network Load Balancers User Guide</i> </p>
+         * </li> <li> <p> <a
+         * href="https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/target-groups.html#deregistration-delay">
+         * Deregistration delay</a> in the <i>Gateway Load Balancers User Guide</i> </p>
+         * </li> </ul> <p>Note: If the specified target does not exist, the action returns
+         * successfully.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DeregisterTargets">AWS
          * API Reference</a></p>
          */
@@ -460,13 +576,13 @@ namespace ElasticLoadBalancingv2
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DescribeAccountLimits">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeAccountLimitsOutcome DescribeAccountLimits(const Model::DescribeAccountLimitsRequest& request) const;
+        virtual Model::DescribeAccountLimitsOutcome DescribeAccountLimits(const Model::DescribeAccountLimitsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeAccountLimits that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeAccountLimitsRequestT = Model::DescribeAccountLimitsRequest>
-        Model::DescribeAccountLimitsOutcomeCallable DescribeAccountLimitsCallable(const DescribeAccountLimitsRequestT& request) const
+        Model::DescribeAccountLimitsOutcomeCallable DescribeAccountLimitsCallable(const DescribeAccountLimitsRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticLoadBalancingv2Client::DescribeAccountLimits, request);
         }
@@ -475,9 +591,61 @@ namespace ElasticLoadBalancingv2
          * An Async wrapper for DescribeAccountLimits that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeAccountLimitsRequestT = Model::DescribeAccountLimitsRequest>
-        void DescribeAccountLimitsAsync(const DescribeAccountLimitsRequestT& request, const DescribeAccountLimitsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeAccountLimitsAsync(const DescribeAccountLimitsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeAccountLimitsRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticLoadBalancingv2Client::DescribeAccountLimits, request, handler, context);
+        }
+
+        /**
+         * <p>Describes the capacity reservation status for the specified load
+         * balancer.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DescribeCapacityReservation">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeCapacityReservationOutcome DescribeCapacityReservation(const Model::DescribeCapacityReservationRequest& request) const;
+
+        /**
+         * A Callable wrapper for DescribeCapacityReservation that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeCapacityReservationRequestT = Model::DescribeCapacityReservationRequest>
+        Model::DescribeCapacityReservationOutcomeCallable DescribeCapacityReservationCallable(const DescribeCapacityReservationRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::DescribeCapacityReservation, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeCapacityReservation that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeCapacityReservationRequestT = Model::DescribeCapacityReservationRequest>
+        void DescribeCapacityReservationAsync(const DescribeCapacityReservationRequestT& request, const DescribeCapacityReservationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::DescribeCapacityReservation, request, handler, context);
+        }
+
+        /**
+         * <p>Describes the attributes for the specified listener.</p><p><h3>See Also:</h3>
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DescribeListenerAttributes">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeListenerAttributesOutcome DescribeListenerAttributes(const Model::DescribeListenerAttributesRequest& request) const;
+
+        /**
+         * A Callable wrapper for DescribeListenerAttributes that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeListenerAttributesRequestT = Model::DescribeListenerAttributesRequest>
+        Model::DescribeListenerAttributesOutcomeCallable DescribeListenerAttributesCallable(const DescribeListenerAttributesRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::DescribeListenerAttributes, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeListenerAttributes that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeListenerAttributesRequestT = Model::DescribeListenerAttributesRequest>
+        void DescribeListenerAttributesAsync(const DescribeListenerAttributesRequestT& request, const DescribeListenerAttributesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::DescribeListenerAttributes, request, handler, context);
         }
 
         /**
@@ -522,13 +690,13 @@ namespace ElasticLoadBalancingv2
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DescribeListeners">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeListenersOutcome DescribeListeners(const Model::DescribeListenersRequest& request) const;
+        virtual Model::DescribeListenersOutcome DescribeListeners(const Model::DescribeListenersRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeListeners that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeListenersRequestT = Model::DescribeListenersRequest>
-        Model::DescribeListenersOutcomeCallable DescribeListenersCallable(const DescribeListenersRequestT& request) const
+        Model::DescribeListenersOutcomeCallable DescribeListenersCallable(const DescribeListenersRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticLoadBalancingv2Client::DescribeListeners, request);
         }
@@ -537,7 +705,7 @@ namespace ElasticLoadBalancingv2
          * An Async wrapper for DescribeListeners that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeListenersRequestT = Model::DescribeListenersRequest>
-        void DescribeListenersAsync(const DescribeListenersRequestT& request, const DescribeListenersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeListenersAsync(const DescribeListenersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeListenersRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticLoadBalancingv2Client::DescribeListeners, request, handler, context);
         }
@@ -584,13 +752,13 @@ namespace ElasticLoadBalancingv2
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DescribeLoadBalancers">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeLoadBalancersOutcome DescribeLoadBalancers(const Model::DescribeLoadBalancersRequest& request) const;
+        virtual Model::DescribeLoadBalancersOutcome DescribeLoadBalancers(const Model::DescribeLoadBalancersRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeLoadBalancers that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeLoadBalancersRequestT = Model::DescribeLoadBalancersRequest>
-        Model::DescribeLoadBalancersOutcomeCallable DescribeLoadBalancersCallable(const DescribeLoadBalancersRequestT& request) const
+        Model::DescribeLoadBalancersOutcomeCallable DescribeLoadBalancersCallable(const DescribeLoadBalancersRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticLoadBalancingv2Client::DescribeLoadBalancers, request);
         }
@@ -599,7 +767,7 @@ namespace ElasticLoadBalancingv2
          * An Async wrapper for DescribeLoadBalancers that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeLoadBalancersRequestT = Model::DescribeLoadBalancersRequest>
-        void DescribeLoadBalancersAsync(const DescribeLoadBalancersRequestT& request, const DescribeLoadBalancersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeLoadBalancersAsync(const DescribeLoadBalancersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeLoadBalancersRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticLoadBalancingv2Client::DescribeLoadBalancers, request, handler, context);
         }
@@ -611,13 +779,13 @@ namespace ElasticLoadBalancingv2
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DescribeRules">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeRulesOutcome DescribeRules(const Model::DescribeRulesRequest& request) const;
+        virtual Model::DescribeRulesOutcome DescribeRules(const Model::DescribeRulesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeRules that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeRulesRequestT = Model::DescribeRulesRequest>
-        Model::DescribeRulesOutcomeCallable DescribeRulesCallable(const DescribeRulesRequestT& request) const
+        Model::DescribeRulesOutcomeCallable DescribeRulesCallable(const DescribeRulesRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticLoadBalancingv2Client::DescribeRules, request);
         }
@@ -626,7 +794,7 @@ namespace ElasticLoadBalancingv2
          * An Async wrapper for DescribeRules that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeRulesRequestT = Model::DescribeRulesRequest>
-        void DescribeRulesAsync(const DescribeRulesRequestT& request, const DescribeRulesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeRulesAsync(const DescribeRulesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeRulesRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticLoadBalancingv2Client::DescribeRules, request, handler, context);
         }
@@ -642,13 +810,13 @@ namespace ElasticLoadBalancingv2
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DescribeSSLPolicies">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeSSLPoliciesOutcome DescribeSSLPolicies(const Model::DescribeSSLPoliciesRequest& request) const;
+        virtual Model::DescribeSSLPoliciesOutcome DescribeSSLPolicies(const Model::DescribeSSLPoliciesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeSSLPolicies that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeSSLPoliciesRequestT = Model::DescribeSSLPoliciesRequest>
-        Model::DescribeSSLPoliciesOutcomeCallable DescribeSSLPoliciesCallable(const DescribeSSLPoliciesRequestT& request) const
+        Model::DescribeSSLPoliciesOutcomeCallable DescribeSSLPoliciesCallable(const DescribeSSLPoliciesRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticLoadBalancingv2Client::DescribeSSLPolicies, request);
         }
@@ -657,7 +825,7 @@ namespace ElasticLoadBalancingv2
          * An Async wrapper for DescribeSSLPolicies that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeSSLPoliciesRequestT = Model::DescribeSSLPoliciesRequest>
-        void DescribeSSLPoliciesAsync(const DescribeSSLPoliciesRequestT& request, const DescribeSSLPoliciesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeSSLPoliciesAsync(const DescribeSSLPoliciesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeSSLPoliciesRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticLoadBalancingv2Client::DescribeSSLPolicies, request, handler, context);
         }
@@ -734,13 +902,13 @@ namespace ElasticLoadBalancingv2
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DescribeTargetGroups">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeTargetGroupsOutcome DescribeTargetGroups(const Model::DescribeTargetGroupsRequest& request) const;
+        virtual Model::DescribeTargetGroupsOutcome DescribeTargetGroups(const Model::DescribeTargetGroupsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeTargetGroups that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeTargetGroupsRequestT = Model::DescribeTargetGroupsRequest>
-        Model::DescribeTargetGroupsOutcomeCallable DescribeTargetGroupsCallable(const DescribeTargetGroupsRequestT& request) const
+        Model::DescribeTargetGroupsOutcomeCallable DescribeTargetGroupsCallable(const DescribeTargetGroupsRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticLoadBalancingv2Client::DescribeTargetGroups, request);
         }
@@ -749,7 +917,7 @@ namespace ElasticLoadBalancingv2
          * An Async wrapper for DescribeTargetGroups that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeTargetGroupsRequestT = Model::DescribeTargetGroupsRequest>
-        void DescribeTargetGroupsAsync(const DescribeTargetGroupsRequestT& request, const DescribeTargetGroupsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeTargetGroupsAsync(const DescribeTargetGroupsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeTargetGroupsRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticLoadBalancingv2Client::DescribeTargetGroups, request, handler, context);
         }
@@ -778,6 +946,190 @@ namespace ElasticLoadBalancingv2
         void DescribeTargetHealthAsync(const DescribeTargetHealthRequestT& request, const DescribeTargetHealthResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ElasticLoadBalancingv2Client::DescribeTargetHealth, request, handler, context);
+        }
+
+        /**
+         * <p>Describes all resources associated with the specified trust
+         * store.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DescribeTrustStoreAssociations">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeTrustStoreAssociationsOutcome DescribeTrustStoreAssociations(const Model::DescribeTrustStoreAssociationsRequest& request) const;
+
+        /**
+         * A Callable wrapper for DescribeTrustStoreAssociations that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeTrustStoreAssociationsRequestT = Model::DescribeTrustStoreAssociationsRequest>
+        Model::DescribeTrustStoreAssociationsOutcomeCallable DescribeTrustStoreAssociationsCallable(const DescribeTrustStoreAssociationsRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::DescribeTrustStoreAssociations, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeTrustStoreAssociations that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeTrustStoreAssociationsRequestT = Model::DescribeTrustStoreAssociationsRequest>
+        void DescribeTrustStoreAssociationsAsync(const DescribeTrustStoreAssociationsRequestT& request, const DescribeTrustStoreAssociationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::DescribeTrustStoreAssociations, request, handler, context);
+        }
+
+        /**
+         * <p>Describes the revocation files in use by the specified trust store or
+         * revocation files.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DescribeTrustStoreRevocations">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeTrustStoreRevocationsOutcome DescribeTrustStoreRevocations(const Model::DescribeTrustStoreRevocationsRequest& request) const;
+
+        /**
+         * A Callable wrapper for DescribeTrustStoreRevocations that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeTrustStoreRevocationsRequestT = Model::DescribeTrustStoreRevocationsRequest>
+        Model::DescribeTrustStoreRevocationsOutcomeCallable DescribeTrustStoreRevocationsCallable(const DescribeTrustStoreRevocationsRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::DescribeTrustStoreRevocations, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeTrustStoreRevocations that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeTrustStoreRevocationsRequestT = Model::DescribeTrustStoreRevocationsRequest>
+        void DescribeTrustStoreRevocationsAsync(const DescribeTrustStoreRevocationsRequestT& request, const DescribeTrustStoreRevocationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::DescribeTrustStoreRevocations, request, handler, context);
+        }
+
+        /**
+         * <p>Describes all trust stores for the specified account.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/DescribeTrustStores">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeTrustStoresOutcome DescribeTrustStores(const Model::DescribeTrustStoresRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for DescribeTrustStores that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeTrustStoresRequestT = Model::DescribeTrustStoresRequest>
+        Model::DescribeTrustStoresOutcomeCallable DescribeTrustStoresCallable(const DescribeTrustStoresRequestT& request = {}) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::DescribeTrustStores, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeTrustStores that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeTrustStoresRequestT = Model::DescribeTrustStoresRequest>
+        void DescribeTrustStoresAsync(const DescribeTrustStoresResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeTrustStoresRequestT& request = {}) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::DescribeTrustStores, request, handler, context);
+        }
+
+        /**
+         * <p>Retrieves the resource policy for a specified resource.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/GetResourcePolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetResourcePolicyOutcome GetResourcePolicy(const Model::GetResourcePolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetResourcePolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetResourcePolicyRequestT = Model::GetResourcePolicyRequest>
+        Model::GetResourcePolicyOutcomeCallable GetResourcePolicyCallable(const GetResourcePolicyRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::GetResourcePolicy, request);
+        }
+
+        /**
+         * An Async wrapper for GetResourcePolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetResourcePolicyRequestT = Model::GetResourcePolicyRequest>
+        void GetResourcePolicyAsync(const GetResourcePolicyRequestT& request, const GetResourcePolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::GetResourcePolicy, request, handler, context);
+        }
+
+        /**
+         * <p>Retrieves the ca certificate bundle.</p> <p>This action returns a pre-signed
+         * S3 URI which is active for ten minutes.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/GetTrustStoreCaCertificatesBundle">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetTrustStoreCaCertificatesBundleOutcome GetTrustStoreCaCertificatesBundle(const Model::GetTrustStoreCaCertificatesBundleRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetTrustStoreCaCertificatesBundle that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetTrustStoreCaCertificatesBundleRequestT = Model::GetTrustStoreCaCertificatesBundleRequest>
+        Model::GetTrustStoreCaCertificatesBundleOutcomeCallable GetTrustStoreCaCertificatesBundleCallable(const GetTrustStoreCaCertificatesBundleRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::GetTrustStoreCaCertificatesBundle, request);
+        }
+
+        /**
+         * An Async wrapper for GetTrustStoreCaCertificatesBundle that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetTrustStoreCaCertificatesBundleRequestT = Model::GetTrustStoreCaCertificatesBundleRequest>
+        void GetTrustStoreCaCertificatesBundleAsync(const GetTrustStoreCaCertificatesBundleRequestT& request, const GetTrustStoreCaCertificatesBundleResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::GetTrustStoreCaCertificatesBundle, request, handler, context);
+        }
+
+        /**
+         * <p>Retrieves the specified revocation file.</p> <p>This action returns a
+         * pre-signed S3 URI which is active for ten minutes.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/GetTrustStoreRevocationContent">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetTrustStoreRevocationContentOutcome GetTrustStoreRevocationContent(const Model::GetTrustStoreRevocationContentRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetTrustStoreRevocationContent that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetTrustStoreRevocationContentRequestT = Model::GetTrustStoreRevocationContentRequest>
+        Model::GetTrustStoreRevocationContentOutcomeCallable GetTrustStoreRevocationContentCallable(const GetTrustStoreRevocationContentRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::GetTrustStoreRevocationContent, request);
+        }
+
+        /**
+         * An Async wrapper for GetTrustStoreRevocationContent that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetTrustStoreRevocationContentRequestT = Model::GetTrustStoreRevocationContentRequest>
+        void GetTrustStoreRevocationContentAsync(const GetTrustStoreRevocationContentRequestT& request, const GetTrustStoreRevocationContentResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::GetTrustStoreRevocationContent, request, handler, context);
+        }
+
+        /**
+         * <p>Modifies the capacity reservation of the specified load balancer.</p> <p>When
+         * modifying capacity reservation, you must include at least one
+         * <code>MinimumLoadBalancerCapacity</code> or
+         * <code>ResetCapacityReservation</code>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/ModifyCapacityReservation">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ModifyCapacityReservationOutcome ModifyCapacityReservation(const Model::ModifyCapacityReservationRequest& request) const;
+
+        /**
+         * A Callable wrapper for ModifyCapacityReservation that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ModifyCapacityReservationRequestT = Model::ModifyCapacityReservationRequest>
+        Model::ModifyCapacityReservationOutcomeCallable ModifyCapacityReservationCallable(const ModifyCapacityReservationRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::ModifyCapacityReservation, request);
+        }
+
+        /**
+         * An Async wrapper for ModifyCapacityReservation that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ModifyCapacityReservationRequestT = Model::ModifyCapacityReservationRequest>
+        void ModifyCapacityReservationAsync(const ModifyCapacityReservationRequestT& request, const ModifyCapacityReservationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::ModifyCapacityReservation, request, handler, context);
         }
 
         /**
@@ -811,6 +1163,32 @@ namespace ElasticLoadBalancingv2
         void ModifyListenerAsync(const ModifyListenerRequestT& request, const ModifyListenerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ElasticLoadBalancingv2Client::ModifyListener, request, handler, context);
+        }
+
+        /**
+         * <p>Modifies the specified attributes of the specified listener.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/ModifyListenerAttributes">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ModifyListenerAttributesOutcome ModifyListenerAttributes(const Model::ModifyListenerAttributesRequest& request) const;
+
+        /**
+         * A Callable wrapper for ModifyListenerAttributes that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ModifyListenerAttributesRequestT = Model::ModifyListenerAttributesRequest>
+        Model::ModifyListenerAttributesOutcomeCallable ModifyListenerAttributesCallable(const ModifyListenerAttributesRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::ModifyListenerAttributes, request);
+        }
+
+        /**
+         * An Async wrapper for ModifyListenerAttributes that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ModifyListenerAttributesRequestT = Model::ModifyListenerAttributesRequest>
+        void ModifyListenerAttributesAsync(const ModifyListenerAttributesRequestT& request, const ModifyListenerAttributesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::ModifyListenerAttributes, request, handler, context);
         }
 
         /**
@@ -924,13 +1302,39 @@ namespace ElasticLoadBalancingv2
         }
 
         /**
+         * <p>Update the ca certificate bundle for the specified trust store.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/ModifyTrustStore">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ModifyTrustStoreOutcome ModifyTrustStore(const Model::ModifyTrustStoreRequest& request) const;
+
+        /**
+         * A Callable wrapper for ModifyTrustStore that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ModifyTrustStoreRequestT = Model::ModifyTrustStoreRequest>
+        Model::ModifyTrustStoreOutcomeCallable ModifyTrustStoreCallable(const ModifyTrustStoreRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::ModifyTrustStore, request);
+        }
+
+        /**
+         * An Async wrapper for ModifyTrustStore that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ModifyTrustStoreRequestT = Model::ModifyTrustStoreRequest>
+        void ModifyTrustStoreAsync(const ModifyTrustStoreRequestT& request, const ModifyTrustStoreResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::ModifyTrustStore, request, handler, context);
+        }
+
+        /**
          * <p>Registers the specified targets with the specified target group.</p> <p>If
          * the target is an EC2 instance, it must be in the <code>running</code> state when
          * you register it.</p> <p>By default, the load balancer routes requests to
          * registered targets using the protocol and port for the target group.
          * Alternatively, you can override the port for a target when you register it. You
          * can register each EC2 instance or IP address with the same target group multiple
-         * times using different ports.</p> <p>With a Network Load Balancer, you cannot
+         * times using different ports.</p> <p>With a Network Load Balancer, you can't
          * register instances by instance ID if they have the following instance types: C1,
          * CC1, CC2, CG1, CG2, CR1, CS1, G1, G2, HI1, HS1, M1, M2, M3, and T1. You can
          * register instances of these types by IP address.</p><p><h3>See Also:</h3>   <a
@@ -1012,6 +1416,32 @@ namespace ElasticLoadBalancingv2
         }
 
         /**
+         * <p>Removes the specified revocation file from the specified trust
+         * store.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/RemoveTrustStoreRevocations">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::RemoveTrustStoreRevocationsOutcome RemoveTrustStoreRevocations(const Model::RemoveTrustStoreRevocationsRequest& request) const;
+
+        /**
+         * A Callable wrapper for RemoveTrustStoreRevocations that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename RemoveTrustStoreRevocationsRequestT = Model::RemoveTrustStoreRevocationsRequest>
+        Model::RemoveTrustStoreRevocationsOutcomeCallable RemoveTrustStoreRevocationsCallable(const RemoveTrustStoreRevocationsRequestT& request) const
+        {
+            return SubmitCallable(&ElasticLoadBalancingv2Client::RemoveTrustStoreRevocations, request);
+        }
+
+        /**
+         * An Async wrapper for RemoveTrustStoreRevocations that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename RemoveTrustStoreRevocationsRequestT = Model::RemoveTrustStoreRevocationsRequest>
+        void RemoveTrustStoreRevocationsAsync(const RemoveTrustStoreRevocationsRequestT& request, const RemoveTrustStoreRevocationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticLoadBalancingv2Client::RemoveTrustStoreRevocations, request, handler, context);
+        }
+
+        /**
          * <p>Sets the type of IP addresses used by the subnets of the specified load
          * balancer.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/SetIpAddressType">AWS
@@ -1067,9 +1497,11 @@ namespace ElasticLoadBalancingv2
 
         /**
          * <p>Associates the specified security groups with the specified Application Load
-         * Balancer. The specified security groups override the previously associated
-         * security groups.</p> <p>You can't specify a security group for a Network Load
-         * Balancer or Gateway Load Balancer.</p><p><h3>See Also:</h3>   <a
+         * Balancer or Network Load Balancer. The specified security groups override the
+         * previously associated security groups.</p> <p>You can't perform this operation
+         * on a Network Load Balancer unless you specified a security group for the load
+         * balancer when you created it.</p> <p>You can't associate a security group with a
+         * Gateway Load Balancer.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/SetSecurityGroups">AWS
          * API Reference</a></p>
          */
@@ -1095,11 +1527,12 @@ namespace ElasticLoadBalancingv2
 
         /**
          * <p>Enables the Availability Zones for the specified public subnets for the
-         * specified Application Load Balancer or Network Load Balancer. The specified
-         * subnets replace the previously enabled subnets.</p> <p>When you specify subnets
-         * for a Network Load Balancer, you must include all subnets that were enabled
-         * previously, with their existing configurations, plus any additional
-         * subnets.</p><p><h3>See Also:</h3>   <a
+         * specified Application Load Balancer, Network Load Balancer or Gateway Load
+         * Balancer. The specified subnets replace the previously enabled subnets.</p>
+         * <p>When you specify subnets for a Network Load Balancer, or Gateway Load
+         * Balancer you must include all subnets that were enabled previously, with their
+         * existing configurations, plus any additional subnets.</p><p><h3>See Also:</h3>  
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/elasticloadbalancingv2-2015-12-01/SetSubnets">AWS
          * API Reference</a></p>
          */
@@ -1131,7 +1564,6 @@ namespace ElasticLoadBalancingv2
         void init(const ElasticLoadBalancingv2ClientConfiguration& clientConfiguration);
 
         ElasticLoadBalancingv2ClientConfiguration m_clientConfiguration;
-        std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
         std::shared_ptr<ElasticLoadBalancingv2EndpointProviderBase> m_endpointProvider;
   };
 

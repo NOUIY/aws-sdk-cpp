@@ -36,6 +36,7 @@
 #include <aws/proton/model/CreateServiceTemplateVersionResult.h>
 #include <aws/proton/model/CreateTemplateSyncConfigResult.h>
 #include <aws/proton/model/DeleteComponentResult.h>
+#include <aws/proton/model/DeleteDeploymentResult.h>
 #include <aws/proton/model/DeleteEnvironmentResult.h>
 #include <aws/proton/model/DeleteEnvironmentAccountConnectionResult.h>
 #include <aws/proton/model/DeleteEnvironmentTemplateResult.h>
@@ -48,6 +49,7 @@
 #include <aws/proton/model/DeleteTemplateSyncConfigResult.h>
 #include <aws/proton/model/GetAccountSettingsResult.h>
 #include <aws/proton/model/GetComponentResult.h>
+#include <aws/proton/model/GetDeploymentResult.h>
 #include <aws/proton/model/GetEnvironmentResult.h>
 #include <aws/proton/model/GetEnvironmentAccountConnectionResult.h>
 #include <aws/proton/model/GetEnvironmentTemplateResult.h>
@@ -67,6 +69,7 @@
 #include <aws/proton/model/ListComponentOutputsResult.h>
 #include <aws/proton/model/ListComponentProvisionedResourcesResult.h>
 #include <aws/proton/model/ListComponentsResult.h>
+#include <aws/proton/model/ListDeploymentsResult.h>
 #include <aws/proton/model/ListEnvironmentAccountConnectionsResult.h>
 #include <aws/proton/model/ListEnvironmentOutputsResult.h>
 #include <aws/proton/model/ListEnvironmentProvisionedResourcesResult.h>
@@ -102,6 +105,17 @@
 #include <aws/proton/model/UpdateServiceTemplateResult.h>
 #include <aws/proton/model/UpdateServiceTemplateVersionResult.h>
 #include <aws/proton/model/UpdateTemplateSyncConfigResult.h>
+#include <aws/proton/model/ListEnvironmentsRequest.h>
+#include <aws/proton/model/ListRepositoriesRequest.h>
+#include <aws/proton/model/ListEnvironmentTemplatesRequest.h>
+#include <aws/proton/model/ListServicesRequest.h>
+#include <aws/proton/model/UpdateAccountSettingsRequest.h>
+#include <aws/proton/model/GetAccountSettingsRequest.h>
+#include <aws/proton/model/ListDeploymentsRequest.h>
+#include <aws/proton/model/ListComponentsRequest.h>
+#include <aws/proton/model/ListServiceInstancesRequest.h>
+#include <aws/proton/model/ListServiceTemplatesRequest.h>
+#include <aws/proton/model/GetResourcesSummaryRequest.h>
 /* End of service model headers required in ProtonClient header */
 
 namespace Aws
@@ -135,7 +149,7 @@ namespace Aws
 
   namespace Proton
   {
-    using ProtonClientConfiguration = Aws::Client::GenericClientConfiguration<false>;
+    using ProtonClientConfiguration = Aws::Client::GenericClientConfiguration;
     using ProtonEndpointProviderBase = Aws::Proton::Endpoint::ProtonEndpointProviderBase;
     using ProtonEndpointProvider = Aws::Proton::Endpoint::ProtonEndpointProvider;
 
@@ -160,6 +174,7 @@ namespace Aws
       class CreateServiceTemplateVersionRequest;
       class CreateTemplateSyncConfigRequest;
       class DeleteComponentRequest;
+      class DeleteDeploymentRequest;
       class DeleteEnvironmentRequest;
       class DeleteEnvironmentAccountConnectionRequest;
       class DeleteEnvironmentTemplateRequest;
@@ -172,6 +187,7 @@ namespace Aws
       class DeleteTemplateSyncConfigRequest;
       class GetAccountSettingsRequest;
       class GetComponentRequest;
+      class GetDeploymentRequest;
       class GetEnvironmentRequest;
       class GetEnvironmentAccountConnectionRequest;
       class GetEnvironmentTemplateRequest;
@@ -191,6 +207,7 @@ namespace Aws
       class ListComponentOutputsRequest;
       class ListComponentProvisionedResourcesRequest;
       class ListComponentsRequest;
+      class ListDeploymentsRequest;
       class ListEnvironmentAccountConnectionsRequest;
       class ListEnvironmentOutputsRequest;
       class ListEnvironmentProvisionedResourcesRequest;
@@ -247,6 +264,7 @@ namespace Aws
       typedef Aws::Utils::Outcome<CreateServiceTemplateVersionResult, ProtonError> CreateServiceTemplateVersionOutcome;
       typedef Aws::Utils::Outcome<CreateTemplateSyncConfigResult, ProtonError> CreateTemplateSyncConfigOutcome;
       typedef Aws::Utils::Outcome<DeleteComponentResult, ProtonError> DeleteComponentOutcome;
+      typedef Aws::Utils::Outcome<DeleteDeploymentResult, ProtonError> DeleteDeploymentOutcome;
       typedef Aws::Utils::Outcome<DeleteEnvironmentResult, ProtonError> DeleteEnvironmentOutcome;
       typedef Aws::Utils::Outcome<DeleteEnvironmentAccountConnectionResult, ProtonError> DeleteEnvironmentAccountConnectionOutcome;
       typedef Aws::Utils::Outcome<DeleteEnvironmentTemplateResult, ProtonError> DeleteEnvironmentTemplateOutcome;
@@ -259,6 +277,7 @@ namespace Aws
       typedef Aws::Utils::Outcome<DeleteTemplateSyncConfigResult, ProtonError> DeleteTemplateSyncConfigOutcome;
       typedef Aws::Utils::Outcome<GetAccountSettingsResult, ProtonError> GetAccountSettingsOutcome;
       typedef Aws::Utils::Outcome<GetComponentResult, ProtonError> GetComponentOutcome;
+      typedef Aws::Utils::Outcome<GetDeploymentResult, ProtonError> GetDeploymentOutcome;
       typedef Aws::Utils::Outcome<GetEnvironmentResult, ProtonError> GetEnvironmentOutcome;
       typedef Aws::Utils::Outcome<GetEnvironmentAccountConnectionResult, ProtonError> GetEnvironmentAccountConnectionOutcome;
       typedef Aws::Utils::Outcome<GetEnvironmentTemplateResult, ProtonError> GetEnvironmentTemplateOutcome;
@@ -278,6 +297,7 @@ namespace Aws
       typedef Aws::Utils::Outcome<ListComponentOutputsResult, ProtonError> ListComponentOutputsOutcome;
       typedef Aws::Utils::Outcome<ListComponentProvisionedResourcesResult, ProtonError> ListComponentProvisionedResourcesOutcome;
       typedef Aws::Utils::Outcome<ListComponentsResult, ProtonError> ListComponentsOutcome;
+      typedef Aws::Utils::Outcome<ListDeploymentsResult, ProtonError> ListDeploymentsOutcome;
       typedef Aws::Utils::Outcome<ListEnvironmentAccountConnectionsResult, ProtonError> ListEnvironmentAccountConnectionsOutcome;
       typedef Aws::Utils::Outcome<ListEnvironmentOutputsResult, ProtonError> ListEnvironmentOutputsOutcome;
       typedef Aws::Utils::Outcome<ListEnvironmentProvisionedResourcesResult, ProtonError> ListEnvironmentProvisionedResourcesOutcome;
@@ -334,6 +354,7 @@ namespace Aws
       typedef std::future<CreateServiceTemplateVersionOutcome> CreateServiceTemplateVersionOutcomeCallable;
       typedef std::future<CreateTemplateSyncConfigOutcome> CreateTemplateSyncConfigOutcomeCallable;
       typedef std::future<DeleteComponentOutcome> DeleteComponentOutcomeCallable;
+      typedef std::future<DeleteDeploymentOutcome> DeleteDeploymentOutcomeCallable;
       typedef std::future<DeleteEnvironmentOutcome> DeleteEnvironmentOutcomeCallable;
       typedef std::future<DeleteEnvironmentAccountConnectionOutcome> DeleteEnvironmentAccountConnectionOutcomeCallable;
       typedef std::future<DeleteEnvironmentTemplateOutcome> DeleteEnvironmentTemplateOutcomeCallable;
@@ -346,6 +367,7 @@ namespace Aws
       typedef std::future<DeleteTemplateSyncConfigOutcome> DeleteTemplateSyncConfigOutcomeCallable;
       typedef std::future<GetAccountSettingsOutcome> GetAccountSettingsOutcomeCallable;
       typedef std::future<GetComponentOutcome> GetComponentOutcomeCallable;
+      typedef std::future<GetDeploymentOutcome> GetDeploymentOutcomeCallable;
       typedef std::future<GetEnvironmentOutcome> GetEnvironmentOutcomeCallable;
       typedef std::future<GetEnvironmentAccountConnectionOutcome> GetEnvironmentAccountConnectionOutcomeCallable;
       typedef std::future<GetEnvironmentTemplateOutcome> GetEnvironmentTemplateOutcomeCallable;
@@ -365,6 +387,7 @@ namespace Aws
       typedef std::future<ListComponentOutputsOutcome> ListComponentOutputsOutcomeCallable;
       typedef std::future<ListComponentProvisionedResourcesOutcome> ListComponentProvisionedResourcesOutcomeCallable;
       typedef std::future<ListComponentsOutcome> ListComponentsOutcomeCallable;
+      typedef std::future<ListDeploymentsOutcome> ListDeploymentsOutcomeCallable;
       typedef std::future<ListEnvironmentAccountConnectionsOutcome> ListEnvironmentAccountConnectionsOutcomeCallable;
       typedef std::future<ListEnvironmentOutputsOutcome> ListEnvironmentOutputsOutcomeCallable;
       typedef std::future<ListEnvironmentProvisionedResourcesOutcome> ListEnvironmentProvisionedResourcesOutcomeCallable;
@@ -424,6 +447,7 @@ namespace Aws
     typedef std::function<void(const ProtonClient*, const Model::CreateServiceTemplateVersionRequest&, const Model::CreateServiceTemplateVersionOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CreateServiceTemplateVersionResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::CreateTemplateSyncConfigRequest&, const Model::CreateTemplateSyncConfigOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CreateTemplateSyncConfigResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::DeleteComponentRequest&, const Model::DeleteComponentOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteComponentResponseReceivedHandler;
+    typedef std::function<void(const ProtonClient*, const Model::DeleteDeploymentRequest&, const Model::DeleteDeploymentOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteDeploymentResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::DeleteEnvironmentRequest&, const Model::DeleteEnvironmentOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteEnvironmentResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::DeleteEnvironmentAccountConnectionRequest&, const Model::DeleteEnvironmentAccountConnectionOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteEnvironmentAccountConnectionResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::DeleteEnvironmentTemplateRequest&, const Model::DeleteEnvironmentTemplateOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteEnvironmentTemplateResponseReceivedHandler;
@@ -436,6 +460,7 @@ namespace Aws
     typedef std::function<void(const ProtonClient*, const Model::DeleteTemplateSyncConfigRequest&, const Model::DeleteTemplateSyncConfigOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteTemplateSyncConfigResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::GetAccountSettingsRequest&, const Model::GetAccountSettingsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetAccountSettingsResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::GetComponentRequest&, const Model::GetComponentOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetComponentResponseReceivedHandler;
+    typedef std::function<void(const ProtonClient*, const Model::GetDeploymentRequest&, const Model::GetDeploymentOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetDeploymentResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::GetEnvironmentRequest&, const Model::GetEnvironmentOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetEnvironmentResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::GetEnvironmentAccountConnectionRequest&, const Model::GetEnvironmentAccountConnectionOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetEnvironmentAccountConnectionResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::GetEnvironmentTemplateRequest&, const Model::GetEnvironmentTemplateOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetEnvironmentTemplateResponseReceivedHandler;
@@ -455,6 +480,7 @@ namespace Aws
     typedef std::function<void(const ProtonClient*, const Model::ListComponentOutputsRequest&, const Model::ListComponentOutputsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListComponentOutputsResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::ListComponentProvisionedResourcesRequest&, const Model::ListComponentProvisionedResourcesOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListComponentProvisionedResourcesResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::ListComponentsRequest&, const Model::ListComponentsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListComponentsResponseReceivedHandler;
+    typedef std::function<void(const ProtonClient*, const Model::ListDeploymentsRequest&, const Model::ListDeploymentsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListDeploymentsResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::ListEnvironmentAccountConnectionsRequest&, const Model::ListEnvironmentAccountConnectionsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListEnvironmentAccountConnectionsResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::ListEnvironmentOutputsRequest&, const Model::ListEnvironmentOutputsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListEnvironmentOutputsResponseReceivedHandler;
     typedef std::function<void(const ProtonClient*, const Model::ListEnvironmentProvisionedResourcesRequest&, const Model::ListEnvironmentProvisionedResourcesOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListEnvironmentProvisionedResourcesResponseReceivedHandler;

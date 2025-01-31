@@ -23,16 +23,13 @@ RoutingControl::RoutingControl() :
     m_nameHasBeenSet(false),
     m_routingControlArnHasBeenSet(false),
     m_status(Status::NOT_SET),
-    m_statusHasBeenSet(false)
+    m_statusHasBeenSet(false),
+    m_ownerHasBeenSet(false)
 {
 }
 
-RoutingControl::RoutingControl(JsonView jsonValue) : 
-    m_controlPanelArnHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_routingControlArnHasBeenSet(false),
-    m_status(Status::NOT_SET),
-    m_statusHasBeenSet(false)
+RoutingControl::RoutingControl(JsonView jsonValue)
+  : RoutingControl()
 {
   *this = jsonValue;
 }
@@ -67,6 +64,13 @@ RoutingControl& RoutingControl::operator =(JsonView jsonValue)
     m_statusHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Owner"))
+  {
+    m_owner = jsonValue.GetString("Owner");
+
+    m_ownerHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -95,6 +99,12 @@ JsonValue RoutingControl::Jsonize() const
   if(m_statusHasBeenSet)
   {
    payload.WithString("Status", StatusMapper::GetNameForStatus(m_status));
+  }
+
+  if(m_ownerHasBeenSet)
+  {
+   payload.WithString("Owner", m_owner);
+
   }
 
   return payload;

@@ -19,6 +19,7 @@ namespace Model
 {
 
 ImportErrorData::ImportErrorData() : 
+    m_accountIDHasBeenSet(false),
     m_applicationIDHasBeenSet(false),
     m_ec2LaunchTemplateIDHasBeenSet(false),
     m_rawErrorHasBeenSet(false),
@@ -29,20 +30,21 @@ ImportErrorData::ImportErrorData() :
 {
 }
 
-ImportErrorData::ImportErrorData(JsonView jsonValue) : 
-    m_applicationIDHasBeenSet(false),
-    m_ec2LaunchTemplateIDHasBeenSet(false),
-    m_rawErrorHasBeenSet(false),
-    m_rowNumber(0),
-    m_rowNumberHasBeenSet(false),
-    m_sourceServerIDHasBeenSet(false),
-    m_waveIDHasBeenSet(false)
+ImportErrorData::ImportErrorData(JsonView jsonValue)
+  : ImportErrorData()
 {
   *this = jsonValue;
 }
 
 ImportErrorData& ImportErrorData::operator =(JsonView jsonValue)
 {
+  if(jsonValue.ValueExists("accountID"))
+  {
+    m_accountID = jsonValue.GetString("accountID");
+
+    m_accountIDHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("applicationID"))
   {
     m_applicationID = jsonValue.GetString("applicationID");
@@ -91,6 +93,12 @@ ImportErrorData& ImportErrorData::operator =(JsonView jsonValue)
 JsonValue ImportErrorData::Jsonize() const
 {
   JsonValue payload;
+
+  if(m_accountIDHasBeenSet)
+  {
+   payload.WithString("accountID", m_accountID);
+
+  }
 
   if(m_applicationIDHasBeenSet)
   {

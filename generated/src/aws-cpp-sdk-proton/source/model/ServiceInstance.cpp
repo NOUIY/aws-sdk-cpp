@@ -25,9 +25,11 @@ ServiceInstance::ServiceInstance() :
     m_deploymentStatusHasBeenSet(false),
     m_deploymentStatusMessageHasBeenSet(false),
     m_environmentNameHasBeenSet(false),
+    m_lastAttemptedDeploymentIdHasBeenSet(false),
     m_lastClientRequestTokenHasBeenSet(false),
     m_lastDeploymentAttemptedAtHasBeenSet(false),
     m_lastDeploymentSucceededAtHasBeenSet(false),
+    m_lastSucceededDeploymentIdHasBeenSet(false),
     m_nameHasBeenSet(false),
     m_serviceNameHasBeenSet(false),
     m_specHasBeenSet(false),
@@ -37,22 +39,8 @@ ServiceInstance::ServiceInstance() :
 {
 }
 
-ServiceInstance::ServiceInstance(JsonView jsonValue) : 
-    m_arnHasBeenSet(false),
-    m_createdAtHasBeenSet(false),
-    m_deploymentStatus(DeploymentStatus::NOT_SET),
-    m_deploymentStatusHasBeenSet(false),
-    m_deploymentStatusMessageHasBeenSet(false),
-    m_environmentNameHasBeenSet(false),
-    m_lastClientRequestTokenHasBeenSet(false),
-    m_lastDeploymentAttemptedAtHasBeenSet(false),
-    m_lastDeploymentSucceededAtHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_serviceNameHasBeenSet(false),
-    m_specHasBeenSet(false),
-    m_templateMajorVersionHasBeenSet(false),
-    m_templateMinorVersionHasBeenSet(false),
-    m_templateNameHasBeenSet(false)
+ServiceInstance::ServiceInstance(JsonView jsonValue)
+  : ServiceInstance()
 {
   *this = jsonValue;
 }
@@ -94,6 +82,13 @@ ServiceInstance& ServiceInstance::operator =(JsonView jsonValue)
     m_environmentNameHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("lastAttemptedDeploymentId"))
+  {
+    m_lastAttemptedDeploymentId = jsonValue.GetString("lastAttemptedDeploymentId");
+
+    m_lastAttemptedDeploymentIdHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("lastClientRequestToken"))
   {
     m_lastClientRequestToken = jsonValue.GetString("lastClientRequestToken");
@@ -113,6 +108,13 @@ ServiceInstance& ServiceInstance::operator =(JsonView jsonValue)
     m_lastDeploymentSucceededAt = jsonValue.GetDouble("lastDeploymentSucceededAt");
 
     m_lastDeploymentSucceededAtHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("lastSucceededDeploymentId"))
+  {
+    m_lastSucceededDeploymentId = jsonValue.GetString("lastSucceededDeploymentId");
+
+    m_lastSucceededDeploymentIdHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("name"))
@@ -192,6 +194,12 @@ JsonValue ServiceInstance::Jsonize() const
 
   }
 
+  if(m_lastAttemptedDeploymentIdHasBeenSet)
+  {
+   payload.WithString("lastAttemptedDeploymentId", m_lastAttemptedDeploymentId);
+
+  }
+
   if(m_lastClientRequestTokenHasBeenSet)
   {
    payload.WithString("lastClientRequestToken", m_lastClientRequestToken);
@@ -206,6 +214,12 @@ JsonValue ServiceInstance::Jsonize() const
   if(m_lastDeploymentSucceededAtHasBeenSet)
   {
    payload.WithDouble("lastDeploymentSucceededAt", m_lastDeploymentSucceededAt.SecondsWithMSPrecision());
+  }
+
+  if(m_lastSucceededDeploymentIdHasBeenSet)
+  {
+   payload.WithString("lastSucceededDeploymentId", m_lastSucceededDeploymentId);
+
   }
 
   if(m_nameHasBeenSet)

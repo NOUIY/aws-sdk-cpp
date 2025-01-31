@@ -19,6 +19,8 @@ namespace Model
 {
 
 AssetModelCompositeModelDefinition::AssetModelCompositeModelDefinition() : 
+    m_idHasBeenSet(false),
+    m_externalIdHasBeenSet(false),
     m_nameHasBeenSet(false),
     m_descriptionHasBeenSet(false),
     m_typeHasBeenSet(false),
@@ -26,17 +28,28 @@ AssetModelCompositeModelDefinition::AssetModelCompositeModelDefinition() :
 {
 }
 
-AssetModelCompositeModelDefinition::AssetModelCompositeModelDefinition(JsonView jsonValue) : 
-    m_nameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_typeHasBeenSet(false),
-    m_propertiesHasBeenSet(false)
+AssetModelCompositeModelDefinition::AssetModelCompositeModelDefinition(JsonView jsonValue)
+  : AssetModelCompositeModelDefinition()
 {
   *this = jsonValue;
 }
 
 AssetModelCompositeModelDefinition& AssetModelCompositeModelDefinition::operator =(JsonView jsonValue)
 {
+  if(jsonValue.ValueExists("id"))
+  {
+    m_id = jsonValue.GetString("id");
+
+    m_idHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("externalId"))
+  {
+    m_externalId = jsonValue.GetString("externalId");
+
+    m_externalIdHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("name"))
   {
     m_name = jsonValue.GetString("name");
@@ -74,6 +87,18 @@ AssetModelCompositeModelDefinition& AssetModelCompositeModelDefinition::operator
 JsonValue AssetModelCompositeModelDefinition::Jsonize() const
 {
   JsonValue payload;
+
+  if(m_idHasBeenSet)
+  {
+   payload.WithString("id", m_id);
+
+  }
+
+  if(m_externalIdHasBeenSet)
+  {
+   payload.WithString("externalId", m_externalId);
+
+  }
 
   if(m_nameHasBeenSet)
   {

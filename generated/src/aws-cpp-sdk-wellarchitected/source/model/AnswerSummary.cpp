@@ -30,23 +30,15 @@ AnswerSummary::AnswerSummary() :
     m_risk(Risk::NOT_SET),
     m_riskHasBeenSet(false),
     m_reason(AnswerReason::NOT_SET),
-    m_reasonHasBeenSet(false)
+    m_reasonHasBeenSet(false),
+    m_questionType(QuestionType::NOT_SET),
+    m_questionTypeHasBeenSet(false),
+    m_jiraConfigurationHasBeenSet(false)
 {
 }
 
-AnswerSummary::AnswerSummary(JsonView jsonValue) : 
-    m_questionIdHasBeenSet(false),
-    m_pillarIdHasBeenSet(false),
-    m_questionTitleHasBeenSet(false),
-    m_choicesHasBeenSet(false),
-    m_selectedChoicesHasBeenSet(false),
-    m_choiceAnswerSummariesHasBeenSet(false),
-    m_isApplicable(false),
-    m_isApplicableHasBeenSet(false),
-    m_risk(Risk::NOT_SET),
-    m_riskHasBeenSet(false),
-    m_reason(AnswerReason::NOT_SET),
-    m_reasonHasBeenSet(false)
+AnswerSummary::AnswerSummary(JsonView jsonValue)
+  : AnswerSummary()
 {
   *this = jsonValue;
 }
@@ -125,6 +117,20 @@ AnswerSummary& AnswerSummary::operator =(JsonView jsonValue)
     m_reasonHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("QuestionType"))
+  {
+    m_questionType = QuestionTypeMapper::GetQuestionTypeForName(jsonValue.GetString("QuestionType"));
+
+    m_questionTypeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("JiraConfiguration"))
+  {
+    m_jiraConfiguration = jsonValue.GetObject("JiraConfiguration");
+
+    m_jiraConfigurationHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -197,6 +203,17 @@ JsonValue AnswerSummary::Jsonize() const
   if(m_reasonHasBeenSet)
   {
    payload.WithString("Reason", AnswerReasonMapper::GetNameForAnswerReason(m_reason));
+  }
+
+  if(m_questionTypeHasBeenSet)
+  {
+   payload.WithString("QuestionType", QuestionTypeMapper::GetNameForQuestionType(m_questionType));
+  }
+
+  if(m_jiraConfigurationHasBeenSet)
+  {
+   payload.WithObject("JiraConfiguration", m_jiraConfiguration.Jsonize());
+
   }
 
   return payload;

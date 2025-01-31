@@ -20,6 +20,7 @@ namespace Model
 
 DataQualityResult::DataQualityResult() : 
     m_resultIdHasBeenSet(false),
+    m_profileIdHasBeenSet(false),
     m_score(0.0),
     m_scoreHasBeenSet(false),
     m_dataSourceHasBeenSet(false),
@@ -30,23 +31,14 @@ DataQualityResult::DataQualityResult() :
     m_jobNameHasBeenSet(false),
     m_jobRunIdHasBeenSet(false),
     m_rulesetEvaluationRunIdHasBeenSet(false),
-    m_ruleResultsHasBeenSet(false)
+    m_ruleResultsHasBeenSet(false),
+    m_analyzerResultsHasBeenSet(false),
+    m_observationsHasBeenSet(false)
 {
 }
 
-DataQualityResult::DataQualityResult(JsonView jsonValue) : 
-    m_resultIdHasBeenSet(false),
-    m_score(0.0),
-    m_scoreHasBeenSet(false),
-    m_dataSourceHasBeenSet(false),
-    m_rulesetNameHasBeenSet(false),
-    m_evaluationContextHasBeenSet(false),
-    m_startedOnHasBeenSet(false),
-    m_completedOnHasBeenSet(false),
-    m_jobNameHasBeenSet(false),
-    m_jobRunIdHasBeenSet(false),
-    m_rulesetEvaluationRunIdHasBeenSet(false),
-    m_ruleResultsHasBeenSet(false)
+DataQualityResult::DataQualityResult(JsonView jsonValue)
+  : DataQualityResult()
 {
   *this = jsonValue;
 }
@@ -58,6 +50,13 @@ DataQualityResult& DataQualityResult::operator =(JsonView jsonValue)
     m_resultId = jsonValue.GetString("ResultId");
 
     m_resultIdHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("ProfileId"))
+  {
+    m_profileId = jsonValue.GetString("ProfileId");
+
+    m_profileIdHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("Score"))
@@ -133,6 +132,26 @@ DataQualityResult& DataQualityResult::operator =(JsonView jsonValue)
     m_ruleResultsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("AnalyzerResults"))
+  {
+    Aws::Utils::Array<JsonView> analyzerResultsJsonList = jsonValue.GetArray("AnalyzerResults");
+    for(unsigned analyzerResultsIndex = 0; analyzerResultsIndex < analyzerResultsJsonList.GetLength(); ++analyzerResultsIndex)
+    {
+      m_analyzerResults.push_back(analyzerResultsJsonList[analyzerResultsIndex].AsObject());
+    }
+    m_analyzerResultsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Observations"))
+  {
+    Aws::Utils::Array<JsonView> observationsJsonList = jsonValue.GetArray("Observations");
+    for(unsigned observationsIndex = 0; observationsIndex < observationsJsonList.GetLength(); ++observationsIndex)
+    {
+      m_observations.push_back(observationsJsonList[observationsIndex].AsObject());
+    }
+    m_observationsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -143,6 +162,12 @@ JsonValue DataQualityResult::Jsonize() const
   if(m_resultIdHasBeenSet)
   {
    payload.WithString("ResultId", m_resultId);
+
+  }
+
+  if(m_profileIdHasBeenSet)
+  {
+   payload.WithString("ProfileId", m_profileId);
 
   }
 
@@ -206,6 +231,28 @@ JsonValue DataQualityResult::Jsonize() const
      ruleResultsJsonList[ruleResultsIndex].AsObject(m_ruleResults[ruleResultsIndex].Jsonize());
    }
    payload.WithArray("RuleResults", std::move(ruleResultsJsonList));
+
+  }
+
+  if(m_analyzerResultsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> analyzerResultsJsonList(m_analyzerResults.size());
+   for(unsigned analyzerResultsIndex = 0; analyzerResultsIndex < analyzerResultsJsonList.GetLength(); ++analyzerResultsIndex)
+   {
+     analyzerResultsJsonList[analyzerResultsIndex].AsObject(m_analyzerResults[analyzerResultsIndex].Jsonize());
+   }
+   payload.WithArray("AnalyzerResults", std::move(analyzerResultsJsonList));
+
+  }
+
+  if(m_observationsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> observationsJsonList(m_observations.size());
+   for(unsigned observationsIndex = 0; observationsIndex < observationsJsonList.GetLength(); ++observationsIndex)
+   {
+     observationsJsonList[observationsIndex].AsObject(m_observations[observationsIndex].Jsonize());
+   }
+   payload.WithArray("Observations", std::move(observationsJsonList));
 
   }
 

@@ -18,12 +18,14 @@ using namespace Aws::Utils;
 using namespace Aws;
 
 DescribeBulkImportJobResult::DescribeBulkImportJobResult() : 
-    m_jobStatus(JobStatus::NOT_SET)
+    m_jobStatus(JobStatus::NOT_SET),
+    m_adaptiveIngestion(false),
+    m_deleteFilesAfterImport(false)
 {
 }
 
-DescribeBulkImportJobResult::DescribeBulkImportJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_jobStatus(JobStatus::NOT_SET)
+DescribeBulkImportJobResult::DescribeBulkImportJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeBulkImportJobResult()
 {
   *this = result;
 }
@@ -85,6 +87,18 @@ DescribeBulkImportJobResult& DescribeBulkImportJobResult::operator =(const Aws::
   if(jsonValue.ValueExists("jobLastUpdateDate"))
   {
     m_jobLastUpdateDate = jsonValue.GetDouble("jobLastUpdateDate");
+
+  }
+
+  if(jsonValue.ValueExists("adaptiveIngestion"))
+  {
+    m_adaptiveIngestion = jsonValue.GetBool("adaptiveIngestion");
+
+  }
+
+  if(jsonValue.ValueExists("deleteFilesAfterImport"))
+  {
+    m_deleteFilesAfterImport = jsonValue.GetBool("deleteFilesAfterImport");
 
   }
 

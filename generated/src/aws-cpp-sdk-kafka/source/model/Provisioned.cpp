@@ -32,25 +32,14 @@ Provisioned::Provisioned() :
     m_zookeeperConnectStringHasBeenSet(false),
     m_zookeeperConnectStringTlsHasBeenSet(false),
     m_storageMode(StorageMode::NOT_SET),
-    m_storageModeHasBeenSet(false)
+    m_storageModeHasBeenSet(false),
+    m_customerActionStatus(CustomerActionStatus::NOT_SET),
+    m_customerActionStatusHasBeenSet(false)
 {
 }
 
-Provisioned::Provisioned(JsonView jsonValue) : 
-    m_brokerNodeGroupInfoHasBeenSet(false),
-    m_currentBrokerSoftwareInfoHasBeenSet(false),
-    m_clientAuthenticationHasBeenSet(false),
-    m_encryptionInfoHasBeenSet(false),
-    m_enhancedMonitoring(EnhancedMonitoring::NOT_SET),
-    m_enhancedMonitoringHasBeenSet(false),
-    m_openMonitoringHasBeenSet(false),
-    m_loggingInfoHasBeenSet(false),
-    m_numberOfBrokerNodes(0),
-    m_numberOfBrokerNodesHasBeenSet(false),
-    m_zookeeperConnectStringHasBeenSet(false),
-    m_zookeeperConnectStringTlsHasBeenSet(false),
-    m_storageMode(StorageMode::NOT_SET),
-    m_storageModeHasBeenSet(false)
+Provisioned::Provisioned(JsonView jsonValue)
+  : Provisioned()
 {
   *this = jsonValue;
 }
@@ -134,6 +123,13 @@ Provisioned& Provisioned::operator =(JsonView jsonValue)
     m_storageModeHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("customerActionStatus"))
+  {
+    m_customerActionStatus = CustomerActionStatusMapper::GetCustomerActionStatusForName(jsonValue.GetString("customerActionStatus"));
+
+    m_customerActionStatusHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -203,6 +199,11 @@ JsonValue Provisioned::Jsonize() const
   if(m_storageModeHasBeenSet)
   {
    payload.WithString("storageMode", StorageModeMapper::GetNameForStorageMode(m_storageMode));
+  }
+
+  if(m_customerActionStatusHasBeenSet)
+  {
+   payload.WithString("customerActionStatus", CustomerActionStatusMapper::GetNameForCustomerActionStatus(m_customerActionStatus));
   }
 
   return payload;

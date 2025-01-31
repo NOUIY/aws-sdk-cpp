@@ -26,19 +26,13 @@ DecoderManifestSummary::DecoderManifestSummary() :
     m_status(ManifestStatus::NOT_SET),
     m_statusHasBeenSet(false),
     m_creationTimeHasBeenSet(false),
-    m_lastModificationTimeHasBeenSet(false)
+    m_lastModificationTimeHasBeenSet(false),
+    m_messageHasBeenSet(false)
 {
 }
 
-DecoderManifestSummary::DecoderManifestSummary(JsonView jsonValue) : 
-    m_nameHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_modelManifestArnHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_status(ManifestStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_creationTimeHasBeenSet(false),
-    m_lastModificationTimeHasBeenSet(false)
+DecoderManifestSummary::DecoderManifestSummary(JsonView jsonValue)
+  : DecoderManifestSummary()
 {
   *this = jsonValue;
 }
@@ -94,6 +88,13 @@ DecoderManifestSummary& DecoderManifestSummary::operator =(JsonView jsonValue)
     m_lastModificationTimeHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("message"))
+  {
+    m_message = jsonValue.GetString("message");
+
+    m_messageHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -138,6 +139,12 @@ JsonValue DecoderManifestSummary::Jsonize() const
   if(m_lastModificationTimeHasBeenSet)
   {
    payload.WithDouble("lastModificationTime", m_lastModificationTime.SecondsWithMSPrecision());
+  }
+
+  if(m_messageHasBeenSet)
+  {
+   payload.WithString("message", m_message);
+
   }
 
   return payload;

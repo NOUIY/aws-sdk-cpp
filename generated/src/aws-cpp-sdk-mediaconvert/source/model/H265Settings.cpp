@@ -23,14 +23,19 @@ H265Settings::H265Settings() :
     m_adaptiveQuantizationHasBeenSet(false),
     m_alternateTransferFunctionSei(H265AlternateTransferFunctionSei::NOT_SET),
     m_alternateTransferFunctionSeiHasBeenSet(false),
+    m_bandwidthReductionFilterHasBeenSet(false),
     m_bitrate(0),
     m_bitrateHasBeenSet(false),
     m_codecLevel(H265CodecLevel::NOT_SET),
     m_codecLevelHasBeenSet(false),
     m_codecProfile(H265CodecProfile::NOT_SET),
     m_codecProfileHasBeenSet(false),
+    m_deblocking(H265Deblocking::NOT_SET),
+    m_deblockingHasBeenSet(false),
     m_dynamicSubGop(H265DynamicSubGop::NOT_SET),
     m_dynamicSubGopHasBeenSet(false),
+    m_endOfStreamMarkers(H265EndOfStreamMarkers::NOT_SET),
+    m_endOfStreamMarkersHasBeenSet(false),
     m_flickerAdaptiveQuantization(H265FlickerAdaptiveQuantization::NOT_SET),
     m_flickerAdaptiveQuantizationHasBeenSet(false),
     m_framerateControl(H265FramerateControl::NOT_SET),
@@ -103,88 +108,8 @@ H265Settings::H265Settings() :
 {
 }
 
-H265Settings::H265Settings(JsonView jsonValue) : 
-    m_adaptiveQuantization(H265AdaptiveQuantization::NOT_SET),
-    m_adaptiveQuantizationHasBeenSet(false),
-    m_alternateTransferFunctionSei(H265AlternateTransferFunctionSei::NOT_SET),
-    m_alternateTransferFunctionSeiHasBeenSet(false),
-    m_bitrate(0),
-    m_bitrateHasBeenSet(false),
-    m_codecLevel(H265CodecLevel::NOT_SET),
-    m_codecLevelHasBeenSet(false),
-    m_codecProfile(H265CodecProfile::NOT_SET),
-    m_codecProfileHasBeenSet(false),
-    m_dynamicSubGop(H265DynamicSubGop::NOT_SET),
-    m_dynamicSubGopHasBeenSet(false),
-    m_flickerAdaptiveQuantization(H265FlickerAdaptiveQuantization::NOT_SET),
-    m_flickerAdaptiveQuantizationHasBeenSet(false),
-    m_framerateControl(H265FramerateControl::NOT_SET),
-    m_framerateControlHasBeenSet(false),
-    m_framerateConversionAlgorithm(H265FramerateConversionAlgorithm::NOT_SET),
-    m_framerateConversionAlgorithmHasBeenSet(false),
-    m_framerateDenominator(0),
-    m_framerateDenominatorHasBeenSet(false),
-    m_framerateNumerator(0),
-    m_framerateNumeratorHasBeenSet(false),
-    m_gopBReference(H265GopBReference::NOT_SET),
-    m_gopBReferenceHasBeenSet(false),
-    m_gopClosedCadence(0),
-    m_gopClosedCadenceHasBeenSet(false),
-    m_gopSize(0.0),
-    m_gopSizeHasBeenSet(false),
-    m_gopSizeUnits(H265GopSizeUnits::NOT_SET),
-    m_gopSizeUnitsHasBeenSet(false),
-    m_hrdBufferFinalFillPercentage(0),
-    m_hrdBufferFinalFillPercentageHasBeenSet(false),
-    m_hrdBufferInitialFillPercentage(0),
-    m_hrdBufferInitialFillPercentageHasBeenSet(false),
-    m_hrdBufferSize(0),
-    m_hrdBufferSizeHasBeenSet(false),
-    m_interlaceMode(H265InterlaceMode::NOT_SET),
-    m_interlaceModeHasBeenSet(false),
-    m_maxBitrate(0),
-    m_maxBitrateHasBeenSet(false),
-    m_minIInterval(0),
-    m_minIIntervalHasBeenSet(false),
-    m_numberBFramesBetweenReferenceFrames(0),
-    m_numberBFramesBetweenReferenceFramesHasBeenSet(false),
-    m_numberReferenceFrames(0),
-    m_numberReferenceFramesHasBeenSet(false),
-    m_parControl(H265ParControl::NOT_SET),
-    m_parControlHasBeenSet(false),
-    m_parDenominator(0),
-    m_parDenominatorHasBeenSet(false),
-    m_parNumerator(0),
-    m_parNumeratorHasBeenSet(false),
-    m_qualityTuningLevel(H265QualityTuningLevel::NOT_SET),
-    m_qualityTuningLevelHasBeenSet(false),
-    m_qvbrSettingsHasBeenSet(false),
-    m_rateControlMode(H265RateControlMode::NOT_SET),
-    m_rateControlModeHasBeenSet(false),
-    m_sampleAdaptiveOffsetFilterMode(H265SampleAdaptiveOffsetFilterMode::NOT_SET),
-    m_sampleAdaptiveOffsetFilterModeHasBeenSet(false),
-    m_scanTypeConversionMode(H265ScanTypeConversionMode::NOT_SET),
-    m_scanTypeConversionModeHasBeenSet(false),
-    m_sceneChangeDetect(H265SceneChangeDetect::NOT_SET),
-    m_sceneChangeDetectHasBeenSet(false),
-    m_slices(0),
-    m_slicesHasBeenSet(false),
-    m_slowPal(H265SlowPal::NOT_SET),
-    m_slowPalHasBeenSet(false),
-    m_spatialAdaptiveQuantization(H265SpatialAdaptiveQuantization::NOT_SET),
-    m_spatialAdaptiveQuantizationHasBeenSet(false),
-    m_telecine(H265Telecine::NOT_SET),
-    m_telecineHasBeenSet(false),
-    m_temporalAdaptiveQuantization(H265TemporalAdaptiveQuantization::NOT_SET),
-    m_temporalAdaptiveQuantizationHasBeenSet(false),
-    m_temporalIds(H265TemporalIds::NOT_SET),
-    m_temporalIdsHasBeenSet(false),
-    m_tiles(H265Tiles::NOT_SET),
-    m_tilesHasBeenSet(false),
-    m_unregisteredSeiTimecode(H265UnregisteredSeiTimecode::NOT_SET),
-    m_unregisteredSeiTimecodeHasBeenSet(false),
-    m_writeMp4PackagingType(H265WriteMp4PackagingType::NOT_SET),
-    m_writeMp4PackagingTypeHasBeenSet(false)
+H265Settings::H265Settings(JsonView jsonValue)
+  : H265Settings()
 {
   *this = jsonValue;
 }
@@ -203,6 +128,13 @@ H265Settings& H265Settings::operator =(JsonView jsonValue)
     m_alternateTransferFunctionSei = H265AlternateTransferFunctionSeiMapper::GetH265AlternateTransferFunctionSeiForName(jsonValue.GetString("alternateTransferFunctionSei"));
 
     m_alternateTransferFunctionSeiHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("bandwidthReductionFilter"))
+  {
+    m_bandwidthReductionFilter = jsonValue.GetObject("bandwidthReductionFilter");
+
+    m_bandwidthReductionFilterHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("bitrate"))
@@ -226,11 +158,25 @@ H265Settings& H265Settings::operator =(JsonView jsonValue)
     m_codecProfileHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("deblocking"))
+  {
+    m_deblocking = H265DeblockingMapper::GetH265DeblockingForName(jsonValue.GetString("deblocking"));
+
+    m_deblockingHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("dynamicSubGop"))
   {
     m_dynamicSubGop = H265DynamicSubGopMapper::GetH265DynamicSubGopForName(jsonValue.GetString("dynamicSubGop"));
 
     m_dynamicSubGopHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("endOfStreamMarkers"))
+  {
+    m_endOfStreamMarkers = H265EndOfStreamMarkersMapper::GetH265EndOfStreamMarkersForName(jsonValue.GetString("endOfStreamMarkers"));
+
+    m_endOfStreamMarkersHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("flickerAdaptiveQuantization"))
@@ -495,6 +441,12 @@ JsonValue H265Settings::Jsonize() const
    payload.WithString("alternateTransferFunctionSei", H265AlternateTransferFunctionSeiMapper::GetNameForH265AlternateTransferFunctionSei(m_alternateTransferFunctionSei));
   }
 
+  if(m_bandwidthReductionFilterHasBeenSet)
+  {
+   payload.WithObject("bandwidthReductionFilter", m_bandwidthReductionFilter.Jsonize());
+
+  }
+
   if(m_bitrateHasBeenSet)
   {
    payload.WithInteger("bitrate", m_bitrate);
@@ -511,9 +463,19 @@ JsonValue H265Settings::Jsonize() const
    payload.WithString("codecProfile", H265CodecProfileMapper::GetNameForH265CodecProfile(m_codecProfile));
   }
 
+  if(m_deblockingHasBeenSet)
+  {
+   payload.WithString("deblocking", H265DeblockingMapper::GetNameForH265Deblocking(m_deblocking));
+  }
+
   if(m_dynamicSubGopHasBeenSet)
   {
    payload.WithString("dynamicSubGop", H265DynamicSubGopMapper::GetNameForH265DynamicSubGop(m_dynamicSubGop));
+  }
+
+  if(m_endOfStreamMarkersHasBeenSet)
+  {
+   payload.WithString("endOfStreamMarkers", H265EndOfStreamMarkersMapper::GetNameForH265EndOfStreamMarkers(m_endOfStreamMarkers));
   }
 
   if(m_flickerAdaptiveQuantizationHasBeenSet)

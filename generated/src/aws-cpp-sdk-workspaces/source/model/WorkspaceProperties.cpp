@@ -29,22 +29,15 @@ WorkspaceProperties::WorkspaceProperties() :
     m_userVolumeSizeGibHasBeenSet(false),
     m_computeTypeName(Compute::NOT_SET),
     m_computeTypeNameHasBeenSet(false),
-    m_protocolsHasBeenSet(false)
+    m_protocolsHasBeenSet(false),
+    m_operatingSystemName(OperatingSystemName::NOT_SET),
+    m_operatingSystemNameHasBeenSet(false),
+    m_globalAcceleratorHasBeenSet(false)
 {
 }
 
-WorkspaceProperties::WorkspaceProperties(JsonView jsonValue) : 
-    m_runningMode(RunningMode::NOT_SET),
-    m_runningModeHasBeenSet(false),
-    m_runningModeAutoStopTimeoutInMinutes(0),
-    m_runningModeAutoStopTimeoutInMinutesHasBeenSet(false),
-    m_rootVolumeSizeGib(0),
-    m_rootVolumeSizeGibHasBeenSet(false),
-    m_userVolumeSizeGib(0),
-    m_userVolumeSizeGibHasBeenSet(false),
-    m_computeTypeName(Compute::NOT_SET),
-    m_computeTypeNameHasBeenSet(false),
-    m_protocolsHasBeenSet(false)
+WorkspaceProperties::WorkspaceProperties(JsonView jsonValue)
+  : WorkspaceProperties()
 {
   *this = jsonValue;
 }
@@ -96,6 +89,20 @@ WorkspaceProperties& WorkspaceProperties::operator =(JsonView jsonValue)
     m_protocolsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("OperatingSystemName"))
+  {
+    m_operatingSystemName = OperatingSystemNameMapper::GetOperatingSystemNameForName(jsonValue.GetString("OperatingSystemName"));
+
+    m_operatingSystemNameHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("GlobalAccelerator"))
+  {
+    m_globalAccelerator = jsonValue.GetObject("GlobalAccelerator");
+
+    m_globalAcceleratorHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -139,6 +146,17 @@ JsonValue WorkspaceProperties::Jsonize() const
      protocolsJsonList[protocolsIndex].AsString(ProtocolMapper::GetNameForProtocol(m_protocols[protocolsIndex]));
    }
    payload.WithArray("Protocols", std::move(protocolsJsonList));
+
+  }
+
+  if(m_operatingSystemNameHasBeenSet)
+  {
+   payload.WithString("OperatingSystemName", OperatingSystemNameMapper::GetNameForOperatingSystemName(m_operatingSystemName));
+  }
+
+  if(m_globalAcceleratorHasBeenSet)
+  {
+   payload.WithObject("GlobalAccelerator", m_globalAccelerator.Jsonize());
 
   }
 

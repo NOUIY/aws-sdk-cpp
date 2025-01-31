@@ -31,26 +31,16 @@ Membership::Membership() :
     m_status(MembershipStatus::NOT_SET),
     m_statusHasBeenSet(false),
     m_memberAbilitiesHasBeenSet(false),
+    m_mlMemberAbilitiesHasBeenSet(false),
     m_queryLogStatus(MembershipQueryLogStatus::NOT_SET),
-    m_queryLogStatusHasBeenSet(false)
+    m_queryLogStatusHasBeenSet(false),
+    m_defaultResultConfigurationHasBeenSet(false),
+    m_paymentConfigurationHasBeenSet(false)
 {
 }
 
-Membership::Membership(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_collaborationArnHasBeenSet(false),
-    m_collaborationIdHasBeenSet(false),
-    m_collaborationCreatorAccountIdHasBeenSet(false),
-    m_collaborationCreatorDisplayNameHasBeenSet(false),
-    m_collaborationNameHasBeenSet(false),
-    m_createTimeHasBeenSet(false),
-    m_updateTimeHasBeenSet(false),
-    m_status(MembershipStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_memberAbilitiesHasBeenSet(false),
-    m_queryLogStatus(MembershipQueryLogStatus::NOT_SET),
-    m_queryLogStatusHasBeenSet(false)
+Membership::Membership(JsonView jsonValue)
+  : Membership()
 {
   *this = jsonValue;
 }
@@ -137,11 +127,32 @@ Membership& Membership::operator =(JsonView jsonValue)
     m_memberAbilitiesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("mlMemberAbilities"))
+  {
+    m_mlMemberAbilities = jsonValue.GetObject("mlMemberAbilities");
+
+    m_mlMemberAbilitiesHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("queryLogStatus"))
   {
     m_queryLogStatus = MembershipQueryLogStatusMapper::GetMembershipQueryLogStatusForName(jsonValue.GetString("queryLogStatus"));
 
     m_queryLogStatusHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("defaultResultConfiguration"))
+  {
+    m_defaultResultConfiguration = jsonValue.GetObject("defaultResultConfiguration");
+
+    m_defaultResultConfigurationHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("paymentConfiguration"))
+  {
+    m_paymentConfiguration = jsonValue.GetObject("paymentConfiguration");
+
+    m_paymentConfigurationHasBeenSet = true;
   }
 
   return *this;
@@ -219,9 +230,27 @@ JsonValue Membership::Jsonize() const
 
   }
 
+  if(m_mlMemberAbilitiesHasBeenSet)
+  {
+   payload.WithObject("mlMemberAbilities", m_mlMemberAbilities.Jsonize());
+
+  }
+
   if(m_queryLogStatusHasBeenSet)
   {
    payload.WithString("queryLogStatus", MembershipQueryLogStatusMapper::GetNameForMembershipQueryLogStatus(m_queryLogStatus));
+  }
+
+  if(m_defaultResultConfigurationHasBeenSet)
+  {
+   payload.WithObject("defaultResultConfiguration", m_defaultResultConfiguration.Jsonize());
+
+  }
+
+  if(m_paymentConfigurationHasBeenSet)
+  {
+   payload.WithObject("paymentConfiguration", m_paymentConfiguration.Jsonize());
+
   }
 
   return payload;

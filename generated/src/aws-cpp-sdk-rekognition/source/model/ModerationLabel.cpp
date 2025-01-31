@@ -22,15 +22,14 @@ ModerationLabel::ModerationLabel() :
     m_confidence(0.0),
     m_confidenceHasBeenSet(false),
     m_nameHasBeenSet(false),
-    m_parentNameHasBeenSet(false)
+    m_parentNameHasBeenSet(false),
+    m_taxonomyLevel(0),
+    m_taxonomyLevelHasBeenSet(false)
 {
 }
 
-ModerationLabel::ModerationLabel(JsonView jsonValue) : 
-    m_confidence(0.0),
-    m_confidenceHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_parentNameHasBeenSet(false)
+ModerationLabel::ModerationLabel(JsonView jsonValue)
+  : ModerationLabel()
 {
   *this = jsonValue;
 }
@@ -58,6 +57,13 @@ ModerationLabel& ModerationLabel::operator =(JsonView jsonValue)
     m_parentNameHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("TaxonomyLevel"))
+  {
+    m_taxonomyLevel = jsonValue.GetInteger("TaxonomyLevel");
+
+    m_taxonomyLevelHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -80,6 +86,12 @@ JsonValue ModerationLabel::Jsonize() const
   if(m_parentNameHasBeenSet)
   {
    payload.WithString("ParentName", m_parentName);
+
+  }
+
+  if(m_taxonomyLevelHasBeenSet)
+  {
+   payload.WithInteger("TaxonomyLevel", m_taxonomyLevel);
 
   }
 

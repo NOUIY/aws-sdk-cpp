@@ -1,0 +1,265 @@
+﻿/**
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0.
+ */
+
+#pragma once
+#include <aws/wisdom/ConnectWisdomService_EXPORTS.h>
+#include <aws/core/utils/DateTime.h>
+#include <aws/wisdom/model/ExternalSourceConfiguration.h>
+#include <aws/core/utils/memory/stl/AWSString.h>
+#include <aws/wisdom/model/ImportJobType.h>
+#include <aws/core/utils/memory/stl/AWSMap.h>
+#include <aws/wisdom/model/ImportJobStatus.h>
+#include <utility>
+
+namespace Aws
+{
+namespace Utils
+{
+namespace Json
+{
+  class JsonValue;
+  class JsonView;
+} // namespace Json
+} // namespace Utils
+namespace ConnectWisdomService
+{
+namespace Model
+{
+
+  /**
+   * <p>Summary information about the import job.</p><p><h3>See Also:</h3>   <a
+   * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/ImportJobData">AWS
+   * API Reference</a></p>
+   */
+  class ImportJobData
+  {
+  public:
+    AWS_CONNECTWISDOMSERVICE_API ImportJobData();
+    AWS_CONNECTWISDOMSERVICE_API ImportJobData(Aws::Utils::Json::JsonView jsonValue);
+    AWS_CONNECTWISDOMSERVICE_API ImportJobData& operator=(Aws::Utils::Json::JsonView jsonValue);
+    AWS_CONNECTWISDOMSERVICE_API Aws::Utils::Json::JsonValue Jsonize() const;
+
+
+    ///@{
+    /**
+     * <p>The timestamp when the import job was created.</p>
+     */
+    inline const Aws::Utils::DateTime& GetCreatedTime() const{ return m_createdTime; }
+    inline bool CreatedTimeHasBeenSet() const { return m_createdTimeHasBeenSet; }
+    inline void SetCreatedTime(const Aws::Utils::DateTime& value) { m_createdTimeHasBeenSet = true; m_createdTime = value; }
+    inline void SetCreatedTime(Aws::Utils::DateTime&& value) { m_createdTimeHasBeenSet = true; m_createdTime = std::move(value); }
+    inline ImportJobData& WithCreatedTime(const Aws::Utils::DateTime& value) { SetCreatedTime(value); return *this;}
+    inline ImportJobData& WithCreatedTime(Aws::Utils::DateTime&& value) { SetCreatedTime(std::move(value)); return *this;}
+    ///@}
+
+    ///@{
+    
+    inline const ExternalSourceConfiguration& GetExternalSourceConfiguration() const{ return m_externalSourceConfiguration; }
+    inline bool ExternalSourceConfigurationHasBeenSet() const { return m_externalSourceConfigurationHasBeenSet; }
+    inline void SetExternalSourceConfiguration(const ExternalSourceConfiguration& value) { m_externalSourceConfigurationHasBeenSet = true; m_externalSourceConfiguration = value; }
+    inline void SetExternalSourceConfiguration(ExternalSourceConfiguration&& value) { m_externalSourceConfigurationHasBeenSet = true; m_externalSourceConfiguration = std::move(value); }
+    inline ImportJobData& WithExternalSourceConfiguration(const ExternalSourceConfiguration& value) { SetExternalSourceConfiguration(value); return *this;}
+    inline ImportJobData& WithExternalSourceConfiguration(ExternalSourceConfiguration&& value) { SetExternalSourceConfiguration(std::move(value)); return *this;}
+    ///@}
+
+    ///@{
+    /**
+     * <p>The link to donwload the information of resource data that failed to be
+     * imported.</p>
+     */
+    inline const Aws::String& GetFailedRecordReport() const{ return m_failedRecordReport; }
+    inline bool FailedRecordReportHasBeenSet() const { return m_failedRecordReportHasBeenSet; }
+    inline void SetFailedRecordReport(const Aws::String& value) { m_failedRecordReportHasBeenSet = true; m_failedRecordReport = value; }
+    inline void SetFailedRecordReport(Aws::String&& value) { m_failedRecordReportHasBeenSet = true; m_failedRecordReport = std::move(value); }
+    inline void SetFailedRecordReport(const char* value) { m_failedRecordReportHasBeenSet = true; m_failedRecordReport.assign(value); }
+    inline ImportJobData& WithFailedRecordReport(const Aws::String& value) { SetFailedRecordReport(value); return *this;}
+    inline ImportJobData& WithFailedRecordReport(Aws::String&& value) { SetFailedRecordReport(std::move(value)); return *this;}
+    inline ImportJobData& WithFailedRecordReport(const char* value) { SetFailedRecordReport(value); return *this;}
+    ///@}
+
+    ///@{
+    /**
+     * <p>The identifier of the import job.</p>
+     */
+    inline const Aws::String& GetImportJobId() const{ return m_importJobId; }
+    inline bool ImportJobIdHasBeenSet() const { return m_importJobIdHasBeenSet; }
+    inline void SetImportJobId(const Aws::String& value) { m_importJobIdHasBeenSet = true; m_importJobId = value; }
+    inline void SetImportJobId(Aws::String&& value) { m_importJobIdHasBeenSet = true; m_importJobId = std::move(value); }
+    inline void SetImportJobId(const char* value) { m_importJobIdHasBeenSet = true; m_importJobId.assign(value); }
+    inline ImportJobData& WithImportJobId(const Aws::String& value) { SetImportJobId(value); return *this;}
+    inline ImportJobData& WithImportJobId(Aws::String&& value) { SetImportJobId(std::move(value)); return *this;}
+    inline ImportJobData& WithImportJobId(const char* value) { SetImportJobId(value); return *this;}
+    ///@}
+
+    ///@{
+    /**
+     * <p>The type of the import job.</p>
+     */
+    inline const ImportJobType& GetImportJobType() const{ return m_importJobType; }
+    inline bool ImportJobTypeHasBeenSet() const { return m_importJobTypeHasBeenSet; }
+    inline void SetImportJobType(const ImportJobType& value) { m_importJobTypeHasBeenSet = true; m_importJobType = value; }
+    inline void SetImportJobType(ImportJobType&& value) { m_importJobTypeHasBeenSet = true; m_importJobType = std::move(value); }
+    inline ImportJobData& WithImportJobType(const ImportJobType& value) { SetImportJobType(value); return *this;}
+    inline ImportJobData& WithImportJobType(ImportJobType&& value) { SetImportJobType(std::move(value)); return *this;}
+    ///@}
+
+    ///@{
+    /**
+     * <p>The Amazon Resource Name (ARN) of the knowledge base.</p>
+     */
+    inline const Aws::String& GetKnowledgeBaseArn() const{ return m_knowledgeBaseArn; }
+    inline bool KnowledgeBaseArnHasBeenSet() const { return m_knowledgeBaseArnHasBeenSet; }
+    inline void SetKnowledgeBaseArn(const Aws::String& value) { m_knowledgeBaseArnHasBeenSet = true; m_knowledgeBaseArn = value; }
+    inline void SetKnowledgeBaseArn(Aws::String&& value) { m_knowledgeBaseArnHasBeenSet = true; m_knowledgeBaseArn = std::move(value); }
+    inline void SetKnowledgeBaseArn(const char* value) { m_knowledgeBaseArnHasBeenSet = true; m_knowledgeBaseArn.assign(value); }
+    inline ImportJobData& WithKnowledgeBaseArn(const Aws::String& value) { SetKnowledgeBaseArn(value); return *this;}
+    inline ImportJobData& WithKnowledgeBaseArn(Aws::String&& value) { SetKnowledgeBaseArn(std::move(value)); return *this;}
+    inline ImportJobData& WithKnowledgeBaseArn(const char* value) { SetKnowledgeBaseArn(value); return *this;}
+    ///@}
+
+    ///@{
+    /**
+     * <p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES
+     * type knowledge base if you're storing Wisdom Content resource to it.</p>
+     */
+    inline const Aws::String& GetKnowledgeBaseId() const{ return m_knowledgeBaseId; }
+    inline bool KnowledgeBaseIdHasBeenSet() const { return m_knowledgeBaseIdHasBeenSet; }
+    inline void SetKnowledgeBaseId(const Aws::String& value) { m_knowledgeBaseIdHasBeenSet = true; m_knowledgeBaseId = value; }
+    inline void SetKnowledgeBaseId(Aws::String&& value) { m_knowledgeBaseIdHasBeenSet = true; m_knowledgeBaseId = std::move(value); }
+    inline void SetKnowledgeBaseId(const char* value) { m_knowledgeBaseIdHasBeenSet = true; m_knowledgeBaseId.assign(value); }
+    inline ImportJobData& WithKnowledgeBaseId(const Aws::String& value) { SetKnowledgeBaseId(value); return *this;}
+    inline ImportJobData& WithKnowledgeBaseId(Aws::String&& value) { SetKnowledgeBaseId(std::move(value)); return *this;}
+    inline ImportJobData& WithKnowledgeBaseId(const char* value) { SetKnowledgeBaseId(value); return *this;}
+    ///@}
+
+    ///@{
+    /**
+     * <p>The timestamp when the import job data was last modified.</p>
+     */
+    inline const Aws::Utils::DateTime& GetLastModifiedTime() const{ return m_lastModifiedTime; }
+    inline bool LastModifiedTimeHasBeenSet() const { return m_lastModifiedTimeHasBeenSet; }
+    inline void SetLastModifiedTime(const Aws::Utils::DateTime& value) { m_lastModifiedTimeHasBeenSet = true; m_lastModifiedTime = value; }
+    inline void SetLastModifiedTime(Aws::Utils::DateTime&& value) { m_lastModifiedTimeHasBeenSet = true; m_lastModifiedTime = std::move(value); }
+    inline ImportJobData& WithLastModifiedTime(const Aws::Utils::DateTime& value) { SetLastModifiedTime(value); return *this;}
+    inline ImportJobData& WithLastModifiedTime(Aws::Utils::DateTime&& value) { SetLastModifiedTime(std::move(value)); return *this;}
+    ///@}
+
+    ///@{
+    /**
+     * <p>The metadata fields of the imported Wisdom resources.</p>
+     */
+    inline const Aws::Map<Aws::String, Aws::String>& GetMetadata() const{ return m_metadata; }
+    inline bool MetadataHasBeenSet() const { return m_metadataHasBeenSet; }
+    inline void SetMetadata(const Aws::Map<Aws::String, Aws::String>& value) { m_metadataHasBeenSet = true; m_metadata = value; }
+    inline void SetMetadata(Aws::Map<Aws::String, Aws::String>&& value) { m_metadataHasBeenSet = true; m_metadata = std::move(value); }
+    inline ImportJobData& WithMetadata(const Aws::Map<Aws::String, Aws::String>& value) { SetMetadata(value); return *this;}
+    inline ImportJobData& WithMetadata(Aws::Map<Aws::String, Aws::String>&& value) { SetMetadata(std::move(value)); return *this;}
+    inline ImportJobData& AddMetadata(const Aws::String& key, const Aws::String& value) { m_metadataHasBeenSet = true; m_metadata.emplace(key, value); return *this; }
+    inline ImportJobData& AddMetadata(Aws::String&& key, const Aws::String& value) { m_metadataHasBeenSet = true; m_metadata.emplace(std::move(key), value); return *this; }
+    inline ImportJobData& AddMetadata(const Aws::String& key, Aws::String&& value) { m_metadataHasBeenSet = true; m_metadata.emplace(key, std::move(value)); return *this; }
+    inline ImportJobData& AddMetadata(Aws::String&& key, Aws::String&& value) { m_metadataHasBeenSet = true; m_metadata.emplace(std::move(key), std::move(value)); return *this; }
+    inline ImportJobData& AddMetadata(const char* key, Aws::String&& value) { m_metadataHasBeenSet = true; m_metadata.emplace(key, std::move(value)); return *this; }
+    inline ImportJobData& AddMetadata(Aws::String&& key, const char* value) { m_metadataHasBeenSet = true; m_metadata.emplace(std::move(key), value); return *this; }
+    inline ImportJobData& AddMetadata(const char* key, const char* value) { m_metadataHasBeenSet = true; m_metadata.emplace(key, value); return *this; }
+    ///@}
+
+    ///@{
+    /**
+     * <p>The status of the import job.</p>
+     */
+    inline const ImportJobStatus& GetStatus() const{ return m_status; }
+    inline bool StatusHasBeenSet() const { return m_statusHasBeenSet; }
+    inline void SetStatus(const ImportJobStatus& value) { m_statusHasBeenSet = true; m_status = value; }
+    inline void SetStatus(ImportJobStatus&& value) { m_statusHasBeenSet = true; m_status = std::move(value); }
+    inline ImportJobData& WithStatus(const ImportJobStatus& value) { SetStatus(value); return *this;}
+    inline ImportJobData& WithStatus(ImportJobStatus&& value) { SetStatus(std::move(value)); return *this;}
+    ///@}
+
+    ///@{
+    /**
+     * <p>A pointer to the uploaded asset. This value is returned by <a
+     * href="https://docs.aws.amazon.com/wisdom/latest/APIReference/API_StartContentUpload.html">StartContentUpload</a>.</p>
+     */
+    inline const Aws::String& GetUploadId() const{ return m_uploadId; }
+    inline bool UploadIdHasBeenSet() const { return m_uploadIdHasBeenSet; }
+    inline void SetUploadId(const Aws::String& value) { m_uploadIdHasBeenSet = true; m_uploadId = value; }
+    inline void SetUploadId(Aws::String&& value) { m_uploadIdHasBeenSet = true; m_uploadId = std::move(value); }
+    inline void SetUploadId(const char* value) { m_uploadIdHasBeenSet = true; m_uploadId.assign(value); }
+    inline ImportJobData& WithUploadId(const Aws::String& value) { SetUploadId(value); return *this;}
+    inline ImportJobData& WithUploadId(Aws::String&& value) { SetUploadId(std::move(value)); return *this;}
+    inline ImportJobData& WithUploadId(const char* value) { SetUploadId(value); return *this;}
+    ///@}
+
+    ///@{
+    /**
+     * <p>The download link to the resource file that is uploaded to the import
+     * job.</p>
+     */
+    inline const Aws::String& GetUrl() const{ return m_url; }
+    inline bool UrlHasBeenSet() const { return m_urlHasBeenSet; }
+    inline void SetUrl(const Aws::String& value) { m_urlHasBeenSet = true; m_url = value; }
+    inline void SetUrl(Aws::String&& value) { m_urlHasBeenSet = true; m_url = std::move(value); }
+    inline void SetUrl(const char* value) { m_urlHasBeenSet = true; m_url.assign(value); }
+    inline ImportJobData& WithUrl(const Aws::String& value) { SetUrl(value); return *this;}
+    inline ImportJobData& WithUrl(Aws::String&& value) { SetUrl(std::move(value)); return *this;}
+    inline ImportJobData& WithUrl(const char* value) { SetUrl(value); return *this;}
+    ///@}
+
+    ///@{
+    /**
+     * <p>The expiration time of the URL as an epoch timestamp.</p>
+     */
+    inline const Aws::Utils::DateTime& GetUrlExpiry() const{ return m_urlExpiry; }
+    inline bool UrlExpiryHasBeenSet() const { return m_urlExpiryHasBeenSet; }
+    inline void SetUrlExpiry(const Aws::Utils::DateTime& value) { m_urlExpiryHasBeenSet = true; m_urlExpiry = value; }
+    inline void SetUrlExpiry(Aws::Utils::DateTime&& value) { m_urlExpiryHasBeenSet = true; m_urlExpiry = std::move(value); }
+    inline ImportJobData& WithUrlExpiry(const Aws::Utils::DateTime& value) { SetUrlExpiry(value); return *this;}
+    inline ImportJobData& WithUrlExpiry(Aws::Utils::DateTime&& value) { SetUrlExpiry(std::move(value)); return *this;}
+    ///@}
+  private:
+
+    Aws::Utils::DateTime m_createdTime;
+    bool m_createdTimeHasBeenSet = false;
+
+    ExternalSourceConfiguration m_externalSourceConfiguration;
+    bool m_externalSourceConfigurationHasBeenSet = false;
+
+    Aws::String m_failedRecordReport;
+    bool m_failedRecordReportHasBeenSet = false;
+
+    Aws::String m_importJobId;
+    bool m_importJobIdHasBeenSet = false;
+
+    ImportJobType m_importJobType;
+    bool m_importJobTypeHasBeenSet = false;
+
+    Aws::String m_knowledgeBaseArn;
+    bool m_knowledgeBaseArnHasBeenSet = false;
+
+    Aws::String m_knowledgeBaseId;
+    bool m_knowledgeBaseIdHasBeenSet = false;
+
+    Aws::Utils::DateTime m_lastModifiedTime;
+    bool m_lastModifiedTimeHasBeenSet = false;
+
+    Aws::Map<Aws::String, Aws::String> m_metadata;
+    bool m_metadataHasBeenSet = false;
+
+    ImportJobStatus m_status;
+    bool m_statusHasBeenSet = false;
+
+    Aws::String m_uploadId;
+    bool m_uploadIdHasBeenSet = false;
+
+    Aws::String m_url;
+    bool m_urlHasBeenSet = false;
+
+    Aws::Utils::DateTime m_urlExpiry;
+    bool m_urlExpiryHasBeenSet = false;
+  };
+
+} // namespace Model
+} // namespace ConnectWisdomService
+} // namespace Aws

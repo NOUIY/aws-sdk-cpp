@@ -24,6 +24,7 @@ namespace Aws
         static const int AMAZON_LINUX_HASH = HashingUtils::HashString("AMAZON_LINUX");
         static const int AMAZON_LINUX_2_HASH = HashingUtils::HashString("AMAZON_LINUX_2");
         static const int WINDOWS_2016_HASH = HashingUtils::HashString("WINDOWS_2016");
+        static const int AMAZON_LINUX_2023_HASH = HashingUtils::HashString("AMAZON_LINUX_2023");
 
 
         OperatingSystem GetOperatingSystemForName(const Aws::String& name)
@@ -45,6 +46,10 @@ namespace Aws
           {
             return OperatingSystem::WINDOWS_2016;
           }
+          else if (hashCode == AMAZON_LINUX_2023_HASH)
+          {
+            return OperatingSystem::AMAZON_LINUX_2023;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -59,6 +64,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case OperatingSystem::NOT_SET:
+            return {};
           case OperatingSystem::WINDOWS_2012:
             return "WINDOWS_2012";
           case OperatingSystem::AMAZON_LINUX:
@@ -67,6 +74,8 @@ namespace Aws
             return "AMAZON_LINUX_2";
           case OperatingSystem::WINDOWS_2016:
             return "WINDOWS_2016";
+          case OperatingSystem::AMAZON_LINUX_2023:
+            return "AMAZON_LINUX_2023";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

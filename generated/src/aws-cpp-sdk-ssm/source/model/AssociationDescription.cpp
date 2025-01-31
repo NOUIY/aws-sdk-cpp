@@ -48,45 +48,16 @@ AssociationDescription::AssociationDescription() :
     m_targetLocationsHasBeenSet(false),
     m_scheduleOffset(0),
     m_scheduleOffsetHasBeenSet(false),
+    m_duration(0),
+    m_durationHasBeenSet(false),
     m_targetMapsHasBeenSet(false),
     m_alarmConfigurationHasBeenSet(false),
     m_triggeredAlarmsHasBeenSet(false)
 {
 }
 
-AssociationDescription::AssociationDescription(JsonView jsonValue) : 
-    m_nameHasBeenSet(false),
-    m_instanceIdHasBeenSet(false),
-    m_associationVersionHasBeenSet(false),
-    m_dateHasBeenSet(false),
-    m_lastUpdateAssociationDateHasBeenSet(false),
-    m_statusHasBeenSet(false),
-    m_overviewHasBeenSet(false),
-    m_documentVersionHasBeenSet(false),
-    m_automationTargetParameterNameHasBeenSet(false),
-    m_parametersHasBeenSet(false),
-    m_associationIdHasBeenSet(false),
-    m_targetsHasBeenSet(false),
-    m_scheduleExpressionHasBeenSet(false),
-    m_outputLocationHasBeenSet(false),
-    m_lastExecutionDateHasBeenSet(false),
-    m_lastSuccessfulExecutionDateHasBeenSet(false),
-    m_associationNameHasBeenSet(false),
-    m_maxErrorsHasBeenSet(false),
-    m_maxConcurrencyHasBeenSet(false),
-    m_complianceSeverity(AssociationComplianceSeverity::NOT_SET),
-    m_complianceSeverityHasBeenSet(false),
-    m_syncCompliance(AssociationSyncCompliance::NOT_SET),
-    m_syncComplianceHasBeenSet(false),
-    m_applyOnlyAtCronInterval(false),
-    m_applyOnlyAtCronIntervalHasBeenSet(false),
-    m_calendarNamesHasBeenSet(false),
-    m_targetLocationsHasBeenSet(false),
-    m_scheduleOffset(0),
-    m_scheduleOffsetHasBeenSet(false),
-    m_targetMapsHasBeenSet(false),
-    m_alarmConfigurationHasBeenSet(false),
-    m_triggeredAlarmsHasBeenSet(false)
+AssociationDescription::AssociationDescription(JsonView jsonValue)
+  : AssociationDescription()
 {
   *this = jsonValue;
 }
@@ -285,6 +256,13 @@ AssociationDescription& AssociationDescription::operator =(JsonView jsonValue)
     m_scheduleOffset = jsonValue.GetInteger("ScheduleOffset");
 
     m_scheduleOffsetHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Duration"))
+  {
+    m_duration = jsonValue.GetInteger("Duration");
+
+    m_durationHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("TargetMaps"))
@@ -500,6 +478,12 @@ JsonValue AssociationDescription::Jsonize() const
   if(m_scheduleOffsetHasBeenSet)
   {
    payload.WithInteger("ScheduleOffset", m_scheduleOffset);
+
+  }
+
+  if(m_durationHasBeenSet)
+  {
+   payload.WithInteger("Duration", m_duration);
 
   }
 

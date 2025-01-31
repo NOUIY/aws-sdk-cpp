@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/wisdom/ConnectWisdomService_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/wisdom/ConnectWisdomServiceServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/wisdom/ConnectWisdomServiceErrorMarshaller.h>
 
 namespace Aws
 {
 namespace ConnectWisdomService
 {
+  AWS_CONNECTWISDOMSERVICE_API extern const char SERVICE_NAME[];
   /**
    * <p>Amazon Connect Wisdom delivers agents the information they need to solve
    * customer issues as they're actively speaking with customers. Agents can search
@@ -22,12 +26,20 @@ namespace ConnectWisdomService
    * quickly. Use Amazon Connect Wisdom to create an assistant and a knowledge base,
    * for example, or manage content by uploading custom files.</p>
    */
-  class AWS_CONNECTWISDOMSERVICE_API ConnectWisdomServiceClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<ConnectWisdomServiceClient>
+  class AWS_CONNECTWISDOMSERVICE_API ConnectWisdomServiceClient : smithy::client::AwsSmithyClientT<Aws::ConnectWisdomService::SERVICE_NAME,
+      Aws::ConnectWisdomService::ConnectWisdomServiceClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      ConnectWisdomServiceEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::ConnectWisdomServiceErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<ConnectWisdomServiceClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Wisdom"; }
 
       typedef ConnectWisdomServiceClientConfiguration ClientConfigurationType;
       typedef ConnectWisdomServiceEndpointProvider EndpointProviderType;
@@ -37,14 +49,14 @@ namespace ConnectWisdomService
         * is not specified, it will be initialized to default values.
         */
         ConnectWisdomServiceClient(const Aws::ConnectWisdomService::ConnectWisdomServiceClientConfiguration& clientConfiguration = Aws::ConnectWisdomService::ConnectWisdomServiceClientConfiguration(),
-                                   std::shared_ptr<ConnectWisdomServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<ConnectWisdomServiceEndpointProvider>(ALLOCATION_TAG));
+                                   std::shared_ptr<ConnectWisdomServiceEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         ConnectWisdomServiceClient(const Aws::Auth::AWSCredentials& credentials,
-                                   std::shared_ptr<ConnectWisdomServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<ConnectWisdomServiceEndpointProvider>(ALLOCATION_TAG),
+                                   std::shared_ptr<ConnectWisdomServiceEndpointProviderBase> endpointProvider = nullptr,
                                    const Aws::ConnectWisdomService::ConnectWisdomServiceClientConfiguration& clientConfiguration = Aws::ConnectWisdomService::ConnectWisdomServiceClientConfiguration());
 
        /**
@@ -52,7 +64,7 @@ namespace ConnectWisdomService
         * the default http client factory will be used
         */
         ConnectWisdomServiceClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                   std::shared_ptr<ConnectWisdomServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<ConnectWisdomServiceEndpointProvider>(ALLOCATION_TAG),
+                                   std::shared_ptr<ConnectWisdomServiceEndpointProviderBase> endpointProvider = nullptr,
                                    const Aws::ConnectWisdomService::ConnectWisdomServiceClientConfiguration& clientConfiguration = Aws::ConnectWisdomService::ConnectWisdomServiceClientConfiguration());
 
 
@@ -200,6 +212,31 @@ namespace ConnectWisdomService
         }
 
         /**
+         * <p>Creates a Wisdom quick response.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/CreateQuickResponse">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateQuickResponseOutcome CreateQuickResponse(const Model::CreateQuickResponseRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateQuickResponse that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateQuickResponseRequestT = Model::CreateQuickResponseRequest>
+        Model::CreateQuickResponseOutcomeCallable CreateQuickResponseCallable(const CreateQuickResponseRequestT& request) const
+        {
+            return SubmitCallable(&ConnectWisdomServiceClient::CreateQuickResponse, request);
+        }
+
+        /**
+         * An Async wrapper for CreateQuickResponse that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateQuickResponseRequestT = Model::CreateQuickResponseRequest>
+        void CreateQuickResponseAsync(const CreateQuickResponseRequestT& request, const CreateQuickResponseResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ConnectWisdomServiceClient::CreateQuickResponse, request, handler, context);
+        }
+
+        /**
          * <p>Creates a session. A session is a contextual container used for generating
          * recommendations. Amazon Connect creates a new Wisdom session for each contact on
          * which Wisdom is enabled.</p><p><h3>See Also:</h3>   <a
@@ -302,6 +339,31 @@ namespace ConnectWisdomService
         }
 
         /**
+         * <p>Deletes the quick response import job.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/DeleteImportJob">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteImportJobOutcome DeleteImportJob(const Model::DeleteImportJobRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteImportJob that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteImportJobRequestT = Model::DeleteImportJobRequest>
+        Model::DeleteImportJobOutcomeCallable DeleteImportJobCallable(const DeleteImportJobRequestT& request) const
+        {
+            return SubmitCallable(&ConnectWisdomServiceClient::DeleteImportJob, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteImportJob that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteImportJobRequestT = Model::DeleteImportJobRequest>
+        void DeleteImportJobAsync(const DeleteImportJobRequestT& request, const DeleteImportJobResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ConnectWisdomServiceClient::DeleteImportJob, request, handler, context);
+        }
+
+        /**
          * <p>Deletes the knowledge base.</p>  <p>When you use this API to delete an
          * external knowledge base such as Salesforce or ServiceNow, you must also delete
          * the <a
@@ -335,6 +397,31 @@ namespace ConnectWisdomService
         void DeleteKnowledgeBaseAsync(const DeleteKnowledgeBaseRequestT& request, const DeleteKnowledgeBaseResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ConnectWisdomServiceClient::DeleteKnowledgeBase, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes a quick response.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/DeleteQuickResponse">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteQuickResponseOutcome DeleteQuickResponse(const Model::DeleteQuickResponseRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteQuickResponse that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteQuickResponseRequestT = Model::DeleteQuickResponseRequest>
+        Model::DeleteQuickResponseOutcomeCallable DeleteQuickResponseCallable(const DeleteQuickResponseRequestT& request) const
+        {
+            return SubmitCallable(&ConnectWisdomServiceClient::DeleteQuickResponse, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteQuickResponse that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteQuickResponseRequestT = Model::DeleteQuickResponseRequest>
+        void DeleteQuickResponseAsync(const DeleteQuickResponseRequestT& request, const DeleteQuickResponseResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ConnectWisdomServiceClient::DeleteQuickResponse, request, handler, context);
         }
 
         /**
@@ -441,6 +528,31 @@ namespace ConnectWisdomService
         }
 
         /**
+         * <p>Retrieves the started import job.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/GetImportJob">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetImportJobOutcome GetImportJob(const Model::GetImportJobRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetImportJob that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetImportJobRequestT = Model::GetImportJobRequest>
+        Model::GetImportJobOutcomeCallable GetImportJobCallable(const GetImportJobRequestT& request) const
+        {
+            return SubmitCallable(&ConnectWisdomServiceClient::GetImportJob, request);
+        }
+
+        /**
+         * An Async wrapper for GetImportJob that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetImportJobRequestT = Model::GetImportJobRequest>
+        void GetImportJobAsync(const GetImportJobRequestT& request, const GetImportJobResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ConnectWisdomServiceClient::GetImportJob, request, handler, context);
+        }
+
+        /**
          * <p>Retrieves information about the knowledge base.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/GetKnowledgeBase">AWS
          * API Reference</a></p>
@@ -466,35 +578,28 @@ namespace ConnectWisdomService
         }
 
         /**
-         * <p>Retrieves recommendations for the specified session. To avoid retrieving the
-         * same recommendations in subsequent calls, use <a
-         * href="https://docs.aws.amazon.com/wisdom/latest/APIReference/API_NotifyRecommendationsReceived.html">NotifyRecommendationsReceived</a>.
-         * This API supports long-polling behavior with the <code>waitTimeSeconds</code>
-         * parameter. Short poll is the default behavior and only returns recommendations
-         * already available. To perform a manual query against an assistant, use <a
-         * href="https://docs.aws.amazon.com/wisdom/latest/APIReference/API_QueryAssistant.html">QueryAssistant</a>.</p><p><h3>See
-         * Also:</h3>   <a
-         * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/GetRecommendations">AWS
+         * <p>Retrieves the quick response.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/GetQuickResponse">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetRecommendationsOutcome GetRecommendations(const Model::GetRecommendationsRequest& request) const;
+        virtual Model::GetQuickResponseOutcome GetQuickResponse(const Model::GetQuickResponseRequest& request) const;
 
         /**
-         * A Callable wrapper for GetRecommendations that returns a future to the operation so that it can be executed in parallel to other requests.
+         * A Callable wrapper for GetQuickResponse that returns a future to the operation so that it can be executed in parallel to other requests.
          */
-        template<typename GetRecommendationsRequestT = Model::GetRecommendationsRequest>
-        Model::GetRecommendationsOutcomeCallable GetRecommendationsCallable(const GetRecommendationsRequestT& request) const
+        template<typename GetQuickResponseRequestT = Model::GetQuickResponseRequest>
+        Model::GetQuickResponseOutcomeCallable GetQuickResponseCallable(const GetQuickResponseRequestT& request) const
         {
-            return SubmitCallable(&ConnectWisdomServiceClient::GetRecommendations, request);
+            return SubmitCallable(&ConnectWisdomServiceClient::GetQuickResponse, request);
         }
 
         /**
-         * An Async wrapper for GetRecommendations that queues the request into a thread executor and triggers associated callback when operation has finished.
+         * An Async wrapper for GetQuickResponse that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
-        template<typename GetRecommendationsRequestT = Model::GetRecommendationsRequest>
-        void GetRecommendationsAsync(const GetRecommendationsRequestT& request, const GetRecommendationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        template<typename GetQuickResponseRequestT = Model::GetQuickResponseRequest>
+        void GetQuickResponseAsync(const GetQuickResponseRequestT& request, const GetQuickResponseResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
-            return SubmitAsync(&ConnectWisdomServiceClient::GetRecommendations, request, handler, context);
+            return SubmitAsync(&ConnectWisdomServiceClient::GetQuickResponse, request, handler, context);
         }
 
         /**
@@ -552,13 +657,13 @@ namespace ConnectWisdomService
          * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/ListAssistants">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListAssistantsOutcome ListAssistants(const Model::ListAssistantsRequest& request) const;
+        virtual Model::ListAssistantsOutcome ListAssistants(const Model::ListAssistantsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListAssistants that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListAssistantsRequestT = Model::ListAssistantsRequest>
-        Model::ListAssistantsOutcomeCallable ListAssistantsCallable(const ListAssistantsRequestT& request) const
+        Model::ListAssistantsOutcomeCallable ListAssistantsCallable(const ListAssistantsRequestT& request = {}) const
         {
             return SubmitCallable(&ConnectWisdomServiceClient::ListAssistants, request);
         }
@@ -567,7 +672,7 @@ namespace ConnectWisdomService
          * An Async wrapper for ListAssistants that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListAssistantsRequestT = Model::ListAssistantsRequest>
-        void ListAssistantsAsync(const ListAssistantsRequestT& request, const ListAssistantsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListAssistantsAsync(const ListAssistantsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListAssistantsRequestT& request = {}) const
         {
             return SubmitAsync(&ConnectWisdomServiceClient::ListAssistants, request, handler, context);
         }
@@ -598,17 +703,42 @@ namespace ConnectWisdomService
         }
 
         /**
+         * <p>Lists information about import jobs.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/ListImportJobs">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListImportJobsOutcome ListImportJobs(const Model::ListImportJobsRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListImportJobs that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListImportJobsRequestT = Model::ListImportJobsRequest>
+        Model::ListImportJobsOutcomeCallable ListImportJobsCallable(const ListImportJobsRequestT& request) const
+        {
+            return SubmitCallable(&ConnectWisdomServiceClient::ListImportJobs, request);
+        }
+
+        /**
+         * An Async wrapper for ListImportJobs that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListImportJobsRequestT = Model::ListImportJobsRequest>
+        void ListImportJobsAsync(const ListImportJobsRequestT& request, const ListImportJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ConnectWisdomServiceClient::ListImportJobs, request, handler, context);
+        }
+
+        /**
          * <p>Lists the knowledge bases.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/ListKnowledgeBases">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListKnowledgeBasesOutcome ListKnowledgeBases(const Model::ListKnowledgeBasesRequest& request) const;
+        virtual Model::ListKnowledgeBasesOutcome ListKnowledgeBases(const Model::ListKnowledgeBasesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListKnowledgeBases that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListKnowledgeBasesRequestT = Model::ListKnowledgeBasesRequest>
-        Model::ListKnowledgeBasesOutcomeCallable ListKnowledgeBasesCallable(const ListKnowledgeBasesRequestT& request) const
+        Model::ListKnowledgeBasesOutcomeCallable ListKnowledgeBasesCallable(const ListKnowledgeBasesRequestT& request = {}) const
         {
             return SubmitCallable(&ConnectWisdomServiceClient::ListKnowledgeBases, request);
         }
@@ -617,9 +747,34 @@ namespace ConnectWisdomService
          * An Async wrapper for ListKnowledgeBases that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListKnowledgeBasesRequestT = Model::ListKnowledgeBasesRequest>
-        void ListKnowledgeBasesAsync(const ListKnowledgeBasesRequestT& request, const ListKnowledgeBasesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListKnowledgeBasesAsync(const ListKnowledgeBasesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListKnowledgeBasesRequestT& request = {}) const
         {
             return SubmitAsync(&ConnectWisdomServiceClient::ListKnowledgeBases, request, handler, context);
+        }
+
+        /**
+         * <p>Lists information about quick response.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/ListQuickResponses">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListQuickResponsesOutcome ListQuickResponses(const Model::ListQuickResponsesRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListQuickResponses that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListQuickResponsesRequestT = Model::ListQuickResponsesRequest>
+        Model::ListQuickResponsesOutcomeCallable ListQuickResponsesCallable(const ListQuickResponsesRequestT& request) const
+        {
+            return SubmitCallable(&ConnectWisdomServiceClient::ListQuickResponses, request);
+        }
+
+        /**
+         * An Async wrapper for ListQuickResponses that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListQuickResponsesRequestT = Model::ListQuickResponsesRequest>
+        void ListQuickResponsesAsync(const ListQuickResponsesRequestT& request, const ListQuickResponsesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ConnectWisdomServiceClient::ListQuickResponses, request, handler, context);
         }
 
         /**
@@ -677,34 +832,6 @@ namespace ConnectWisdomService
         }
 
         /**
-         * <p>Performs a manual search against the specified assistant. To retrieve
-         * recommendations for an assistant, use <a
-         * href="https://docs.aws.amazon.com/wisdom/latest/APIReference/API_GetRecommendations.html">GetRecommendations</a>.
-         * </p><p><h3>See Also:</h3>   <a
-         * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/QueryAssistant">AWS
-         * API Reference</a></p>
-         */
-        virtual Model::QueryAssistantOutcome QueryAssistant(const Model::QueryAssistantRequest& request) const;
-
-        /**
-         * A Callable wrapper for QueryAssistant that returns a future to the operation so that it can be executed in parallel to other requests.
-         */
-        template<typename QueryAssistantRequestT = Model::QueryAssistantRequest>
-        Model::QueryAssistantOutcomeCallable QueryAssistantCallable(const QueryAssistantRequestT& request) const
-        {
-            return SubmitCallable(&ConnectWisdomServiceClient::QueryAssistant, request);
-        }
-
-        /**
-         * An Async wrapper for QueryAssistant that queues the request into a thread executor and triggers associated callback when operation has finished.
-         */
-        template<typename QueryAssistantRequestT = Model::QueryAssistantRequest>
-        void QueryAssistantAsync(const QueryAssistantRequestT& request, const QueryAssistantResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
-        {
-            return SubmitAsync(&ConnectWisdomServiceClient::QueryAssistant, request, handler, context);
-        }
-
-        /**
          * <p>Removes a URI template from a knowledge base.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/RemoveKnowledgeBaseTemplateUri">AWS
          * API Reference</a></p>
@@ -753,6 +880,32 @@ namespace ConnectWisdomService
         void SearchContentAsync(const SearchContentRequestT& request, const SearchContentResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ConnectWisdomServiceClient::SearchContent, request, handler, context);
+        }
+
+        /**
+         * <p>Searches existing Wisdom quick responses in a Wisdom knowledge
+         * base.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/SearchQuickResponses">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::SearchQuickResponsesOutcome SearchQuickResponses(const Model::SearchQuickResponsesRequest& request) const;
+
+        /**
+         * A Callable wrapper for SearchQuickResponses that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename SearchQuickResponsesRequestT = Model::SearchQuickResponsesRequest>
+        Model::SearchQuickResponsesOutcomeCallable SearchQuickResponsesCallable(const SearchQuickResponsesRequestT& request) const
+        {
+            return SubmitCallable(&ConnectWisdomServiceClient::SearchQuickResponses, request);
+        }
+
+        /**
+         * An Async wrapper for SearchQuickResponses that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename SearchQuickResponsesRequestT = Model::SearchQuickResponsesRequest>
+        void SearchQuickResponsesAsync(const SearchQuickResponsesRequestT& request, const SearchQuickResponsesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ConnectWisdomServiceClient::SearchQuickResponses, request, handler, context);
         }
 
         /**
@@ -810,6 +963,39 @@ namespace ConnectWisdomService
         void StartContentUploadAsync(const StartContentUploadRequestT& request, const StartContentUploadResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ConnectWisdomServiceClient::StartContentUpload, request, handler, context);
+        }
+
+        /**
+         * <p>Start an asynchronous job to import Wisdom resources from an uploaded source
+         * file. Before calling this API, use <a
+         * href="https://docs.aws.amazon.com/wisdom/latest/APIReference/API_StartContentUpload.html">StartContentUpload</a>
+         * to upload an asset that contains the resource data.</p> <ul> <li> <p>For
+         * importing Wisdom quick responses, you need to upload a csv file including the
+         * quick responses. For information about how to format the csv file for importing
+         * quick responses, see <a
+         * href="https://docs.aws.amazon.com/console/connect/quick-responses/add-data">Import
+         * quick responses</a>.</p> </li> </ul><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/StartImportJob">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::StartImportJobOutcome StartImportJob(const Model::StartImportJobRequest& request) const;
+
+        /**
+         * A Callable wrapper for StartImportJob that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename StartImportJobRequestT = Model::StartImportJobRequest>
+        Model::StartImportJobOutcomeCallable StartImportJobCallable(const StartImportJobRequestT& request) const
+        {
+            return SubmitCallable(&ConnectWisdomServiceClient::StartImportJob, request);
+        }
+
+        /**
+         * An Async wrapper for StartImportJob that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename StartImportJobRequestT = Model::StartImportJobRequest>
+        void StartImportJobAsync(const StartImportJobRequestT& request, const StartImportJobResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ConnectWisdomServiceClient::StartImportJob, request, handler, context);
         }
 
         /**
@@ -920,16 +1106,37 @@ namespace ConnectWisdomService
             return SubmitAsync(&ConnectWisdomServiceClient::UpdateKnowledgeBaseTemplateUri, request, handler, context);
         }
 
+        /**
+         * <p>Updates an existing Wisdom quick response.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/wisdom-2020-10-19/UpdateQuickResponse">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateQuickResponseOutcome UpdateQuickResponse(const Model::UpdateQuickResponseRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateQuickResponse that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateQuickResponseRequestT = Model::UpdateQuickResponseRequest>
+        Model::UpdateQuickResponseOutcomeCallable UpdateQuickResponseCallable(const UpdateQuickResponseRequestT& request) const
+        {
+            return SubmitCallable(&ConnectWisdomServiceClient::UpdateQuickResponse, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateQuickResponse that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateQuickResponseRequestT = Model::UpdateQuickResponseRequest>
+        void UpdateQuickResponseAsync(const UpdateQuickResponseRequestT& request, const UpdateQuickResponseResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ConnectWisdomServiceClient::UpdateQuickResponse, request, handler, context);
+        }
+
 
       void OverrideEndpoint(const Aws::String& endpoint);
       std::shared_ptr<ConnectWisdomServiceEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<ConnectWisdomServiceClient>;
-      void init(const ConnectWisdomServiceClientConfiguration& clientConfiguration);
 
-      ConnectWisdomServiceClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<ConnectWisdomServiceEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace ConnectWisdomService

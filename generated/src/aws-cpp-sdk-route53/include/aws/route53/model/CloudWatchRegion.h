@@ -49,7 +49,12 @@ namespace Model
     us_iso_east_1,
     us_iso_west_1,
     us_isob_east_1,
-    ap_southeast_4
+    ap_southeast_4,
+    il_central_1,
+    ca_west_1,
+    ap_southeast_5,
+    mx_central_1,
+    ap_southeast_7
   };
 
 namespace CloudWatchRegionMapper

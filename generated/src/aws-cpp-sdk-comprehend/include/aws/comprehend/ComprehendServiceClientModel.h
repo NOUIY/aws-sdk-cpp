@@ -59,6 +59,7 @@
 #include <aws/comprehend/model/DetectSentimentResult.h>
 #include <aws/comprehend/model/DetectSyntaxResult.h>
 #include <aws/comprehend/model/DetectTargetedSentimentResult.h>
+#include <aws/comprehend/model/DetectToxicContentResult.h>
 #include <aws/comprehend/model/ImportModelResult.h>
 #include <aws/comprehend/model/ListDatasetsResult.h>
 #include <aws/comprehend/model/ListDocumentClassificationJobsResult.h>
@@ -102,6 +103,23 @@
 #include <aws/comprehend/model/UntagResourceResult.h>
 #include <aws/comprehend/model/UpdateEndpointResult.h>
 #include <aws/comprehend/model/UpdateFlywheelResult.h>
+#include <aws/comprehend/model/ListEntityRecognizersRequest.h>
+#include <aws/comprehend/model/ListDominantLanguageDetectionJobsRequest.h>
+#include <aws/comprehend/model/DetectEntitiesRequest.h>
+#include <aws/comprehend/model/ListFlywheelsRequest.h>
+#include <aws/comprehend/model/ListDatasetsRequest.h>
+#include <aws/comprehend/model/ListEntityRecognizerSummariesRequest.h>
+#include <aws/comprehend/model/ListDocumentClassifiersRequest.h>
+#include <aws/comprehend/model/ListEntitiesDetectionJobsRequest.h>
+#include <aws/comprehend/model/ListKeyPhrasesDetectionJobsRequest.h>
+#include <aws/comprehend/model/ListEventsDetectionJobsRequest.h>
+#include <aws/comprehend/model/ListEndpointsRequest.h>
+#include <aws/comprehend/model/ListDocumentClassifierSummariesRequest.h>
+#include <aws/comprehend/model/ListTopicsDetectionJobsRequest.h>
+#include <aws/comprehend/model/ListPiiEntitiesDetectionJobsRequest.h>
+#include <aws/comprehend/model/ListSentimentDetectionJobsRequest.h>
+#include <aws/comprehend/model/ListTargetedSentimentDetectionJobsRequest.h>
+#include <aws/comprehend/model/ListDocumentClassificationJobsRequest.h>
 /* End of service model headers required in ComprehendClient header */
 
 namespace Aws
@@ -135,7 +153,7 @@ namespace Aws
 
   namespace Comprehend
   {
-    using ComprehendClientConfiguration = Aws::Client::GenericClientConfiguration<false>;
+    using ComprehendClientConfiguration = Aws::Client::GenericClientConfiguration;
     using ComprehendEndpointProviderBase = Aws::Comprehend::Endpoint::ComprehendEndpointProviderBase;
     using ComprehendEndpointProvider = Aws::Comprehend::Endpoint::ComprehendEndpointProvider;
 
@@ -183,6 +201,7 @@ namespace Aws
       class DetectSentimentRequest;
       class DetectSyntaxRequest;
       class DetectTargetedSentimentRequest;
+      class DetectToxicContentRequest;
       class ImportModelRequest;
       class ListDatasetsRequest;
       class ListDocumentClassificationJobsRequest;
@@ -270,6 +289,7 @@ namespace Aws
       typedef Aws::Utils::Outcome<DetectSentimentResult, ComprehendError> DetectSentimentOutcome;
       typedef Aws::Utils::Outcome<DetectSyntaxResult, ComprehendError> DetectSyntaxOutcome;
       typedef Aws::Utils::Outcome<DetectTargetedSentimentResult, ComprehendError> DetectTargetedSentimentOutcome;
+      typedef Aws::Utils::Outcome<DetectToxicContentResult, ComprehendError> DetectToxicContentOutcome;
       typedef Aws::Utils::Outcome<ImportModelResult, ComprehendError> ImportModelOutcome;
       typedef Aws::Utils::Outcome<ListDatasetsResult, ComprehendError> ListDatasetsOutcome;
       typedef Aws::Utils::Outcome<ListDocumentClassificationJobsResult, ComprehendError> ListDocumentClassificationJobsOutcome;
@@ -357,6 +377,7 @@ namespace Aws
       typedef std::future<DetectSentimentOutcome> DetectSentimentOutcomeCallable;
       typedef std::future<DetectSyntaxOutcome> DetectSyntaxOutcomeCallable;
       typedef std::future<DetectTargetedSentimentOutcome> DetectTargetedSentimentOutcomeCallable;
+      typedef std::future<DetectToxicContentOutcome> DetectToxicContentOutcomeCallable;
       typedef std::future<ImportModelOutcome> ImportModelOutcomeCallable;
       typedef std::future<ListDatasetsOutcome> ListDatasetsOutcomeCallable;
       typedef std::future<ListDocumentClassificationJobsOutcome> ListDocumentClassificationJobsOutcomeCallable;
@@ -447,6 +468,7 @@ namespace Aws
     typedef std::function<void(const ComprehendClient*, const Model::DetectSentimentRequest&, const Model::DetectSentimentOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DetectSentimentResponseReceivedHandler;
     typedef std::function<void(const ComprehendClient*, const Model::DetectSyntaxRequest&, const Model::DetectSyntaxOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DetectSyntaxResponseReceivedHandler;
     typedef std::function<void(const ComprehendClient*, const Model::DetectTargetedSentimentRequest&, const Model::DetectTargetedSentimentOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DetectTargetedSentimentResponseReceivedHandler;
+    typedef std::function<void(const ComprehendClient*, const Model::DetectToxicContentRequest&, const Model::DetectToxicContentOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DetectToxicContentResponseReceivedHandler;
     typedef std::function<void(const ComprehendClient*, const Model::ImportModelRequest&, const Model::ImportModelOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ImportModelResponseReceivedHandler;
     typedef std::function<void(const ComprehendClient*, const Model::ListDatasetsRequest&, const Model::ListDatasetsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListDatasetsResponseReceivedHandler;
     typedef std::function<void(const ComprehendClient*, const Model::ListDocumentClassificationJobsRequest&, const Model::ListDocumentClassificationJobsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListDocumentClassificationJobsResponseReceivedHandler;

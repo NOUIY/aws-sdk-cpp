@@ -22,8 +22,8 @@ DescribeProvisioningArtifactResult::DescribeProvisioningArtifactResult() :
 {
 }
 
-DescribeProvisioningArtifactResult::DescribeProvisioningArtifactResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(Status::NOT_SET)
+DescribeProvisioningArtifactResult::DescribeProvisioningArtifactResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeProvisioningArtifactResult()
 {
   *this = result;
 }
@@ -50,6 +50,15 @@ DescribeProvisioningArtifactResult& DescribeProvisioningArtifactResult::operator
   {
     m_status = StatusMapper::GetStatusForName(jsonValue.GetString("Status"));
 
+  }
+
+  if(jsonValue.ValueExists("ProvisioningArtifactParameters"))
+  {
+    Aws::Utils::Array<JsonView> provisioningArtifactParametersJsonList = jsonValue.GetArray("ProvisioningArtifactParameters");
+    for(unsigned provisioningArtifactParametersIndex = 0; provisioningArtifactParametersIndex < provisioningArtifactParametersJsonList.GetLength(); ++provisioningArtifactParametersIndex)
+    {
+      m_provisioningArtifactParameters.push_back(provisioningArtifactParametersJsonList[provisioningArtifactParametersIndex].AsObject());
+    }
   }
 
 

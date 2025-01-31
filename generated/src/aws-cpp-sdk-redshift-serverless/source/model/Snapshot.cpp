@@ -23,6 +23,8 @@ Snapshot::Snapshot() :
     m_accountsWithRestoreAccessHasBeenSet(false),
     m_actualIncrementalBackupSizeInMegaBytes(0.0),
     m_actualIncrementalBackupSizeInMegaBytesHasBeenSet(false),
+    m_adminPasswordSecretArnHasBeenSet(false),
+    m_adminPasswordSecretKmsKeyIdHasBeenSet(false),
     m_adminUsernameHasBeenSet(false),
     m_backupProgressInMegaBytes(0.0),
     m_backupProgressInMegaBytesHasBeenSet(false),
@@ -51,36 +53,8 @@ Snapshot::Snapshot() :
 {
 }
 
-Snapshot::Snapshot(JsonView jsonValue) : 
-    m_accountsWithProvisionedRestoreAccessHasBeenSet(false),
-    m_accountsWithRestoreAccessHasBeenSet(false),
-    m_actualIncrementalBackupSizeInMegaBytes(0.0),
-    m_actualIncrementalBackupSizeInMegaBytesHasBeenSet(false),
-    m_adminUsernameHasBeenSet(false),
-    m_backupProgressInMegaBytes(0.0),
-    m_backupProgressInMegaBytesHasBeenSet(false),
-    m_currentBackupRateInMegaBytesPerSecond(0.0),
-    m_currentBackupRateInMegaBytesPerSecondHasBeenSet(false),
-    m_elapsedTimeInSeconds(0),
-    m_elapsedTimeInSecondsHasBeenSet(false),
-    m_estimatedSecondsToCompletion(0),
-    m_estimatedSecondsToCompletionHasBeenSet(false),
-    m_kmsKeyIdHasBeenSet(false),
-    m_namespaceArnHasBeenSet(false),
-    m_namespaceNameHasBeenSet(false),
-    m_ownerAccountHasBeenSet(false),
-    m_snapshotArnHasBeenSet(false),
-    m_snapshotCreateTimeHasBeenSet(false),
-    m_snapshotNameHasBeenSet(false),
-    m_snapshotRemainingDays(0),
-    m_snapshotRemainingDaysHasBeenSet(false),
-    m_snapshotRetentionPeriod(0),
-    m_snapshotRetentionPeriodHasBeenSet(false),
-    m_snapshotRetentionStartTimeHasBeenSet(false),
-    m_status(SnapshotStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_totalBackupSizeInMegaBytes(0.0),
-    m_totalBackupSizeInMegaBytesHasBeenSet(false)
+Snapshot::Snapshot(JsonView jsonValue)
+  : Snapshot()
 {
   *this = jsonValue;
 }
@@ -112,6 +86,20 @@ Snapshot& Snapshot::operator =(JsonView jsonValue)
     m_actualIncrementalBackupSizeInMegaBytes = jsonValue.GetDouble("actualIncrementalBackupSizeInMegaBytes");
 
     m_actualIncrementalBackupSizeInMegaBytesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("adminPasswordSecretArn"))
+  {
+    m_adminPasswordSecretArn = jsonValue.GetString("adminPasswordSecretArn");
+
+    m_adminPasswordSecretArnHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("adminPasswordSecretKmsKeyId"))
+  {
+    m_adminPasswordSecretKmsKeyId = jsonValue.GetString("adminPasswordSecretKmsKeyId");
+
+    m_adminPasswordSecretKmsKeyIdHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("adminUsername"))
@@ -265,6 +253,18 @@ JsonValue Snapshot::Jsonize() const
   if(m_actualIncrementalBackupSizeInMegaBytesHasBeenSet)
   {
    payload.WithDouble("actualIncrementalBackupSizeInMegaBytes", m_actualIncrementalBackupSizeInMegaBytes);
+
+  }
+
+  if(m_adminPasswordSecretArnHasBeenSet)
+  {
+   payload.WithString("adminPasswordSecretArn", m_adminPasswordSecretArn);
+
+  }
+
+  if(m_adminPasswordSecretKmsKeyIdHasBeenSet)
+  {
+   payload.WithString("adminPasswordSecretKmsKeyId", m_adminPasswordSecretKmsKeyId);
 
   }
 

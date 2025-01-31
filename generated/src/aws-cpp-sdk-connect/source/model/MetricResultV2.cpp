@@ -20,13 +20,13 @@ namespace Model
 
 MetricResultV2::MetricResultV2() : 
     m_dimensionsHasBeenSet(false),
+    m_metricIntervalHasBeenSet(false),
     m_collectionsHasBeenSet(false)
 {
 }
 
-MetricResultV2::MetricResultV2(JsonView jsonValue) : 
-    m_dimensionsHasBeenSet(false),
-    m_collectionsHasBeenSet(false)
+MetricResultV2::MetricResultV2(JsonView jsonValue)
+  : MetricResultV2()
 {
   *this = jsonValue;
 }
@@ -41,6 +41,13 @@ MetricResultV2& MetricResultV2::operator =(JsonView jsonValue)
       m_dimensions[dimensionsItem.first] = dimensionsItem.second.AsString();
     }
     m_dimensionsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("MetricInterval"))
+  {
+    m_metricInterval = jsonValue.GetObject("MetricInterval");
+
+    m_metricIntervalHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("Collections"))
@@ -68,6 +75,12 @@ JsonValue MetricResultV2::Jsonize() const
      dimensionsJsonMap.WithString(dimensionsItem.first, dimensionsItem.second);
    }
    payload.WithObject("Dimensions", std::move(dimensionsJsonMap));
+
+  }
+
+  if(m_metricIntervalHasBeenSet)
+  {
+   payload.WithObject("MetricInterval", m_metricInterval.Jsonize());
 
   }
 

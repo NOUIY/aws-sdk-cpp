@@ -32,6 +32,7 @@ Input::Input() :
     m_denoiseFilter(InputDenoiseFilter::NOT_SET),
     m_denoiseFilterHasBeenSet(false),
     m_dolbyVisionMetadataXmlHasBeenSet(false),
+    m_dynamicAudioSelectorsHasBeenSet(false),
     m_fileInputHasBeenSet(false),
     m_filterEnable(InputFilterEnable::NOT_SET),
     m_filterEnableHasBeenSet(false),
@@ -51,44 +52,13 @@ Input::Input() :
     m_timecodeSourceHasBeenSet(false),
     m_timecodeStartHasBeenSet(false),
     m_videoGeneratorHasBeenSet(false),
+    m_videoOverlaysHasBeenSet(false),
     m_videoSelectorHasBeenSet(false)
 {
 }
 
-Input::Input(JsonView jsonValue) : 
-    m_advancedInputFilter(AdvancedInputFilter::NOT_SET),
-    m_advancedInputFilterHasBeenSet(false),
-    m_advancedInputFilterSettingsHasBeenSet(false),
-    m_audioSelectorGroupsHasBeenSet(false),
-    m_audioSelectorsHasBeenSet(false),
-    m_captionSelectorsHasBeenSet(false),
-    m_cropHasBeenSet(false),
-    m_deblockFilter(InputDeblockFilter::NOT_SET),
-    m_deblockFilterHasBeenSet(false),
-    m_decryptionSettingsHasBeenSet(false),
-    m_denoiseFilter(InputDenoiseFilter::NOT_SET),
-    m_denoiseFilterHasBeenSet(false),
-    m_dolbyVisionMetadataXmlHasBeenSet(false),
-    m_fileInputHasBeenSet(false),
-    m_filterEnable(InputFilterEnable::NOT_SET),
-    m_filterEnableHasBeenSet(false),
-    m_filterStrength(0),
-    m_filterStrengthHasBeenSet(false),
-    m_imageInserterHasBeenSet(false),
-    m_inputClippingsHasBeenSet(false),
-    m_inputScanType(InputScanType::NOT_SET),
-    m_inputScanTypeHasBeenSet(false),
-    m_positionHasBeenSet(false),
-    m_programNumber(0),
-    m_programNumberHasBeenSet(false),
-    m_psiControl(InputPsiControl::NOT_SET),
-    m_psiControlHasBeenSet(false),
-    m_supplementalImpsHasBeenSet(false),
-    m_timecodeSource(InputTimecodeSource::NOT_SET),
-    m_timecodeSourceHasBeenSet(false),
-    m_timecodeStartHasBeenSet(false),
-    m_videoGeneratorHasBeenSet(false),
-    m_videoSelectorHasBeenSet(false)
+Input::Input(JsonView jsonValue)
+  : Input()
 {
   *this = jsonValue;
 }
@@ -172,6 +142,16 @@ Input& Input::operator =(JsonView jsonValue)
     m_dolbyVisionMetadataXml = jsonValue.GetString("dolbyVisionMetadataXml");
 
     m_dolbyVisionMetadataXmlHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("dynamicAudioSelectors"))
+  {
+    Aws::Map<Aws::String, JsonView> dynamicAudioSelectorsJsonMap = jsonValue.GetObject("dynamicAudioSelectors").GetAllObjects();
+    for(auto& dynamicAudioSelectorsItem : dynamicAudioSelectorsJsonMap)
+    {
+      m_dynamicAudioSelectors[dynamicAudioSelectorsItem.first] = dynamicAudioSelectorsItem.second.AsObject();
+    }
+    m_dynamicAudioSelectorsHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("fileInput"))
@@ -271,6 +251,16 @@ Input& Input::operator =(JsonView jsonValue)
     m_videoGeneratorHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("videoOverlays"))
+  {
+    Aws::Utils::Array<JsonView> videoOverlaysJsonList = jsonValue.GetArray("videoOverlays");
+    for(unsigned videoOverlaysIndex = 0; videoOverlaysIndex < videoOverlaysJsonList.GetLength(); ++videoOverlaysIndex)
+    {
+      m_videoOverlays.push_back(videoOverlaysJsonList[videoOverlaysIndex].AsObject());
+    }
+    m_videoOverlaysHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("videoSelector"))
   {
     m_videoSelector = jsonValue.GetObject("videoSelector");
@@ -357,6 +347,17 @@ JsonValue Input::Jsonize() const
 
   }
 
+  if(m_dynamicAudioSelectorsHasBeenSet)
+  {
+   JsonValue dynamicAudioSelectorsJsonMap;
+   for(auto& dynamicAudioSelectorsItem : m_dynamicAudioSelectors)
+   {
+     dynamicAudioSelectorsJsonMap.WithObject(dynamicAudioSelectorsItem.first, dynamicAudioSelectorsItem.second.Jsonize());
+   }
+   payload.WithObject("dynamicAudioSelectors", std::move(dynamicAudioSelectorsJsonMap));
+
+  }
+
   if(m_fileInputHasBeenSet)
   {
    payload.WithString("fileInput", m_fileInput);
@@ -438,6 +439,17 @@ JsonValue Input::Jsonize() const
   if(m_videoGeneratorHasBeenSet)
   {
    payload.WithObject("videoGenerator", m_videoGenerator.Jsonize());
+
+  }
+
+  if(m_videoOverlaysHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> videoOverlaysJsonList(m_videoOverlays.size());
+   for(unsigned videoOverlaysIndex = 0; videoOverlaysIndex < videoOverlaysJsonList.GetLength(); ++videoOverlaysIndex)
+   {
+     videoOverlaysJsonList[videoOverlaysIndex].AsObject(m_videoOverlays[videoOverlaysIndex].Jsonize());
+   }
+   payload.WithArray("videoOverlays", std::move(videoOverlaysJsonList));
 
   }
 

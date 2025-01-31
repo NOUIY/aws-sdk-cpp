@@ -27,13 +27,8 @@ CreatePoolResult::CreatePoolResult() :
 {
 }
 
-CreatePoolResult::CreatePoolResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(PoolStatus::NOT_SET),
-    m_messageType(MessageType::NOT_SET),
-    m_twoWayEnabled(false),
-    m_selfManagedOptOutsEnabled(false),
-    m_sharedRoutesEnabled(false),
-    m_deletionProtectionEnabled(false)
+CreatePoolResult::CreatePoolResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : CreatePoolResult()
 {
   *this = result;
 }
@@ -74,6 +69,12 @@ CreatePoolResult& CreatePoolResult::operator =(const Aws::AmazonWebServiceResult
   if(jsonValue.ValueExists("TwoWayChannelArn"))
   {
     m_twoWayChannelArn = jsonValue.GetString("TwoWayChannelArn");
+
+  }
+
+  if(jsonValue.ValueExists("TwoWayChannelRole"))
+  {
+    m_twoWayChannelRole = jsonValue.GetString("TwoWayChannelRole");
 
   }
 

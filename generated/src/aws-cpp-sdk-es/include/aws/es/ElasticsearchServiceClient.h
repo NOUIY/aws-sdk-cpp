@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/es/ElasticsearchService_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/es/ElasticsearchServiceServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/es/ElasticsearchServiceErrorMarshaller.h>
 
 namespace Aws
 {
 namespace ElasticsearchService
 {
+  AWS_ELASTICSEARCHSERVICE_API extern const char SERVICE_NAME[];
   /**
    * <fullname>Amazon Elasticsearch Configuration Service</fullname> <p>Use the
    * Amazon Elasticsearch Configuration API to create, configure, and manage
@@ -30,12 +34,20 @@ namespace ElasticsearchService
    * href="http://docs.aws.amazon.com/general/latest/gr/rande.html#elasticsearch-service-regions"
    * target="_blank">Regions and Endpoints</a>.</p>
    */
-  class AWS_ELASTICSEARCHSERVICE_API ElasticsearchServiceClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<ElasticsearchServiceClient>
+  class AWS_ELASTICSEARCHSERVICE_API ElasticsearchServiceClient : smithy::client::AwsSmithyClientT<Aws::ElasticsearchService::SERVICE_NAME,
+      Aws::ElasticsearchService::ElasticsearchServiceClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      ElasticsearchServiceEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::ElasticsearchServiceErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<ElasticsearchServiceClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Elasticsearch Service"; }
 
       typedef ElasticsearchServiceClientConfiguration ClientConfigurationType;
       typedef ElasticsearchServiceEndpointProvider EndpointProviderType;
@@ -45,14 +57,14 @@ namespace ElasticsearchService
         * is not specified, it will be initialized to default values.
         */
         ElasticsearchServiceClient(const Aws::ElasticsearchService::ElasticsearchServiceClientConfiguration& clientConfiguration = Aws::ElasticsearchService::ElasticsearchServiceClientConfiguration(),
-                                   std::shared_ptr<ElasticsearchServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<ElasticsearchServiceEndpointProvider>(ALLOCATION_TAG));
+                                   std::shared_ptr<ElasticsearchServiceEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         ElasticsearchServiceClient(const Aws::Auth::AWSCredentials& credentials,
-                                   std::shared_ptr<ElasticsearchServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<ElasticsearchServiceEndpointProvider>(ALLOCATION_TAG),
+                                   std::shared_ptr<ElasticsearchServiceEndpointProviderBase> endpointProvider = nullptr,
                                    const Aws::ElasticsearchService::ElasticsearchServiceClientConfiguration& clientConfiguration = Aws::ElasticsearchService::ElasticsearchServiceClientConfiguration());
 
        /**
@@ -60,7 +72,7 @@ namespace ElasticsearchService
         * the default http client factory will be used
         */
         ElasticsearchServiceClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                   std::shared_ptr<ElasticsearchServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<ElasticsearchServiceEndpointProvider>(ALLOCATION_TAG),
+                                   std::shared_ptr<ElasticsearchServiceEndpointProviderBase> endpointProvider = nullptr,
                                    const Aws::ElasticsearchService::ElasticsearchServiceClientConfiguration& clientConfiguration = Aws::ElasticsearchService::ElasticsearchServiceClientConfiguration());
 
 
@@ -193,6 +205,32 @@ namespace ElasticsearchService
         void AuthorizeVpcEndpointAccessAsync(const AuthorizeVpcEndpointAccessRequestT& request, const AuthorizeVpcEndpointAccessResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ElasticsearchServiceClient::AuthorizeVpcEndpointAccess, request, handler, context);
+        }
+
+        /**
+         * <p>Cancels a pending configuration change on an Amazon OpenSearch Service
+         * domain.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/es-2015-01-01/CancelDomainConfigChange">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CancelDomainConfigChangeOutcome CancelDomainConfigChange(const Model::CancelDomainConfigChangeRequest& request) const;
+
+        /**
+         * A Callable wrapper for CancelDomainConfigChange that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CancelDomainConfigChangeRequestT = Model::CancelDomainConfigChangeRequest>
+        Model::CancelDomainConfigChangeOutcomeCallable CancelDomainConfigChangeCallable(const CancelDomainConfigChangeRequestT& request) const
+        {
+            return SubmitCallable(&ElasticsearchServiceClient::CancelDomainConfigChange, request);
+        }
+
+        /**
+         * An Async wrapper for CancelDomainConfigChange that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CancelDomainConfigChangeRequestT = Model::CancelDomainConfigChangeRequest>
+        void CancelDomainConfigChangeAsync(const CancelDomainConfigChangeRequestT& request, const CancelDomainConfigChangeResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ElasticsearchServiceClient::CancelDomainConfigChange, request, handler, context);
         }
 
         /**
@@ -365,25 +403,26 @@ namespace ElasticsearchService
          * href="http://docs.aws.amazon.com/goto/WebAPI/es-2015-01-01/DeleteElasticsearchServiceRole">AWS
          * API Reference</a></p>
          */
-        virtual Model::DeleteElasticsearchServiceRoleOutcome DeleteElasticsearchServiceRole() const;
+        virtual Model::DeleteElasticsearchServiceRoleOutcome DeleteElasticsearchServiceRole(const Model::DeleteElasticsearchServiceRoleRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DeleteElasticsearchServiceRole that returns a future to the operation so that it can be executed in parallel to other requests.
          */
-        template<typename = void>
-        Model::DeleteElasticsearchServiceRoleOutcomeCallable DeleteElasticsearchServiceRoleCallable() const
+        template<typename DeleteElasticsearchServiceRoleRequestT = Model::DeleteElasticsearchServiceRoleRequest>
+        Model::DeleteElasticsearchServiceRoleOutcomeCallable DeleteElasticsearchServiceRoleCallable(const DeleteElasticsearchServiceRoleRequestT& request = {}) const
         {
-            return SubmitCallable(&ElasticsearchServiceClient::DeleteElasticsearchServiceRole);
+            return SubmitCallable(&ElasticsearchServiceClient::DeleteElasticsearchServiceRole, request);
         }
 
         /**
          * An Async wrapper for DeleteElasticsearchServiceRole that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
-        template<typename = void>
-        void DeleteElasticsearchServiceRoleAsync(const DeleteElasticsearchServiceRoleResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        template<typename DeleteElasticsearchServiceRoleRequestT = Model::DeleteElasticsearchServiceRoleRequest>
+        void DeleteElasticsearchServiceRoleAsync(const DeleteElasticsearchServiceRoleResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DeleteElasticsearchServiceRoleRequestT& request = {}) const
         {
-            return SubmitAsync(&ElasticsearchServiceClient::DeleteElasticsearchServiceRole, handler, context);
+            return SubmitAsync(&ElasticsearchServiceClient::DeleteElasticsearchServiceRole, request, handler, context);
         }
+
         /**
          * <p>Allows the destination domain owner to delete an existing inbound
          * cross-cluster search connection.</p><p><h3>See Also:</h3>   <a
@@ -656,13 +695,13 @@ namespace ElasticsearchService
          * href="http://docs.aws.amazon.com/goto/WebAPI/es-2015-01-01/DescribeInboundCrossClusterSearchConnections">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeInboundCrossClusterSearchConnectionsOutcome DescribeInboundCrossClusterSearchConnections(const Model::DescribeInboundCrossClusterSearchConnectionsRequest& request) const;
+        virtual Model::DescribeInboundCrossClusterSearchConnectionsOutcome DescribeInboundCrossClusterSearchConnections(const Model::DescribeInboundCrossClusterSearchConnectionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeInboundCrossClusterSearchConnections that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeInboundCrossClusterSearchConnectionsRequestT = Model::DescribeInboundCrossClusterSearchConnectionsRequest>
-        Model::DescribeInboundCrossClusterSearchConnectionsOutcomeCallable DescribeInboundCrossClusterSearchConnectionsCallable(const DescribeInboundCrossClusterSearchConnectionsRequestT& request) const
+        Model::DescribeInboundCrossClusterSearchConnectionsOutcomeCallable DescribeInboundCrossClusterSearchConnectionsCallable(const DescribeInboundCrossClusterSearchConnectionsRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticsearchServiceClient::DescribeInboundCrossClusterSearchConnections, request);
         }
@@ -671,7 +710,7 @@ namespace ElasticsearchService
          * An Async wrapper for DescribeInboundCrossClusterSearchConnections that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeInboundCrossClusterSearchConnectionsRequestT = Model::DescribeInboundCrossClusterSearchConnectionsRequest>
-        void DescribeInboundCrossClusterSearchConnectionsAsync(const DescribeInboundCrossClusterSearchConnectionsRequestT& request, const DescribeInboundCrossClusterSearchConnectionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeInboundCrossClusterSearchConnectionsAsync(const DescribeInboundCrossClusterSearchConnectionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeInboundCrossClusterSearchConnectionsRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticsearchServiceClient::DescribeInboundCrossClusterSearchConnections, request, handler, context);
         }
@@ -682,13 +721,13 @@ namespace ElasticsearchService
          * href="http://docs.aws.amazon.com/goto/WebAPI/es-2015-01-01/DescribeOutboundCrossClusterSearchConnections">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeOutboundCrossClusterSearchConnectionsOutcome DescribeOutboundCrossClusterSearchConnections(const Model::DescribeOutboundCrossClusterSearchConnectionsRequest& request) const;
+        virtual Model::DescribeOutboundCrossClusterSearchConnectionsOutcome DescribeOutboundCrossClusterSearchConnections(const Model::DescribeOutboundCrossClusterSearchConnectionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeOutboundCrossClusterSearchConnections that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeOutboundCrossClusterSearchConnectionsRequestT = Model::DescribeOutboundCrossClusterSearchConnectionsRequest>
-        Model::DescribeOutboundCrossClusterSearchConnectionsOutcomeCallable DescribeOutboundCrossClusterSearchConnectionsCallable(const DescribeOutboundCrossClusterSearchConnectionsRequestT& request) const
+        Model::DescribeOutboundCrossClusterSearchConnectionsOutcomeCallable DescribeOutboundCrossClusterSearchConnectionsCallable(const DescribeOutboundCrossClusterSearchConnectionsRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticsearchServiceClient::DescribeOutboundCrossClusterSearchConnections, request);
         }
@@ -697,7 +736,7 @@ namespace ElasticsearchService
          * An Async wrapper for DescribeOutboundCrossClusterSearchConnections that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeOutboundCrossClusterSearchConnectionsRequestT = Model::DescribeOutboundCrossClusterSearchConnectionsRequest>
-        void DescribeOutboundCrossClusterSearchConnectionsAsync(const DescribeOutboundCrossClusterSearchConnectionsRequestT& request, const DescribeOutboundCrossClusterSearchConnectionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeOutboundCrossClusterSearchConnectionsAsync(const DescribeOutboundCrossClusterSearchConnectionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeOutboundCrossClusterSearchConnectionsRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticsearchServiceClient::DescribeOutboundCrossClusterSearchConnections, request, handler, context);
         }
@@ -709,13 +748,13 @@ namespace ElasticsearchService
          * href="http://docs.aws.amazon.com/goto/WebAPI/es-2015-01-01/DescribePackages">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribePackagesOutcome DescribePackages(const Model::DescribePackagesRequest& request) const;
+        virtual Model::DescribePackagesOutcome DescribePackages(const Model::DescribePackagesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribePackages that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribePackagesRequestT = Model::DescribePackagesRequest>
-        Model::DescribePackagesOutcomeCallable DescribePackagesCallable(const DescribePackagesRequestT& request) const
+        Model::DescribePackagesOutcomeCallable DescribePackagesCallable(const DescribePackagesRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticsearchServiceClient::DescribePackages, request);
         }
@@ -724,7 +763,7 @@ namespace ElasticsearchService
          * An Async wrapper for DescribePackages that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribePackagesRequestT = Model::DescribePackagesRequest>
-        void DescribePackagesAsync(const DescribePackagesRequestT& request, const DescribePackagesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribePackagesAsync(const DescribePackagesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribePackagesRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticsearchServiceClient::DescribePackages, request, handler, context);
         }
@@ -735,13 +774,13 @@ namespace ElasticsearchService
          * href="http://docs.aws.amazon.com/goto/WebAPI/es-2015-01-01/DescribeReservedElasticsearchInstanceOfferings">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeReservedElasticsearchInstanceOfferingsOutcome DescribeReservedElasticsearchInstanceOfferings(const Model::DescribeReservedElasticsearchInstanceOfferingsRequest& request) const;
+        virtual Model::DescribeReservedElasticsearchInstanceOfferingsOutcome DescribeReservedElasticsearchInstanceOfferings(const Model::DescribeReservedElasticsearchInstanceOfferingsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeReservedElasticsearchInstanceOfferings that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeReservedElasticsearchInstanceOfferingsRequestT = Model::DescribeReservedElasticsearchInstanceOfferingsRequest>
-        Model::DescribeReservedElasticsearchInstanceOfferingsOutcomeCallable DescribeReservedElasticsearchInstanceOfferingsCallable(const DescribeReservedElasticsearchInstanceOfferingsRequestT& request) const
+        Model::DescribeReservedElasticsearchInstanceOfferingsOutcomeCallable DescribeReservedElasticsearchInstanceOfferingsCallable(const DescribeReservedElasticsearchInstanceOfferingsRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticsearchServiceClient::DescribeReservedElasticsearchInstanceOfferings, request);
         }
@@ -750,7 +789,7 @@ namespace ElasticsearchService
          * An Async wrapper for DescribeReservedElasticsearchInstanceOfferings that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeReservedElasticsearchInstanceOfferingsRequestT = Model::DescribeReservedElasticsearchInstanceOfferingsRequest>
-        void DescribeReservedElasticsearchInstanceOfferingsAsync(const DescribeReservedElasticsearchInstanceOfferingsRequestT& request, const DescribeReservedElasticsearchInstanceOfferingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeReservedElasticsearchInstanceOfferingsAsync(const DescribeReservedElasticsearchInstanceOfferingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeReservedElasticsearchInstanceOfferingsRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticsearchServiceClient::DescribeReservedElasticsearchInstanceOfferings, request, handler, context);
         }
@@ -761,13 +800,13 @@ namespace ElasticsearchService
          * href="http://docs.aws.amazon.com/goto/WebAPI/es-2015-01-01/DescribeReservedElasticsearchInstances">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeReservedElasticsearchInstancesOutcome DescribeReservedElasticsearchInstances(const Model::DescribeReservedElasticsearchInstancesRequest& request) const;
+        virtual Model::DescribeReservedElasticsearchInstancesOutcome DescribeReservedElasticsearchInstances(const Model::DescribeReservedElasticsearchInstancesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeReservedElasticsearchInstances that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeReservedElasticsearchInstancesRequestT = Model::DescribeReservedElasticsearchInstancesRequest>
-        Model::DescribeReservedElasticsearchInstancesOutcomeCallable DescribeReservedElasticsearchInstancesCallable(const DescribeReservedElasticsearchInstancesRequestT& request) const
+        Model::DescribeReservedElasticsearchInstancesOutcomeCallable DescribeReservedElasticsearchInstancesCallable(const DescribeReservedElasticsearchInstancesRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticsearchServiceClient::DescribeReservedElasticsearchInstances, request);
         }
@@ -776,7 +815,7 @@ namespace ElasticsearchService
          * An Async wrapper for DescribeReservedElasticsearchInstances that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeReservedElasticsearchInstancesRequestT = Model::DescribeReservedElasticsearchInstancesRequest>
-        void DescribeReservedElasticsearchInstancesAsync(const DescribeReservedElasticsearchInstancesRequestT& request, const DescribeReservedElasticsearchInstancesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeReservedElasticsearchInstancesAsync(const DescribeReservedElasticsearchInstancesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeReservedElasticsearchInstancesRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticsearchServiceClient::DescribeReservedElasticsearchInstances, request, handler, context);
         }
@@ -840,13 +879,13 @@ namespace ElasticsearchService
          * href="http://docs.aws.amazon.com/goto/WebAPI/es-2015-01-01/GetCompatibleElasticsearchVersions">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetCompatibleElasticsearchVersionsOutcome GetCompatibleElasticsearchVersions(const Model::GetCompatibleElasticsearchVersionsRequest& request) const;
+        virtual Model::GetCompatibleElasticsearchVersionsOutcome GetCompatibleElasticsearchVersions(const Model::GetCompatibleElasticsearchVersionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetCompatibleElasticsearchVersions that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetCompatibleElasticsearchVersionsRequestT = Model::GetCompatibleElasticsearchVersionsRequest>
-        Model::GetCompatibleElasticsearchVersionsOutcomeCallable GetCompatibleElasticsearchVersionsCallable(const GetCompatibleElasticsearchVersionsRequestT& request) const
+        Model::GetCompatibleElasticsearchVersionsOutcomeCallable GetCompatibleElasticsearchVersionsCallable(const GetCompatibleElasticsearchVersionsRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticsearchServiceClient::GetCompatibleElasticsearchVersions, request);
         }
@@ -855,7 +894,7 @@ namespace ElasticsearchService
          * An Async wrapper for GetCompatibleElasticsearchVersions that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetCompatibleElasticsearchVersionsRequestT = Model::GetCompatibleElasticsearchVersionsRequest>
-        void GetCompatibleElasticsearchVersionsAsync(const GetCompatibleElasticsearchVersionsRequestT& request, const GetCompatibleElasticsearchVersionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetCompatibleElasticsearchVersionsAsync(const GetCompatibleElasticsearchVersionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetCompatibleElasticsearchVersionsRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticsearchServiceClient::GetCompatibleElasticsearchVersions, request, handler, context);
         }
@@ -944,13 +983,13 @@ namespace ElasticsearchService
          * href="http://docs.aws.amazon.com/goto/WebAPI/es-2015-01-01/ListDomainNames">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListDomainNamesOutcome ListDomainNames(const Model::ListDomainNamesRequest& request) const;
+        virtual Model::ListDomainNamesOutcome ListDomainNames(const Model::ListDomainNamesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListDomainNames that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListDomainNamesRequestT = Model::ListDomainNamesRequest>
-        Model::ListDomainNamesOutcomeCallable ListDomainNamesCallable(const ListDomainNamesRequestT& request) const
+        Model::ListDomainNamesOutcomeCallable ListDomainNamesCallable(const ListDomainNamesRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticsearchServiceClient::ListDomainNames, request);
         }
@@ -959,7 +998,7 @@ namespace ElasticsearchService
          * An Async wrapper for ListDomainNames that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListDomainNamesRequestT = Model::ListDomainNamesRequest>
-        void ListDomainNamesAsync(const ListDomainNamesRequestT& request, const ListDomainNamesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListDomainNamesAsync(const ListDomainNamesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListDomainNamesRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticsearchServiceClient::ListDomainNames, request, handler, context);
         }
@@ -1021,13 +1060,13 @@ namespace ElasticsearchService
          * href="http://docs.aws.amazon.com/goto/WebAPI/es-2015-01-01/ListElasticsearchVersions">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListElasticsearchVersionsOutcome ListElasticsearchVersions(const Model::ListElasticsearchVersionsRequest& request) const;
+        virtual Model::ListElasticsearchVersionsOutcome ListElasticsearchVersions(const Model::ListElasticsearchVersionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListElasticsearchVersions that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListElasticsearchVersionsRequestT = Model::ListElasticsearchVersionsRequest>
-        Model::ListElasticsearchVersionsOutcomeCallable ListElasticsearchVersionsCallable(const ListElasticsearchVersionsRequestT& request) const
+        Model::ListElasticsearchVersionsOutcomeCallable ListElasticsearchVersionsCallable(const ListElasticsearchVersionsRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticsearchServiceClient::ListElasticsearchVersions, request);
         }
@@ -1036,7 +1075,7 @@ namespace ElasticsearchService
          * An Async wrapper for ListElasticsearchVersions that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListElasticsearchVersionsRequestT = Model::ListElasticsearchVersionsRequest>
-        void ListElasticsearchVersionsAsync(const ListElasticsearchVersionsRequestT& request, const ListElasticsearchVersionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListElasticsearchVersionsAsync(const ListElasticsearchVersionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListElasticsearchVersionsRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticsearchServiceClient::ListElasticsearchVersions, request, handler, context);
         }
@@ -1125,13 +1164,13 @@ namespace ElasticsearchService
          * href="http://docs.aws.amazon.com/goto/WebAPI/es-2015-01-01/ListVpcEndpoints">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListVpcEndpointsOutcome ListVpcEndpoints(const Model::ListVpcEndpointsRequest& request) const;
+        virtual Model::ListVpcEndpointsOutcome ListVpcEndpoints(const Model::ListVpcEndpointsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListVpcEndpoints that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListVpcEndpointsRequestT = Model::ListVpcEndpointsRequest>
-        Model::ListVpcEndpointsOutcomeCallable ListVpcEndpointsCallable(const ListVpcEndpointsRequestT& request) const
+        Model::ListVpcEndpointsOutcomeCallable ListVpcEndpointsCallable(const ListVpcEndpointsRequestT& request = {}) const
         {
             return SubmitCallable(&ElasticsearchServiceClient::ListVpcEndpoints, request);
         }
@@ -1140,7 +1179,7 @@ namespace ElasticsearchService
          * An Async wrapper for ListVpcEndpoints that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListVpcEndpointsRequestT = Model::ListVpcEndpointsRequest>
-        void ListVpcEndpointsAsync(const ListVpcEndpointsRequestT& request, const ListVpcEndpointsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListVpcEndpointsAsync(const ListVpcEndpointsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListVpcEndpointsRequestT& request = {}) const
         {
             return SubmitAsync(&ElasticsearchServiceClient::ListVpcEndpoints, request, handler, context);
         }
@@ -1410,11 +1449,7 @@ namespace ElasticsearchService
       std::shared_ptr<ElasticsearchServiceEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<ElasticsearchServiceClient>;
-      void init(const ElasticsearchServiceClientConfiguration& clientConfiguration);
 
-      ElasticsearchServiceClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<ElasticsearchServiceEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace ElasticsearchService

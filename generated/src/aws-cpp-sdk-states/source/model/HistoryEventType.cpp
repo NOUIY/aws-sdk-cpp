@@ -79,6 +79,9 @@ namespace Aws
         static const int MapRunFailed_HASH = HashingUtils::HashString("MapRunFailed");
         static const int MapRunStarted_HASH = HashingUtils::HashString("MapRunStarted");
         static const int MapRunSucceeded_HASH = HashingUtils::HashString("MapRunSucceeded");
+        static const int ExecutionRedriven_HASH = HashingUtils::HashString("ExecutionRedriven");
+        static const int MapRunRedriven_HASH = HashingUtils::HashString("MapRunRedriven");
+        static const int EvaluationFailed_HASH = HashingUtils::HashString("EvaluationFailed");
 
 
         HistoryEventType GetHistoryEventTypeForName(const Aws::String& name)
@@ -320,6 +323,18 @@ namespace Aws
           {
             return HistoryEventType::MapRunSucceeded;
           }
+          else if (hashCode == ExecutionRedriven_HASH)
+          {
+            return HistoryEventType::ExecutionRedriven;
+          }
+          else if (hashCode == MapRunRedriven_HASH)
+          {
+            return HistoryEventType::MapRunRedriven;
+          }
+          else if (hashCode == EvaluationFailed_HASH)
+          {
+            return HistoryEventType::EvaluationFailed;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -334,6 +349,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case HistoryEventType::NOT_SET:
+            return {};
           case HistoryEventType::ActivityFailed:
             return "ActivityFailed";
           case HistoryEventType::ActivityScheduled:
@@ -452,6 +469,12 @@ namespace Aws
             return "MapRunStarted";
           case HistoryEventType::MapRunSucceeded:
             return "MapRunSucceeded";
+          case HistoryEventType::ExecutionRedriven:
+            return "ExecutionRedriven";
+          case HistoryEventType::MapRunRedriven:
+            return "MapRunRedriven";
+          case HistoryEventType::EvaluationFailed:
+            return "EvaluationFailed";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

@@ -17,8 +17,13 @@ CreateSequenceStoreRequest::CreateSequenceStoreRequest() :
     m_descriptionHasBeenSet(false),
     m_sseConfigHasBeenSet(false),
     m_tagsHasBeenSet(false),
-    m_clientTokenHasBeenSet(false),
-    m_fallbackLocationHasBeenSet(false)
+    m_clientToken(Aws::Utils::UUID::PseudoRandomUUID()),
+    m_clientTokenHasBeenSet(true),
+    m_fallbackLocationHasBeenSet(false),
+    m_eTagAlgorithmFamily(ETagAlgorithmFamily::NOT_SET),
+    m_eTagAlgorithmFamilyHasBeenSet(false),
+    m_propagatedSetLevelTagsHasBeenSet(false),
+    m_s3AccessConfigHasBeenSet(false)
 {
 }
 
@@ -64,6 +69,28 @@ Aws::String CreateSequenceStoreRequest::SerializePayload() const
   if(m_fallbackLocationHasBeenSet)
   {
    payload.WithString("fallbackLocation", m_fallbackLocation);
+
+  }
+
+  if(m_eTagAlgorithmFamilyHasBeenSet)
+  {
+   payload.WithString("eTagAlgorithmFamily", ETagAlgorithmFamilyMapper::GetNameForETagAlgorithmFamily(m_eTagAlgorithmFamily));
+  }
+
+  if(m_propagatedSetLevelTagsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> propagatedSetLevelTagsJsonList(m_propagatedSetLevelTags.size());
+   for(unsigned propagatedSetLevelTagsIndex = 0; propagatedSetLevelTagsIndex < propagatedSetLevelTagsJsonList.GetLength(); ++propagatedSetLevelTagsIndex)
+   {
+     propagatedSetLevelTagsJsonList[propagatedSetLevelTagsIndex].AsString(m_propagatedSetLevelTags[propagatedSetLevelTagsIndex]);
+   }
+   payload.WithArray("propagatedSetLevelTags", std::move(propagatedSetLevelTagsJsonList));
+
+  }
+
+  if(m_s3AccessConfigHasBeenSet)
+  {
+   payload.WithObject("s3AccessConfig", m_s3AccessConfig.Jsonize());
 
   }
 

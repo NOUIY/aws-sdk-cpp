@@ -30,23 +30,14 @@ EncoderSettings::EncoderSettings() :
     m_nielsenConfigurationHasBeenSet(false),
     m_outputGroupsHasBeenSet(false),
     m_timecodeConfigHasBeenSet(false),
-    m_videoDescriptionsHasBeenSet(false)
+    m_videoDescriptionsHasBeenSet(false),
+    m_thumbnailConfigurationHasBeenSet(false),
+    m_colorCorrectionSettingsHasBeenSet(false)
 {
 }
 
-EncoderSettings::EncoderSettings(JsonView jsonValue) : 
-    m_audioDescriptionsHasBeenSet(false),
-    m_availBlankingHasBeenSet(false),
-    m_availConfigurationHasBeenSet(false),
-    m_blackoutSlateHasBeenSet(false),
-    m_captionDescriptionsHasBeenSet(false),
-    m_featureActivationsHasBeenSet(false),
-    m_globalConfigurationHasBeenSet(false),
-    m_motionGraphicsConfigurationHasBeenSet(false),
-    m_nielsenConfigurationHasBeenSet(false),
-    m_outputGroupsHasBeenSet(false),
-    m_timecodeConfigHasBeenSet(false),
-    m_videoDescriptionsHasBeenSet(false)
+EncoderSettings::EncoderSettings(JsonView jsonValue)
+  : EncoderSettings()
 {
   *this = jsonValue;
 }
@@ -149,6 +140,20 @@ EncoderSettings& EncoderSettings::operator =(JsonView jsonValue)
     m_videoDescriptionsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("thumbnailConfiguration"))
+  {
+    m_thumbnailConfiguration = jsonValue.GetObject("thumbnailConfiguration");
+
+    m_thumbnailConfigurationHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("colorCorrectionSettings"))
+  {
+    m_colorCorrectionSettings = jsonValue.GetObject("colorCorrectionSettings");
+
+    m_colorCorrectionSettingsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -245,6 +250,18 @@ JsonValue EncoderSettings::Jsonize() const
      videoDescriptionsJsonList[videoDescriptionsIndex].AsObject(m_videoDescriptions[videoDescriptionsIndex].Jsonize());
    }
    payload.WithArray("videoDescriptions", std::move(videoDescriptionsJsonList));
+
+  }
+
+  if(m_thumbnailConfigurationHasBeenSet)
+  {
+   payload.WithObject("thumbnailConfiguration", m_thumbnailConfiguration.Jsonize());
+
+  }
+
+  if(m_colorCorrectionSettingsHasBeenSet)
+  {
+   payload.WithObject("colorCorrectionSettings", m_colorCorrectionSettings.Jsonize());
 
   }
 

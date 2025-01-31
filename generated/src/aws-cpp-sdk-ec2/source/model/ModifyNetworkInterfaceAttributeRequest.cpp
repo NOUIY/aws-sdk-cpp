@@ -11,14 +11,19 @@ using namespace Aws::EC2::Model;
 using namespace Aws::Utils;
 
 ModifyNetworkInterfaceAttributeRequest::ModifyNetworkInterfaceAttributeRequest() : 
-    m_attachmentHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
+    m_enaSrdSpecificationHasBeenSet(false),
+    m_enablePrimaryIpv6(false),
+    m_enablePrimaryIpv6HasBeenSet(false),
+    m_connectionTrackingSpecificationHasBeenSet(false),
+    m_associatePublicIpAddress(false),
+    m_associatePublicIpAddressHasBeenSet(false),
     m_dryRun(false),
     m_dryRunHasBeenSet(false),
-    m_groupsHasBeenSet(false),
     m_networkInterfaceIdHasBeenSet(false),
+    m_descriptionHasBeenSet(false),
     m_sourceDestCheckHasBeenSet(false),
-    m_enaSrdSpecificationHasBeenSet(false)
+    m_groupsHasBeenSet(false),
+    m_attachmentHasBeenSet(false)
 {
 }
 
@@ -26,9 +31,34 @@ Aws::String ModifyNetworkInterfaceAttributeRequest::SerializePayload() const
 {
   Aws::StringStream ss;
   ss << "Action=ModifyNetworkInterfaceAttribute&";
-  if(m_attachmentHasBeenSet)
+  if(m_enaSrdSpecificationHasBeenSet)
   {
-    m_attachment.OutputToStream(ss, "Attachment");
+    m_enaSrdSpecification.OutputToStream(ss, "EnaSrdSpecification");
+  }
+
+  if(m_enablePrimaryIpv6HasBeenSet)
+  {
+    ss << "EnablePrimaryIpv6=" << std::boolalpha << m_enablePrimaryIpv6 << "&";
+  }
+
+  if(m_connectionTrackingSpecificationHasBeenSet)
+  {
+    m_connectionTrackingSpecification.OutputToStream(ss, "ConnectionTrackingSpecification");
+  }
+
+  if(m_associatePublicIpAddressHasBeenSet)
+  {
+    ss << "AssociatePublicIpAddress=" << std::boolalpha << m_associatePublicIpAddress << "&";
+  }
+
+  if(m_dryRunHasBeenSet)
+  {
+    ss << "DryRun=" << std::boolalpha << m_dryRun << "&";
+  }
+
+  if(m_networkInterfaceIdHasBeenSet)
+  {
+    ss << "NetworkInterfaceId=" << StringUtils::URLEncode(m_networkInterfaceId.c_str()) << "&";
   }
 
   if(m_descriptionHasBeenSet)
@@ -36,9 +66,9 @@ Aws::String ModifyNetworkInterfaceAttributeRequest::SerializePayload() const
     m_description.OutputToStream(ss, "Description");
   }
 
-  if(m_dryRunHasBeenSet)
+  if(m_sourceDestCheckHasBeenSet)
   {
-    ss << "DryRun=" << std::boolalpha << m_dryRun << "&";
+    m_sourceDestCheck.OutputToStream(ss, "SourceDestCheck");
   }
 
   if(m_groupsHasBeenSet)
@@ -52,19 +82,9 @@ Aws::String ModifyNetworkInterfaceAttributeRequest::SerializePayload() const
     }
   }
 
-  if(m_networkInterfaceIdHasBeenSet)
+  if(m_attachmentHasBeenSet)
   {
-    ss << "NetworkInterfaceId=" << StringUtils::URLEncode(m_networkInterfaceId.c_str()) << "&";
-  }
-
-  if(m_sourceDestCheckHasBeenSet)
-  {
-    m_sourceDestCheck.OutputToStream(ss, "SourceDestCheck");
-  }
-
-  if(m_enaSrdSpecificationHasBeenSet)
-  {
-    m_enaSrdSpecification.OutputToStream(ss, "EnaSrdSpecification");
+    m_attachment.OutputToStream(ss, "Attachment");
   }
 
   ss << "Version=2016-11-15";

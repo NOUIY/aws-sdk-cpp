@@ -36,87 +36,33 @@ namespace Model
 
   public:
 
+    ///@{
     /**
      * <p>A token returned from a previous call to <code>ListTemplates</code> to
      * indicate the position in the list of email templates.</p>
      */
     inline const Aws::String& GetNextToken() const{ return m_nextToken; }
-
-    /**
-     * <p>A token returned from a previous call to <code>ListTemplates</code> to
-     * indicate the position in the list of email templates.</p>
-     */
     inline bool NextTokenHasBeenSet() const { return m_nextTokenHasBeenSet; }
-
-    /**
-     * <p>A token returned from a previous call to <code>ListTemplates</code> to
-     * indicate the position in the list of email templates.</p>
-     */
     inline void SetNextToken(const Aws::String& value) { m_nextTokenHasBeenSet = true; m_nextToken = value; }
-
-    /**
-     * <p>A token returned from a previous call to <code>ListTemplates</code> to
-     * indicate the position in the list of email templates.</p>
-     */
     inline void SetNextToken(Aws::String&& value) { m_nextTokenHasBeenSet = true; m_nextToken = std::move(value); }
-
-    /**
-     * <p>A token returned from a previous call to <code>ListTemplates</code> to
-     * indicate the position in the list of email templates.</p>
-     */
     inline void SetNextToken(const char* value) { m_nextTokenHasBeenSet = true; m_nextToken.assign(value); }
-
-    /**
-     * <p>A token returned from a previous call to <code>ListTemplates</code> to
-     * indicate the position in the list of email templates.</p>
-     */
     inline ListTemplatesRequest& WithNextToken(const Aws::String& value) { SetNextToken(value); return *this;}
-
-    /**
-     * <p>A token returned from a previous call to <code>ListTemplates</code> to
-     * indicate the position in the list of email templates.</p>
-     */
     inline ListTemplatesRequest& WithNextToken(Aws::String&& value) { SetNextToken(std::move(value)); return *this;}
-
-    /**
-     * <p>A token returned from a previous call to <code>ListTemplates</code> to
-     * indicate the position in the list of email templates.</p>
-     */
     inline ListTemplatesRequest& WithNextToken(const char* value) { SetNextToken(value); return *this;}
+    ///@}
 
-
+    ///@{
     /**
      * <p>The maximum number of templates to return. This value must be at least 1 and
-     * less than or equal to 10. If you do not specify a value, or if you specify a
-     * value less than 1 or greater than 10, the operation will return up to 10
-     * results.</p>
+     * less than or equal to 100. If more than 100 items are requested, the page size
+     * will automatically set to 100. If you do not specify a value, 10 is the default
+     * page size. </p>
      */
     inline int GetMaxItems() const{ return m_maxItems; }
-
-    /**
-     * <p>The maximum number of templates to return. This value must be at least 1 and
-     * less than or equal to 10. If you do not specify a value, or if you specify a
-     * value less than 1 or greater than 10, the operation will return up to 10
-     * results.</p>
-     */
     inline bool MaxItemsHasBeenSet() const { return m_maxItemsHasBeenSet; }
-
-    /**
-     * <p>The maximum number of templates to return. This value must be at least 1 and
-     * less than or equal to 10. If you do not specify a value, or if you specify a
-     * value less than 1 or greater than 10, the operation will return up to 10
-     * results.</p>
-     */
     inline void SetMaxItems(int value) { m_maxItemsHasBeenSet = true; m_maxItems = value; }
-
-    /**
-     * <p>The maximum number of templates to return. This value must be at least 1 and
-     * less than or equal to 10. If you do not specify a value, or if you specify a
-     * value less than 1 or greater than 10, the operation will return up to 10
-     * results.</p>
-     */
     inline ListTemplatesRequest& WithMaxItems(int value) { SetMaxItems(value); return *this;}
-
+    ///@}
   private:
 
     Aws::String m_nextToken;

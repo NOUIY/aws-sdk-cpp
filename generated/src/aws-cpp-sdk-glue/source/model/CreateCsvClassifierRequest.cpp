@@ -31,24 +31,14 @@ CreateCsvClassifierRequest::CreateCsvClassifierRequest() :
     m_allowSingleColumnHasBeenSet(false),
     m_customDatatypeConfigured(false),
     m_customDatatypeConfiguredHasBeenSet(false),
-    m_customDatatypesHasBeenSet(false)
+    m_customDatatypesHasBeenSet(false),
+    m_serde(CsvSerdeOption::NOT_SET),
+    m_serdeHasBeenSet(false)
 {
 }
 
-CreateCsvClassifierRequest::CreateCsvClassifierRequest(JsonView jsonValue) : 
-    m_nameHasBeenSet(false),
-    m_delimiterHasBeenSet(false),
-    m_quoteSymbolHasBeenSet(false),
-    m_containsHeader(CsvHeaderOption::NOT_SET),
-    m_containsHeaderHasBeenSet(false),
-    m_headerHasBeenSet(false),
-    m_disableValueTrimming(false),
-    m_disableValueTrimmingHasBeenSet(false),
-    m_allowSingleColumn(false),
-    m_allowSingleColumnHasBeenSet(false),
-    m_customDatatypeConfigured(false),
-    m_customDatatypeConfiguredHasBeenSet(false),
-    m_customDatatypesHasBeenSet(false)
+CreateCsvClassifierRequest::CreateCsvClassifierRequest(JsonView jsonValue)
+  : CreateCsvClassifierRequest()
 {
   *this = jsonValue;
 }
@@ -124,6 +114,13 @@ CreateCsvClassifierRequest& CreateCsvClassifierRequest::operator =(JsonView json
     m_customDatatypesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Serde"))
+  {
+    m_serde = CsvSerdeOptionMapper::GetCsvSerdeOptionForName(jsonValue.GetString("Serde"));
+
+    m_serdeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -192,6 +189,11 @@ JsonValue CreateCsvClassifierRequest::Jsonize() const
    }
    payload.WithArray("CustomDatatypes", std::move(customDatatypesJsonList));
 
+  }
+
+  if(m_serdeHasBeenSet)
+  {
+   payload.WithString("Serde", CsvSerdeOptionMapper::GetNameForCsvSerdeOption(m_serde));
   }
 
   return payload;

@@ -22,8 +22,8 @@ DescribeCompilationJobResult::DescribeCompilationJobResult() :
 {
 }
 
-DescribeCompilationJobResult::DescribeCompilationJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_compilationJobStatus(CompilationJobStatus::NOT_SET)
+DescribeCompilationJobResult::DescribeCompilationJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeCompilationJobResult()
 {
   *this = result;
 }
@@ -130,6 +130,12 @@ DescribeCompilationJobResult& DescribeCompilationJobResult::operator =(const Aws
   if(jsonValue.ValueExists("VpcConfig"))
   {
     m_vpcConfig = jsonValue.GetObject("VpcConfig");
+
+  }
+
+  if(jsonValue.ValueExists("DerivedInformation"))
+  {
+    m_derivedInformation = jsonValue.GetObject("DerivedInformation");
 
   }
 

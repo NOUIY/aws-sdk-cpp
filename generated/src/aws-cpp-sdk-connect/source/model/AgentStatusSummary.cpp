@@ -23,16 +23,14 @@ AgentStatusSummary::AgentStatusSummary() :
     m_arnHasBeenSet(false),
     m_nameHasBeenSet(false),
     m_type(AgentStatusType::NOT_SET),
-    m_typeHasBeenSet(false)
+    m_typeHasBeenSet(false),
+    m_lastModifiedTimeHasBeenSet(false),
+    m_lastModifiedRegionHasBeenSet(false)
 {
 }
 
-AgentStatusSummary::AgentStatusSummary(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_type(AgentStatusType::NOT_SET),
-    m_typeHasBeenSet(false)
+AgentStatusSummary::AgentStatusSummary(JsonView jsonValue)
+  : AgentStatusSummary()
 {
   *this = jsonValue;
 }
@@ -67,6 +65,20 @@ AgentStatusSummary& AgentStatusSummary::operator =(JsonView jsonValue)
     m_typeHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("LastModifiedTime"))
+  {
+    m_lastModifiedTime = jsonValue.GetDouble("LastModifiedTime");
+
+    m_lastModifiedTimeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("LastModifiedRegion"))
+  {
+    m_lastModifiedRegion = jsonValue.GetString("LastModifiedRegion");
+
+    m_lastModifiedRegionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -95,6 +107,17 @@ JsonValue AgentStatusSummary::Jsonize() const
   if(m_typeHasBeenSet)
   {
    payload.WithString("Type", AgentStatusTypeMapper::GetNameForAgentStatusType(m_type));
+  }
+
+  if(m_lastModifiedTimeHasBeenSet)
+  {
+   payload.WithDouble("LastModifiedTime", m_lastModifiedTime.SecondsWithMSPrecision());
+  }
+
+  if(m_lastModifiedRegionHasBeenSet)
+  {
+   payload.WithString("LastModifiedRegion", m_lastModifiedRegion);
+
   }
 
   return payload;

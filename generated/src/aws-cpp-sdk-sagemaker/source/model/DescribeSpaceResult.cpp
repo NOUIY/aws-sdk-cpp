@@ -22,8 +22,8 @@ DescribeSpaceResult::DescribeSpaceResult() :
 {
 }
 
-DescribeSpaceResult::DescribeSpaceResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(SpaceStatus::NOT_SET)
+DescribeSpaceResult::DescribeSpaceResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeSpaceResult()
 {
   *this = result;
 }
@@ -82,6 +82,30 @@ DescribeSpaceResult& DescribeSpaceResult::operator =(const Aws::AmazonWebService
   if(jsonValue.ValueExists("SpaceSettings"))
   {
     m_spaceSettings = jsonValue.GetObject("SpaceSettings");
+
+  }
+
+  if(jsonValue.ValueExists("OwnershipSettings"))
+  {
+    m_ownershipSettings = jsonValue.GetObject("OwnershipSettings");
+
+  }
+
+  if(jsonValue.ValueExists("SpaceSharingSettings"))
+  {
+    m_spaceSharingSettings = jsonValue.GetObject("SpaceSharingSettings");
+
+  }
+
+  if(jsonValue.ValueExists("SpaceDisplayName"))
+  {
+    m_spaceDisplayName = jsonValue.GetString("SpaceDisplayName");
+
+  }
+
+  if(jsonValue.ValueExists("Url"))
+  {
+    m_url = jsonValue.GetString("Url");
 
   }
 

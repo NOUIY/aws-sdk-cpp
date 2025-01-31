@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/events/CloudWatchEvents_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/events/CloudWatchEventsServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/events/CloudWatchEventsErrorMarshaller.h>
 
 namespace Aws
 {
 namespace CloudWatchEvents
 {
+  AWS_CLOUDWATCHEVENTS_API extern const char SERVICE_NAME[];
   /**
    * <p>Amazon EventBridge helps you to respond to state changes in your Amazon Web
    * Services resources. When your resources change state, they automatically send
@@ -31,12 +35,20 @@ namespace CloudWatchEvents
    * href="https://docs.aws.amazon.com/eventbridge/latest/userguide">Amazon
    * EventBridge User Guide</a>.</p>
    */
-  class AWS_CLOUDWATCHEVENTS_API CloudWatchEventsClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<CloudWatchEventsClient>
+  class AWS_CLOUDWATCHEVENTS_API CloudWatchEventsClient : smithy::client::AwsSmithyClientT<Aws::CloudWatchEvents::SERVICE_NAME,
+      Aws::CloudWatchEvents::CloudWatchEventsClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      CloudWatchEventsEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::CloudWatchEventsErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<CloudWatchEventsClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "CloudWatch Events"; }
 
       typedef CloudWatchEventsClientConfiguration ClientConfigurationType;
       typedef CloudWatchEventsEndpointProvider EndpointProviderType;
@@ -46,14 +58,14 @@ namespace CloudWatchEvents
         * is not specified, it will be initialized to default values.
         */
         CloudWatchEventsClient(const Aws::CloudWatchEvents::CloudWatchEventsClientConfiguration& clientConfiguration = Aws::CloudWatchEvents::CloudWatchEventsClientConfiguration(),
-                               std::shared_ptr<CloudWatchEventsEndpointProviderBase> endpointProvider = Aws::MakeShared<CloudWatchEventsEndpointProvider>(ALLOCATION_TAG));
+                               std::shared_ptr<CloudWatchEventsEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         CloudWatchEventsClient(const Aws::Auth::AWSCredentials& credentials,
-                               std::shared_ptr<CloudWatchEventsEndpointProviderBase> endpointProvider = Aws::MakeShared<CloudWatchEventsEndpointProvider>(ALLOCATION_TAG),
+                               std::shared_ptr<CloudWatchEventsEndpointProviderBase> endpointProvider = nullptr,
                                const Aws::CloudWatchEvents::CloudWatchEventsClientConfiguration& clientConfiguration = Aws::CloudWatchEvents::CloudWatchEventsClientConfiguration());
 
        /**
@@ -61,7 +73,7 @@ namespace CloudWatchEvents
         * the default http client factory will be used
         */
         CloudWatchEventsClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                               std::shared_ptr<CloudWatchEventsEndpointProviderBase> endpointProvider = Aws::MakeShared<CloudWatchEventsEndpointProvider>(ALLOCATION_TAG),
+                               std::shared_ptr<CloudWatchEventsEndpointProviderBase> endpointProvider = nullptr,
                                const Aws::CloudWatchEvents::CloudWatchEventsClientConfiguration& clientConfiguration = Aws::CloudWatchEvents::CloudWatchEventsClientConfiguration());
 
 
@@ -611,13 +623,13 @@ namespace CloudWatchEvents
          * href="http://docs.aws.amazon.com/goto/WebAPI/events-2015-10-07/DescribeEventBus">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeEventBusOutcome DescribeEventBus(const Model::DescribeEventBusRequest& request) const;
+        virtual Model::DescribeEventBusOutcome DescribeEventBus(const Model::DescribeEventBusRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeEventBus that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeEventBusRequestT = Model::DescribeEventBusRequest>
-        Model::DescribeEventBusOutcomeCallable DescribeEventBusCallable(const DescribeEventBusRequestT& request) const
+        Model::DescribeEventBusOutcomeCallable DescribeEventBusCallable(const DescribeEventBusRequestT& request = {}) const
         {
             return SubmitCallable(&CloudWatchEventsClient::DescribeEventBus, request);
         }
@@ -626,7 +638,7 @@ namespace CloudWatchEvents
          * An Async wrapper for DescribeEventBus that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeEventBusRequestT = Model::DescribeEventBusRequest>
-        void DescribeEventBusAsync(const DescribeEventBusRequestT& request, const DescribeEventBusResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeEventBusAsync(const DescribeEventBusResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeEventBusRequestT& request = {}) const
         {
             return SubmitAsync(&CloudWatchEventsClient::DescribeEventBus, request, handler, context);
         }
@@ -811,13 +823,13 @@ namespace CloudWatchEvents
          * href="http://docs.aws.amazon.com/goto/WebAPI/events-2015-10-07/ListApiDestinations">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListApiDestinationsOutcome ListApiDestinations(const Model::ListApiDestinationsRequest& request) const;
+        virtual Model::ListApiDestinationsOutcome ListApiDestinations(const Model::ListApiDestinationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListApiDestinations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListApiDestinationsRequestT = Model::ListApiDestinationsRequest>
-        Model::ListApiDestinationsOutcomeCallable ListApiDestinationsCallable(const ListApiDestinationsRequestT& request) const
+        Model::ListApiDestinationsOutcomeCallable ListApiDestinationsCallable(const ListApiDestinationsRequestT& request = {}) const
         {
             return SubmitCallable(&CloudWatchEventsClient::ListApiDestinations, request);
         }
@@ -826,7 +838,7 @@ namespace CloudWatchEvents
          * An Async wrapper for ListApiDestinations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListApiDestinationsRequestT = Model::ListApiDestinationsRequest>
-        void ListApiDestinationsAsync(const ListApiDestinationsRequestT& request, const ListApiDestinationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListApiDestinationsAsync(const ListApiDestinationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListApiDestinationsRequestT& request = {}) const
         {
             return SubmitAsync(&CloudWatchEventsClient::ListApiDestinations, request, handler, context);
         }
@@ -838,13 +850,13 @@ namespace CloudWatchEvents
          * href="http://docs.aws.amazon.com/goto/WebAPI/events-2015-10-07/ListArchives">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListArchivesOutcome ListArchives(const Model::ListArchivesRequest& request) const;
+        virtual Model::ListArchivesOutcome ListArchives(const Model::ListArchivesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListArchives that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListArchivesRequestT = Model::ListArchivesRequest>
-        Model::ListArchivesOutcomeCallable ListArchivesCallable(const ListArchivesRequestT& request) const
+        Model::ListArchivesOutcomeCallable ListArchivesCallable(const ListArchivesRequestT& request = {}) const
         {
             return SubmitCallable(&CloudWatchEventsClient::ListArchives, request);
         }
@@ -853,7 +865,7 @@ namespace CloudWatchEvents
          * An Async wrapper for ListArchives that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListArchivesRequestT = Model::ListArchivesRequest>
-        void ListArchivesAsync(const ListArchivesRequestT& request, const ListArchivesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListArchivesAsync(const ListArchivesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListArchivesRequestT& request = {}) const
         {
             return SubmitAsync(&CloudWatchEventsClient::ListArchives, request, handler, context);
         }
@@ -864,13 +876,13 @@ namespace CloudWatchEvents
          * href="http://docs.aws.amazon.com/goto/WebAPI/events-2015-10-07/ListConnections">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListConnectionsOutcome ListConnections(const Model::ListConnectionsRequest& request) const;
+        virtual Model::ListConnectionsOutcome ListConnections(const Model::ListConnectionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListConnections that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListConnectionsRequestT = Model::ListConnectionsRequest>
-        Model::ListConnectionsOutcomeCallable ListConnectionsCallable(const ListConnectionsRequestT& request) const
+        Model::ListConnectionsOutcomeCallable ListConnectionsCallable(const ListConnectionsRequestT& request = {}) const
         {
             return SubmitCallable(&CloudWatchEventsClient::ListConnections, request);
         }
@@ -879,7 +891,7 @@ namespace CloudWatchEvents
          * An Async wrapper for ListConnections that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListConnectionsRequestT = Model::ListConnectionsRequest>
-        void ListConnectionsAsync(const ListConnectionsRequestT& request, const ListConnectionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListConnectionsAsync(const ListConnectionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListConnectionsRequestT& request = {}) const
         {
             return SubmitAsync(&CloudWatchEventsClient::ListConnections, request, handler, context);
         }
@@ -890,13 +902,13 @@ namespace CloudWatchEvents
          * href="http://docs.aws.amazon.com/goto/WebAPI/events-2015-10-07/ListEventBuses">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListEventBusesOutcome ListEventBuses(const Model::ListEventBusesRequest& request) const;
+        virtual Model::ListEventBusesOutcome ListEventBuses(const Model::ListEventBusesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListEventBuses that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListEventBusesRequestT = Model::ListEventBusesRequest>
-        Model::ListEventBusesOutcomeCallable ListEventBusesCallable(const ListEventBusesRequestT& request) const
+        Model::ListEventBusesOutcomeCallable ListEventBusesCallable(const ListEventBusesRequestT& request = {}) const
         {
             return SubmitCallable(&CloudWatchEventsClient::ListEventBuses, request);
         }
@@ -905,7 +917,7 @@ namespace CloudWatchEvents
          * An Async wrapper for ListEventBuses that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListEventBusesRequestT = Model::ListEventBusesRequest>
-        void ListEventBusesAsync(const ListEventBusesRequestT& request, const ListEventBusesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListEventBusesAsync(const ListEventBusesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListEventBusesRequestT& request = {}) const
         {
             return SubmitAsync(&CloudWatchEventsClient::ListEventBuses, request, handler, context);
         }
@@ -919,13 +931,13 @@ namespace CloudWatchEvents
          * href="http://docs.aws.amazon.com/goto/WebAPI/events-2015-10-07/ListEventSources">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListEventSourcesOutcome ListEventSources(const Model::ListEventSourcesRequest& request) const;
+        virtual Model::ListEventSourcesOutcome ListEventSources(const Model::ListEventSourcesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListEventSources that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListEventSourcesRequestT = Model::ListEventSourcesRequest>
-        Model::ListEventSourcesOutcomeCallable ListEventSourcesCallable(const ListEventSourcesRequestT& request) const
+        Model::ListEventSourcesOutcomeCallable ListEventSourcesCallable(const ListEventSourcesRequestT& request = {}) const
         {
             return SubmitCallable(&CloudWatchEventsClient::ListEventSources, request);
         }
@@ -934,7 +946,7 @@ namespace CloudWatchEvents
          * An Async wrapper for ListEventSources that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListEventSourcesRequestT = Model::ListEventSourcesRequest>
-        void ListEventSourcesAsync(const ListEventSourcesRequestT& request, const ListEventSourcesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListEventSourcesAsync(const ListEventSourcesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListEventSourcesRequestT& request = {}) const
         {
             return SubmitAsync(&CloudWatchEventsClient::ListEventSources, request, handler, context);
         }
@@ -1001,13 +1013,13 @@ namespace CloudWatchEvents
          * href="http://docs.aws.amazon.com/goto/WebAPI/events-2015-10-07/ListReplays">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListReplaysOutcome ListReplays(const Model::ListReplaysRequest& request) const;
+        virtual Model::ListReplaysOutcome ListReplays(const Model::ListReplaysRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListReplays that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListReplaysRequestT = Model::ListReplaysRequest>
-        Model::ListReplaysOutcomeCallable ListReplaysCallable(const ListReplaysRequestT& request) const
+        Model::ListReplaysOutcomeCallable ListReplaysCallable(const ListReplaysRequestT& request = {}) const
         {
             return SubmitCallable(&CloudWatchEventsClient::ListReplays, request);
         }
@@ -1016,7 +1028,7 @@ namespace CloudWatchEvents
          * An Async wrapper for ListReplays that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListReplaysRequestT = Model::ListReplaysRequest>
-        void ListReplaysAsync(const ListReplaysRequestT& request, const ListReplaysResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListReplaysAsync(const ListReplaysResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListReplaysRequestT& request = {}) const
         {
             return SubmitAsync(&CloudWatchEventsClient::ListReplays, request, handler, context);
         }
@@ -1057,13 +1069,13 @@ namespace CloudWatchEvents
          * href="http://docs.aws.amazon.com/goto/WebAPI/events-2015-10-07/ListRules">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListRulesOutcome ListRules(const Model::ListRulesRequest& request) const;
+        virtual Model::ListRulesOutcome ListRules(const Model::ListRulesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListRules that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListRulesRequestT = Model::ListRulesRequest>
-        Model::ListRulesOutcomeCallable ListRulesCallable(const ListRulesRequestT& request) const
+        Model::ListRulesOutcomeCallable ListRulesCallable(const ListRulesRequestT& request = {}) const
         {
             return SubmitCallable(&CloudWatchEventsClient::ListRules, request);
         }
@@ -1072,7 +1084,7 @@ namespace CloudWatchEvents
          * An Async wrapper for ListRules that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListRulesRequestT = Model::ListRulesRequest>
-        void ListRulesAsync(const ListRulesRequestT& request, const ListRulesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListRulesAsync(const ListRulesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListRulesRequestT& request = {}) const
         {
             return SubmitAsync(&CloudWatchEventsClient::ListRules, request, handler, context);
         }
@@ -1206,13 +1218,13 @@ namespace CloudWatchEvents
          * href="http://docs.aws.amazon.com/goto/WebAPI/events-2015-10-07/PutPermission">AWS
          * API Reference</a></p>
          */
-        virtual Model::PutPermissionOutcome PutPermission(const Model::PutPermissionRequest& request) const;
+        virtual Model::PutPermissionOutcome PutPermission(const Model::PutPermissionRequest& request = {}) const;
 
         /**
          * A Callable wrapper for PutPermission that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename PutPermissionRequestT = Model::PutPermissionRequest>
-        Model::PutPermissionOutcomeCallable PutPermissionCallable(const PutPermissionRequestT& request) const
+        Model::PutPermissionOutcomeCallable PutPermissionCallable(const PutPermissionRequestT& request = {}) const
         {
             return SubmitCallable(&CloudWatchEventsClient::PutPermission, request);
         }
@@ -1221,7 +1233,7 @@ namespace CloudWatchEvents
          * An Async wrapper for PutPermission that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename PutPermissionRequestT = Model::PutPermissionRequest>
-        void PutPermissionAsync(const PutPermissionRequestT& request, const PutPermissionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void PutPermissionAsync(const PutPermissionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const PutPermissionRequestT& request = {}) const
         {
             return SubmitAsync(&CloudWatchEventsClient::PutPermission, request, handler, context);
         }
@@ -1323,20 +1335,21 @@ namespace CloudWatchEvents
          * FIFO queues</p> </li> <li> <p>SSM Automation</p> </li> <li> <p>SSM OpsItem</p>
          * </li> <li> <p>SSM Run Command</p> </li> <li> <p>Step Functions state
          * machines</p> </li> </ul> <p>Creating rules with built-in targets is supported
-         * only in the Management Console. The built-in targets are <code>EC2
-         * CreateSnapshot API call</code>, <code>EC2 RebootInstances API call</code>,
-         * <code>EC2 StopInstances API call</code>, and <code>EC2 TerminateInstances API
-         * call</code>. </p> <p>For some target types, <code>PutTargets</code> provides
-         * target-specific parameters. If the target is a Kinesis data stream, you can
-         * optionally specify which shard the event goes to by using the
-         * <code>KinesisParameters</code> argument. To invoke a command on multiple EC2
-         * instances with one rule, you can use the <code>RunCommandParameters</code>
-         * field.</p> <p>To be able to make API calls against the resources that you own,
-         * Amazon EventBridge needs the appropriate permissions. For Lambda and Amazon SNS
-         * resources, EventBridge relies on resource-based policies. For EC2 instances,
-         * Kinesis Data Streams, Step Functions state machines and API Gateway REST APIs,
-         * EventBridge relies on IAM roles that you specify in the <code>RoleARN</code>
-         * argument in <code>PutTargets</code>. For more information, see <a
+         * only in the Amazon Web Services Management Console. The built-in targets are
+         * <code>EC2 CreateSnapshot API call</code>, <code>EC2 RebootInstances API
+         * call</code>, <code>EC2 StopInstances API call</code>, and <code>EC2
+         * TerminateInstances API call</code>. </p> <p>For some target types,
+         * <code>PutTargets</code> provides target-specific parameters. If the target is a
+         * Kinesis data stream, you can optionally specify which shard the event goes to by
+         * using the <code>KinesisParameters</code> argument. To invoke a command on
+         * multiple EC2 instances with one rule, you can use the
+         * <code>RunCommandParameters</code> field.</p> <p>To be able to make API calls
+         * against the resources that you own, Amazon EventBridge needs the appropriate
+         * permissions. For Lambda and Amazon SNS resources, EventBridge relies on
+         * resource-based policies. For EC2 instances, Kinesis Data Streams, Step Functions
+         * state machines and API Gateway REST APIs, EventBridge relies on IAM roles that
+         * you specify in the <code>RoleARN</code> argument in <code>PutTargets</code>. For
+         * more information, see <a
          * href="https://docs.aws.amazon.com/eventbridge/latest/userguide/auth-and-access-control-eventbridge.html">Authentication
          * and Access Control</a> in the <i>Amazon EventBridge User Guide</i>.</p> <p>If
          * another Amazon Web Services account is in the same region and has granted you
@@ -1417,13 +1430,13 @@ namespace CloudWatchEvents
          * href="http://docs.aws.amazon.com/goto/WebAPI/events-2015-10-07/RemovePermission">AWS
          * API Reference</a></p>
          */
-        virtual Model::RemovePermissionOutcome RemovePermission(const Model::RemovePermissionRequest& request) const;
+        virtual Model::RemovePermissionOutcome RemovePermission(const Model::RemovePermissionRequest& request = {}) const;
 
         /**
          * A Callable wrapper for RemovePermission that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename RemovePermissionRequestT = Model::RemovePermissionRequest>
-        Model::RemovePermissionOutcomeCallable RemovePermissionCallable(const RemovePermissionRequestT& request) const
+        Model::RemovePermissionOutcomeCallable RemovePermissionCallable(const RemovePermissionRequestT& request = {}) const
         {
             return SubmitCallable(&CloudWatchEventsClient::RemovePermission, request);
         }
@@ -1432,7 +1445,7 @@ namespace CloudWatchEvents
          * An Async wrapper for RemovePermission that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename RemovePermissionRequestT = Model::RemovePermissionRequest>
-        void RemovePermissionAsync(const RemovePermissionRequestT& request, const RemovePermissionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void RemovePermissionAsync(const RemovePermissionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const RemovePermissionRequestT& request = {}) const
         {
             return SubmitAsync(&CloudWatchEventsClient::RemovePermission, request, handler, context);
         }
@@ -1676,11 +1689,7 @@ namespace CloudWatchEvents
       std::shared_ptr<CloudWatchEventsEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<CloudWatchEventsClient>;
-      void init(const CloudWatchEventsClientConfiguration& clientConfiguration);
 
-      CloudWatchEventsClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<CloudWatchEventsEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace CloudWatchEvents

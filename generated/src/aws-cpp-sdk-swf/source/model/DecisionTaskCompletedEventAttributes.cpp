@@ -23,16 +23,14 @@ DecisionTaskCompletedEventAttributes::DecisionTaskCompletedEventAttributes() :
     m_scheduledEventId(0),
     m_scheduledEventIdHasBeenSet(false),
     m_startedEventId(0),
-    m_startedEventIdHasBeenSet(false)
+    m_startedEventIdHasBeenSet(false),
+    m_taskListHasBeenSet(false),
+    m_taskListScheduleToStartTimeoutHasBeenSet(false)
 {
 }
 
-DecisionTaskCompletedEventAttributes::DecisionTaskCompletedEventAttributes(JsonView jsonValue) : 
-    m_executionContextHasBeenSet(false),
-    m_scheduledEventId(0),
-    m_scheduledEventIdHasBeenSet(false),
-    m_startedEventId(0),
-    m_startedEventIdHasBeenSet(false)
+DecisionTaskCompletedEventAttributes::DecisionTaskCompletedEventAttributes(JsonView jsonValue)
+  : DecisionTaskCompletedEventAttributes()
 {
   *this = jsonValue;
 }
@@ -60,6 +58,20 @@ DecisionTaskCompletedEventAttributes& DecisionTaskCompletedEventAttributes::oper
     m_startedEventIdHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("taskList"))
+  {
+    m_taskList = jsonValue.GetObject("taskList");
+
+    m_taskListHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("taskListScheduleToStartTimeout"))
+  {
+    m_taskListScheduleToStartTimeout = jsonValue.GetString("taskListScheduleToStartTimeout");
+
+    m_taskListScheduleToStartTimeoutHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -82,6 +94,18 @@ JsonValue DecisionTaskCompletedEventAttributes::Jsonize() const
   if(m_startedEventIdHasBeenSet)
   {
    payload.WithInt64("startedEventId", m_startedEventId);
+
+  }
+
+  if(m_taskListHasBeenSet)
+  {
+   payload.WithObject("taskList", m_taskList.Jsonize());
+
+  }
+
+  if(m_taskListScheduleToStartTimeoutHasBeenSet)
+  {
+   payload.WithString("taskListScheduleToStartTimeout", m_taskListScheduleToStartTimeout);
 
   }
 

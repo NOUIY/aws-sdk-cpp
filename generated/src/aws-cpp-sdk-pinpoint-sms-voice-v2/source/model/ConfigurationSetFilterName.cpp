@@ -24,6 +24,8 @@ namespace Aws
         static const int matching_event_types_HASH = HashingUtils::HashString("matching-event-types");
         static const int default_message_type_HASH = HashingUtils::HashString("default-message-type");
         static const int default_sender_id_HASH = HashingUtils::HashString("default-sender-id");
+        static const int default_message_feedback_enabled_HASH = HashingUtils::HashString("default-message-feedback-enabled");
+        static const int protect_configuration_id_HASH = HashingUtils::HashString("protect-configuration-id");
 
 
         ConfigurationSetFilterName GetConfigurationSetFilterNameForName(const Aws::String& name)
@@ -45,6 +47,14 @@ namespace Aws
           {
             return ConfigurationSetFilterName::default_sender_id;
           }
+          else if (hashCode == default_message_feedback_enabled_HASH)
+          {
+            return ConfigurationSetFilterName::default_message_feedback_enabled;
+          }
+          else if (hashCode == protect_configuration_id_HASH)
+          {
+            return ConfigurationSetFilterName::protect_configuration_id;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -59,6 +69,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ConfigurationSetFilterName::NOT_SET:
+            return {};
           case ConfigurationSetFilterName::event_destination_name:
             return "event-destination-name";
           case ConfigurationSetFilterName::matching_event_types:
@@ -67,6 +79,10 @@ namespace Aws
             return "default-message-type";
           case ConfigurationSetFilterName::default_sender_id:
             return "default-sender-id";
+          case ConfigurationSetFilterName::default_message_feedback_enabled:
+            return "default-message-feedback-enabled";
+          case ConfigurationSetFilterName::protect_configuration_id:
+            return "protect-configuration-id";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

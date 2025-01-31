@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0.
  */
 
-#include <gtest/gtest.h>
+#include <aws/testing/AwsCppSdkGTestSuite.h>
 #include <aws/core/auth/AWSAuthSigner.h>
 #include <aws/core/auth/AWSCredentialsProvider.h>
 #include <aws/core/utils/logging/LogMacros.h>
@@ -12,12 +12,15 @@
 #include <aws/core/http/standard/StandardHttpResponse.h>
 #include <aws/core/platform/FileSystem.h>
 #include <aws/core/platform/Platform.h>
+#include <aws/core/utils/crypto/CRC32.h>
+#include <aws/core/utils/crypto/Sha256.h>
 #include <aws/core/utils/StringUtils.h>
 #include <aws/core/utils/HashingUtils.h>
 #include <aws/auth/signing.h>
 #include <aws/cal/ecc.h>
 #include <aws/common/encoding.h>
 #include <fstream>
+#include <tuple>
 
 using namespace Aws::Client;
 using namespace Aws::Utils;
@@ -25,6 +28,7 @@ using namespace Aws::Http;
 
 static const char ALLOC_TAG[] = "AwsAuthV4SignerTest";
 static const char EMPTY_STRING_SHA256[] = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+static const char STREAMING_UNSIGNED_PAYLOAD_TRAILER[] = "STREAMING-UNSIGNED-PAYLOAD-TRAILER";
 static const char UNSIGNED_PAYLOAD[] = "UNSIGNED-PAYLOAD";
 static const char X_AMZ_SIGNATURE[] = "X-Amz-Signature";
 
@@ -377,19 +381,16 @@ static Aws::String GetHttpRequestSignatureFromTestCase(const char* testCaseName,
  * |    HTTPS    |       N           |          Y          |Depends on Request|
  * +-------------+-------------------+---------------------+------------------+
  */
-static bool SignPayload(AWSAuthV4Signer::PayloadSigningPolicy policy, Aws::Http::Scheme scheme, bool requestSignPayload/*sign flag in request*/)
-{
-    if (scheme == Aws::Http::Scheme::HTTPS)
-    {
-        if (policy == AWSAuthV4Signer::PayloadSigningPolicy::Never || (policy == AWSAuthV4Signer::PayloadSigningPolicy::RequestDependent && requestSignPayload == false))
-        {
-            return false;
-        }
-    }
-    return true;
+static bool SignPayload(AWSAuthV4Signer::PayloadSigningPolicy policy, Aws::Http::Scheme scheme,
+                        bool requestSignPayload /*sign flag in request*/) {
+  AWS_UNREFERENCED_PARAM(policy);
+  if (scheme == Aws::Http::Scheme::HTTPS) {
+    return requestSignPayload;
+  }
+  return true;
 }
 
-static void RunTestCaseWithPayload(const char* testCaseName, AWSAuthV4Signer::PayloadSigningPolicy policy, Aws::Http::Scheme scheme, bool requestSignPayload/*sign flag in request*/)
+static void RunTestCaseWithPayload(const char* testCaseName, AWSAuthV4Signer::PayloadSigningPolicy policy, Aws::Http::Scheme scheme, bool requestSignPayload, const Aws::String& requestHash)
 {
     DateTime timestampForSigner;
     std::shared_ptr<Aws::Auth::AWSCredentialsProvider> credProvider = MakeStaticCredentialsProvider();
@@ -397,9 +398,20 @@ static void RunTestCaseWithPayload(const char* testCaseName, AWSAuthV4Signer::Pa
     bool signPayload = SignPayload(policy, scheme, requestSignPayload);
     auto requestToMake = GetHttpRequestFromTestCase(testCaseName, timestampForSigner, scheme);
 
+    // simulate what AWSClient does if client chooses a specific request hash type
+    if (requestHash == "crc32") {
+        requestToMake.SetRequestHash("crc32", Aws::MakeShared<Crypto::CRC32>("crc32"));
+    } else if (requestHash == "sha256") {
+        requestToMake.SetRequestHash("sha256", Aws::MakeShared<Crypto::Sha256>("sha256"));
+    } else {
+        ASSERT_STREQ("none", requestHash.c_str());
+    }
+
     signer.SetSigningTimestamp(timestampForSigner);
     ASSERT_TRUE(signer.SignRequest(requestToMake, requestSignPayload));
-    ASSERT_STREQ(GetHttpRequestSignatureFromTestCase(testCaseName, signPayload).c_str(), requestToMake.GetAwsAuthorization().c_str());
+    if (requestHash == "none") {
+        ASSERT_STREQ(GetHttpRequestSignatureFromTestCase(testCaseName, signPayload).c_str(), requestToMake.GetAwsAuthorization().c_str());
+    }
 
     TestableAuthv4Signer signerV4a(credProvider, "service", "us-east-1", policy, false, Aws::Auth::AWSSigningAlgorithm::ASYMMETRIC_SIGV4);
     requestToMake = GetHttpRequestFromTestCase(testCaseName, timestampForSigner, scheme);
@@ -435,22 +447,37 @@ static void RunTestCaseWithPayload(const char* testCaseName, AWSAuthV4Signer::Pa
     VerifyV4ASignature(stringToSign, signature, eccPublicKeyX, eccPublicKeyY);
 }
 
-static void RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy policy, Aws::Http::Scheme scheme, bool requestSignPayload/*sign flag in request*/)
+static void RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy policy, Aws::Http::Scheme scheme, bool requestSignPayload, const Aws::String& requestHash)
 {
-    bool signPayload = SignPayload(policy, scheme, requestSignPayload);
     auto request = Standard::StandardHttpRequest(scheme == Aws::Http::Scheme::HTTP ? "http://test.com/query?key=val" : "https://test.com/query?key=val", Aws::Http::HttpMethod::HTTP_GET);
+
+    const char* expectedContentHashHeader = request.GetRequestHash().first.empty() ? EMPTY_STRING_SHA256
+                                            : (requestHash == "none")              ? UNSIGNED_PAYLOAD
+                                                                                   : STREAMING_UNSIGNED_PAYLOAD_TRAILER;
+
+    if (requestHash == "crc32") {
+        request.SetRequestHash("crc32", Aws::MakeShared<Crypto::CRC32>("crc32"));
+    } else if (requestHash == "sha256") {
+        request.SetRequestHash("sha256", Aws::MakeShared<Crypto::Sha256>("sha256"));
+    } else {
+        ASSERT_STREQ("none", requestHash.c_str());
+    }
 
     std::shared_ptr<Aws::Auth::AWSCredentialsProvider> credProvider = MakeStaticCredentialsProvider();
     AWSAuthV4Signer signer(credProvider, "service", "us-east-1", policy, false);
     ASSERT_TRUE(signer.SignRequest(request, requestSignPayload));
-    ASSERT_STREQ(signPayload ? EMPTY_STRING_SHA256 : UNSIGNED_PAYLOAD, request.GetHeaderValue("x-amz-content-sha256").c_str());
+    ASSERT_STREQ(expectedContentHashHeader, request.GetHeaderValue("x-amz-content-sha256").c_str());
 
     AWSAuthV4Signer signerV4a(credProvider, "service", "us-east-1", policy, false, Aws::Auth::AWSSigningAlgorithm::ASYMMETRIC_SIGV4);
     ASSERT_TRUE(signer.SignRequest(request, requestSignPayload));
-    ASSERT_STREQ(signPayload ? EMPTY_STRING_SHA256 : UNSIGNED_PAYLOAD, request.GetHeaderValue("x-amz-content-sha256").c_str());
+    ASSERT_STREQ(expectedContentHashHeader, request.GetHeaderValue("x-amz-content-sha256").c_str());
 }
 
-TEST(AWSAuthSignerTest, HeadersWithEmptyValues)
+class AWSAuthSignerEmptyTest : public Aws::Testing::AwsCppSdkGTestSuite
+{
+};
+
+TEST_F(AWSAuthSignerEmptyTest, HeadersWithEmptyValues)
 {
     auto request = Standard::StandardHttpRequest("https://test.com/query?key=val", Aws::Http::HttpMethod::HTTP_GET);
     request.SetHeaderValue("same_key", "    ");
@@ -463,240 +490,249 @@ TEST(AWSAuthSignerTest, HeadersWithEmptyValues)
     AWSAuthV4Signer signer(credProvider, "service", "us-east-1", AWSAuthV4Signer::PayloadSigningPolicy::Never, false);
 
     ASSERT_TRUE(signer.SignRequest(request, false/*signPayload*/));
-    ASSERT_STREQ(UNSIGNED_PAYLOAD, request.GetHeaderValue("x-amz-content-sha256").c_str());
+    ASSERT_STREQ(EMPTY_STRING_SHA256, request.GetHeaderValue("x-amz-content-sha256").c_str());
 }
 
-TEST(AWSAuthSignerTest, PayloadSigningPolicyNever)
+class AWSAuthSignerTestSuite
+  : public Aws::Testing::AwsCppSdkGTestSuite,
+    public ::testing::WithParamInterface<
+        std::tuple<
+            AWSAuthV4Signer::PayloadSigningPolicy,
+            Aws::Http::Scheme,
+            bool /* requestSignPayload */,
+            Aws::String /* requestHash */
+        >
+    >
 {
-    // Test without payload(empty body)
-    RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy::Never, Aws::Http::Scheme::HTTP, true);
-    RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy::Never, Aws::Http::Scheme::HTTP, false);
-    RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy::Never, Aws::Http::Scheme::HTTPS, true);
-    RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy::Never, Aws::Http::Scheme::HTTPS, false);
+};
 
-    // Test with payload(non-empty body)
-    RunTestCaseWithPayload("post-x-www-form-urlencoded", AWSAuthV4Signer::PayloadSigningPolicy::Never, Aws::Http::Scheme::HTTP, true);
-    RunTestCaseWithPayload("post-x-www-form-urlencoded", AWSAuthV4Signer::PayloadSigningPolicy::Never, Aws::Http::Scheme::HTTP, false);
-    RunTestCaseWithPayload("post-x-www-form-urlencoded", AWSAuthV4Signer::PayloadSigningPolicy::Never, Aws::Http::Scheme::HTTPS, true);
-    RunTestCaseWithPayload("post-x-www-form-urlencoded", AWSAuthV4Signer::PayloadSigningPolicy::Never, Aws::Http::Scheme::HTTPS, false);
-}
-
-TEST(AWSAuthSignerTest, PayloadSigningPolicyAlways)
+TEST_P(AWSAuthSignerTestSuite, Signing)
 {
-    // Test without payload(empty body)
-    RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy::Always, Aws::Http::Scheme::HTTP, true);
-    RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy::Always, Aws::Http::Scheme::HTTP, false);
-    RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy::Always, Aws::Http::Scheme::HTTPS, true);
-    RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy::Always, Aws::Http::Scheme::HTTPS, false);
-
-    // Test with payload(non-empty body)
-    RunTestCaseWithPayload("post-x-www-form-urlencoded", AWSAuthV4Signer::PayloadSigningPolicy::Always, Aws::Http::Scheme::HTTP, true);
-    RunTestCaseWithPayload("post-x-www-form-urlencoded", AWSAuthV4Signer::PayloadSigningPolicy::Always, Aws::Http::Scheme::HTTP, false);
-    RunTestCaseWithPayload("post-x-www-form-urlencoded", AWSAuthV4Signer::PayloadSigningPolicy::Always, Aws::Http::Scheme::HTTPS, true);
-    RunTestCaseWithPayload("post-x-www-form-urlencoded", AWSAuthV4Signer::PayloadSigningPolicy::Always, Aws::Http::Scheme::HTTPS, false);
+    auto params = GetParam();
+    RunTestCaseWithoutPayload(std::get<0>(params), std::get<1>(params), std::get<2>(params), std::get<3>(params));
+    RunTestCaseWithPayload("post-x-www-form-urlencoded", std::get<0>(params), std::get<1>(params), std::get<2>(params), std::get<3>(params));
 }
 
-TEST(AWSAuthSignerTest, PayloadSigningPolicyRequestDependent)
+INSTANTIATE_TEST_SUITE_P(
+    AWSAuthSignerTest,
+    AWSAuthSignerTestSuite,
+    ::testing::Combine(
+        // welcome to the matrix
+        ::testing::Values(
+            AWSAuthV4Signer::PayloadSigningPolicy::Never,
+            AWSAuthV4Signer::PayloadSigningPolicy::RequestDependent,
+            AWSAuthV4Signer::PayloadSigningPolicy::Always
+        ),
+        ::testing::Values(
+            Aws::Http::Scheme::HTTP,
+            Aws::Http::Scheme::HTTPS
+        ),
+        ::testing::Values(
+            true,
+            false
+        ),
+        ::testing::Values(
+            "none",
+            "crc32",
+            "sha256"    // has a special case to avoid double-hashing the payload
+        )
+    )
+);
+
+class AWSAuthV4SignerTest : public Aws::Testing::AwsCppSdkGTestSuite
 {
-    // Test without payload(empty body)
-    RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy::RequestDependent, Aws::Http::Scheme::HTTP, true);
-    RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy::RequestDependent, Aws::Http::Scheme::HTTP, false);
-    RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy::RequestDependent, Aws::Http::Scheme::HTTPS, true);
-    RunTestCaseWithoutPayload(AWSAuthV4Signer::PayloadSigningPolicy::RequestDependent, Aws::Http::Scheme::HTTPS, false);
+};
 
-    // Test with payload(non-empty body)
-    RunTestCaseWithPayload("post-x-www-form-urlencoded", AWSAuthV4Signer::PayloadSigningPolicy::RequestDependent, Aws::Http::Scheme::HTTP, true);
-    RunTestCaseWithPayload("post-x-www-form-urlencoded", AWSAuthV4Signer::PayloadSigningPolicy::RequestDependent, Aws::Http::Scheme::HTTPS, true);
-    RunTestCaseWithPayload("post-x-www-form-urlencoded", AWSAuthV4Signer::PayloadSigningPolicy::RequestDependent, Aws::Http::Scheme::HTTP, false);
-    RunTestCaseWithPayload("post-x-www-form-urlencoded", AWSAuthV4Signer::PayloadSigningPolicy::RequestDependent, Aws::Http::Scheme::HTTPS, false);
-}
-
-TEST(AWSAuthV4SignerTest, GetHeaderKeyDuplicate)
+TEST_F(AWSAuthV4SignerTest, GetHeaderKeyDuplicate)
 {
     AssertSigV4("get-header-key-duplicate");
 }
 
-TEST(AWSAuthV4SignerTest, GetHeaderValueMultiline)
+TEST_F(AWSAuthV4SignerTest, GetHeaderValueMultiline)
 {
     AssertSigV4("get-header-value-multiline");
 }
 
-TEST(AWSAuthV4SignerTest, GetHeaderValueOrder)
+TEST_F(AWSAuthV4SignerTest, GetHeaderValueOrder)
 {
     AssertSigV4("get-header-value-order");
 }
 
-TEST(AWSAuthV4SignerTest, GetHeaderValueTrim)
+TEST_F(AWSAuthV4SignerTest, GetHeaderValueTrim)
 {
     AssertSigV4("get-header-value-trim");
 }
 
-TEST(AWSAuthV4SignerTest, GetUnreserved)
+TEST_F(AWSAuthV4SignerTest, GetUnreserved)
 {
     AssertSigV4("get-unreserved");
 }
 
-TEST(AWSAuthV4SignerTest, GetUtf8)
+TEST_F(AWSAuthV4SignerTest, GetUtf8)
 {
     AssertSigV4("get-utf8");
 }
 
-TEST(AWSAuthV4SignerTest, GetVanilla)
+TEST_F(AWSAuthV4SignerTest, GetVanilla)
 {
     AssertSigV4("get-vanilla");
 }
 
-TEST(AWSAuthV4SignerTest, GetVanillaEmptyQueryKey)
+TEST_F(AWSAuthV4SignerTest, GetVanillaEmptyQueryKey)
 {
     AssertSigV4("get-vanilla-empty-query-key");
 }
 
-TEST(AWSAuthV4SignerTest, GetVanillaQuery)
+TEST_F(AWSAuthV4SignerTest, GetVanillaQuery)
 {
     AssertSigV4("get-vanilla-query");
 }
 
-TEST(AWSAuthV4SignerTest, GetVanillaQueryOrderKeyCase)
+TEST_F(AWSAuthV4SignerTest, GetVanillaQueryOrderKeyCase)
 {
     AssertSigV4("get-vanilla-query-order-key-case");
 }
 
-TEST(AWSAuthV4SignerTest, GetVanillaQueryUnreserved)
+TEST_F(AWSAuthV4SignerTest, GetVanillaQueryUnreserved)
 {
     AssertSigV4("get-vanilla-query-unreserved");
 }
 
-TEST(AWSAuthV4SignerTest, GetVanillaUtf8Query)
+TEST_F(AWSAuthV4SignerTest, GetVanillaUtf8Query)
 {
     AssertSigV4("get-vanilla-utf8-query");
 }
 
-TEST(AWSAuthV4SignerTest, PostHeaderKeyCase)
+TEST_F(AWSAuthV4SignerTest, PostHeaderKeyCase)
 {
     AssertSigV4("post-header-key-case");
 }
 
-TEST(AWSAuthV4SignerTest, PostHeaderKeySort)
+TEST_F(AWSAuthV4SignerTest, PostHeaderKeySort)
 {
     AssertSigV4("post-header-key-sort");
 }
 
-TEST(AWSAuthV4SignerTest, PostHeaderValueCase)
+TEST_F(AWSAuthV4SignerTest, PostHeaderValueCase)
 {
     AssertSigV4("post-header-value-case");
 }
 
-TEST(AWSAuthV4SignerTest, PostVanilla)
+TEST_F(AWSAuthV4SignerTest, PostVanilla)
 {
     AssertSigV4("post-vanilla");
 }
 
-TEST(AWSAuthV4SignerTest, PostVanillaEmptyQueryValue)
+TEST_F(AWSAuthV4SignerTest, PostVanillaEmptyQueryValue)
 {
     AssertSigV4("post-vanilla-empty-query-value");
 }
 
-TEST(AWSAuthV4SignerTest, PostVanillaQuery)
+TEST_F(AWSAuthV4SignerTest, PostVanillaQuery)
 {
     AssertSigV4("post-vanilla-query");
 }
 
-TEST(AWSAuthV4SignerTest, PostXWWWFormURLEncoded)
+TEST_F(AWSAuthV4SignerTest, PostXWWWFormURLEncoded)
 {
     AssertSigV4("post-x-www-form-urlencoded");
 }
 
-TEST(AWSAuthV4ASignerTest, GetHeaderKeyDuplicate)
+class AWSAuthV4ASignerTest : public Aws::Testing::AwsCppSdkGTestSuite
+{
+};
+
+TEST_F(AWSAuthV4ASignerTest, GetHeaderKeyDuplicate)
 {
     AssertSigV4a("get-header-key-duplicate");
 }
 
-TEST(AWSAuthV4ASignerTest, GetHeaderValueMultiline)
+TEST_F(AWSAuthV4ASignerTest, GetHeaderValueMultiline)
 {
     AssertSigV4a("get-header-value-multiline");
 }
 
-TEST(AWSAuthV4ASignerTest, GetHeaderValueOrder)
+TEST_F(AWSAuthV4ASignerTest, GetHeaderValueOrder)
 {
     AssertSigV4a("get-header-value-order");
 }
 
-TEST(AWSAuthV4ASignerTest, GetHeaderValueTrim)
+TEST_F(AWSAuthV4ASignerTest, GetHeaderValueTrim)
 {
     AssertSigV4a("get-header-value-trim");
 }
 
-TEST(AWSAuthV4ASignerTest, GetUnreserved)
+TEST_F(AWSAuthV4ASignerTest, GetUnreserved)
 {
     AssertSigV4a("get-unreserved");
 }
 
-TEST(AWSAuthV4ASignerTest, GetUtf8)
+TEST_F(AWSAuthV4ASignerTest, GetUtf8)
 {
     AssertSigV4a("get-utf8");
 }
 
-TEST(AWSAuthV4ASignerTest, GetVanilla)
+TEST_F(AWSAuthV4ASignerTest, GetVanilla)
 {
     AssertSigV4a("get-vanilla");
 }
 
-TEST(AWSAuthV4ASignerTest, GetVanillaEmptyQueryKey)
+TEST_F(AWSAuthV4ASignerTest, GetVanillaEmptyQueryKey)
 {
     AssertSigV4a("get-vanilla-empty-query-key");
 }
 
-TEST(AWSAuthV4ASignerTest, GetVanillaQuery)
+TEST_F(AWSAuthV4ASignerTest, GetVanillaQuery)
 {
     AssertSigV4a("get-vanilla-query");
 }
 
-TEST(AWSAuthV4ASignerTest, GetVanillaQueryOrderKeyCase)
+TEST_F(AWSAuthV4ASignerTest, GetVanillaQueryOrderKeyCase)
 {
     AssertSigV4a("get-vanilla-query-order-key-case");
 }
 
-TEST(AWSAuthV4ASignerTest, GetVanillaQueryUnreserved)
+TEST_F(AWSAuthV4ASignerTest, GetVanillaQueryUnreserved)
 {
     AssertSigV4a("get-vanilla-query-unreserved");
 }
 
-TEST(AWSAuthV4ASignerTest, GetVanillaUtf8Query)
+TEST_F(AWSAuthV4ASignerTest, GetVanillaUtf8Query)
 {
     AssertSigV4a("get-vanilla-utf8-query");
 }
 
-TEST(AWSAuthV4ASignerTest, PostHeaderKeyCase)
+TEST_F(AWSAuthV4ASignerTest, PostHeaderKeyCase)
 {
     AssertSigV4a("post-header-key-case");
 }
 
-TEST(AWSAuthV4ASignerTest, PostHeaderKeySort)
+TEST_F(AWSAuthV4ASignerTest, PostHeaderKeySort)
 {
     AssertSigV4a("post-header-key-sort");
 }
 
-TEST(AWSAuthV4ASignerTest, PostHeaderValueCase)
+TEST_F(AWSAuthV4ASignerTest, PostHeaderValueCase)
 {
     AssertSigV4a("post-header-value-case");
 }
 
-TEST(AWSAuthV4ASignerTest, PostVanilla)
+TEST_F(AWSAuthV4ASignerTest, PostVanilla)
 {
     AssertSigV4a("post-vanilla");
 }
 
-TEST(AWSAuthV4ASignerTest, PostVanillaEmptyQueryValue)
+TEST_F(AWSAuthV4ASignerTest, PostVanillaEmptyQueryValue)
 {
     AssertSigV4a("post-vanilla-empty-query-value");
 }
 
-TEST(AWSAuthV4ASignerTest, PostVanillaQuery)
+TEST_F(AWSAuthV4ASignerTest, PostVanillaQuery)
 {
     AssertSigV4a("post-vanilla-query");
 }
 
-TEST(AWSAuthV4ASignerTest, PostXWWWFormURLEncoded)
+TEST_F(AWSAuthV4ASignerTest, PostXWWWFormURLEncoded)
 {
     AssertSigV4a("post-x-www-form-urlencoded");
 }

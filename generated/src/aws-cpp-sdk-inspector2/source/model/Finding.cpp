@@ -20,7 +20,9 @@ namespace Model
 
 Finding::Finding() : 
     m_awsAccountIdHasBeenSet(false),
+    m_codeVulnerabilityDetailsHasBeenSet(false),
     m_descriptionHasBeenSet(false),
+    m_epssHasBeenSet(false),
     m_exploitAvailable(ExploitAvailable::NOT_SET),
     m_exploitAvailableHasBeenSet(false),
     m_exploitabilityDetailsHasBeenSet(false),
@@ -47,32 +49,8 @@ Finding::Finding() :
 {
 }
 
-Finding::Finding(JsonView jsonValue) : 
-    m_awsAccountIdHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_exploitAvailable(ExploitAvailable::NOT_SET),
-    m_exploitAvailableHasBeenSet(false),
-    m_exploitabilityDetailsHasBeenSet(false),
-    m_findingArnHasBeenSet(false),
-    m_firstObservedAtHasBeenSet(false),
-    m_fixAvailable(FixAvailable::NOT_SET),
-    m_fixAvailableHasBeenSet(false),
-    m_inspectorScore(0.0),
-    m_inspectorScoreHasBeenSet(false),
-    m_inspectorScoreDetailsHasBeenSet(false),
-    m_lastObservedAtHasBeenSet(false),
-    m_networkReachabilityDetailsHasBeenSet(false),
-    m_packageVulnerabilityDetailsHasBeenSet(false),
-    m_remediationHasBeenSet(false),
-    m_resourcesHasBeenSet(false),
-    m_severity(Severity::NOT_SET),
-    m_severityHasBeenSet(false),
-    m_status(FindingStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_titleHasBeenSet(false),
-    m_type(FindingType::NOT_SET),
-    m_typeHasBeenSet(false),
-    m_updatedAtHasBeenSet(false)
+Finding::Finding(JsonView jsonValue)
+  : Finding()
 {
   *this = jsonValue;
 }
@@ -86,11 +64,25 @@ Finding& Finding::operator =(JsonView jsonValue)
     m_awsAccountIdHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("codeVulnerabilityDetails"))
+  {
+    m_codeVulnerabilityDetails = jsonValue.GetObject("codeVulnerabilityDetails");
+
+    m_codeVulnerabilityDetailsHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("description"))
   {
     m_description = jsonValue.GetString("description");
 
     m_descriptionHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("epss"))
+  {
+    m_epss = jsonValue.GetObject("epss");
+
+    m_epssHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("exploitAvailable"))
@@ -228,9 +220,21 @@ JsonValue Finding::Jsonize() const
 
   }
 
+  if(m_codeVulnerabilityDetailsHasBeenSet)
+  {
+   payload.WithObject("codeVulnerabilityDetails", m_codeVulnerabilityDetails.Jsonize());
+
+  }
+
   if(m_descriptionHasBeenSet)
   {
    payload.WithString("description", m_description);
+
+  }
+
+  if(m_epssHasBeenSet)
+  {
+   payload.WithObject("epss", m_epss.Jsonize());
 
   }
 

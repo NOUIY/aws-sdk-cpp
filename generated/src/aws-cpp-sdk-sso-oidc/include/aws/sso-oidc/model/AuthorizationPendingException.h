@@ -38,55 +38,35 @@ namespace Model
     AWS_SSOOIDC_API Aws::Utils::Json::JsonValue Jsonize() const;
 
 
-    
+    ///@{
+    /**
+     * <p>Single error code. For this exception the value will be
+     * <code>authorization_pending</code>.</p>
+     */
     inline const Aws::String& GetError() const{ return m_error; }
-
-    
     inline bool ErrorHasBeenSet() const { return m_errorHasBeenSet; }
-
-    
     inline void SetError(const Aws::String& value) { m_errorHasBeenSet = true; m_error = value; }
-
-    
     inline void SetError(Aws::String&& value) { m_errorHasBeenSet = true; m_error = std::move(value); }
-
-    
     inline void SetError(const char* value) { m_errorHasBeenSet = true; m_error.assign(value); }
-
-    
     inline AuthorizationPendingException& WithError(const Aws::String& value) { SetError(value); return *this;}
-
-    
     inline AuthorizationPendingException& WithError(Aws::String&& value) { SetError(std::move(value)); return *this;}
-
-    
     inline AuthorizationPendingException& WithError(const char* value) { SetError(value); return *this;}
+    ///@}
 
-
-    
+    ///@{
+    /**
+     * <p>Human-readable text providing additional information, used to assist the
+     * client developer in understanding the error that occurred.</p>
+     */
     inline const Aws::String& GetError_description() const{ return m_error_description; }
-
-    
     inline bool Error_descriptionHasBeenSet() const { return m_error_descriptionHasBeenSet; }
-
-    
     inline void SetError_description(const Aws::String& value) { m_error_descriptionHasBeenSet = true; m_error_description = value; }
-
-    
     inline void SetError_description(Aws::String&& value) { m_error_descriptionHasBeenSet = true; m_error_description = std::move(value); }
-
-    
     inline void SetError_description(const char* value) { m_error_descriptionHasBeenSet = true; m_error_description.assign(value); }
-
-    
     inline AuthorizationPendingException& WithError_description(const Aws::String& value) { SetError_description(value); return *this;}
-
-    
     inline AuthorizationPendingException& WithError_description(Aws::String&& value) { SetError_description(std::move(value)); return *this;}
-
-    
     inline AuthorizationPendingException& WithError_description(const char* value) { SetError_description(value); return *this;}
-
+    ///@}
   private:
 
     Aws::String m_error;

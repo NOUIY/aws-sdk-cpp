@@ -49,6 +49,11 @@ namespace Aws
         static const int eu_south_1_HASH = HashingUtils::HashString("eu-south-1");
         static const int eu_south_2_HASH = HashingUtils::HashString("eu-south-2");
         static const int ap_southeast_4_HASH = HashingUtils::HashString("ap-southeast-4");
+        static const int il_central_1_HASH = HashingUtils::HashString("il-central-1");
+        static const int ca_west_1_HASH = HashingUtils::HashString("ca-west-1");
+        static const int ap_southeast_5_HASH = HashingUtils::HashString("ap-southeast-5");
+        static const int mx_central_1_HASH = HashingUtils::HashString("mx-central-1");
+        static const int ap_southeast_7_HASH = HashingUtils::HashString("ap-southeast-7");
 
 
         ResourceRecordSetRegion GetResourceRecordSetRegionForName(const Aws::String& name)
@@ -170,6 +175,26 @@ namespace Aws
           {
             return ResourceRecordSetRegion::ap_southeast_4;
           }
+          else if (hashCode == il_central_1_HASH)
+          {
+            return ResourceRecordSetRegion::il_central_1;
+          }
+          else if (hashCode == ca_west_1_HASH)
+          {
+            return ResourceRecordSetRegion::ca_west_1;
+          }
+          else if (hashCode == ap_southeast_5_HASH)
+          {
+            return ResourceRecordSetRegion::ap_southeast_5;
+          }
+          else if (hashCode == mx_central_1_HASH)
+          {
+            return ResourceRecordSetRegion::mx_central_1;
+          }
+          else if (hashCode == ap_southeast_7_HASH)
+          {
+            return ResourceRecordSetRegion::ap_southeast_7;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -184,6 +209,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ResourceRecordSetRegion::NOT_SET:
+            return {};
           case ResourceRecordSetRegion::us_east_1:
             return "us-east-1";
           case ResourceRecordSetRegion::us_east_2:
@@ -242,6 +269,16 @@ namespace Aws
             return "eu-south-2";
           case ResourceRecordSetRegion::ap_southeast_4:
             return "ap-southeast-4";
+          case ResourceRecordSetRegion::il_central_1:
+            return "il-central-1";
+          case ResourceRecordSetRegion::ca_west_1:
+            return "ca-west-1";
+          case ResourceRecordSetRegion::ap_southeast_5:
+            return "ap-southeast-5";
+          case ResourceRecordSetRegion::mx_central_1:
+            return "mx-central-1";
+          case ResourceRecordSetRegion::ap_southeast_7:
+            return "ap-southeast-7";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

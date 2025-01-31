@@ -36,7 +36,9 @@ namespace Model
     elasticache_replication_group_NodeGroups,
     elasticache_replication_group_Replicas,
     neptune_cluster_ReadReplicaCount,
-    sagemaker_variant_DesiredProvisionedConcurrency
+    sagemaker_variant_DesiredProvisionedConcurrency,
+    sagemaker_inference_component_DesiredCopyCount,
+    workspaces_workspacespool_DesiredUserSessions
   };
 
 namespace ScalableDimensionMapper

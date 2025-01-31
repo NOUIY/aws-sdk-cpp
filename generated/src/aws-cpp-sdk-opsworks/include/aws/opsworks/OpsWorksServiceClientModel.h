@@ -54,6 +54,24 @@
 #include <aws/opsworks/model/RegisterElasticIpResult.h>
 #include <aws/opsworks/model/RegisterInstanceResult.h>
 #include <aws/opsworks/model/RegisterVolumeResult.h>
+#include <aws/opsworks/model/DescribeCommandsRequest.h>
+#include <aws/opsworks/model/DescribeAppsRequest.h>
+#include <aws/opsworks/model/DescribeUserProfilesRequest.h>
+#include <aws/opsworks/model/UpdateMyUserProfileRequest.h>
+#include <aws/opsworks/model/DescribeMyUserProfileRequest.h>
+#include <aws/opsworks/model/DescribeRaidArraysRequest.h>
+#include <aws/opsworks/model/DescribePermissionsRequest.h>
+#include <aws/opsworks/model/DescribeLayersRequest.h>
+#include <aws/opsworks/model/DescribeServiceErrorsRequest.h>
+#include <aws/opsworks/model/DescribeAgentVersionsRequest.h>
+#include <aws/opsworks/model/DescribeStacksRequest.h>
+#include <aws/opsworks/model/DescribeVolumesRequest.h>
+#include <aws/opsworks/model/DescribeElasticIpsRequest.h>
+#include <aws/opsworks/model/DescribeOperatingSystemsRequest.h>
+#include <aws/opsworks/model/DescribeInstancesRequest.h>
+#include <aws/opsworks/model/DescribeDeploymentsRequest.h>
+#include <aws/opsworks/model/DescribeEcsClustersRequest.h>
+#include <aws/opsworks/model/DescribeElasticLoadBalancersRequest.h>
 #include <aws/core/NoResult.h>
 /* End of service model headers required in OpsWorksClient header */
 
@@ -88,7 +106,7 @@ namespace Aws
 
   namespace OpsWorks
   {
-    using OpsWorksClientConfiguration = Aws::Client::GenericClientConfiguration<false>;
+    using OpsWorksClientConfiguration = Aws::Client::GenericClientConfiguration;
     using OpsWorksEndpointProviderBase = Aws::OpsWorks::Endpoint::OpsWorksEndpointProviderBase;
     using OpsWorksEndpointProvider = Aws::OpsWorks::Endpoint::OpsWorksEndpointProvider;
 
@@ -126,6 +144,8 @@ namespace Aws
       class DescribeInstancesRequest;
       class DescribeLayersRequest;
       class DescribeLoadBasedAutoScalingRequest;
+      class DescribeMyUserProfileRequest;
+      class DescribeOperatingSystemsRequest;
       class DescribePermissionsRequest;
       class DescribeRaidArraysRequest;
       class DescribeRdsDbInstancesRequest;
@@ -358,8 +378,8 @@ namespace Aws
     typedef std::function<void(const OpsWorksClient*, const Model::DescribeInstancesRequest&, const Model::DescribeInstancesOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeInstancesResponseReceivedHandler;
     typedef std::function<void(const OpsWorksClient*, const Model::DescribeLayersRequest&, const Model::DescribeLayersOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeLayersResponseReceivedHandler;
     typedef std::function<void(const OpsWorksClient*, const Model::DescribeLoadBasedAutoScalingRequest&, const Model::DescribeLoadBasedAutoScalingOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeLoadBasedAutoScalingResponseReceivedHandler;
-    typedef std::function<void(const OpsWorksClient*, const Model::DescribeMyUserProfileOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeMyUserProfileResponseReceivedHandler;
-    typedef std::function<void(const OpsWorksClient*, const Model::DescribeOperatingSystemsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeOperatingSystemsResponseReceivedHandler;
+    typedef std::function<void(const OpsWorksClient*, const Model::DescribeMyUserProfileRequest&, const Model::DescribeMyUserProfileOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeMyUserProfileResponseReceivedHandler;
+    typedef std::function<void(const OpsWorksClient*, const Model::DescribeOperatingSystemsRequest&, const Model::DescribeOperatingSystemsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeOperatingSystemsResponseReceivedHandler;
     typedef std::function<void(const OpsWorksClient*, const Model::DescribePermissionsRequest&, const Model::DescribePermissionsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribePermissionsResponseReceivedHandler;
     typedef std::function<void(const OpsWorksClient*, const Model::DescribeRaidArraysRequest&, const Model::DescribeRaidArraysOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeRaidArraysResponseReceivedHandler;
     typedef std::function<void(const OpsWorksClient*, const Model::DescribeRdsDbInstancesRequest&, const Model::DescribeRdsDbInstancesOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeRdsDbInstancesResponseReceivedHandler;

@@ -21,6 +21,7 @@ namespace Model
     customer_gateway,
     carrier_gateway,
     coip_pool,
+    declarative_policies_report,
     dedicated_host,
     dhcp_options,
     egress_only_internet_gateway,
@@ -100,7 +101,10 @@ namespace Model
     vpn_connection_device_type,
     vpc_block_public_access_exclusion,
     ipam_resource_discovery,
-    ipam_resource_discovery_association
+    ipam_resource_discovery_association,
+    instance_connect_endpoint,
+    verified_access_endpoint_target,
+    ipam_external_resource_verification_token
   };
 
 namespace ResourceTypeMapper

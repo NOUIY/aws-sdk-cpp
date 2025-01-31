@@ -25,7 +25,9 @@ import com.amazonaws.util.awsclientgenerator.generators.cpp.polly.PollyCppClient
 import com.amazonaws.util.awsclientgenerator.generators.cpp.rds.RDSCppClientGenerator;
 import com.amazonaws.util.awsclientgenerator.generators.cpp.s3.S3RestXmlCppClientGenerator;
 import com.amazonaws.util.awsclientgenerator.generators.cpp.s3control.S3ControlRestXmlCppClientGenerator;
+import com.amazonaws.util.awsclientgenerator.generators.cpp.sqs.SQSJsonCppClientGenerator;
 import com.amazonaws.util.awsclientgenerator.generators.cpp.sqs.SQSQueryXmlCppClientGenerator;
+import com.amazonaws.util.awsclientgenerator.generators.cpp.dsql.DsqlCppClientGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,6 +54,7 @@ public class ServiceGeneratorConfig {
             SPEC_OVERRIDE_MAPPING.put("cpp-glacier-rest-json", new GlacierRestJsonCppClientGenerator());
             SPEC_OVERRIDE_MAPPING.put("cpp-lambda-rest-json", new LambdaRestJsonCppClientGenerator());
             SPEC_OVERRIDE_MAPPING.put("cpp-sqs-query", new SQSQueryXmlCppClientGenerator());
+            SPEC_OVERRIDE_MAPPING.put("cpp-sqs-json", new SQSJsonCppClientGenerator());
             SPEC_OVERRIDE_MAPPING.put("cpp-s3-rest-xml", new S3RestXmlCppClientGenerator());
             SPEC_OVERRIDE_MAPPING.put("cpp-s3-crt-rest-xml", new S3RestXmlCppClientGenerator());
             SPEC_OVERRIDE_MAPPING.put("cpp-s3control-rest-xml", new S3ControlRestXmlCppClientGenerator());
@@ -64,7 +67,10 @@ public class ServiceGeneratorConfig {
             SPEC_OVERRIDE_MAPPING.put("cpp-docdb-query", new DocDBCppClientGenerator());
             SPEC_OVERRIDE_MAPPING.put("cpp-neptune-query", new NeptuneCppClientGenerator());
             SPEC_OVERRIDE_MAPPING.put("cpp-eventbridge-json", new EventBridgeCppClientGenerator());
+            SPEC_OVERRIDE_MAPPING.put("cpp-dsql-rest-json", new DsqlCppClientGenerator());
 
+            // protocol tests clients
+            SPEC_OVERRIDE_MAPPING.put("cpp-ec2-protocol-ec2", new Ec2CppClientGenerator());
         } catch (Exception e) {
             e.printStackTrace();
         }

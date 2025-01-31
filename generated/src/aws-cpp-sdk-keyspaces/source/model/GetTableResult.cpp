@@ -23,9 +23,8 @@ GetTableResult::GetTableResult() :
 {
 }
 
-GetTableResult::GetTableResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(TableStatus::NOT_SET),
-    m_defaultTimeToLive(0)
+GetTableResult::GetTableResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetTableResult()
 {
   *this = result;
 }
@@ -109,6 +108,15 @@ GetTableResult& GetTableResult::operator =(const Aws::AmazonWebServiceResult<Jso
   {
     m_clientSideTimestamps = jsonValue.GetObject("clientSideTimestamps");
 
+  }
+
+  if(jsonValue.ValueExists("replicaSpecifications"))
+  {
+    Aws::Utils::Array<JsonView> replicaSpecificationsJsonList = jsonValue.GetArray("replicaSpecifications");
+    for(unsigned replicaSpecificationsIndex = 0; replicaSpecificationsIndex < replicaSpecificationsJsonList.GetLength(); ++replicaSpecificationsIndex)
+    {
+      m_replicaSpecifications.push_back(replicaSpecificationsJsonList[replicaSpecificationsIndex].AsObject());
+    }
   }
 
 

@@ -46,39 +46,15 @@ Workload::Workload() :
     m_shareInvitationIdHasBeenSet(false),
     m_tagsHasBeenSet(false),
     m_discoveryConfigHasBeenSet(false),
-    m_applicationsHasBeenSet(false)
+    m_applicationsHasBeenSet(false),
+    m_profilesHasBeenSet(false),
+    m_prioritizedRiskCountsHasBeenSet(false),
+    m_jiraConfigurationHasBeenSet(false)
 {
 }
 
-Workload::Workload(JsonView jsonValue) : 
-    m_workloadIdHasBeenSet(false),
-    m_workloadArnHasBeenSet(false),
-    m_workloadNameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_environment(WorkloadEnvironment::NOT_SET),
-    m_environmentHasBeenSet(false),
-    m_updatedAtHasBeenSet(false),
-    m_accountIdsHasBeenSet(false),
-    m_awsRegionsHasBeenSet(false),
-    m_nonAwsRegionsHasBeenSet(false),
-    m_architecturalDesignHasBeenSet(false),
-    m_reviewOwnerHasBeenSet(false),
-    m_reviewRestrictionDateHasBeenSet(false),
-    m_isReviewOwnerUpdateAcknowledged(false),
-    m_isReviewOwnerUpdateAcknowledgedHasBeenSet(false),
-    m_industryTypeHasBeenSet(false),
-    m_industryHasBeenSet(false),
-    m_notesHasBeenSet(false),
-    m_improvementStatus(WorkloadImprovementStatus::NOT_SET),
-    m_improvementStatusHasBeenSet(false),
-    m_riskCountsHasBeenSet(false),
-    m_pillarPrioritiesHasBeenSet(false),
-    m_lensesHasBeenSet(false),
-    m_ownerHasBeenSet(false),
-    m_shareInvitationIdHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_discoveryConfigHasBeenSet(false),
-    m_applicationsHasBeenSet(false)
+Workload::Workload(JsonView jsonValue)
+  : Workload()
 {
   *this = jsonValue;
 }
@@ -284,6 +260,33 @@ Workload& Workload::operator =(JsonView jsonValue)
     m_applicationsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Profiles"))
+  {
+    Aws::Utils::Array<JsonView> profilesJsonList = jsonValue.GetArray("Profiles");
+    for(unsigned profilesIndex = 0; profilesIndex < profilesJsonList.GetLength(); ++profilesIndex)
+    {
+      m_profiles.push_back(profilesJsonList[profilesIndex].AsObject());
+    }
+    m_profilesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("PrioritizedRiskCounts"))
+  {
+    Aws::Map<Aws::String, JsonView> prioritizedRiskCountsJsonMap = jsonValue.GetObject("PrioritizedRiskCounts").GetAllObjects();
+    for(auto& prioritizedRiskCountsItem : prioritizedRiskCountsJsonMap)
+    {
+      m_prioritizedRiskCounts[RiskMapper::GetRiskForName(prioritizedRiskCountsItem.first)] = prioritizedRiskCountsItem.second.AsInteger();
+    }
+    m_prioritizedRiskCountsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("JiraConfiguration"))
+  {
+    m_jiraConfiguration = jsonValue.GetObject("JiraConfiguration");
+
+    m_jiraConfigurationHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -474,6 +477,34 @@ JsonValue Workload::Jsonize() const
      applicationsJsonList[applicationsIndex].AsString(m_applications[applicationsIndex]);
    }
    payload.WithArray("Applications", std::move(applicationsJsonList));
+
+  }
+
+  if(m_profilesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> profilesJsonList(m_profiles.size());
+   for(unsigned profilesIndex = 0; profilesIndex < profilesJsonList.GetLength(); ++profilesIndex)
+   {
+     profilesJsonList[profilesIndex].AsObject(m_profiles[profilesIndex].Jsonize());
+   }
+   payload.WithArray("Profiles", std::move(profilesJsonList));
+
+  }
+
+  if(m_prioritizedRiskCountsHasBeenSet)
+  {
+   JsonValue prioritizedRiskCountsJsonMap;
+   for(auto& prioritizedRiskCountsItem : m_prioritizedRiskCounts)
+   {
+     prioritizedRiskCountsJsonMap.WithInteger(RiskMapper::GetNameForRisk(prioritizedRiskCountsItem.first), prioritizedRiskCountsItem.second);
+   }
+   payload.WithObject("PrioritizedRiskCounts", std::move(prioritizedRiskCountsJsonMap));
+
+  }
+
+  if(m_jiraConfigurationHasBeenSet)
+  {
+   payload.WithObject("JiraConfiguration", m_jiraConfiguration.Jsonize());
 
   }
 

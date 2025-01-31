@@ -29,22 +29,13 @@ BoxPlotChartConfiguration::BoxPlotChartConfiguration() :
     m_legendHasBeenSet(false),
     m_tooltipHasBeenSet(false),
     m_referenceLinesHasBeenSet(false),
-    m_visualPaletteHasBeenSet(false)
+    m_visualPaletteHasBeenSet(false),
+    m_interactionsHasBeenSet(false)
 {
 }
 
-BoxPlotChartConfiguration::BoxPlotChartConfiguration(JsonView jsonValue) : 
-    m_fieldWellsHasBeenSet(false),
-    m_sortConfigurationHasBeenSet(false),
-    m_boxPlotOptionsHasBeenSet(false),
-    m_categoryAxisHasBeenSet(false),
-    m_categoryLabelOptionsHasBeenSet(false),
-    m_primaryYAxisDisplayOptionsHasBeenSet(false),
-    m_primaryYAxisLabelOptionsHasBeenSet(false),
-    m_legendHasBeenSet(false),
-    m_tooltipHasBeenSet(false),
-    m_referenceLinesHasBeenSet(false),
-    m_visualPaletteHasBeenSet(false)
+BoxPlotChartConfiguration::BoxPlotChartConfiguration(JsonView jsonValue)
+  : BoxPlotChartConfiguration()
 {
   *this = jsonValue;
 }
@@ -131,6 +122,13 @@ BoxPlotChartConfiguration& BoxPlotChartConfiguration::operator =(JsonView jsonVa
     m_visualPaletteHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Interactions"))
+  {
+    m_interactions = jsonValue.GetObject("Interactions");
+
+    m_interactionsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -206,6 +204,12 @@ JsonValue BoxPlotChartConfiguration::Jsonize() const
   if(m_visualPaletteHasBeenSet)
   {
    payload.WithObject("VisualPalette", m_visualPalette.Jsonize());
+
+  }
+
+  if(m_interactionsHasBeenSet)
+  {
+   payload.WithObject("Interactions", m_interactions.Jsonize());
 
   }
 

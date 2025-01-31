@@ -20,23 +20,21 @@ namespace Model
 
 AssetModelSummary::AssetModelSummary() : 
     m_idHasBeenSet(false),
+    m_externalIdHasBeenSet(false),
     m_arnHasBeenSet(false),
     m_nameHasBeenSet(false),
+    m_assetModelType(AssetModelType::NOT_SET),
+    m_assetModelTypeHasBeenSet(false),
     m_descriptionHasBeenSet(false),
     m_creationDateHasBeenSet(false),
     m_lastUpdateDateHasBeenSet(false),
-    m_statusHasBeenSet(false)
+    m_statusHasBeenSet(false),
+    m_versionHasBeenSet(false)
 {
 }
 
-AssetModelSummary::AssetModelSummary(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_creationDateHasBeenSet(false),
-    m_lastUpdateDateHasBeenSet(false),
-    m_statusHasBeenSet(false)
+AssetModelSummary::AssetModelSummary(JsonView jsonValue)
+  : AssetModelSummary()
 {
   *this = jsonValue;
 }
@@ -48,6 +46,13 @@ AssetModelSummary& AssetModelSummary::operator =(JsonView jsonValue)
     m_id = jsonValue.GetString("id");
 
     m_idHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("externalId"))
+  {
+    m_externalId = jsonValue.GetString("externalId");
+
+    m_externalIdHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("arn"))
@@ -62,6 +67,13 @@ AssetModelSummary& AssetModelSummary::operator =(JsonView jsonValue)
     m_name = jsonValue.GetString("name");
 
     m_nameHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("assetModelType"))
+  {
+    m_assetModelType = AssetModelTypeMapper::GetAssetModelTypeForName(jsonValue.GetString("assetModelType"));
+
+    m_assetModelTypeHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("description"))
@@ -92,6 +104,13 @@ AssetModelSummary& AssetModelSummary::operator =(JsonView jsonValue)
     m_statusHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("version"))
+  {
+    m_version = jsonValue.GetString("version");
+
+    m_versionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -105,6 +124,12 @@ JsonValue AssetModelSummary::Jsonize() const
 
   }
 
+  if(m_externalIdHasBeenSet)
+  {
+   payload.WithString("externalId", m_externalId);
+
+  }
+
   if(m_arnHasBeenSet)
   {
    payload.WithString("arn", m_arn);
@@ -115,6 +140,11 @@ JsonValue AssetModelSummary::Jsonize() const
   {
    payload.WithString("name", m_name);
 
+  }
+
+  if(m_assetModelTypeHasBeenSet)
+  {
+   payload.WithString("assetModelType", AssetModelTypeMapper::GetNameForAssetModelType(m_assetModelType));
   }
 
   if(m_descriptionHasBeenSet)
@@ -136,6 +166,12 @@ JsonValue AssetModelSummary::Jsonize() const
   if(m_statusHasBeenSet)
   {
    payload.WithObject("status", m_status.Jsonize());
+
+  }
+
+  if(m_versionHasBeenSet)
+  {
+   payload.WithString("version", m_version);
 
   }
 

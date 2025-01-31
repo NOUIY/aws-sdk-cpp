@@ -23,16 +23,14 @@ DataQualityRuleResult::DataQualityRuleResult() :
     m_descriptionHasBeenSet(false),
     m_evaluationMessageHasBeenSet(false),
     m_result(DataQualityRuleResultStatus::NOT_SET),
-    m_resultHasBeenSet(false)
+    m_resultHasBeenSet(false),
+    m_evaluatedMetricsHasBeenSet(false),
+    m_evaluatedRuleHasBeenSet(false)
 {
 }
 
-DataQualityRuleResult::DataQualityRuleResult(JsonView jsonValue) : 
-    m_nameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_evaluationMessageHasBeenSet(false),
-    m_result(DataQualityRuleResultStatus::NOT_SET),
-    m_resultHasBeenSet(false)
+DataQualityRuleResult::DataQualityRuleResult(JsonView jsonValue)
+  : DataQualityRuleResult()
 {
   *this = jsonValue;
 }
@@ -67,6 +65,23 @@ DataQualityRuleResult& DataQualityRuleResult::operator =(JsonView jsonValue)
     m_resultHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("EvaluatedMetrics"))
+  {
+    Aws::Map<Aws::String, JsonView> evaluatedMetricsJsonMap = jsonValue.GetObject("EvaluatedMetrics").GetAllObjects();
+    for(auto& evaluatedMetricsItem : evaluatedMetricsJsonMap)
+    {
+      m_evaluatedMetrics[evaluatedMetricsItem.first] = evaluatedMetricsItem.second.AsDouble();
+    }
+    m_evaluatedMetricsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("EvaluatedRule"))
+  {
+    m_evaluatedRule = jsonValue.GetString("EvaluatedRule");
+
+    m_evaluatedRuleHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -95,6 +110,23 @@ JsonValue DataQualityRuleResult::Jsonize() const
   if(m_resultHasBeenSet)
   {
    payload.WithString("Result", DataQualityRuleResultStatusMapper::GetNameForDataQualityRuleResultStatus(m_result));
+  }
+
+  if(m_evaluatedMetricsHasBeenSet)
+  {
+   JsonValue evaluatedMetricsJsonMap;
+   for(auto& evaluatedMetricsItem : m_evaluatedMetrics)
+   {
+     evaluatedMetricsJsonMap.WithDouble(evaluatedMetricsItem.first, evaluatedMetricsItem.second);
+   }
+   payload.WithObject("EvaluatedMetrics", std::move(evaluatedMetricsJsonMap));
+
+  }
+
+  if(m_evaluatedRuleHasBeenSet)
+  {
+   payload.WithString("EvaluatedRule", m_evaluatedRule);
+
   }
 
   return payload;

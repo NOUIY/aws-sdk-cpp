@@ -25,18 +25,16 @@ ExecutionResult::ExecutionResult() :
     m_bytesWritten(0),
     m_bytesWrittenHasBeenSet(false),
     m_recordsProcessed(0),
-    m_recordsProcessedHasBeenSet(false)
+    m_recordsProcessedHasBeenSet(false),
+    m_numParallelProcesses(0),
+    m_numParallelProcessesHasBeenSet(false),
+    m_maxPageSize(0),
+    m_maxPageSizeHasBeenSet(false)
 {
 }
 
-ExecutionResult::ExecutionResult(JsonView jsonValue) : 
-    m_errorInfoHasBeenSet(false),
-    m_bytesProcessed(0),
-    m_bytesProcessedHasBeenSet(false),
-    m_bytesWritten(0),
-    m_bytesWrittenHasBeenSet(false),
-    m_recordsProcessed(0),
-    m_recordsProcessedHasBeenSet(false)
+ExecutionResult::ExecutionResult(JsonView jsonValue)
+  : ExecutionResult()
 {
   *this = jsonValue;
 }
@@ -71,6 +69,20 @@ ExecutionResult& ExecutionResult::operator =(JsonView jsonValue)
     m_recordsProcessedHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("numParallelProcesses"))
+  {
+    m_numParallelProcesses = jsonValue.GetInt64("numParallelProcesses");
+
+    m_numParallelProcessesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("maxPageSize"))
+  {
+    m_maxPageSize = jsonValue.GetInt64("maxPageSize");
+
+    m_maxPageSizeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -99,6 +111,18 @@ JsonValue ExecutionResult::Jsonize() const
   if(m_recordsProcessedHasBeenSet)
   {
    payload.WithInt64("recordsProcessed", m_recordsProcessed);
+
+  }
+
+  if(m_numParallelProcessesHasBeenSet)
+  {
+   payload.WithInt64("numParallelProcesses", m_numParallelProcesses);
+
+  }
+
+  if(m_maxPageSizeHasBeenSet)
+  {
+   payload.WithInt64("maxPageSize", m_maxPageSize);
 
   }
 

@@ -30,23 +30,14 @@ MembershipSummary::MembershipSummary() :
     m_updateTimeHasBeenSet(false),
     m_status(MembershipStatus::NOT_SET),
     m_statusHasBeenSet(false),
-    m_memberAbilitiesHasBeenSet(false)
+    m_memberAbilitiesHasBeenSet(false),
+    m_mlMemberAbilitiesHasBeenSet(false),
+    m_paymentConfigurationHasBeenSet(false)
 {
 }
 
-MembershipSummary::MembershipSummary(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_collaborationArnHasBeenSet(false),
-    m_collaborationIdHasBeenSet(false),
-    m_collaborationCreatorAccountIdHasBeenSet(false),
-    m_collaborationCreatorDisplayNameHasBeenSet(false),
-    m_collaborationNameHasBeenSet(false),
-    m_createTimeHasBeenSet(false),
-    m_updateTimeHasBeenSet(false),
-    m_status(MembershipStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_memberAbilitiesHasBeenSet(false)
+MembershipSummary::MembershipSummary(JsonView jsonValue)
+  : MembershipSummary()
 {
   *this = jsonValue;
 }
@@ -133,6 +124,20 @@ MembershipSummary& MembershipSummary::operator =(JsonView jsonValue)
     m_memberAbilitiesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("mlMemberAbilities"))
+  {
+    m_mlMemberAbilities = jsonValue.GetObject("mlMemberAbilities");
+
+    m_mlMemberAbilitiesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("paymentConfiguration"))
+  {
+    m_paymentConfiguration = jsonValue.GetObject("paymentConfiguration");
+
+    m_paymentConfigurationHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -205,6 +210,18 @@ JsonValue MembershipSummary::Jsonize() const
      memberAbilitiesJsonList[memberAbilitiesIndex].AsString(MemberAbilityMapper::GetNameForMemberAbility(m_memberAbilities[memberAbilitiesIndex]));
    }
    payload.WithArray("memberAbilities", std::move(memberAbilitiesJsonList));
+
+  }
+
+  if(m_mlMemberAbilitiesHasBeenSet)
+  {
+   payload.WithObject("mlMemberAbilities", m_mlMemberAbilities.Jsonize());
+
+  }
+
+  if(m_paymentConfigurationHasBeenSet)
+  {
+   payload.WithObject("paymentConfiguration", m_paymentConfiguration.Jsonize());
 
   }
 

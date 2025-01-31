@@ -22,16 +22,14 @@ UpdateEventDataStoreResult::UpdateEventDataStoreResult() :
     m_multiRegionEnabled(false),
     m_organizationEnabled(false),
     m_retentionPeriod(0),
-    m_terminationProtectionEnabled(false)
+    m_terminationProtectionEnabled(false),
+    m_billingMode(BillingMode::NOT_SET),
+    m_federationStatus(FederationStatus::NOT_SET)
 {
 }
 
-UpdateEventDataStoreResult::UpdateEventDataStoreResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(EventDataStoreStatus::NOT_SET),
-    m_multiRegionEnabled(false),
-    m_organizationEnabled(false),
-    m_retentionPeriod(0),
-    m_terminationProtectionEnabled(false)
+UpdateEventDataStoreResult::UpdateEventDataStoreResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : UpdateEventDataStoreResult()
 {
   *this = result;
 }
@@ -105,6 +103,24 @@ UpdateEventDataStoreResult& UpdateEventDataStoreResult::operator =(const Aws::Am
   if(jsonValue.ValueExists("KmsKeyId"))
   {
     m_kmsKeyId = jsonValue.GetString("KmsKeyId");
+
+  }
+
+  if(jsonValue.ValueExists("BillingMode"))
+  {
+    m_billingMode = BillingModeMapper::GetBillingModeForName(jsonValue.GetString("BillingMode"));
+
+  }
+
+  if(jsonValue.ValueExists("FederationStatus"))
+  {
+    m_federationStatus = FederationStatusMapper::GetFederationStatusForName(jsonValue.GetString("FederationStatus"));
+
+  }
+
+  if(jsonValue.ValueExists("FederationRoleArn"))
+  {
+    m_federationRoleArn = jsonValue.GetString("FederationRoleArn");
 
   }
 

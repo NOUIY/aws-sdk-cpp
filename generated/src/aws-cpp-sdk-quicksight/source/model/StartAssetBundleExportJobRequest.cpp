@@ -20,7 +20,16 @@ StartAssetBundleExportJobRequest::StartAssetBundleExportJobRequest() :
     m_includeAllDependenciesHasBeenSet(false),
     m_exportFormat(AssetBundleExportFormat::NOT_SET),
     m_exportFormatHasBeenSet(false),
-    m_cloudFormationOverridePropertyConfigurationHasBeenSet(false)
+    m_cloudFormationOverridePropertyConfigurationHasBeenSet(false),
+    m_includePermissions(false),
+    m_includePermissionsHasBeenSet(false),
+    m_includeTags(false),
+    m_includeTagsHasBeenSet(false),
+    m_validationStrategyHasBeenSet(false),
+    m_includeFolderMemberships(false),
+    m_includeFolderMembershipsHasBeenSet(false),
+    m_includeFolderMembers(IncludeFolderMembers::NOT_SET),
+    m_includeFolderMembersHasBeenSet(false)
 {
 }
 
@@ -60,6 +69,35 @@ Aws::String StartAssetBundleExportJobRequest::SerializePayload() const
   {
    payload.WithObject("CloudFormationOverridePropertyConfiguration", m_cloudFormationOverridePropertyConfiguration.Jsonize());
 
+  }
+
+  if(m_includePermissionsHasBeenSet)
+  {
+   payload.WithBool("IncludePermissions", m_includePermissions);
+
+  }
+
+  if(m_includeTagsHasBeenSet)
+  {
+   payload.WithBool("IncludeTags", m_includeTags);
+
+  }
+
+  if(m_validationStrategyHasBeenSet)
+  {
+   payload.WithObject("ValidationStrategy", m_validationStrategy.Jsonize());
+
+  }
+
+  if(m_includeFolderMembershipsHasBeenSet)
+  {
+   payload.WithBool("IncludeFolderMemberships", m_includeFolderMemberships);
+
+  }
+
+  if(m_includeFolderMembersHasBeenSet)
+  {
+   payload.WithString("IncludeFolderMembers", IncludeFolderMembersMapper::GetNameForIncludeFolderMembers(m_includeFolderMembers));
   }
 
   return payload.View().WriteReadable();

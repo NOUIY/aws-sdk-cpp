@@ -22,8 +22,8 @@ EnableKinesisStreamingDestinationResult::EnableKinesisStreamingDestinationResult
 {
 }
 
-EnableKinesisStreamingDestinationResult::EnableKinesisStreamingDestinationResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_destinationStatus(DestinationStatus::NOT_SET)
+EnableKinesisStreamingDestinationResult::EnableKinesisStreamingDestinationResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : EnableKinesisStreamingDestinationResult()
 {
   *this = result;
 }
@@ -46,6 +46,12 @@ EnableKinesisStreamingDestinationResult& EnableKinesisStreamingDestinationResult
   if(jsonValue.ValueExists("DestinationStatus"))
   {
     m_destinationStatus = DestinationStatusMapper::GetDestinationStatusForName(jsonValue.GetString("DestinationStatus"));
+
+  }
+
+  if(jsonValue.ValueExists("EnableKinesisStreamingConfiguration"))
+  {
+    m_enableKinesisStreamingConfiguration = jsonValue.GetObject("EnableKinesisStreamingConfiguration");
 
   }
 

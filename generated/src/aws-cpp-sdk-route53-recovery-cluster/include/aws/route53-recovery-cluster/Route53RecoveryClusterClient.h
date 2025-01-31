@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/route53-recovery-cluster/Route53RecoveryCluster_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/route53-recovery-cluster/Route53RecoveryClusterServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/route53-recovery-cluster/Route53RecoveryClusterErrorMarshaller.h>
 
 namespace Aws
 {
 namespace Route53RecoveryCluster
 {
+  AWS_ROUTE53RECOVERYCLUSTER_API extern const char SERVICE_NAME[];
   /**
    * <p>Welcome to the Routing Control (Recovery Cluster) API Reference Guide for
    * Amazon Route 53 Application Recovery Controller.</p> <p>With Route 53 ARC, you
@@ -23,14 +27,14 @@ namespace Route53RecoveryCluster
    * Routing controls are simple on/off switches hosted on a highly available cluster
    * in Route 53 ARC. A cluster provides a set of five redundant Regional endpoints
    * against which you can run API calls to get or update the state of routing
-   * controls. To implement failover, you set one routing control On and another one
-   * Off, to reroute traffic from one Availability Zone or Amazon Web Services Region
-   * to another. </p> <p> <i>Be aware that you must specify a Regional endpoint for a
-   * cluster when you work with API cluster operations to get or update routing
-   * control states in Route 53 ARC.</i> In addition, you must specify the US West
-   * (Oregon) Region for Route 53 ARC API calls. For example, use the parameter
-   * <code>--region us-west-2</code> with AWS CLI commands. For more information, see
-   * <a
+   * controls. To implement failover, you set one routing control to ON and another
+   * one to OFF, to reroute traffic from one Availability Zone or Amazon Web Services
+   * Region to another. </p> <p> <i>Be aware that you must specify a Regional
+   * endpoint for a cluster when you work with API cluster operations to get or
+   * update routing control states in Route 53 ARC.</i> In addition, you must specify
+   * the US West (Oregon) Region for Route 53 ARC API calls. For example, use the
+   * parameter <code>--region us-west-2</code> with AWS CLI commands. For more
+   * information, see <a
    * href="https://docs.aws.amazon.com/r53recovery/latest/dg/routing-control.update.api.html">
    * Get and update routing control states using the API</a> in the Amazon Route 53
    * Application Recovery Controller Developer Guide.</p> <p>This API guide includes
@@ -60,12 +64,20 @@ namespace Route53RecoveryCluster
    * href="https://docs.aws.amazon.com/r53recovery/latest/dg/">Amazon Route 53
    * Application Recovery Controller Developer Guide</a>.</p> </li> </ul>
    */
-  class AWS_ROUTE53RECOVERYCLUSTER_API Route53RecoveryClusterClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<Route53RecoveryClusterClient>
+  class AWS_ROUTE53RECOVERYCLUSTER_API Route53RecoveryClusterClient : smithy::client::AwsSmithyClientT<Aws::Route53RecoveryCluster::SERVICE_NAME,
+      Aws::Route53RecoveryCluster::Route53RecoveryClusterClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      Route53RecoveryClusterEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::Route53RecoveryClusterErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<Route53RecoveryClusterClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Route53 Recovery Cluster"; }
 
       typedef Route53RecoveryClusterClientConfiguration ClientConfigurationType;
       typedef Route53RecoveryClusterEndpointProvider EndpointProviderType;
@@ -75,14 +87,14 @@ namespace Route53RecoveryCluster
         * is not specified, it will be initialized to default values.
         */
         Route53RecoveryClusterClient(const Aws::Route53RecoveryCluster::Route53RecoveryClusterClientConfiguration& clientConfiguration = Aws::Route53RecoveryCluster::Route53RecoveryClusterClientConfiguration(),
-                                     std::shared_ptr<Route53RecoveryClusterEndpointProviderBase> endpointProvider = Aws::MakeShared<Route53RecoveryClusterEndpointProvider>(ALLOCATION_TAG));
+                                     std::shared_ptr<Route53RecoveryClusterEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         Route53RecoveryClusterClient(const Aws::Auth::AWSCredentials& credentials,
-                                     std::shared_ptr<Route53RecoveryClusterEndpointProviderBase> endpointProvider = Aws::MakeShared<Route53RecoveryClusterEndpointProvider>(ALLOCATION_TAG),
+                                     std::shared_ptr<Route53RecoveryClusterEndpointProviderBase> endpointProvider = nullptr,
                                      const Aws::Route53RecoveryCluster::Route53RecoveryClusterClientConfiguration& clientConfiguration = Aws::Route53RecoveryCluster::Route53RecoveryClusterClientConfiguration());
 
        /**
@@ -90,7 +102,7 @@ namespace Route53RecoveryCluster
         * the default http client factory will be used
         */
         Route53RecoveryClusterClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                     std::shared_ptr<Route53RecoveryClusterEndpointProviderBase> endpointProvider = Aws::MakeShared<Route53RecoveryClusterEndpointProvider>(ALLOCATION_TAG),
+                                     std::shared_ptr<Route53RecoveryClusterEndpointProviderBase> endpointProvider = nullptr,
                                      const Aws::Route53RecoveryCluster::Route53RecoveryClusterClientConfiguration& clientConfiguration = Aws::Route53RecoveryCluster::Route53RecoveryClusterClientConfiguration());
 
 
@@ -121,10 +133,10 @@ namespace Route53RecoveryCluster
         /**
          * <p>Get the state for a routing control. A routing control is a simple on/off
          * switch that you can use to route traffic to cells. When a routing control state
-         * is On, traffic flows to a cell. When the state is Off, traffic does not flow.
-         * </p> <p>Before you can create a routing control, you must first create a
-         * cluster, and then host the control in a control panel on the cluster. For more
-         * information, see <a
+         * is set to ON, traffic flows to a cell. When the state is set to OFF, traffic
+         * does not flow. </p> <p>Before you can create a routing control, you must first
+         * create a cluster, and then host the control in a control panel on the cluster.
+         * For more information, see <a
          * href="https://docs.aws.amazon.com/r53recovery/latest/dg/routing-control.create.html">
          * Create routing control structures</a> in the Amazon Route 53 Application
          * Recovery Controller Developer Guide. You access one of the endpoints for the
@@ -173,10 +185,10 @@ namespace Route53RecoveryCluster
          * panel ARN, this call lists the routing controls in the control panel. Otherwise,
          * it lists all the routing controls in the cluster.</p> <p>A routing control is a
          * simple on/off switch in Route 53 ARC that you can use to route traffic to cells.
-         * When a routing control state is On, traffic flows to a cell. When the state is
-         * Off, traffic does not flow.</p> <p>Before you can create a routing control, you
-         * must first create a cluster, and then host the control in a control panel on the
-         * cluster. For more information, see <a
+         * When a routing control state is set to ON, traffic flows to a cell. When the
+         * state is set to OFF, traffic does not flow.</p> <p>Before you can create a
+         * routing control, you must first create a cluster, and then host the control in a
+         * control panel on the cluster. For more information, see <a
          * href="https://docs.aws.amazon.com/r53recovery/latest/dg/routing-control.create.html">
          * Create routing control structures</a> in the Amazon Route 53 Application
          * Recovery Controller Developer Guide. You access one of the endpoints for the
@@ -194,13 +206,13 @@ namespace Route53RecoveryCluster
          * href="http://docs.aws.amazon.com/goto/WebAPI/route53-recovery-cluster-2019-12-02/ListRoutingControls">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListRoutingControlsOutcome ListRoutingControls(const Model::ListRoutingControlsRequest& request) const;
+        virtual Model::ListRoutingControlsOutcome ListRoutingControls(const Model::ListRoutingControlsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListRoutingControls that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListRoutingControlsRequestT = Model::ListRoutingControlsRequest>
-        Model::ListRoutingControlsOutcomeCallable ListRoutingControlsCallable(const ListRoutingControlsRequestT& request) const
+        Model::ListRoutingControlsOutcomeCallable ListRoutingControlsCallable(const ListRoutingControlsRequestT& request = {}) const
         {
             return SubmitCallable(&Route53RecoveryClusterClient::ListRoutingControls, request);
         }
@@ -209,15 +221,15 @@ namespace Route53RecoveryCluster
          * An Async wrapper for ListRoutingControls that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListRoutingControlsRequestT = Model::ListRoutingControlsRequest>
-        void ListRoutingControlsAsync(const ListRoutingControlsRequestT& request, const ListRoutingControlsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListRoutingControlsAsync(const ListRoutingControlsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListRoutingControlsRequestT& request = {}) const
         {
             return SubmitAsync(&Route53RecoveryClusterClient::ListRoutingControls, request, handler, context);
         }
 
         /**
          * <p>Set the state of the routing control to reroute traffic. You can set the
-         * value to be On or Off. When the state is On, traffic flows to a cell. When the
-         * state is Off, traffic does not flow.</p> <p>With Route 53 ARC, you can add
+         * value to ON or OFF. When the state is ON, traffic flows to a cell. When the
+         * state is OFF, traffic does not flow.</p> <p>With Route 53 ARC, you can add
          * safety rules for routing controls, which are safeguards for routing control
          * state updates that help prevent unexpected outcomes, like fail open traffic
          * routing. However, there are scenarios when you might want to bypass the routing
@@ -268,7 +280,7 @@ namespace Route53RecoveryCluster
 
         /**
          * <p>Set multiple routing control states. You can set the value for each state to
-         * be On or Off. When the state is On, traffic flows to a cell. When it's Off,
+         * be ON or OFF. When the state is ON, traffic flows to a cell. When it's OFF,
          * traffic does not flow.</p> <p>With Route 53 ARC, you can add safety rules for
          * routing controls, which are safeguards for routing control state updates that
          * help prevent unexpected outcomes, like fail open traffic routing. However, there
@@ -323,11 +335,7 @@ namespace Route53RecoveryCluster
       std::shared_ptr<Route53RecoveryClusterEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<Route53RecoveryClusterClient>;
-      void init(const Route53RecoveryClusterClientConfiguration& clientConfiguration);
 
-      Route53RecoveryClusterClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<Route53RecoveryClusterEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace Route53RecoveryCluster

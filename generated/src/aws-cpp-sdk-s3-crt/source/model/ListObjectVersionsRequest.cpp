@@ -6,10 +6,12 @@
 #include <aws/s3-crt/model/ListObjectVersionsRequest.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/memory/stl/AWSStringStream.h>
+#include <aws/core/utils/UnreferencedParam.h>
 #include <aws/core/http/URI.h>
 #include <aws/core/utils/memory/stl/AWSStringStream.h>
 
 #include <utility>
+#include <numeric>
 
 using namespace Aws::S3Crt::Model;
 using namespace Aws::Utils::Xml;
@@ -27,8 +29,30 @@ ListObjectVersionsRequest::ListObjectVersionsRequest() :
     m_prefixHasBeenSet(false),
     m_versionIdMarkerHasBeenSet(false),
     m_expectedBucketOwnerHasBeenSet(false),
+    m_requestPayer(RequestPayer::NOT_SET),
+    m_requestPayerHasBeenSet(false),
+    m_optionalObjectAttributesHasBeenSet(false),
     m_customizedAccessLogTagHasBeenSet(false)
 {
+}
+
+bool ListObjectVersionsRequest::HasEmbeddedError(Aws::IOStream &body,
+  const Aws::Http::HeaderValueCollection &header) const
+{
+  // Header is unused
+  AWS_UNREFERENCED_PARAM(header);
+
+  auto readPointer = body.tellg();
+  Utils::Xml::XmlDocument doc = XmlDocument::CreateFromXmlStream(body);
+  body.seekg(readPointer);
+  if (!doc.WasParseSuccessful()) {
+    return false;
+  }
+
+  if (!doc.GetRootElement().IsNull() && doc.GetRootElement().GetName() == Aws::String("Error")) {
+    return true;
+  }
+  return false;
 }
 
 Aws::String ListObjectVersionsRequest::SerializePayload() const
@@ -111,6 +135,22 @@ Aws::Http::HeaderValueCollection ListObjectVersionsRequest::GetRequestSpecificHe
     ss.str("");
   }
 
+  if(m_requestPayerHasBeenSet && m_requestPayer != RequestPayer::NOT_SET)
+  {
+    headers.emplace("x-amz-request-payer", RequestPayerMapper::GetNameForRequestPayer(m_requestPayer));
+  }
+
+  if(m_optionalObjectAttributesHasBeenSet)
+  {
+    headers.emplace("x-amz-optional-object-attributes", std::accumulate(std::begin(m_optionalObjectAttributes),
+      std::end(m_optionalObjectAttributes),
+      Aws::String{},
+      [](const Aws::String &acc, const OptionalObjectAttributes &item) -> Aws::String {
+        const auto headerValue = OptionalObjectAttributesMapper::GetNameForOptionalObjectAttributes(item);
+        return acc.empty() ? headerValue : acc + "," + headerValue;
+      }));
+  }
+
   return headers;
 }
 
@@ -120,6 +160,9 @@ ListObjectVersionsRequest::EndpointParameters ListObjectVersionsRequest::GetEndp
     // Operation context parameters
     if (BucketHasBeenSet()) {
         parameters.emplace_back(Aws::String("Bucket"), this->GetBucket(), Aws::Endpoint::EndpointParameter::ParameterOrigin::OPERATION_CONTEXT);
+    }
+    if (PrefixHasBeenSet()) {
+        parameters.emplace_back(Aws::String("Prefix"), this->GetPrefix(), Aws::Endpoint::EndpointParameter::ParameterOrigin::OPERATION_CONTEXT);
     }
     return parameters;
 }

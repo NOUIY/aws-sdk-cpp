@@ -31,24 +31,13 @@ WorkspaceImage::WorkspaceImage() :
     m_errorMessageHasBeenSet(false),
     m_createdHasBeenSet(false),
     m_ownerAccountIdHasBeenSet(false),
-    m_updatesHasBeenSet(false)
+    m_updatesHasBeenSet(false),
+    m_errorDetailsHasBeenSet(false)
 {
 }
 
-WorkspaceImage::WorkspaceImage(JsonView jsonValue) : 
-    m_imageIdHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_operatingSystemHasBeenSet(false),
-    m_state(WorkspaceImageState::NOT_SET),
-    m_stateHasBeenSet(false),
-    m_requiredTenancy(WorkspaceImageRequiredTenancy::NOT_SET),
-    m_requiredTenancyHasBeenSet(false),
-    m_errorCodeHasBeenSet(false),
-    m_errorMessageHasBeenSet(false),
-    m_createdHasBeenSet(false),
-    m_ownerAccountIdHasBeenSet(false),
-    m_updatesHasBeenSet(false)
+WorkspaceImage::WorkspaceImage(JsonView jsonValue)
+  : WorkspaceImage()
 {
   *this = jsonValue;
 }
@@ -132,6 +121,16 @@ WorkspaceImage& WorkspaceImage::operator =(JsonView jsonValue)
     m_updatesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ErrorDetails"))
+  {
+    Aws::Utils::Array<JsonView> errorDetailsJsonList = jsonValue.GetArray("ErrorDetails");
+    for(unsigned errorDetailsIndex = 0; errorDetailsIndex < errorDetailsJsonList.GetLength(); ++errorDetailsIndex)
+    {
+      m_errorDetails.push_back(errorDetailsJsonList[errorDetailsIndex].AsObject());
+    }
+    m_errorDetailsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -199,6 +198,17 @@ JsonValue WorkspaceImage::Jsonize() const
   if(m_updatesHasBeenSet)
   {
    payload.WithObject("Updates", m_updates.Jsonize());
+
+  }
+
+  if(m_errorDetailsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> errorDetailsJsonList(m_errorDetails.size());
+   for(unsigned errorDetailsIndex = 0; errorDetailsIndex < errorDetailsJsonList.GetLength(); ++errorDetailsIndex)
+   {
+     errorDetailsJsonList[errorDetailsIndex].AsObject(m_errorDetails[errorDetailsIndex].Jsonize());
+   }
+   payload.WithArray("ErrorDetails", std::move(errorDetailsJsonList));
 
   }
 

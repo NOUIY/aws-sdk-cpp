@@ -22,8 +22,8 @@ ModifyVerifiedAccessEndpointPolicyResponse::ModifyVerifiedAccessEndpointPolicyRe
 {
 }
 
-ModifyVerifiedAccessEndpointPolicyResponse::ModifyVerifiedAccessEndpointPolicyResponse(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
-    m_policyEnabled(false)
+ModifyVerifiedAccessEndpointPolicyResponse::ModifyVerifiedAccessEndpointPolicyResponse(const Aws::AmazonWebServiceResult<XmlDocument>& result)
+  : ModifyVerifiedAccessEndpointPolicyResponse()
 {
   *this = result;
 }
@@ -49,6 +49,11 @@ ModifyVerifiedAccessEndpointPolicyResponse& ModifyVerifiedAccessEndpointPolicyRe
     if(!policyDocumentNode.IsNull())
     {
       m_policyDocument = Aws::Utils::Xml::DecodeEscapedXmlText(policyDocumentNode.GetText());
+    }
+    XmlNode sseSpecificationNode = resultNode.FirstChild("sseSpecification");
+    if(!sseSpecificationNode.IsNull())
+    {
+      m_sseSpecification = sseSpecificationNode;
     }
   }
 

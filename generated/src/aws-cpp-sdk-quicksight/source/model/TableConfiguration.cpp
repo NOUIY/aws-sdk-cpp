@@ -25,18 +25,13 @@ TableConfiguration::TableConfiguration() :
     m_totalOptionsHasBeenSet(false),
     m_fieldOptionsHasBeenSet(false),
     m_paginatedReportOptionsHasBeenSet(false),
-    m_tableInlineVisualizationsHasBeenSet(false)
+    m_tableInlineVisualizationsHasBeenSet(false),
+    m_interactionsHasBeenSet(false)
 {
 }
 
-TableConfiguration::TableConfiguration(JsonView jsonValue) : 
-    m_fieldWellsHasBeenSet(false),
-    m_sortConfigurationHasBeenSet(false),
-    m_tableOptionsHasBeenSet(false),
-    m_totalOptionsHasBeenSet(false),
-    m_fieldOptionsHasBeenSet(false),
-    m_paginatedReportOptionsHasBeenSet(false),
-    m_tableInlineVisualizationsHasBeenSet(false)
+TableConfiguration::TableConfiguration(JsonView jsonValue)
+  : TableConfiguration()
 {
   *this = jsonValue;
 }
@@ -95,6 +90,13 @@ TableConfiguration& TableConfiguration::operator =(JsonView jsonValue)
     m_tableInlineVisualizationsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Interactions"))
+  {
+    m_interactions = jsonValue.GetObject("Interactions");
+
+    m_interactionsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -146,6 +148,12 @@ JsonValue TableConfiguration::Jsonize() const
      tableInlineVisualizationsJsonList[tableInlineVisualizationsIndex].AsObject(m_tableInlineVisualizations[tableInlineVisualizationsIndex].Jsonize());
    }
    payload.WithArray("TableInlineVisualizations", std::move(tableInlineVisualizationsJsonList));
+
+  }
+
+  if(m_interactionsHasBeenSet)
+  {
+   payload.WithObject("Interactions", m_interactions.Jsonize());
 
   }
 

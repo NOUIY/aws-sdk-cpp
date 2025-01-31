@@ -22,6 +22,7 @@ namespace Aws
 
         static const int ALERT_HASH = HashingUtils::HashString("ALERT");
         static const int FLOW_HASH = HashingUtils::HashString("FLOW");
+        static const int TLS_HASH = HashingUtils::HashString("TLS");
 
 
         LogType GetLogTypeForName(const Aws::String& name)
@@ -34,6 +35,10 @@ namespace Aws
           else if (hashCode == FLOW_HASH)
           {
             return LogType::FLOW;
+          }
+          else if (hashCode == TLS_HASH)
+          {
+            return LogType::TLS;
           }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
@@ -49,10 +54,14 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case LogType::NOT_SET:
+            return {};
           case LogType::ALERT:
             return "ALERT";
           case LogType::FLOW:
             return "FLOW";
+          case LogType::TLS:
+            return "TLS";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

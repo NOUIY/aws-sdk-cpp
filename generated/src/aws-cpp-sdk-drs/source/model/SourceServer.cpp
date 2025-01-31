@@ -20,6 +20,7 @@ namespace Model
 {
 
 SourceServer::SourceServer() : 
+    m_agentVersionHasBeenSet(false),
     m_arnHasBeenSet(false),
     m_dataReplicationInfoHasBeenSet(false),
     m_lastLaunchResult(LastLaunchResult::NOT_SET),
@@ -30,6 +31,7 @@ SourceServer::SourceServer() :
     m_replicationDirectionHasBeenSet(false),
     m_reversedDirectionSourceServerArnHasBeenSet(false),
     m_sourceCloudPropertiesHasBeenSet(false),
+    m_sourceNetworkIDHasBeenSet(false),
     m_sourcePropertiesHasBeenSet(false),
     m_sourceServerIDHasBeenSet(false),
     m_stagingAreaHasBeenSet(false),
@@ -38,28 +40,21 @@ SourceServer::SourceServer() :
 {
 }
 
-SourceServer::SourceServer(JsonView jsonValue) : 
-    m_arnHasBeenSet(false),
-    m_dataReplicationInfoHasBeenSet(false),
-    m_lastLaunchResult(LastLaunchResult::NOT_SET),
-    m_lastLaunchResultHasBeenSet(false),
-    m_lifeCycleHasBeenSet(false),
-    m_recoveryInstanceIdHasBeenSet(false),
-    m_replicationDirection(ReplicationDirection::NOT_SET),
-    m_replicationDirectionHasBeenSet(false),
-    m_reversedDirectionSourceServerArnHasBeenSet(false),
-    m_sourceCloudPropertiesHasBeenSet(false),
-    m_sourcePropertiesHasBeenSet(false),
-    m_sourceServerIDHasBeenSet(false),
-    m_stagingAreaHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_requestIdHasBeenSet(false)
+SourceServer::SourceServer(JsonView jsonValue)
+  : SourceServer()
 {
   *this = jsonValue;
 }
 
 SourceServer& SourceServer::operator =(JsonView jsonValue)
 {
+  if(jsonValue.ValueExists("agentVersion"))
+  {
+    m_agentVersion = jsonValue.GetString("agentVersion");
+
+    m_agentVersionHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("arn"))
   {
     m_arn = jsonValue.GetString("arn");
@@ -116,6 +111,13 @@ SourceServer& SourceServer::operator =(JsonView jsonValue)
     m_sourceCloudPropertiesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("sourceNetworkID"))
+  {
+    m_sourceNetworkID = jsonValue.GetString("sourceNetworkID");
+
+    m_sourceNetworkIDHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("sourceProperties"))
   {
     m_sourceProperties = jsonValue.GetObject("sourceProperties");
@@ -153,6 +155,12 @@ SourceServer& SourceServer::operator =(JsonView jsonValue)
 JsonValue SourceServer::Jsonize() const
 {
   JsonValue payload;
+
+  if(m_agentVersionHasBeenSet)
+  {
+   payload.WithString("agentVersion", m_agentVersion);
+
+  }
 
   if(m_arnHasBeenSet)
   {
@@ -197,6 +205,12 @@ JsonValue SourceServer::Jsonize() const
   if(m_sourceCloudPropertiesHasBeenSet)
   {
    payload.WithObject("sourceCloudProperties", m_sourceCloudProperties.Jsonize());
+
+  }
+
+  if(m_sourceNetworkIDHasBeenSet)
+  {
+   payload.WithString("sourceNetworkID", m_sourceNetworkID);
 
   }
 

@@ -35,6 +35,7 @@ namespace Aws
         static const int MFADevicesInUse_HASH = HashingUtils::HashString("MFADevicesInUse");
         static const int AccountMFAEnabled_HASH = HashingUtils::HashString("AccountMFAEnabled");
         static const int AccountAccessKeysPresent_HASH = HashingUtils::HashString("AccountAccessKeysPresent");
+        static const int AccountPasswordPresent_HASH = HashingUtils::HashString("AccountPasswordPresent");
         static const int AccountSigningCertificatesPresent_HASH = HashingUtils::HashString("AccountSigningCertificatesPresent");
         static const int AttachedPoliciesPerGroupQuota_HASH = HashingUtils::HashString("AttachedPoliciesPerGroupQuota");
         static const int AttachedPoliciesPerRoleQuota_HASH = HashingUtils::HashString("AttachedPoliciesPerRoleQuota");
@@ -111,6 +112,10 @@ namespace Aws
           {
             return SummaryKeyType::AccountAccessKeysPresent;
           }
+          else if (hashCode == AccountPasswordPresent_HASH)
+          {
+            return SummaryKeyType::AccountPasswordPresent;
+          }
           else if (hashCode == AccountSigningCertificatesPresent_HASH)
           {
             return SummaryKeyType::AccountSigningCertificatesPresent;
@@ -169,6 +174,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case SummaryKeyType::NOT_SET:
+            return {};
           case SummaryKeyType::Users:
             return "Users";
           case SummaryKeyType::UsersQuota:
@@ -199,6 +206,8 @@ namespace Aws
             return "AccountMFAEnabled";
           case SummaryKeyType::AccountAccessKeysPresent:
             return "AccountAccessKeysPresent";
+          case SummaryKeyType::AccountPasswordPresent:
+            return "AccountPasswordPresent";
           case SummaryKeyType::AccountSigningCertificatesPresent:
             return "AccountSigningCertificatesPresent";
           case SummaryKeyType::AttachedPoliciesPerGroupQuota:

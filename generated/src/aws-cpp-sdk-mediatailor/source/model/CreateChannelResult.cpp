@@ -22,8 +22,8 @@ CreateChannelResult::CreateChannelResult() :
 {
 }
 
-CreateChannelResult::CreateChannelResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_channelState(ChannelState::NOT_SET)
+CreateChannelResult::CreateChannelResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : CreateChannelResult()
 {
   *this = result;
 }
@@ -95,6 +95,21 @@ CreateChannelResult& CreateChannelResult::operator =(const Aws::AmazonWebService
   {
     m_tier = jsonValue.GetString("Tier");
 
+  }
+
+  if(jsonValue.ValueExists("TimeShiftConfiguration"))
+  {
+    m_timeShiftConfiguration = jsonValue.GetObject("TimeShiftConfiguration");
+
+  }
+
+  if(jsonValue.ValueExists("Audiences"))
+  {
+    Aws::Utils::Array<JsonView> audiencesJsonList = jsonValue.GetArray("Audiences");
+    for(unsigned audiencesIndex = 0; audiencesIndex < audiencesJsonList.GetLength(); ++audiencesIndex)
+    {
+      m_audiences.push_back(audiencesJsonList[audiencesIndex].AsString());
+    }
   }
 
 

@@ -21,7 +21,7 @@ namespace Model
    * <p>Represents a request to return the notification attributes for a list of
    * identities you verified with Amazon SES. For information about Amazon SES
    * notifications, see the <a
-   * href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/notifications.html">Amazon
+   * href="https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity-using-notifications.html">Amazon
    * SES Developer Guide</a>.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/email-2010-12-01/GetIdentityNotificationAttributesRequest">AWS
    * API Reference</a></p>
@@ -44,6 +44,7 @@ namespace Model
 
   public:
 
+    ///@{
     /**
      * <p>A list of one or more identities. You can specify an identity by using its
      * name or by using its Amazon Resource Name (ARN). Examples:
@@ -51,71 +52,15 @@ namespace Model
      * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p>
      */
     inline const Aws::Vector<Aws::String>& GetIdentities() const{ return m_identities; }
-
-    /**
-     * <p>A list of one or more identities. You can specify an identity by using its
-     * name or by using its Amazon Resource Name (ARN). Examples:
-     * <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p>
-     */
     inline bool IdentitiesHasBeenSet() const { return m_identitiesHasBeenSet; }
-
-    /**
-     * <p>A list of one or more identities. You can specify an identity by using its
-     * name or by using its Amazon Resource Name (ARN). Examples:
-     * <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p>
-     */
     inline void SetIdentities(const Aws::Vector<Aws::String>& value) { m_identitiesHasBeenSet = true; m_identities = value; }
-
-    /**
-     * <p>A list of one or more identities. You can specify an identity by using its
-     * name or by using its Amazon Resource Name (ARN). Examples:
-     * <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p>
-     */
     inline void SetIdentities(Aws::Vector<Aws::String>&& value) { m_identitiesHasBeenSet = true; m_identities = std::move(value); }
-
-    /**
-     * <p>A list of one or more identities. You can specify an identity by using its
-     * name or by using its Amazon Resource Name (ARN). Examples:
-     * <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p>
-     */
     inline GetIdentityNotificationAttributesRequest& WithIdentities(const Aws::Vector<Aws::String>& value) { SetIdentities(value); return *this;}
-
-    /**
-     * <p>A list of one or more identities. You can specify an identity by using its
-     * name or by using its Amazon Resource Name (ARN). Examples:
-     * <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p>
-     */
     inline GetIdentityNotificationAttributesRequest& WithIdentities(Aws::Vector<Aws::String>&& value) { SetIdentities(std::move(value)); return *this;}
-
-    /**
-     * <p>A list of one or more identities. You can specify an identity by using its
-     * name or by using its Amazon Resource Name (ARN). Examples:
-     * <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p>
-     */
     inline GetIdentityNotificationAttributesRequest& AddIdentities(const Aws::String& value) { m_identitiesHasBeenSet = true; m_identities.push_back(value); return *this; }
-
-    /**
-     * <p>A list of one or more identities. You can specify an identity by using its
-     * name or by using its Amazon Resource Name (ARN). Examples:
-     * <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p>
-     */
     inline GetIdentityNotificationAttributesRequest& AddIdentities(Aws::String&& value) { m_identitiesHasBeenSet = true; m_identities.push_back(std::move(value)); return *this; }
-
-    /**
-     * <p>A list of one or more identities. You can specify an identity by using its
-     * name or by using its Amazon Resource Name (ARN). Examples:
-     * <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p>
-     */
     inline GetIdentityNotificationAttributesRequest& AddIdentities(const char* value) { m_identitiesHasBeenSet = true; m_identities.push_back(value); return *this; }
-
+    ///@}
   private:
 
     Aws::Vector<Aws::String> m_identities;

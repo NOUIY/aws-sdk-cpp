@@ -23,9 +23,8 @@ ChangeServerLifeCycleStateResult::ChangeServerLifeCycleStateResult() :
 {
 }
 
-ChangeServerLifeCycleStateResult::ChangeServerLifeCycleStateResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_isArchived(false),
-    m_replicationType(ReplicationType::NOT_SET)
+ChangeServerLifeCycleStateResult::ChangeServerLifeCycleStateResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : ChangeServerLifeCycleStateResult()
 {
   *this = result;
 }
@@ -42,6 +41,12 @@ ChangeServerLifeCycleStateResult& ChangeServerLifeCycleStateResult::operator =(c
   if(jsonValue.ValueExists("arn"))
   {
     m_arn = jsonValue.GetString("arn");
+
+  }
+
+  if(jsonValue.ValueExists("connectorAction"))
+  {
+    m_connectorAction = jsonValue.GetObject("connectorAction");
 
   }
 

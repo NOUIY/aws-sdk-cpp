@@ -22,8 +22,8 @@ GetDomainResult::GetDomainResult() :
 {
 }
 
-GetDomainResult::GetDomainResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_defaultExpirationDays(0)
+GetDomainResult::GetDomainResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetDomainResult()
 {
   *this = result;
 }
@@ -64,6 +64,12 @@ GetDomainResult& GetDomainResult::operator =(const Aws::AmazonWebServiceResult<J
   if(jsonValue.ValueExists("Matching"))
   {
     m_matching = jsonValue.GetObject("Matching");
+
+  }
+
+  if(jsonValue.ValueExists("RuleBasedMatching"))
+  {
+    m_ruleBasedMatching = jsonValue.GetObject("RuleBasedMatching");
 
   }
 

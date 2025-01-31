@@ -17,6 +17,8 @@ StartTaskExecutionRequest::StartTaskExecutionRequest() :
     m_overrideOptionsHasBeenSet(false),
     m_includesHasBeenSet(false),
     m_excludesHasBeenSet(false),
+    m_manifestConfigHasBeenSet(false),
+    m_taskReportConfigHasBeenSet(false),
     m_tagsHasBeenSet(false)
 {
 }
@@ -56,6 +58,18 @@ Aws::String StartTaskExecutionRequest::SerializePayload() const
      excludesJsonList[excludesIndex].AsObject(m_excludes[excludesIndex].Jsonize());
    }
    payload.WithArray("Excludes", std::move(excludesJsonList));
+
+  }
+
+  if(m_manifestConfigHasBeenSet)
+  {
+   payload.WithObject("ManifestConfig", m_manifestConfig.Jsonize());
+
+  }
+
+  if(m_taskReportConfigHasBeenSet)
+  {
+   payload.WithObject("TaskReportConfig", m_taskReportConfig.Jsonize());
 
   }
 

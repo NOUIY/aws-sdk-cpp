@@ -45,38 +45,16 @@ JobMetadata::JobMetadata() :
     m_remoteManagement(RemoteManagement::NOT_SET),
     m_remoteManagementHasBeenSet(false),
     m_longTermPricingIdHasBeenSet(false),
-    m_onDeviceServiceConfigurationHasBeenSet(false)
+    m_onDeviceServiceConfigurationHasBeenSet(false),
+    m_impactLevel(ImpactLevel::NOT_SET),
+    m_impactLevelHasBeenSet(false),
+    m_pickupDetailsHasBeenSet(false),
+    m_snowballIdHasBeenSet(false)
 {
 }
 
-JobMetadata::JobMetadata(JsonView jsonValue) : 
-    m_jobIdHasBeenSet(false),
-    m_jobState(JobState::NOT_SET),
-    m_jobStateHasBeenSet(false),
-    m_jobType(JobType::NOT_SET),
-    m_jobTypeHasBeenSet(false),
-    m_snowballType(SnowballType::NOT_SET),
-    m_snowballTypeHasBeenSet(false),
-    m_creationDateHasBeenSet(false),
-    m_resourcesHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_kmsKeyARNHasBeenSet(false),
-    m_roleARNHasBeenSet(false),
-    m_addressIdHasBeenSet(false),
-    m_shippingDetailsHasBeenSet(false),
-    m_snowballCapacityPreference(SnowballCapacity::NOT_SET),
-    m_snowballCapacityPreferenceHasBeenSet(false),
-    m_notificationHasBeenSet(false),
-    m_dataTransferProgressHasBeenSet(false),
-    m_jobLogInfoHasBeenSet(false),
-    m_clusterIdHasBeenSet(false),
-    m_forwardingAddressIdHasBeenSet(false),
-    m_taxDocumentsHasBeenSet(false),
-    m_deviceConfigurationHasBeenSet(false),
-    m_remoteManagement(RemoteManagement::NOT_SET),
-    m_remoteManagementHasBeenSet(false),
-    m_longTermPricingIdHasBeenSet(false),
-    m_onDeviceServiceConfigurationHasBeenSet(false)
+JobMetadata::JobMetadata(JsonView jsonValue)
+  : JobMetadata()
 {
   *this = jsonValue;
 }
@@ -237,6 +215,27 @@ JobMetadata& JobMetadata::operator =(JsonView jsonValue)
     m_onDeviceServiceConfigurationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ImpactLevel"))
+  {
+    m_impactLevel = ImpactLevelMapper::GetImpactLevelForName(jsonValue.GetString("ImpactLevel"));
+
+    m_impactLevelHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("PickupDetails"))
+  {
+    m_pickupDetails = jsonValue.GetObject("PickupDetails");
+
+    m_pickupDetailsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("SnowballId"))
+  {
+    m_snowballId = jsonValue.GetString("SnowballId");
+
+    m_snowballIdHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -367,6 +366,23 @@ JsonValue JobMetadata::Jsonize() const
   if(m_onDeviceServiceConfigurationHasBeenSet)
   {
    payload.WithObject("OnDeviceServiceConfiguration", m_onDeviceServiceConfiguration.Jsonize());
+
+  }
+
+  if(m_impactLevelHasBeenSet)
+  {
+   payload.WithString("ImpactLevel", ImpactLevelMapper::GetNameForImpactLevel(m_impactLevel));
+  }
+
+  if(m_pickupDetailsHasBeenSet)
+  {
+   payload.WithObject("PickupDetails", m_pickupDetails.Jsonize());
+
+  }
+
+  if(m_snowballIdHasBeenSet)
+  {
+   payload.WithString("SnowballId", m_snowballId);
 
   }
 

@@ -39,32 +39,14 @@ ImagePipeline::ImagePipeline() :
     m_dateLastRunHasBeenSet(false),
     m_dateNextRunHasBeenSet(false),
     m_tagsHasBeenSet(false),
-    m_imageScanningConfigurationHasBeenSet(false)
+    m_imageScanningConfigurationHasBeenSet(false),
+    m_executionRoleHasBeenSet(false),
+    m_workflowsHasBeenSet(false)
 {
 }
 
-ImagePipeline::ImagePipeline(JsonView jsonValue) : 
-    m_arnHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_platform(Platform::NOT_SET),
-    m_platformHasBeenSet(false),
-    m_enhancedImageMetadataEnabled(false),
-    m_enhancedImageMetadataEnabledHasBeenSet(false),
-    m_imageRecipeArnHasBeenSet(false),
-    m_containerRecipeArnHasBeenSet(false),
-    m_infrastructureConfigurationArnHasBeenSet(false),
-    m_distributionConfigurationArnHasBeenSet(false),
-    m_imageTestsConfigurationHasBeenSet(false),
-    m_scheduleHasBeenSet(false),
-    m_status(PipelineStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_dateCreatedHasBeenSet(false),
-    m_dateUpdatedHasBeenSet(false),
-    m_dateLastRunHasBeenSet(false),
-    m_dateNextRunHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_imageScanningConfigurationHasBeenSet(false)
+ImagePipeline::ImagePipeline(JsonView jsonValue)
+  : ImagePipeline()
 {
   *this = jsonValue;
 }
@@ -200,6 +182,23 @@ ImagePipeline& ImagePipeline::operator =(JsonView jsonValue)
     m_imageScanningConfigurationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("executionRole"))
+  {
+    m_executionRole = jsonValue.GetString("executionRole");
+
+    m_executionRoleHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("workflows"))
+  {
+    Aws::Utils::Array<JsonView> workflowsJsonList = jsonValue.GetArray("workflows");
+    for(unsigned workflowsIndex = 0; workflowsIndex < workflowsJsonList.GetLength(); ++workflowsIndex)
+    {
+      m_workflows.push_back(workflowsJsonList[workflowsIndex].AsObject());
+    }
+    m_workflowsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -315,6 +314,23 @@ JsonValue ImagePipeline::Jsonize() const
   if(m_imageScanningConfigurationHasBeenSet)
   {
    payload.WithObject("imageScanningConfiguration", m_imageScanningConfiguration.Jsonize());
+
+  }
+
+  if(m_executionRoleHasBeenSet)
+  {
+   payload.WithString("executionRole", m_executionRole);
+
+  }
+
+  if(m_workflowsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> workflowsJsonList(m_workflows.size());
+   for(unsigned workflowsIndex = 0; workflowsIndex < workflowsJsonList.GetLength(); ++workflowsIndex)
+   {
+     workflowsJsonList[workflowsIndex].AsObject(m_workflows[workflowsIndex].Jsonize());
+   }
+   payload.WithArray("workflows", std::move(workflowsJsonList));
 
   }
 

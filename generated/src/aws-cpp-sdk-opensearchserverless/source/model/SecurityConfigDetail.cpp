@@ -23,6 +23,7 @@ SecurityConfigDetail::SecurityConfigDetail() :
     m_createdDate(0),
     m_createdDateHasBeenSet(false),
     m_descriptionHasBeenSet(false),
+    m_iamIdentityCenterOptionsHasBeenSet(false),
     m_idHasBeenSet(false),
     m_lastModifiedDate(0),
     m_lastModifiedDateHasBeenSet(false),
@@ -32,17 +33,8 @@ SecurityConfigDetail::SecurityConfigDetail() :
 {
 }
 
-SecurityConfigDetail::SecurityConfigDetail(JsonView jsonValue) : 
-    m_configVersionHasBeenSet(false),
-    m_createdDate(0),
-    m_createdDateHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_idHasBeenSet(false),
-    m_lastModifiedDate(0),
-    m_lastModifiedDateHasBeenSet(false),
-    m_samlOptionsHasBeenSet(false),
-    m_type(SecurityConfigType::NOT_SET),
-    m_typeHasBeenSet(false)
+SecurityConfigDetail::SecurityConfigDetail(JsonView jsonValue)
+  : SecurityConfigDetail()
 {
   *this = jsonValue;
 }
@@ -68,6 +60,13 @@ SecurityConfigDetail& SecurityConfigDetail::operator =(JsonView jsonValue)
     m_description = jsonValue.GetString("description");
 
     m_descriptionHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("iamIdentityCenterOptions"))
+  {
+    m_iamIdentityCenterOptions = jsonValue.GetObject("iamIdentityCenterOptions");
+
+    m_iamIdentityCenterOptionsHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("id"))
@@ -120,6 +119,12 @@ JsonValue SecurityConfigDetail::Jsonize() const
   if(m_descriptionHasBeenSet)
   {
    payload.WithString("description", m_description);
+
+  }
+
+  if(m_iamIdentityCenterOptionsHasBeenSet)
+  {
+   payload.WithObject("iamIdentityCenterOptions", m_iamIdentityCenterOptions.Jsonize());
 
   }
 

@@ -20,13 +20,13 @@ namespace Model
 
 UpdateCustomLineItemChargeDetails::UpdateCustomLineItemChargeDetails() : 
     m_flatHasBeenSet(false),
-    m_percentageHasBeenSet(false)
+    m_percentageHasBeenSet(false),
+    m_lineItemFiltersHasBeenSet(false)
 {
 }
 
-UpdateCustomLineItemChargeDetails::UpdateCustomLineItemChargeDetails(JsonView jsonValue) : 
-    m_flatHasBeenSet(false),
-    m_percentageHasBeenSet(false)
+UpdateCustomLineItemChargeDetails::UpdateCustomLineItemChargeDetails(JsonView jsonValue)
+  : UpdateCustomLineItemChargeDetails()
 {
   *this = jsonValue;
 }
@@ -47,6 +47,16 @@ UpdateCustomLineItemChargeDetails& UpdateCustomLineItemChargeDetails::operator =
     m_percentageHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("LineItemFilters"))
+  {
+    Aws::Utils::Array<JsonView> lineItemFiltersJsonList = jsonValue.GetArray("LineItemFilters");
+    for(unsigned lineItemFiltersIndex = 0; lineItemFiltersIndex < lineItemFiltersJsonList.GetLength(); ++lineItemFiltersIndex)
+    {
+      m_lineItemFilters.push_back(lineItemFiltersJsonList[lineItemFiltersIndex].AsObject());
+    }
+    m_lineItemFiltersHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +73,17 @@ JsonValue UpdateCustomLineItemChargeDetails::Jsonize() const
   if(m_percentageHasBeenSet)
   {
    payload.WithObject("Percentage", m_percentage.Jsonize());
+
+  }
+
+  if(m_lineItemFiltersHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> lineItemFiltersJsonList(m_lineItemFilters.size());
+   for(unsigned lineItemFiltersIndex = 0; lineItemFiltersIndex < lineItemFiltersJsonList.GetLength(); ++lineItemFiltersIndex)
+   {
+     lineItemFiltersJsonList[lineItemFiltersIndex].AsObject(m_lineItemFilters[lineItemFiltersIndex].Jsonize());
+   }
+   payload.WithArray("LineItemFilters", std::move(lineItemFiltersJsonList));
 
   }
 

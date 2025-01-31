@@ -6,8 +6,9 @@
 #pragma once
 #include <aws/securitylake/SecurityLake_EXPORTS.h>
 #include <aws/securitylake/SecurityLakeRequest.h>
+#include <aws/securitylake/model/CustomLogSourceConfiguration.h>
+#include <aws/core/utils/memory/stl/AWSVector.h>
 #include <aws/core/utils/memory/stl/AWSString.h>
-#include <aws/securitylake/model/OcsfEventClass.h>
 #include <utility>
 
 namespace Aws
@@ -33,218 +34,84 @@ namespace Model
     AWS_SECURITYLAKE_API Aws::String SerializePayload() const override;
 
 
+    ///@{
     /**
-     * <p>The name for a third-party custom source. This must be a Regionally unique
-     * value.</p>
+     * <p>The configuration used for the third-party custom source.</p>
      */
-    inline const Aws::String& GetCustomSourceName() const{ return m_customSourceName; }
+    inline const CustomLogSourceConfiguration& GetConfiguration() const{ return m_configuration; }
+    inline bool ConfigurationHasBeenSet() const { return m_configurationHasBeenSet; }
+    inline void SetConfiguration(const CustomLogSourceConfiguration& value) { m_configurationHasBeenSet = true; m_configuration = value; }
+    inline void SetConfiguration(CustomLogSourceConfiguration&& value) { m_configurationHasBeenSet = true; m_configuration = std::move(value); }
+    inline CreateCustomLogSourceRequest& WithConfiguration(const CustomLogSourceConfiguration& value) { SetConfiguration(value); return *this;}
+    inline CreateCustomLogSourceRequest& WithConfiguration(CustomLogSourceConfiguration&& value) { SetConfiguration(std::move(value)); return *this;}
+    ///@}
 
+    ///@{
     /**
-     * <p>The name for a third-party custom source. This must be a Regionally unique
-     * value.</p>
+     * <p>The Open Cybersecurity Schema Framework (OCSF) event classes which describes
+     * the type of data that the custom source will send to Security Lake. For the list
+     * of supported event classes, see the <a
+     * href="https://docs.aws.amazon.com/security-lake/latest/userguide/adding-custom-sources.html#ocsf-eventclass">Amazon
+     * Security Lake User Guide</a>.</p>
      */
-    inline bool CustomSourceNameHasBeenSet() const { return m_customSourceNameHasBeenSet; }
+    inline const Aws::Vector<Aws::String>& GetEventClasses() const{ return m_eventClasses; }
+    inline bool EventClassesHasBeenSet() const { return m_eventClassesHasBeenSet; }
+    inline void SetEventClasses(const Aws::Vector<Aws::String>& value) { m_eventClassesHasBeenSet = true; m_eventClasses = value; }
+    inline void SetEventClasses(Aws::Vector<Aws::String>&& value) { m_eventClassesHasBeenSet = true; m_eventClasses = std::move(value); }
+    inline CreateCustomLogSourceRequest& WithEventClasses(const Aws::Vector<Aws::String>& value) { SetEventClasses(value); return *this;}
+    inline CreateCustomLogSourceRequest& WithEventClasses(Aws::Vector<Aws::String>&& value) { SetEventClasses(std::move(value)); return *this;}
+    inline CreateCustomLogSourceRequest& AddEventClasses(const Aws::String& value) { m_eventClassesHasBeenSet = true; m_eventClasses.push_back(value); return *this; }
+    inline CreateCustomLogSourceRequest& AddEventClasses(Aws::String&& value) { m_eventClassesHasBeenSet = true; m_eventClasses.push_back(std::move(value)); return *this; }
+    inline CreateCustomLogSourceRequest& AddEventClasses(const char* value) { m_eventClassesHasBeenSet = true; m_eventClasses.push_back(value); return *this; }
+    ///@}
 
+    ///@{
     /**
-     * <p>The name for a third-party custom source. This must be a Regionally unique
-     * value.</p>
+     * <p>Specify the name for a third-party custom source. This must be a Regionally
+     * unique value. The <code>sourceName</code> you enter here, is used in the
+     * <code>LogProviderRole</code> name which follows the convention
+     * <code>AmazonSecurityLake-Provider-{name of the custom source}-{region}</code>.
+     * You must use a <code>CustomLogSource</code> name that is shorter than or equal
+     * to 20 characters. This ensures that the <code>LogProviderRole</code> name is
+     * below the 64 character limit.</p>
      */
-    inline void SetCustomSourceName(const Aws::String& value) { m_customSourceNameHasBeenSet = true; m_customSourceName = value; }
+    inline const Aws::String& GetSourceName() const{ return m_sourceName; }
+    inline bool SourceNameHasBeenSet() const { return m_sourceNameHasBeenSet; }
+    inline void SetSourceName(const Aws::String& value) { m_sourceNameHasBeenSet = true; m_sourceName = value; }
+    inline void SetSourceName(Aws::String&& value) { m_sourceNameHasBeenSet = true; m_sourceName = std::move(value); }
+    inline void SetSourceName(const char* value) { m_sourceNameHasBeenSet = true; m_sourceName.assign(value); }
+    inline CreateCustomLogSourceRequest& WithSourceName(const Aws::String& value) { SetSourceName(value); return *this;}
+    inline CreateCustomLogSourceRequest& WithSourceName(Aws::String&& value) { SetSourceName(std::move(value)); return *this;}
+    inline CreateCustomLogSourceRequest& WithSourceName(const char* value) { SetSourceName(value); return *this;}
+    ///@}
 
+    ///@{
     /**
-     * <p>The name for a third-party custom source. This must be a Regionally unique
-     * value.</p>
+     * <p>Specify the source version for the third-party custom source, to limit log
+     * collection to a specific version of custom data source.</p>
      */
-    inline void SetCustomSourceName(Aws::String&& value) { m_customSourceNameHasBeenSet = true; m_customSourceName = std::move(value); }
-
-    /**
-     * <p>The name for a third-party custom source. This must be a Regionally unique
-     * value.</p>
-     */
-    inline void SetCustomSourceName(const char* value) { m_customSourceNameHasBeenSet = true; m_customSourceName.assign(value); }
-
-    /**
-     * <p>The name for a third-party custom source. This must be a Regionally unique
-     * value.</p>
-     */
-    inline CreateCustomLogSourceRequest& WithCustomSourceName(const Aws::String& value) { SetCustomSourceName(value); return *this;}
-
-    /**
-     * <p>The name for a third-party custom source. This must be a Regionally unique
-     * value.</p>
-     */
-    inline CreateCustomLogSourceRequest& WithCustomSourceName(Aws::String&& value) { SetCustomSourceName(std::move(value)); return *this;}
-
-    /**
-     * <p>The name for a third-party custom source. This must be a Regionally unique
-     * value.</p>
-     */
-    inline CreateCustomLogSourceRequest& WithCustomSourceName(const char* value) { SetCustomSourceName(value); return *this;}
-
-
-    /**
-     * <p>The Open Cybersecurity Schema Framework (OCSF) event class which describes
-     * the type of data that the custom source will send to Security Lake.</p>
-     */
-    inline const OcsfEventClass& GetEventClass() const{ return m_eventClass; }
-
-    /**
-     * <p>The Open Cybersecurity Schema Framework (OCSF) event class which describes
-     * the type of data that the custom source will send to Security Lake.</p>
-     */
-    inline bool EventClassHasBeenSet() const { return m_eventClassHasBeenSet; }
-
-    /**
-     * <p>The Open Cybersecurity Schema Framework (OCSF) event class which describes
-     * the type of data that the custom source will send to Security Lake.</p>
-     */
-    inline void SetEventClass(const OcsfEventClass& value) { m_eventClassHasBeenSet = true; m_eventClass = value; }
-
-    /**
-     * <p>The Open Cybersecurity Schema Framework (OCSF) event class which describes
-     * the type of data that the custom source will send to Security Lake.</p>
-     */
-    inline void SetEventClass(OcsfEventClass&& value) { m_eventClassHasBeenSet = true; m_eventClass = std::move(value); }
-
-    /**
-     * <p>The Open Cybersecurity Schema Framework (OCSF) event class which describes
-     * the type of data that the custom source will send to Security Lake.</p>
-     */
-    inline CreateCustomLogSourceRequest& WithEventClass(const OcsfEventClass& value) { SetEventClass(value); return *this;}
-
-    /**
-     * <p>The Open Cybersecurity Schema Framework (OCSF) event class which describes
-     * the type of data that the custom source will send to Security Lake.</p>
-     */
-    inline CreateCustomLogSourceRequest& WithEventClass(OcsfEventClass&& value) { SetEventClass(std::move(value)); return *this;}
-
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM)
-     * role to be used by the Glue crawler. The recommended IAM policies are:</p> <ul>
-     * <li> <p>The managed policy <code>AWSGlueServiceRole</code> </p> </li> <li> <p>A
-     * custom policy granting access to your Amazon S3 Data Lake</p> </li> </ul>
-     */
-    inline const Aws::String& GetGlueInvocationRoleArn() const{ return m_glueInvocationRoleArn; }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM)
-     * role to be used by the Glue crawler. The recommended IAM policies are:</p> <ul>
-     * <li> <p>The managed policy <code>AWSGlueServiceRole</code> </p> </li> <li> <p>A
-     * custom policy granting access to your Amazon S3 Data Lake</p> </li> </ul>
-     */
-    inline bool GlueInvocationRoleArnHasBeenSet() const { return m_glueInvocationRoleArnHasBeenSet; }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM)
-     * role to be used by the Glue crawler. The recommended IAM policies are:</p> <ul>
-     * <li> <p>The managed policy <code>AWSGlueServiceRole</code> </p> </li> <li> <p>A
-     * custom policy granting access to your Amazon S3 Data Lake</p> </li> </ul>
-     */
-    inline void SetGlueInvocationRoleArn(const Aws::String& value) { m_glueInvocationRoleArnHasBeenSet = true; m_glueInvocationRoleArn = value; }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM)
-     * role to be used by the Glue crawler. The recommended IAM policies are:</p> <ul>
-     * <li> <p>The managed policy <code>AWSGlueServiceRole</code> </p> </li> <li> <p>A
-     * custom policy granting access to your Amazon S3 Data Lake</p> </li> </ul>
-     */
-    inline void SetGlueInvocationRoleArn(Aws::String&& value) { m_glueInvocationRoleArnHasBeenSet = true; m_glueInvocationRoleArn = std::move(value); }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM)
-     * role to be used by the Glue crawler. The recommended IAM policies are:</p> <ul>
-     * <li> <p>The managed policy <code>AWSGlueServiceRole</code> </p> </li> <li> <p>A
-     * custom policy granting access to your Amazon S3 Data Lake</p> </li> </ul>
-     */
-    inline void SetGlueInvocationRoleArn(const char* value) { m_glueInvocationRoleArnHasBeenSet = true; m_glueInvocationRoleArn.assign(value); }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM)
-     * role to be used by the Glue crawler. The recommended IAM policies are:</p> <ul>
-     * <li> <p>The managed policy <code>AWSGlueServiceRole</code> </p> </li> <li> <p>A
-     * custom policy granting access to your Amazon S3 Data Lake</p> </li> </ul>
-     */
-    inline CreateCustomLogSourceRequest& WithGlueInvocationRoleArn(const Aws::String& value) { SetGlueInvocationRoleArn(value); return *this;}
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM)
-     * role to be used by the Glue crawler. The recommended IAM policies are:</p> <ul>
-     * <li> <p>The managed policy <code>AWSGlueServiceRole</code> </p> </li> <li> <p>A
-     * custom policy granting access to your Amazon S3 Data Lake</p> </li> </ul>
-     */
-    inline CreateCustomLogSourceRequest& WithGlueInvocationRoleArn(Aws::String&& value) { SetGlueInvocationRoleArn(std::move(value)); return *this;}
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM)
-     * role to be used by the Glue crawler. The recommended IAM policies are:</p> <ul>
-     * <li> <p>The managed policy <code>AWSGlueServiceRole</code> </p> </li> <li> <p>A
-     * custom policy granting access to your Amazon S3 Data Lake</p> </li> </ul>
-     */
-    inline CreateCustomLogSourceRequest& WithGlueInvocationRoleArn(const char* value) { SetGlueInvocationRoleArn(value); return *this;}
-
-
-    /**
-     * <p>The Amazon Web Services account ID of the custom source that will write logs
-     * and events into the Amazon S3 Data Lake.</p>
-     */
-    inline const Aws::String& GetLogProviderAccountId() const{ return m_logProviderAccountId; }
-
-    /**
-     * <p>The Amazon Web Services account ID of the custom source that will write logs
-     * and events into the Amazon S3 Data Lake.</p>
-     */
-    inline bool LogProviderAccountIdHasBeenSet() const { return m_logProviderAccountIdHasBeenSet; }
-
-    /**
-     * <p>The Amazon Web Services account ID of the custom source that will write logs
-     * and events into the Amazon S3 Data Lake.</p>
-     */
-    inline void SetLogProviderAccountId(const Aws::String& value) { m_logProviderAccountIdHasBeenSet = true; m_logProviderAccountId = value; }
-
-    /**
-     * <p>The Amazon Web Services account ID of the custom source that will write logs
-     * and events into the Amazon S3 Data Lake.</p>
-     */
-    inline void SetLogProviderAccountId(Aws::String&& value) { m_logProviderAccountIdHasBeenSet = true; m_logProviderAccountId = std::move(value); }
-
-    /**
-     * <p>The Amazon Web Services account ID of the custom source that will write logs
-     * and events into the Amazon S3 Data Lake.</p>
-     */
-    inline void SetLogProviderAccountId(const char* value) { m_logProviderAccountIdHasBeenSet = true; m_logProviderAccountId.assign(value); }
-
-    /**
-     * <p>The Amazon Web Services account ID of the custom source that will write logs
-     * and events into the Amazon S3 Data Lake.</p>
-     */
-    inline CreateCustomLogSourceRequest& WithLogProviderAccountId(const Aws::String& value) { SetLogProviderAccountId(value); return *this;}
-
-    /**
-     * <p>The Amazon Web Services account ID of the custom source that will write logs
-     * and events into the Amazon S3 Data Lake.</p>
-     */
-    inline CreateCustomLogSourceRequest& WithLogProviderAccountId(Aws::String&& value) { SetLogProviderAccountId(std::move(value)); return *this;}
-
-    /**
-     * <p>The Amazon Web Services account ID of the custom source that will write logs
-     * and events into the Amazon S3 Data Lake.</p>
-     */
-    inline CreateCustomLogSourceRequest& WithLogProviderAccountId(const char* value) { SetLogProviderAccountId(value); return *this;}
-
+    inline const Aws::String& GetSourceVersion() const{ return m_sourceVersion; }
+    inline bool SourceVersionHasBeenSet() const { return m_sourceVersionHasBeenSet; }
+    inline void SetSourceVersion(const Aws::String& value) { m_sourceVersionHasBeenSet = true; m_sourceVersion = value; }
+    inline void SetSourceVersion(Aws::String&& value) { m_sourceVersionHasBeenSet = true; m_sourceVersion = std::move(value); }
+    inline void SetSourceVersion(const char* value) { m_sourceVersionHasBeenSet = true; m_sourceVersion.assign(value); }
+    inline CreateCustomLogSourceRequest& WithSourceVersion(const Aws::String& value) { SetSourceVersion(value); return *this;}
+    inline CreateCustomLogSourceRequest& WithSourceVersion(Aws::String&& value) { SetSourceVersion(std::move(value)); return *this;}
+    inline CreateCustomLogSourceRequest& WithSourceVersion(const char* value) { SetSourceVersion(value); return *this;}
+    ///@}
   private:
 
-    Aws::String m_customSourceName;
-    bool m_customSourceNameHasBeenSet = false;
+    CustomLogSourceConfiguration m_configuration;
+    bool m_configurationHasBeenSet = false;
 
-    OcsfEventClass m_eventClass;
-    bool m_eventClassHasBeenSet = false;
+    Aws::Vector<Aws::String> m_eventClasses;
+    bool m_eventClassesHasBeenSet = false;
 
-    Aws::String m_glueInvocationRoleArn;
-    bool m_glueInvocationRoleArnHasBeenSet = false;
+    Aws::String m_sourceName;
+    bool m_sourceNameHasBeenSet = false;
 
-    Aws::String m_logProviderAccountId;
-    bool m_logProviderAccountIdHasBeenSet = false;
+    Aws::String m_sourceVersion;
+    bool m_sourceVersionHasBeenSet = false;
   };
 
 } // namespace Model

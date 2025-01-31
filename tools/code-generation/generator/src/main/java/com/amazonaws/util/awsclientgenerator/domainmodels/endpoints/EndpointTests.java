@@ -31,7 +31,8 @@ public class EndpointTests {
         enum ParameterType {
             BOOLEAN,
             INTEGER,
-            STRING
+            STRING,
+            STRING_ARRAY
         }
 
         ParameterType type;
@@ -39,6 +40,7 @@ public class EndpointTests {
         Boolean boolValue;
         Integer intValue;
         String strValue;
+        List<String> strArrayValue;
 
         public String getAsCppSourceString(boolean isEndpointProperty) throws Exception {
             String typeAlias = isEndpointProperty ? "EpProp" : "EpParam";
@@ -50,6 +52,30 @@ public class EndpointTests {
             } else if (ParameterType.STRING == this.type) {
                 String strValueEscaped = (strValue.contains("\"") || strValue.contains("\\")) ? "R\"(" + strValue + ")\"" : "\"" + strValue + "\"";
                 return new StringBuilder(typeAlias).append("(\"").append(name).append("\", ").append(strValueEscaped).append(")").toString();
+            }else if (ParameterType.STRING_ARRAY == this.type) {
+
+                // Escape each string in the array and join them with commas.
+                StringBuilder arrayBuilder = new StringBuilder("Aws::Vector<Aws::String>{");
+                for (int i = 0; i < strArrayValue.size(); i++) {
+                    String element = strArrayValue.get(i);
+                    String escapedElement = element.contains("\"") || element.contains("\\")
+                            ? "R\"(" + element + ")\""
+                            : "\"" + element + "\"";
+                    arrayBuilder.append(escapedElement);
+                    if (i < strArrayValue.size() - 1) {
+                        arrayBuilder.append(", ");
+                    }
+                }
+                arrayBuilder.append("}");
+
+                return new StringBuilder(typeAlias)
+                        .append("(\"")
+                        .append(name)
+                        .append("\", ")
+                        .append(arrayBuilder.toString())
+                        .append(")")
+                        .toString();
+                
             }
             throw new Exception("EndpointTestParameter value not set!");
         }
@@ -67,9 +93,12 @@ public class EndpointTests {
             for (Map.Entry<String, EndpointTestParameter> paramEntry : this.entrySet()) {
                 builder.append(separator);
                 builder.append(paramEntry.getValue().getAsCppSourceString(isEndpointProperty));
-                if (builder.length() > onPreviousLinesLength + 100) {
+                if (builder.length() > onPreviousLinesLength + 150) {
                     onPreviousLinesLength = builder.length();
-                    separator = ",\n" + String.join("", Collections.nCopies(indent + 1, " "));;
+                    if (isEndpointProperty)
+                        separator = ",\n" + String.join("", Collections.nCopies(indent + 3, " "));
+                    else
+                        separator = ",\n" + String.join("", Collections.nCopies(indent + 1, " "));
                 } else {
                     separator = ", ";
                 }
@@ -131,13 +160,56 @@ public class EndpointTests {
     }
 
     @Data
+    public static class EndpointTestProperties {
+        /* TODO: Spec supports defining multiple auth schemes, but in practice
+        its always one. Rest of the code assumes its one, so read one for now. */
+        List<EndpointTestParameter> authScheme;
+        EndpointTestParams genericProps;
+
+        public String getAsCppSourceString(int indent) throws Exception {
+            String indentStr = String.join("", Collections.nCopies(indent + 3, " "));
+
+            StringBuilder builder = new StringBuilder("{/*authScheme*/");
+            String separator = "";
+            if (authScheme != null) {
+                for (EndpointTestParameter authProp : authScheme) {
+                    builder.append(separator);
+                    builder.append("{");
+                    builder.append(authProp.getAsCppSourceString(true));
+
+                    builder.append("}");
+                    separator = ", ";
+                }
+            }
+            builder.append("}, \n");
+
+            builder.append(indentStr);
+            builder.append("{/*properties*/");
+            if (genericProps != null) {
+                separator = "";
+                for (Map.Entry<String, EndpointTestParameter> prop : genericProps.entrySet()) {
+                    builder.append(separator);
+                    builder.append("{\"").append(prop.getKey()).append("\", ");
+                    builder.append(prop.getValue().getAsCppSourceString(true));
+
+                    builder.append("}");
+                    separator = ", ";
+                }
+            }
+            builder.append("}");
+
+            return builder.toString();
+        }
+    }
+
+    @Data
     public class TestCase {
         @Data
         public class Expect {
             @Data
             public class Endpoint {
                 String url;
-                Map<String, List<EndpointTestParams>> properties;
+                EndpointTestProperties properties;
                 Map<String, List<String>> headers;
 
                 public String getAsCppSourceString(int indent) throws Exception {
@@ -148,23 +220,18 @@ public class EndpointTests {
                         builder.append("{/*No endpoint expected*/}");
                     }
                     // properties begin
+                    // properties begin
                     String indentStr = String.join("", Collections.nCopies(indent + 3, " "));
                     builder.append(",\n");
                     builder.append(indentStr);
-                    builder.append("{/*properties*/");
-                    if (properties != null && !properties.isEmpty()) {
-                        String separator = "";
-                        for (Map.Entry<String, List<EndpointTestParams>> propEntry : properties.entrySet()) {
-                            builder.append(separator);
-                            builder.append("{\"").append(propEntry.getKey()).append("\", ");
-                            for (EndpointTestParams epParam : propEntry.getValue()) {
-                                builder.append(epParam.getAsCppSourceString(true, indent + 22 + propEntry.getKey().length()));
-                            }
-                            builder.append("}");
-                            separator = "," + indentStr + " ";
-                        }
+                    if (properties != null) {
+                        builder.append(properties.getAsCppSourceString(indent));
+                    } else {
+                        builder.append("{/*authScheme*/}, \n");
+                        builder.append(indentStr);
+                        builder.append("{/*properties*/}");
                     }
-                    builder.append("}"); // end of properties
+                    // end of properties
                     indentStr = String.join("", Collections.nCopies(indent + 3, " "));
                     builder.append(",\n");
                     builder.append(indentStr);

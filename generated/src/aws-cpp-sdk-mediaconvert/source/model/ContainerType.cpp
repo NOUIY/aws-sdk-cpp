@@ -29,8 +29,10 @@ namespace Aws
         static const int MP4_HASH = HashingUtils::HashString("MP4");
         static const int MPD_HASH = HashingUtils::HashString("MPD");
         static const int MXF_HASH = HashingUtils::HashString("MXF");
+        static const int OGG_HASH = HashingUtils::HashString("OGG");
         static const int WEBM_HASH = HashingUtils::HashString("WEBM");
         static const int RAW_HASH = HashingUtils::HashString("RAW");
+        static const int Y4M_HASH = HashingUtils::HashString("Y4M");
 
 
         ContainerType GetContainerTypeForName(const Aws::String& name)
@@ -72,6 +74,10 @@ namespace Aws
           {
             return ContainerType::MXF;
           }
+          else if (hashCode == OGG_HASH)
+          {
+            return ContainerType::OGG;
+          }
           else if (hashCode == WEBM_HASH)
           {
             return ContainerType::WEBM;
@@ -79,6 +85,10 @@ namespace Aws
           else if (hashCode == RAW_HASH)
           {
             return ContainerType::RAW;
+          }
+          else if (hashCode == Y4M_HASH)
+          {
+            return ContainerType::Y4M;
           }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
@@ -94,6 +104,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ContainerType::NOT_SET:
+            return {};
           case ContainerType::F4V:
             return "F4V";
           case ContainerType::ISMV:
@@ -112,10 +124,14 @@ namespace Aws
             return "MPD";
           case ContainerType::MXF:
             return "MXF";
+          case ContainerType::OGG:
+            return "OGG";
           case ContainerType::WEBM:
             return "WEBM";
           case ContainerType::RAW:
             return "RAW";
+          case ContainerType::Y4M:
+            return "Y4M";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

@@ -22,8 +22,8 @@ UpdateSecurityProfileResult::UpdateSecurityProfileResult() :
 {
 }
 
-UpdateSecurityProfileResult::UpdateSecurityProfileResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_version(0)
+UpdateSecurityProfileResult::UpdateSecurityProfileResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : UpdateSecurityProfileResult()
 {
   *this = result;
 }
@@ -91,6 +91,12 @@ UpdateSecurityProfileResult& UpdateSecurityProfileResult::operator =(const Aws::
   if(jsonValue.ValueExists("lastModifiedDate"))
   {
     m_lastModifiedDate = jsonValue.GetDouble("lastModifiedDate");
+
+  }
+
+  if(jsonValue.ValueExists("metricsExportConfig"))
+  {
+    m_metricsExportConfig = jsonValue.GetObject("metricsExportConfig");
 
   }
 

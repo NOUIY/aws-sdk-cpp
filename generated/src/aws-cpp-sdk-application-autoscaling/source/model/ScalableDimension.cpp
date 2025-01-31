@@ -41,6 +41,8 @@ namespace Aws
         static const int elasticache_replication_group_Replicas_HASH = HashingUtils::HashString("elasticache:replication-group:Replicas");
         static const int neptune_cluster_ReadReplicaCount_HASH = HashingUtils::HashString("neptune:cluster:ReadReplicaCount");
         static const int sagemaker_variant_DesiredProvisionedConcurrency_HASH = HashingUtils::HashString("sagemaker:variant:DesiredProvisionedConcurrency");
+        static const int sagemaker_inference_component_DesiredCopyCount_HASH = HashingUtils::HashString("sagemaker:inference-component:DesiredCopyCount");
+        static const int workspaces_workspacespool_DesiredUserSessions_HASH = HashingUtils::HashString("workspaces:workspacespool:DesiredUserSessions");
 
 
         ScalableDimension GetScalableDimensionForName(const Aws::String& name)
@@ -130,6 +132,14 @@ namespace Aws
           {
             return ScalableDimension::sagemaker_variant_DesiredProvisionedConcurrency;
           }
+          else if (hashCode == sagemaker_inference_component_DesiredCopyCount_HASH)
+          {
+            return ScalableDimension::sagemaker_inference_component_DesiredCopyCount;
+          }
+          else if (hashCode == workspaces_workspacespool_DesiredUserSessions_HASH)
+          {
+            return ScalableDimension::workspaces_workspacespool_DesiredUserSessions;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -144,6 +154,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ScalableDimension::NOT_SET:
+            return {};
           case ScalableDimension::ecs_service_DesiredCount:
             return "ecs:service:DesiredCount";
           case ScalableDimension::ec2_spot_fleet_request_TargetCapacity:
@@ -186,6 +198,10 @@ namespace Aws
             return "neptune:cluster:ReadReplicaCount";
           case ScalableDimension::sagemaker_variant_DesiredProvisionedConcurrency:
             return "sagemaker:variant:DesiredProvisionedConcurrency";
+          case ScalableDimension::sagemaker_inference_component_DesiredCopyCount:
+            return "sagemaker:inference-component:DesiredCopyCount";
+          case ScalableDimension::workspaces_workspacespool_DesiredUserSessions:
+            return "workspaces:workspacespool:DesiredUserSessions";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

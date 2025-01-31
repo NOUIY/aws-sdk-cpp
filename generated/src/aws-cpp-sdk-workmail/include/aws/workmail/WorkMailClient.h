@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/workmail/WorkMail_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/workmail/WorkMailServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/workmail/WorkMailErrorMarshaller.h>
 
 namespace Aws
 {
 namespace WorkMail
 {
+  AWS_WORKMAIL_API extern const char SERVICE_NAME[];
   /**
    * <p>WorkMail is a secure, managed business email and calendaring service with
    * support for existing desktop and mobile email clients. You can access your
@@ -36,12 +40,20 @@ namespace WorkMail
    * perform the scenarios listed above, as well as give users the ability to grant
    * access on a selective basis using the IAM model.</p>
    */
-  class AWS_WORKMAIL_API WorkMailClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<WorkMailClient>
+  class AWS_WORKMAIL_API WorkMailClient : smithy::client::AwsSmithyClientT<Aws::WorkMail::SERVICE_NAME,
+      Aws::WorkMail::WorkMailClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      WorkMailEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::WorkMailErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<WorkMailClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "WorkMail"; }
 
       typedef WorkMailClientConfiguration ClientConfigurationType;
       typedef WorkMailEndpointProvider EndpointProviderType;
@@ -51,14 +63,14 @@ namespace WorkMail
         * is not specified, it will be initialized to default values.
         */
         WorkMailClient(const Aws::WorkMail::WorkMailClientConfiguration& clientConfiguration = Aws::WorkMail::WorkMailClientConfiguration(),
-                       std::shared_ptr<WorkMailEndpointProviderBase> endpointProvider = Aws::MakeShared<WorkMailEndpointProvider>(ALLOCATION_TAG));
+                       std::shared_ptr<WorkMailEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         WorkMailClient(const Aws::Auth::AWSCredentials& credentials,
-                       std::shared_ptr<WorkMailEndpointProviderBase> endpointProvider = Aws::MakeShared<WorkMailEndpointProvider>(ALLOCATION_TAG),
+                       std::shared_ptr<WorkMailEndpointProviderBase> endpointProvider = nullptr,
                        const Aws::WorkMail::WorkMailClientConfiguration& clientConfiguration = Aws::WorkMail::WorkMailClientConfiguration());
 
        /**
@@ -66,7 +78,7 @@ namespace WorkMail
         * the default http client factory will be used
         */
         WorkMailClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                       std::shared_ptr<WorkMailEndpointProviderBase> endpointProvider = Aws::MakeShared<WorkMailEndpointProvider>(ALLOCATION_TAG),
+                       std::shared_ptr<WorkMailEndpointProviderBase> endpointProvider = nullptr,
                        const Aws::WorkMail::WorkMailClientConfiguration& clientConfiguration = Aws::WorkMail::WorkMailClientConfiguration());
 
 
@@ -276,6 +288,34 @@ namespace WorkMail
         void CreateGroupAsync(const CreateGroupRequestT& request, const CreateGroupResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&WorkMailClient::CreateGroup, request, handler, context);
+        }
+
+        /**
+         * <p> Creates the WorkMail application in IAM Identity Center that can be used
+         * later in the WorkMail - IdC integration. For more information, see
+         * PutIdentityProviderConfiguration. This action does not affect the authentication
+         * settings for any WorkMail organizations. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/CreateIdentityCenterApplication">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateIdentityCenterApplicationOutcome CreateIdentityCenterApplication(const Model::CreateIdentityCenterApplicationRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateIdentityCenterApplication that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateIdentityCenterApplicationRequestT = Model::CreateIdentityCenterApplicationRequest>
+        Model::CreateIdentityCenterApplicationOutcomeCallable CreateIdentityCenterApplicationCallable(const CreateIdentityCenterApplicationRequestT& request) const
+        {
+            return SubmitCallable(&WorkMailClient::CreateIdentityCenterApplication, request);
+        }
+
+        /**
+         * An Async wrapper for CreateIdentityCenterApplication that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateIdentityCenterApplicationRequestT = Model::CreateIdentityCenterApplicationRequest>
+        void CreateIdentityCenterApplicationAsync(const CreateIdentityCenterApplicationRequestT& request, const CreateIdentityCenterApplicationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WorkMailClient::CreateIdentityCenterApplication, request, handler, context);
         }
 
         /**
@@ -559,6 +599,61 @@ namespace WorkMail
         }
 
         /**
+         * <p> Deletes the IAM Identity Center application from WorkMail. This action does
+         * not affect the authentication settings for any WorkMail organizations.
+         * </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/DeleteIdentityCenterApplication">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteIdentityCenterApplicationOutcome DeleteIdentityCenterApplication(const Model::DeleteIdentityCenterApplicationRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteIdentityCenterApplication that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteIdentityCenterApplicationRequestT = Model::DeleteIdentityCenterApplicationRequest>
+        Model::DeleteIdentityCenterApplicationOutcomeCallable DeleteIdentityCenterApplicationCallable(const DeleteIdentityCenterApplicationRequestT& request) const
+        {
+            return SubmitCallable(&WorkMailClient::DeleteIdentityCenterApplication, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteIdentityCenterApplication that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteIdentityCenterApplicationRequestT = Model::DeleteIdentityCenterApplicationRequest>
+        void DeleteIdentityCenterApplicationAsync(const DeleteIdentityCenterApplicationRequestT& request, const DeleteIdentityCenterApplicationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WorkMailClient::DeleteIdentityCenterApplication, request, handler, context);
+        }
+
+        /**
+         * <p> Disables the integration between IdC and WorkMail. Authentication will
+         * continue with the directory as it was before the IdC integration. You might have
+         * to reset your directory passwords and reconfigure your desktop and mobile email
+         * clients. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/DeleteIdentityProviderConfiguration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteIdentityProviderConfigurationOutcome DeleteIdentityProviderConfiguration(const Model::DeleteIdentityProviderConfigurationRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteIdentityProviderConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteIdentityProviderConfigurationRequestT = Model::DeleteIdentityProviderConfigurationRequest>
+        Model::DeleteIdentityProviderConfigurationOutcomeCallable DeleteIdentityProviderConfigurationCallable(const DeleteIdentityProviderConfigurationRequestT& request) const
+        {
+            return SubmitCallable(&WorkMailClient::DeleteIdentityProviderConfiguration, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteIdentityProviderConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteIdentityProviderConfigurationRequestT = Model::DeleteIdentityProviderConfigurationRequest>
+        void DeleteIdentityProviderConfigurationAsync(const DeleteIdentityProviderConfigurationRequestT& request, const DeleteIdentityProviderConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WorkMailClient::DeleteIdentityProviderConfiguration, request, handler, context);
+        }
+
+        /**
          * <p>Deletes an impersonation role for the given WorkMail
          * organization.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/DeleteImpersonationRole">AWS
@@ -695,6 +790,32 @@ namespace WorkMail
         void DeleteOrganizationAsync(const DeleteOrganizationRequestT& request, const DeleteOrganizationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&WorkMailClient::DeleteOrganization, request, handler, context);
+        }
+
+        /**
+         * <p> Deletes the Personal Access Token from the provided WorkMail Organization.
+         * </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/DeletePersonalAccessToken">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeletePersonalAccessTokenOutcome DeletePersonalAccessToken(const Model::DeletePersonalAccessTokenRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeletePersonalAccessToken that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeletePersonalAccessTokenRequestT = Model::DeletePersonalAccessTokenRequest>
+        Model::DeletePersonalAccessTokenOutcomeCallable DeletePersonalAccessTokenCallable(const DeletePersonalAccessTokenRequestT& request) const
+        {
+            return SubmitCallable(&WorkMailClient::DeletePersonalAccessToken, request);
+        }
+
+        /**
+         * An Async wrapper for DeletePersonalAccessToken that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeletePersonalAccessTokenRequestT = Model::DeletePersonalAccessTokenRequest>
+        void DeletePersonalAccessTokenAsync(const DeletePersonalAccessTokenRequestT& request, const DeletePersonalAccessTokenResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WorkMailClient::DeletePersonalAccessToken, request, handler, context);
         }
 
         /**
@@ -860,6 +981,32 @@ namespace WorkMail
         }
 
         /**
+         * <p>Returns basic details about an entity in WorkMail. </p><p><h3>See Also:</h3> 
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/DescribeEntity">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeEntityOutcome DescribeEntity(const Model::DescribeEntityRequest& request) const;
+
+        /**
+         * A Callable wrapper for DescribeEntity that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeEntityRequestT = Model::DescribeEntityRequest>
+        Model::DescribeEntityOutcomeCallable DescribeEntityCallable(const DescribeEntityRequestT& request) const
+        {
+            return SubmitCallable(&WorkMailClient::DescribeEntity, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeEntity that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeEntityRequestT = Model::DescribeEntityRequest>
+        void DescribeEntityAsync(const DescribeEntityRequestT& request, const DescribeEntityResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WorkMailClient::DescribeEntity, request, handler, context);
+        }
+
+        /**
          * <p>Returns the data available for the group.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/DescribeGroup">AWS
          * API Reference</a></p>
@@ -882,6 +1029,32 @@ namespace WorkMail
         void DescribeGroupAsync(const DescribeGroupRequestT& request, const DescribeGroupResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&WorkMailClient::DescribeGroup, request, handler, context);
+        }
+
+        /**
+         * <p> Returns detailed information on the current IdC setup for the WorkMail
+         * organization. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/DescribeIdentityProviderConfiguration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeIdentityProviderConfigurationOutcome DescribeIdentityProviderConfiguration(const Model::DescribeIdentityProviderConfigurationRequest& request) const;
+
+        /**
+         * A Callable wrapper for DescribeIdentityProviderConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeIdentityProviderConfigurationRequestT = Model::DescribeIdentityProviderConfigurationRequest>
+        Model::DescribeIdentityProviderConfigurationOutcomeCallable DescribeIdentityProviderConfigurationCallable(const DescribeIdentityProviderConfigurationRequestT& request) const
+        {
+            return SubmitCallable(&WorkMailClient::DescribeIdentityProviderConfiguration, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeIdentityProviderConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeIdentityProviderConfigurationRequestT = Model::DescribeIdentityProviderConfigurationRequest>
+        void DescribeIdentityProviderConfigurationAsync(const DescribeIdentityProviderConfigurationRequestT& request, const DescribeIdentityProviderConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WorkMailClient::DescribeIdentityProviderConfiguration, request, handler, context);
         }
 
         /**
@@ -1277,6 +1450,32 @@ namespace WorkMail
         }
 
         /**
+         * <p> Requests details of a specific Personal Access Token within the WorkMail
+         * organization. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/GetPersonalAccessTokenMetadata">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetPersonalAccessTokenMetadataOutcome GetPersonalAccessTokenMetadata(const Model::GetPersonalAccessTokenMetadataRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetPersonalAccessTokenMetadata that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetPersonalAccessTokenMetadataRequestT = Model::GetPersonalAccessTokenMetadataRequest>
+        Model::GetPersonalAccessTokenMetadataOutcomeCallable GetPersonalAccessTokenMetadataCallable(const GetPersonalAccessTokenMetadataRequestT& request) const
+        {
+            return SubmitCallable(&WorkMailClient::GetPersonalAccessTokenMetadata, request);
+        }
+
+        /**
+         * An Async wrapper for GetPersonalAccessTokenMetadata that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetPersonalAccessTokenMetadataRequestT = Model::GetPersonalAccessTokenMetadataRequest>
+        void GetPersonalAccessTokenMetadataAsync(const GetPersonalAccessTokenMetadataRequestT& request, const GetPersonalAccessTokenMetadataResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WorkMailClient::GetPersonalAccessTokenMetadata, request, handler, context);
+        }
+
+        /**
          * <p>Lists the access control rules for the specified organization.</p><p><h3>See
          * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/ListAccessControlRules">AWS
@@ -1403,6 +1602,32 @@ namespace WorkMail
         void ListGroupsAsync(const ListGroupsRequestT& request, const ListGroupsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&WorkMailClient::ListGroups, request, handler, context);
+        }
+
+        /**
+         * <p>Returns all the groups to which an entity belongs.</p><p><h3>See Also:</h3>  
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/ListGroupsForEntity">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListGroupsForEntityOutcome ListGroupsForEntity(const Model::ListGroupsForEntityRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListGroupsForEntity that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListGroupsForEntityRequestT = Model::ListGroupsForEntityRequest>
+        Model::ListGroupsForEntityOutcomeCallable ListGroupsForEntityCallable(const ListGroupsForEntityRequestT& request) const
+        {
+            return SubmitCallable(&WorkMailClient::ListGroupsForEntity, request);
+        }
+
+        /**
+         * An Async wrapper for ListGroupsForEntity that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListGroupsForEntityRequestT = Model::ListGroupsForEntityRequest>
+        void ListGroupsForEntityAsync(const ListGroupsForEntityRequestT& request, const ListGroupsForEntityResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WorkMailClient::ListGroupsForEntity, request, handler, context);
         }
 
         /**
@@ -1567,13 +1792,13 @@ namespace WorkMail
          * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/ListOrganizations">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListOrganizationsOutcome ListOrganizations(const Model::ListOrganizationsRequest& request) const;
+        virtual Model::ListOrganizationsOutcome ListOrganizations(const Model::ListOrganizationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListOrganizations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListOrganizationsRequestT = Model::ListOrganizationsRequest>
-        Model::ListOrganizationsOutcomeCallable ListOrganizationsCallable(const ListOrganizationsRequestT& request) const
+        Model::ListOrganizationsOutcomeCallable ListOrganizationsCallable(const ListOrganizationsRequestT& request = {}) const
         {
             return SubmitCallable(&WorkMailClient::ListOrganizations, request);
         }
@@ -1582,9 +1807,35 @@ namespace WorkMail
          * An Async wrapper for ListOrganizations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListOrganizationsRequestT = Model::ListOrganizationsRequest>
-        void ListOrganizationsAsync(const ListOrganizationsRequestT& request, const ListOrganizationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListOrganizationsAsync(const ListOrganizationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListOrganizationsRequestT& request = {}) const
         {
             return SubmitAsync(&WorkMailClient::ListOrganizations, request, handler, context);
+        }
+
+        /**
+         * <p> Returns a summary of your Personal Access Tokens. </p><p><h3>See Also:</h3> 
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/ListPersonalAccessTokens">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListPersonalAccessTokensOutcome ListPersonalAccessTokens(const Model::ListPersonalAccessTokensRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListPersonalAccessTokens that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListPersonalAccessTokensRequestT = Model::ListPersonalAccessTokensRequest>
+        Model::ListPersonalAccessTokensOutcomeCallable ListPersonalAccessTokensCallable(const ListPersonalAccessTokensRequestT& request) const
+        {
+            return SubmitCallable(&WorkMailClient::ListPersonalAccessTokens, request);
+        }
+
+        /**
+         * An Async wrapper for ListPersonalAccessTokens that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListPersonalAccessTokensRequestT = Model::ListPersonalAccessTokensRequest>
+        void ListPersonalAccessTokensAsync(const ListPersonalAccessTokensRequestT& request, const ListPersonalAccessTokensResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WorkMailClient::ListPersonalAccessTokens, request, handler, context);
         }
 
         /**
@@ -1744,6 +1995,36 @@ namespace WorkMail
         void PutEmailMonitoringConfigurationAsync(const PutEmailMonitoringConfigurationRequestT& request, const PutEmailMonitoringConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&WorkMailClient::PutEmailMonitoringConfiguration, request, handler, context);
+        }
+
+        /**
+         * <p> Enables integration between IAM Identity Center (IdC) and WorkMail to proxy
+         * authentication requests for mailbox users. You can connect your IdC directory or
+         * your external directory to WorkMail through IdC and manage access to WorkMail
+         * mailboxes in a single place. For enhanced protection, you could enable
+         * Multifactor Authentication (MFA) and Personal Access Tokens. </p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/PutIdentityProviderConfiguration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::PutIdentityProviderConfigurationOutcome PutIdentityProviderConfiguration(const Model::PutIdentityProviderConfigurationRequest& request) const;
+
+        /**
+         * A Callable wrapper for PutIdentityProviderConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename PutIdentityProviderConfigurationRequestT = Model::PutIdentityProviderConfigurationRequest>
+        Model::PutIdentityProviderConfigurationOutcomeCallable PutIdentityProviderConfigurationCallable(const PutIdentityProviderConfigurationRequestT& request) const
+        {
+            return SubmitCallable(&WorkMailClient::PutIdentityProviderConfiguration, request);
+        }
+
+        /**
+         * An Async wrapper for PutIdentityProviderConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename PutIdentityProviderConfigurationRequestT = Model::PutIdentityProviderConfigurationRequest>
+        void PutIdentityProviderConfigurationAsync(const PutIdentityProviderConfigurationRequestT& request, const PutIdentityProviderConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WorkMailClient::PutIdentityProviderConfiguration, request, handler, context);
         }
 
         /**
@@ -2109,6 +2390,31 @@ namespace WorkMail
         }
 
         /**
+         * <p>Updates attributes in a group.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/UpdateGroup">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateGroupOutcome UpdateGroup(const Model::UpdateGroupRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateGroup that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateGroupRequestT = Model::UpdateGroupRequest>
+        Model::UpdateGroupOutcomeCallable UpdateGroupCallable(const UpdateGroupRequestT& request) const
+        {
+            return SubmitCallable(&WorkMailClient::UpdateGroup, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateGroup that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateGroupRequestT = Model::UpdateGroupRequest>
+        void UpdateGroupAsync(const UpdateGroupRequestT& request, const UpdateGroupResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WorkMailClient::UpdateGroup, request, handler, context);
+        }
+
+        /**
          * <p>Updates an impersonation role for the given WorkMail
          * organization.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/UpdateImpersonationRole">AWS
@@ -2242,16 +2548,40 @@ namespace WorkMail
             return SubmitAsync(&WorkMailClient::UpdateResource, request, handler, context);
         }
 
+        /**
+         * <p>Updates data for the user. To have the latest information, it must be
+         * preceded by a <a>DescribeUser</a> call. The dataset in the request should be the
+         * one expected when performing another <code>DescribeUser</code>
+         * call.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/workmail-2017-10-01/UpdateUser">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateUserOutcome UpdateUser(const Model::UpdateUserRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateUser that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateUserRequestT = Model::UpdateUserRequest>
+        Model::UpdateUserOutcomeCallable UpdateUserCallable(const UpdateUserRequestT& request) const
+        {
+            return SubmitCallable(&WorkMailClient::UpdateUser, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateUser that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateUserRequestT = Model::UpdateUserRequest>
+        void UpdateUserAsync(const UpdateUserRequestT& request, const UpdateUserResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&WorkMailClient::UpdateUser, request, handler, context);
+        }
+
 
       void OverrideEndpoint(const Aws::String& endpoint);
       std::shared_ptr<WorkMailEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<WorkMailClient>;
-      void init(const WorkMailClientConfiguration& clientConfiguration);
 
-      WorkMailClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<WorkMailEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace WorkMail

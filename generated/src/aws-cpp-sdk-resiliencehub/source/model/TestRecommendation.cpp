@@ -19,6 +19,7 @@ namespace Model
 {
 
 TestRecommendation::TestRecommendation() : 
+    m_appComponentIdHasBeenSet(false),
     m_appComponentNameHasBeenSet(false),
     m_dependsOnAlarmsHasBeenSet(false),
     m_descriptionHasBeenSet(false),
@@ -27,6 +28,8 @@ TestRecommendation::TestRecommendation() :
     m_nameHasBeenSet(false),
     m_prerequisiteHasBeenSet(false),
     m_recommendationIdHasBeenSet(false),
+    m_recommendationStatus(RecommendationStatus::NOT_SET),
+    m_recommendationStatusHasBeenSet(false),
     m_referenceIdHasBeenSet(false),
     m_risk(TestRisk::NOT_SET),
     m_riskHasBeenSet(false),
@@ -35,26 +38,21 @@ TestRecommendation::TestRecommendation() :
 {
 }
 
-TestRecommendation::TestRecommendation(JsonView jsonValue) : 
-    m_appComponentNameHasBeenSet(false),
-    m_dependsOnAlarmsHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_intentHasBeenSet(false),
-    m_itemsHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_prerequisiteHasBeenSet(false),
-    m_recommendationIdHasBeenSet(false),
-    m_referenceIdHasBeenSet(false),
-    m_risk(TestRisk::NOT_SET),
-    m_riskHasBeenSet(false),
-    m_type(TestType::NOT_SET),
-    m_typeHasBeenSet(false)
+TestRecommendation::TestRecommendation(JsonView jsonValue)
+  : TestRecommendation()
 {
   *this = jsonValue;
 }
 
 TestRecommendation& TestRecommendation::operator =(JsonView jsonValue)
 {
+  if(jsonValue.ValueExists("appComponentId"))
+  {
+    m_appComponentId = jsonValue.GetString("appComponentId");
+
+    m_appComponentIdHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("appComponentName"))
   {
     m_appComponentName = jsonValue.GetString("appComponentName");
@@ -117,6 +115,13 @@ TestRecommendation& TestRecommendation::operator =(JsonView jsonValue)
     m_recommendationIdHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("recommendationStatus"))
+  {
+    m_recommendationStatus = RecommendationStatusMapper::GetRecommendationStatusForName(jsonValue.GetString("recommendationStatus"));
+
+    m_recommendationStatusHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("referenceId"))
   {
     m_referenceId = jsonValue.GetString("referenceId");
@@ -144,6 +149,12 @@ TestRecommendation& TestRecommendation::operator =(JsonView jsonValue)
 JsonValue TestRecommendation::Jsonize() const
 {
   JsonValue payload;
+
+  if(m_appComponentIdHasBeenSet)
+  {
+   payload.WithString("appComponentId", m_appComponentId);
+
+  }
 
   if(m_appComponentNameHasBeenSet)
   {
@@ -201,6 +212,11 @@ JsonValue TestRecommendation::Jsonize() const
   {
    payload.WithString("recommendationId", m_recommendationId);
 
+  }
+
+  if(m_recommendationStatusHasBeenSet)
+  {
+   payload.WithString("recommendationStatus", RecommendationStatusMapper::GetNameForRecommendationStatus(m_recommendationStatus));
   }
 
   if(m_referenceIdHasBeenSet)

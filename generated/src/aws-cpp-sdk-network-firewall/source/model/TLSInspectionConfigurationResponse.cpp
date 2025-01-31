@@ -30,23 +30,13 @@ TLSInspectionConfigurationResponse::TLSInspectionConfigurationResponse() :
     m_numberOfAssociations(0),
     m_numberOfAssociationsHasBeenSet(false),
     m_encryptionConfigurationHasBeenSet(false),
-    m_certificatesHasBeenSet(false)
+    m_certificatesHasBeenSet(false),
+    m_certificateAuthorityHasBeenSet(false)
 {
 }
 
-TLSInspectionConfigurationResponse::TLSInspectionConfigurationResponse(JsonView jsonValue) : 
-    m_tLSInspectionConfigurationArnHasBeenSet(false),
-    m_tLSInspectionConfigurationNameHasBeenSet(false),
-    m_tLSInspectionConfigurationIdHasBeenSet(false),
-    m_tLSInspectionConfigurationStatus(ResourceStatus::NOT_SET),
-    m_tLSInspectionConfigurationStatusHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_lastModifiedTimeHasBeenSet(false),
-    m_numberOfAssociations(0),
-    m_numberOfAssociationsHasBeenSet(false),
-    m_encryptionConfigurationHasBeenSet(false),
-    m_certificatesHasBeenSet(false)
+TLSInspectionConfigurationResponse::TLSInspectionConfigurationResponse(JsonView jsonValue)
+  : TLSInspectionConfigurationResponse()
 {
   *this = jsonValue;
 }
@@ -129,6 +119,13 @@ TLSInspectionConfigurationResponse& TLSInspectionConfigurationResponse::operator
     m_certificatesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("CertificateAuthority"))
+  {
+    m_certificateAuthority = jsonValue.GetObject("CertificateAuthority");
+
+    m_certificateAuthorityHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -201,6 +198,12 @@ JsonValue TLSInspectionConfigurationResponse::Jsonize() const
      certificatesJsonList[certificatesIndex].AsObject(m_certificates[certificatesIndex].Jsonize());
    }
    payload.WithArray("Certificates", std::move(certificatesJsonList));
+
+  }
+
+  if(m_certificateAuthorityHasBeenSet)
+  {
+   payload.WithObject("CertificateAuthority", m_certificateAuthority.Jsonize());
 
   }
 

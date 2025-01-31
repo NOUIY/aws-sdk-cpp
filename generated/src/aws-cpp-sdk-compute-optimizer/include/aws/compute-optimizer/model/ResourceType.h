@@ -21,7 +21,10 @@ namespace Model
     EbsVolume,
     LambdaFunction,
     NotApplicable,
-    EcsService
+    EcsService,
+    License,
+    RdsDBInstance,
+    Idle
   };
 
 namespace ResourceTypeMapper

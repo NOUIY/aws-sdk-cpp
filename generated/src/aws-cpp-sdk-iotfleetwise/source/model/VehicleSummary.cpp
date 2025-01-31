@@ -24,17 +24,13 @@ VehicleSummary::VehicleSummary() :
     m_modelManifestArnHasBeenSet(false),
     m_decoderManifestArnHasBeenSet(false),
     m_creationTimeHasBeenSet(false),
-    m_lastModificationTimeHasBeenSet(false)
+    m_lastModificationTimeHasBeenSet(false),
+    m_attributesHasBeenSet(false)
 {
 }
 
-VehicleSummary::VehicleSummary(JsonView jsonValue) : 
-    m_vehicleNameHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_modelManifestArnHasBeenSet(false),
-    m_decoderManifestArnHasBeenSet(false),
-    m_creationTimeHasBeenSet(false),
-    m_lastModificationTimeHasBeenSet(false)
+VehicleSummary::VehicleSummary(JsonView jsonValue)
+  : VehicleSummary()
 {
   *this = jsonValue;
 }
@@ -83,6 +79,16 @@ VehicleSummary& VehicleSummary::operator =(JsonView jsonValue)
     m_lastModificationTimeHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("attributes"))
+  {
+    Aws::Map<Aws::String, JsonView> attributesJsonMap = jsonValue.GetObject("attributes").GetAllObjects();
+    for(auto& attributesItem : attributesJsonMap)
+    {
+      m_attributes[attributesItem.first] = attributesItem.second.AsString();
+    }
+    m_attributesHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -122,6 +128,17 @@ JsonValue VehicleSummary::Jsonize() const
   if(m_lastModificationTimeHasBeenSet)
   {
    payload.WithDouble("lastModificationTime", m_lastModificationTime.SecondsWithMSPrecision());
+  }
+
+  if(m_attributesHasBeenSet)
+  {
+   JsonValue attributesJsonMap;
+   for(auto& attributesItem : m_attributes)
+   {
+     attributesJsonMap.WithString(attributesItem.first, attributesItem.second);
+   }
+   payload.WithObject("attributes", std::move(attributesJsonMap));
+
   }
 
   return payload;

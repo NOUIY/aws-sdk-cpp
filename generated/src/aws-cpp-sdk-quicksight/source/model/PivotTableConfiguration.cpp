@@ -24,17 +24,13 @@ PivotTableConfiguration::PivotTableConfiguration() :
     m_tableOptionsHasBeenSet(false),
     m_totalOptionsHasBeenSet(false),
     m_fieldOptionsHasBeenSet(false),
-    m_paginatedReportOptionsHasBeenSet(false)
+    m_paginatedReportOptionsHasBeenSet(false),
+    m_interactionsHasBeenSet(false)
 {
 }
 
-PivotTableConfiguration::PivotTableConfiguration(JsonView jsonValue) : 
-    m_fieldWellsHasBeenSet(false),
-    m_sortConfigurationHasBeenSet(false),
-    m_tableOptionsHasBeenSet(false),
-    m_totalOptionsHasBeenSet(false),
-    m_fieldOptionsHasBeenSet(false),
-    m_paginatedReportOptionsHasBeenSet(false)
+PivotTableConfiguration::PivotTableConfiguration(JsonView jsonValue)
+  : PivotTableConfiguration()
 {
   *this = jsonValue;
 }
@@ -83,6 +79,13 @@ PivotTableConfiguration& PivotTableConfiguration::operator =(JsonView jsonValue)
     m_paginatedReportOptionsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Interactions"))
+  {
+    m_interactions = jsonValue.GetObject("Interactions");
+
+    m_interactionsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -123,6 +126,12 @@ JsonValue PivotTableConfiguration::Jsonize() const
   if(m_paginatedReportOptionsHasBeenSet)
   {
    payload.WithObject("PaginatedReportOptions", m_paginatedReportOptions.Jsonize());
+
+  }
+
+  if(m_interactionsHasBeenSet)
+  {
+   payload.WithObject("Interactions", m_interactions.Jsonize());
 
   }
 

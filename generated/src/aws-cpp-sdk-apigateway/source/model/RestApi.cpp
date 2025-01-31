@@ -36,28 +36,13 @@ RestApi::RestApi() :
     m_tagsHasBeenSet(false),
     m_disableExecuteApiEndpoint(false),
     m_disableExecuteApiEndpointHasBeenSet(false),
+    m_rootResourceIdHasBeenSet(false),
     m_requestIdHasBeenSet(false)
 {
 }
 
-RestApi::RestApi(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_createdDateHasBeenSet(false),
-    m_versionHasBeenSet(false),
-    m_warningsHasBeenSet(false),
-    m_binaryMediaTypesHasBeenSet(false),
-    m_minimumCompressionSize(0),
-    m_minimumCompressionSizeHasBeenSet(false),
-    m_apiKeySource(ApiKeySourceType::NOT_SET),
-    m_apiKeySourceHasBeenSet(false),
-    m_endpointConfigurationHasBeenSet(false),
-    m_policyHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_disableExecuteApiEndpoint(false),
-    m_disableExecuteApiEndpointHasBeenSet(false),
-    m_requestIdHasBeenSet(false)
+RestApi::RestApi(JsonView jsonValue)
+  : RestApi()
 {
   *this = jsonValue;
 }
@@ -164,6 +149,13 @@ RestApi& RestApi::operator =(JsonView jsonValue)
     m_disableExecuteApiEndpointHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("rootResourceId"))
+  {
+    m_rootResourceId = jsonValue.GetString("rootResourceId");
+
+    m_rootResourceIdHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -259,6 +251,12 @@ JsonValue RestApi::Jsonize() const
   if(m_disableExecuteApiEndpointHasBeenSet)
   {
    payload.WithBool("disableExecuteApiEndpoint", m_disableExecuteApiEndpoint);
+
+  }
+
+  if(m_rootResourceIdHasBeenSet)
+  {
+   payload.WithString("rootResourceId", m_rootResourceId);
 
   }
 

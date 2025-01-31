@@ -22,15 +22,14 @@ Setting::Setting() :
     m_name(SettingName::NOT_SET),
     m_nameHasBeenSet(false),
     m_valueHasBeenSet(false),
-    m_principalArnHasBeenSet(false)
+    m_principalArnHasBeenSet(false),
+    m_type(SettingType::NOT_SET),
+    m_typeHasBeenSet(false)
 {
 }
 
-Setting::Setting(JsonView jsonValue) : 
-    m_name(SettingName::NOT_SET),
-    m_nameHasBeenSet(false),
-    m_valueHasBeenSet(false),
-    m_principalArnHasBeenSet(false)
+Setting::Setting(JsonView jsonValue)
+  : Setting()
 {
   *this = jsonValue;
 }
@@ -58,6 +57,13 @@ Setting& Setting::operator =(JsonView jsonValue)
     m_principalArnHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("type"))
+  {
+    m_type = SettingTypeMapper::GetSettingTypeForName(jsonValue.GetString("type"));
+
+    m_typeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -80,6 +86,11 @@ JsonValue Setting::Jsonize() const
   {
    payload.WithString("principalArn", m_principalArn);
 
+  }
+
+  if(m_typeHasBeenSet)
+  {
+   payload.WithString("type", SettingTypeMapper::GetNameForSettingType(m_type));
   }
 
   return payload;

@@ -20,13 +20,13 @@ namespace Model
 
 TableFieldOptions::TableFieldOptions() : 
     m_selectedFieldOptionsHasBeenSet(false),
-    m_orderHasBeenSet(false)
+    m_orderHasBeenSet(false),
+    m_pinnedFieldOptionsHasBeenSet(false)
 {
 }
 
-TableFieldOptions::TableFieldOptions(JsonView jsonValue) : 
-    m_selectedFieldOptionsHasBeenSet(false),
-    m_orderHasBeenSet(false)
+TableFieldOptions::TableFieldOptions(JsonView jsonValue)
+  : TableFieldOptions()
 {
   *this = jsonValue;
 }
@@ -51,6 +51,13 @@ TableFieldOptions& TableFieldOptions::operator =(JsonView jsonValue)
       m_order.push_back(orderJsonList[orderIndex].AsString());
     }
     m_orderHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("PinnedFieldOptions"))
+  {
+    m_pinnedFieldOptions = jsonValue.GetObject("PinnedFieldOptions");
+
+    m_pinnedFieldOptionsHasBeenSet = true;
   }
 
   return *this;
@@ -79,6 +86,12 @@ JsonValue TableFieldOptions::Jsonize() const
      orderJsonList[orderIndex].AsString(m_order[orderIndex]);
    }
    payload.WithArray("Order", std::move(orderJsonList));
+
+  }
+
+  if(m_pinnedFieldOptionsHasBeenSet)
+  {
+   payload.WithObject("PinnedFieldOptions", m_pinnedFieldOptions.Jsonize());
 
   }
 

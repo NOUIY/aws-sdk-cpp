@@ -23,16 +23,14 @@ QuickConnectSummary::QuickConnectSummary() :
     m_arnHasBeenSet(false),
     m_nameHasBeenSet(false),
     m_quickConnectType(QuickConnectType::NOT_SET),
-    m_quickConnectTypeHasBeenSet(false)
+    m_quickConnectTypeHasBeenSet(false),
+    m_lastModifiedTimeHasBeenSet(false),
+    m_lastModifiedRegionHasBeenSet(false)
 {
 }
 
-QuickConnectSummary::QuickConnectSummary(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_quickConnectType(QuickConnectType::NOT_SET),
-    m_quickConnectTypeHasBeenSet(false)
+QuickConnectSummary::QuickConnectSummary(JsonView jsonValue)
+  : QuickConnectSummary()
 {
   *this = jsonValue;
 }
@@ -67,6 +65,20 @@ QuickConnectSummary& QuickConnectSummary::operator =(JsonView jsonValue)
     m_quickConnectTypeHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("LastModifiedTime"))
+  {
+    m_lastModifiedTime = jsonValue.GetDouble("LastModifiedTime");
+
+    m_lastModifiedTimeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("LastModifiedRegion"))
+  {
+    m_lastModifiedRegion = jsonValue.GetString("LastModifiedRegion");
+
+    m_lastModifiedRegionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -95,6 +107,17 @@ JsonValue QuickConnectSummary::Jsonize() const
   if(m_quickConnectTypeHasBeenSet)
   {
    payload.WithString("QuickConnectType", QuickConnectTypeMapper::GetNameForQuickConnectType(m_quickConnectType));
+  }
+
+  if(m_lastModifiedTimeHasBeenSet)
+  {
+   payload.WithDouble("LastModifiedTime", m_lastModifiedTime.SecondsWithMSPrecision());
+  }
+
+  if(m_lastModifiedRegionHasBeenSet)
+  {
+   payload.WithString("LastModifiedRegion", m_lastModifiedRegion);
+
   }
 
   return payload;

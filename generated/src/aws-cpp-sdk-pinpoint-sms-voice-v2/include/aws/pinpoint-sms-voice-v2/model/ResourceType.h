@@ -25,7 +25,12 @@ namespace Model
     event_destination,
     keyword,
     opted_out_number,
-    registration
+    registration,
+    registration_attachment,
+    verified_destination_number,
+    protect_configuration,
+    policy,
+    message
   };
 
 namespace ResourceTypeMapper

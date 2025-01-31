@@ -22,19 +22,15 @@ WorkspaceSummary::WorkspaceSummary() :
     m_aliasHasBeenSet(false),
     m_arnHasBeenSet(false),
     m_createdAtHasBeenSet(false),
+    m_kmsKeyArnHasBeenSet(false),
     m_statusHasBeenSet(false),
     m_tagsHasBeenSet(false),
     m_workspaceIdHasBeenSet(false)
 {
 }
 
-WorkspaceSummary::WorkspaceSummary(JsonView jsonValue) : 
-    m_aliasHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_createdAtHasBeenSet(false),
-    m_statusHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_workspaceIdHasBeenSet(false)
+WorkspaceSummary::WorkspaceSummary(JsonView jsonValue)
+  : WorkspaceSummary()
 {
   *this = jsonValue;
 }
@@ -60,6 +56,13 @@ WorkspaceSummary& WorkspaceSummary::operator =(JsonView jsonValue)
     m_createdAt = jsonValue.GetDouble("createdAt");
 
     m_createdAtHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("kmsKeyArn"))
+  {
+    m_kmsKeyArn = jsonValue.GetString("kmsKeyArn");
+
+    m_kmsKeyArnHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("status"))
@@ -108,6 +111,12 @@ JsonValue WorkspaceSummary::Jsonize() const
   if(m_createdAtHasBeenSet)
   {
    payload.WithDouble("createdAt", m_createdAt.SecondsWithMSPrecision());
+  }
+
+  if(m_kmsKeyArnHasBeenSet)
+  {
+   payload.WithString("kmsKeyArn", m_kmsKeyArn);
+
   }
 
   if(m_statusHasBeenSet)

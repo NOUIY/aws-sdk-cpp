@@ -6,88 +6,91 @@
 #pragma once
 #include <aws/codepipeline/CodePipeline_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/codepipeline/CodePipelineServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/codepipeline/CodePipelineErrorMarshaller.h>
 
 namespace Aws
 {
 namespace CodePipeline
 {
+  AWS_CODEPIPELINE_API extern const char SERVICE_NAME[];
   /**
-   * <fullname>AWS CodePipeline</fullname> <p> <b>Overview</b> </p> <p>This is the
-   * AWS CodePipeline API Reference. This guide provides descriptions of the actions
-   * and data types for AWS CodePipeline. Some functionality for your pipeline can
-   * only be configured through the API. For more information, see the <a
-   * href="https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html">AWS
-   * CodePipeline User Guide</a>.</p> <p>You can use the AWS CodePipeline API to work
-   * with pipelines, stages, actions, and transitions.</p> <p> <i>Pipelines</i> are
-   * models of automated release processes. Each pipeline is uniquely named, and
-   * consists of stages, actions, and transitions. </p> <p>You can work with
-   * pipelines by calling:</p> <ul> <li> <p> <a>CreatePipeline</a>, which creates a
-   * uniquely named pipeline.</p> </li> <li> <p> <a>DeletePipeline</a>, which deletes
-   * the specified pipeline.</p> </li> <li> <p> <a>GetPipeline</a>, which returns
-   * information about the pipeline structure and pipeline metadata, including the
-   * pipeline Amazon Resource Name (ARN).</p> </li> <li> <p>
-   * <a>GetPipelineExecution</a>, which returns information about a specific
-   * execution of a pipeline.</p> </li> <li> <p> <a>GetPipelineState</a>, which
-   * returns information about the current state of the stages and actions of a
-   * pipeline.</p> </li> <li> <p> <a>ListActionExecutions</a>, which returns
-   * action-level details for past executions. The details include full stage and
-   * action-level details, including individual action duration, status, any errors
-   * that occurred during the execution, and input and output artifact location
-   * details.</p> </li> <li> <p> <a>ListPipelines</a>, which gets a summary of all of
-   * the pipelines associated with your account.</p> </li> <li> <p>
-   * <a>ListPipelineExecutions</a>, which gets a summary of the most recent
-   * executions for a pipeline.</p> </li> <li> <p> <a>StartPipelineExecution</a>,
-   * which runs the most recent revision of an artifact through the pipeline.</p>
-   * </li> <li> <p> <a>StopPipelineExecution</a>, which stops the specified pipeline
-   * execution from continuing through the pipeline.</p> </li> <li> <p>
-   * <a>UpdatePipeline</a>, which updates a pipeline with edits or changes to the
-   * structure of the pipeline.</p> </li> </ul> <p>Pipelines include <i>stages</i>.
-   * Each stage contains one or more actions that must complete before the next stage
-   * begins. A stage results in success or failure. If a stage fails, the pipeline
-   * stops at that stage and remains stopped until either a new version of an
-   * artifact appears in the source location, or a user takes action to rerun the
-   * most recent artifact through the pipeline. You can call <a>GetPipelineState</a>,
-   * which displays the status of a pipeline, including the status of stages in the
-   * pipeline, or <a>GetPipeline</a>, which returns the entire structure of the
-   * pipeline, including the stages of that pipeline. For more information about the
-   * structure of stages and actions, see <a
-   * href="https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-structure.html">AWS
-   * CodePipeline Pipeline Structure Reference</a>.</p> <p>Pipeline stages include
-   * <i>actions</i> that are categorized into categories such as source or build
-   * actions performed in a stage of a pipeline. For example, you can use a source
-   * action to import artifacts into a pipeline from a source such as Amazon S3. Like
-   * stages, you do not work with actions directly in most cases, but you do define
-   * and interact with actions when working with pipeline operations such as
-   * <a>CreatePipeline</a> and <a>GetPipelineState</a>. Valid action categories
-   * are:</p> <ul> <li> <p>Source</p> </li> <li> <p>Build</p> </li> <li> <p>Test</p>
-   * </li> <li> <p>Deploy</p> </li> <li> <p>Approval</p> </li> <li> <p>Invoke</p>
-   * </li> </ul> <p>Pipelines also include <i>transitions</i>, which allow the
-   * transition of artifacts from one stage to the next in a pipeline after the
-   * actions in one stage complete.</p> <p>You can work with transitions by
+   * <fullname>CodePipeline</fullname> <p> <b>Overview</b> </p> <p>This is the
+   * CodePipeline API Reference. This guide provides descriptions of the actions and
+   * data types for CodePipeline. Some functionality for your pipeline can only be
+   * configured through the API. For more information, see the <a
+   * href="https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html">CodePipeline
+   * User Guide</a>.</p> <p>You can use the CodePipeline API to work with pipelines,
+   * stages, actions, and transitions.</p> <p> <i>Pipelines</i> are models of
+   * automated release processes. Each pipeline is uniquely named, and consists of
+   * stages, actions, and transitions. </p> <p>You can work with pipelines by
+   * calling:</p> <ul> <li> <p> <a>CreatePipeline</a>, which creates a uniquely named
+   * pipeline.</p> </li> <li> <p> <a>DeletePipeline</a>, which deletes the specified
+   * pipeline.</p> </li> <li> <p> <a>GetPipeline</a>, which returns information about
+   * the pipeline structure and pipeline metadata, including the pipeline Amazon
+   * Resource Name (ARN).</p> </li> <li> <p> <a>GetPipelineExecution</a>, which
+   * returns information about a specific execution of a pipeline.</p> </li> <li> <p>
+   * <a>GetPipelineState</a>, which returns information about the current state of
+   * the stages and actions of a pipeline.</p> </li> <li> <p>
+   * <a>ListActionExecutions</a>, which returns action-level details for past
+   * executions. The details include full stage and action-level details, including
+   * individual action duration, status, any errors that occurred during the
+   * execution, and input and output artifact location details.</p> </li> <li> <p>
+   * <a>ListPipelines</a>, which gets a summary of all of the pipelines associated
+   * with your account.</p> </li> <li> <p> <a>ListPipelineExecutions</a>, which gets
+   * a summary of the most recent executions for a pipeline.</p> </li> <li> <p>
+   * <a>StartPipelineExecution</a>, which runs the most recent revision of an
+   * artifact through the pipeline.</p> </li> <li> <p> <a>StopPipelineExecution</a>,
+   * which stops the specified pipeline execution from continuing through the
+   * pipeline.</p> </li> <li> <p> <a>UpdatePipeline</a>, which updates a pipeline
+   * with edits or changes to the structure of the pipeline.</p> </li> </ul>
+   * <p>Pipelines include <i>stages</i>. Each stage contains one or more actions that
+   * must complete before the next stage begins. A stage results in success or
+   * failure. If a stage fails, the pipeline stops at that stage and remains stopped
+   * until either a new version of an artifact appears in the source location, or a
+   * user takes action to rerun the most recent artifact through the pipeline. You
+   * can call <a>GetPipelineState</a>, which displays the status of a pipeline,
+   * including the status of stages in the pipeline, or <a>GetPipeline</a>, which
+   * returns the entire structure of the pipeline, including the stages of that
+   * pipeline. For more information about the structure of stages and actions, see <a
+   * href="https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-structure.html">CodePipeline
+   * Pipeline Structure Reference</a>.</p> <p>Pipeline stages include <i>actions</i>
+   * that are categorized into categories such as source or build actions performed
+   * in a stage of a pipeline. For example, you can use a source action to import
+   * artifacts into a pipeline from a source such as Amazon S3. Like stages, you do
+   * not work with actions directly in most cases, but you do define and interact
+   * with actions when working with pipeline operations such as <a>CreatePipeline</a>
+   * and <a>GetPipelineState</a>. Valid action categories are:</p> <ul> <li>
+   * <p>Source</p> </li> <li> <p>Build</p> </li> <li> <p>Test</p> </li> <li>
+   * <p>Deploy</p> </li> <li> <p>Approval</p> </li> <li> <p>Invoke</p> </li> <li>
+   * <p>Compute</p> </li> </ul> <p>Pipelines also include <i>transitions</i>, which
+   * allow the transition of artifacts from one stage to the next in a pipeline after
+   * the actions in one stage complete.</p> <p>You can work with transitions by
    * calling:</p> <ul> <li> <p> <a>DisableStageTransition</a>, which prevents
    * artifacts from transitioning to the next stage in a pipeline.</p> </li> <li> <p>
    * <a>EnableStageTransition</a>, which enables transition of artifacts between
    * stages in a pipeline. </p> </li> </ul> <p> <b>Using the API to integrate with
-   * AWS CodePipeline</b> </p> <p>For third-party integrators or developers who want
-   * to create their own integrations with AWS CodePipeline, the expected sequence
-   * varies from the standard API user. To integrate with AWS CodePipeline,
-   * developers need to work with the following items:</p> <p> <b>Jobs</b>, which are
-   * instances of an action. For example, a job for a source action might import a
-   * revision of an artifact from a source. </p> <p>You can work with jobs by
-   * calling:</p> <ul> <li> <p> <a>AcknowledgeJob</a>, which confirms whether a job
-   * worker has received the specified job.</p> </li> <li> <p> <a>GetJobDetails</a>,
-   * which returns the details of a job.</p> </li> <li> <p> <a>PollForJobs</a>, which
-   * determines whether there are any jobs to act on.</p> </li> <li> <p>
+   * CodePipeline</b> </p> <p>For third-party integrators or developers who want to
+   * create their own integrations with CodePipeline, the expected sequence varies
+   * from the standard API user. To integrate with CodePipeline, developers need to
+   * work with the following items:</p> <p> <b>Jobs</b>, which are instances of an
+   * action. For example, a job for a source action might import a revision of an
+   * artifact from a source. </p> <p>You can work with jobs by calling:</p> <ul> <li>
+   * <p> <a>AcknowledgeJob</a>, which confirms whether a job worker has received the
+   * specified job.</p> </li> <li> <p> <a>GetJobDetails</a>, which returns the
+   * details of a job.</p> </li> <li> <p> <a>PollForJobs</a>, which determines
+   * whether there are any jobs to act on.</p> </li> <li> <p>
    * <a>PutJobFailureResult</a>, which provides details of a job failure. </p> </li>
    * <li> <p> <a>PutJobSuccessResult</a>, which provides details of a job
    * success.</p> </li> </ul> <p> <b>Third party jobs</b>, which are instances of an
-   * action created by a partner action and integrated into AWS CodePipeline. Partner
-   * actions are created by members of the AWS Partner Network.</p> <p>You can work
-   * with third party jobs by calling:</p> <ul> <li> <p>
+   * action created by a partner action and integrated into CodePipeline. Partner
+   * actions are created by members of the Amazon Web Services Partner Network.</p>
+   * <p>You can work with third party jobs by calling:</p> <ul> <li> <p>
    * <a>AcknowledgeThirdPartyJob</a>, which confirms whether a job worker has
    * received the specified job.</p> </li> <li> <p> <a>GetThirdPartyJobDetails</a>,
    * which requests the details of a job for a partner action.</p> </li> <li> <p>
@@ -97,12 +100,20 @@ namespace CodePipeline
    * <a>PutThirdPartyJobSuccessResult</a>, which provides details of a job
    * success.</p> </li> </ul>
    */
-  class AWS_CODEPIPELINE_API CodePipelineClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<CodePipelineClient>
+  class AWS_CODEPIPELINE_API CodePipelineClient : smithy::client::AwsSmithyClientT<Aws::CodePipeline::SERVICE_NAME,
+      Aws::CodePipeline::CodePipelineClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      CodePipelineEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::CodePipelineErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<CodePipelineClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "CodePipeline"; }
 
       typedef CodePipelineClientConfiguration ClientConfigurationType;
       typedef CodePipelineEndpointProvider EndpointProviderType;
@@ -112,14 +123,14 @@ namespace CodePipeline
         * is not specified, it will be initialized to default values.
         */
         CodePipelineClient(const Aws::CodePipeline::CodePipelineClientConfiguration& clientConfiguration = Aws::CodePipeline::CodePipelineClientConfiguration(),
-                           std::shared_ptr<CodePipelineEndpointProviderBase> endpointProvider = Aws::MakeShared<CodePipelineEndpointProvider>(ALLOCATION_TAG));
+                           std::shared_ptr<CodePipelineEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         CodePipelineClient(const Aws::Auth::AWSCredentials& credentials,
-                           std::shared_ptr<CodePipelineEndpointProviderBase> endpointProvider = Aws::MakeShared<CodePipelineEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<CodePipelineEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::CodePipeline::CodePipelineClientConfiguration& clientConfiguration = Aws::CodePipeline::CodePipelineClientConfiguration());
 
        /**
@@ -127,7 +138,7 @@ namespace CodePipeline
         * the default http client factory will be used
         */
         CodePipelineClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                           std::shared_ptr<CodePipelineEndpointProviderBase> endpointProvider = Aws::MakeShared<CodePipelineEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<CodePipelineEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::CodePipeline::CodePipelineClientConfiguration& clientConfiguration = Aws::CodePipeline::CodePipelineClientConfiguration());
 
 
@@ -210,7 +221,8 @@ namespace CodePipeline
 
         /**
          * <p>Creates a new custom action that can be used in all pipelines associated with
-         * the AWS account. Only used for custom actions.</p><p><h3>See Also:</h3>   <a
+         * the Amazon Web Services account. Only used for custom actions.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/CreateCustomActionType">AWS
          * API Reference</a></p>
          */
@@ -321,7 +333,7 @@ namespace CodePipeline
         }
 
         /**
-         * <p>Deletes a previously created webhook by name. Deleting the webhook stops AWS
+         * <p>Deletes a previously created webhook by name. Deleting the webhook stops
          * CodePipeline from starting a pipeline every time an external event occurs. The
          * API returns successfully when trying to delete a webhook that is already
          * deleted. If a deleted webhook is re-created by calling PutWebhook with the same
@@ -356,13 +368,13 @@ namespace CodePipeline
          * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/DeregisterWebhookWithThirdParty">AWS
          * API Reference</a></p>
          */
-        virtual Model::DeregisterWebhookWithThirdPartyOutcome DeregisterWebhookWithThirdParty(const Model::DeregisterWebhookWithThirdPartyRequest& request) const;
+        virtual Model::DeregisterWebhookWithThirdPartyOutcome DeregisterWebhookWithThirdParty(const Model::DeregisterWebhookWithThirdPartyRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DeregisterWebhookWithThirdParty that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DeregisterWebhookWithThirdPartyRequestT = Model::DeregisterWebhookWithThirdPartyRequest>
-        Model::DeregisterWebhookWithThirdPartyOutcomeCallable DeregisterWebhookWithThirdPartyCallable(const DeregisterWebhookWithThirdPartyRequestT& request) const
+        Model::DeregisterWebhookWithThirdPartyOutcomeCallable DeregisterWebhookWithThirdPartyCallable(const DeregisterWebhookWithThirdPartyRequestT& request = {}) const
         {
             return SubmitCallable(&CodePipelineClient::DeregisterWebhookWithThirdParty, request);
         }
@@ -371,7 +383,7 @@ namespace CodePipeline
          * An Async wrapper for DeregisterWebhookWithThirdParty that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DeregisterWebhookWithThirdPartyRequestT = Model::DeregisterWebhookWithThirdPartyRequest>
-        void DeregisterWebhookWithThirdPartyAsync(const DeregisterWebhookWithThirdPartyRequestT& request, const DeregisterWebhookWithThirdPartyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DeregisterWebhookWithThirdPartyAsync(const DeregisterWebhookWithThirdPartyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DeregisterWebhookWithThirdPartyRequestT& request = {}) const
         {
             return SubmitAsync(&CodePipelineClient::DeregisterWebhookWithThirdParty, request, handler, context);
         }
@@ -458,7 +470,7 @@ namespace CodePipeline
 
         /**
          * <p>Returns information about a job. Used for custom actions only.</p>
-         *  <p>When this API is called, AWS CodePipeline returns temporary
+         *  <p>When this API is called, CodePipeline returns temporary
          * credentials for the S3 bucket used to store artifacts for the pipeline, if the
          * action requires access to that S3 bucket for input or output artifacts. This API
          * also returns any secret values defined for the action.</p>
@@ -571,8 +583,8 @@ namespace CodePipeline
 
         /**
          * <p>Requests the details of a job for a third party action. Used for partner
-         * actions only.</p>  <p>When this API is called, AWS CodePipeline
-         * returns temporary credentials for the S3 bucket used to store artifacts for the
+         * actions only.</p>  <p>When this API is called, CodePipeline returns
+         * temporary credentials for the S3 bucket used to store artifacts for the
          * pipeline, if the action requires access to that S3 bucket for input or output
          * artifacts. This API also returns any secret values defined for the action.</p>
          * <p><h3>See Also:</h3>   <a
@@ -626,18 +638,18 @@ namespace CodePipeline
         }
 
         /**
-         * <p>Gets a summary of all AWS CodePipeline action types associated with your
+         * <p>Gets a summary of all CodePipeline action types associated with your
          * account.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/ListActionTypes">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListActionTypesOutcome ListActionTypes(const Model::ListActionTypesRequest& request) const;
+        virtual Model::ListActionTypesOutcome ListActionTypes(const Model::ListActionTypesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListActionTypes that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListActionTypesRequestT = Model::ListActionTypesRequest>
-        Model::ListActionTypesOutcomeCallable ListActionTypesCallable(const ListActionTypesRequestT& request) const
+        Model::ListActionTypesOutcomeCallable ListActionTypesCallable(const ListActionTypesRequestT& request = {}) const
         {
             return SubmitCallable(&CodePipelineClient::ListActionTypes, request);
         }
@@ -646,14 +658,16 @@ namespace CodePipeline
          * An Async wrapper for ListActionTypes that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListActionTypesRequestT = Model::ListActionTypesRequest>
-        void ListActionTypesAsync(const ListActionTypesRequestT& request, const ListActionTypesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListActionTypesAsync(const ListActionTypesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListActionTypesRequestT& request = {}) const
         {
             return SubmitAsync(&CodePipelineClient::ListActionTypes, request, handler, context);
         }
 
         /**
-         * <p>Gets a summary of the most recent executions for a pipeline.</p><p><h3>See
-         * Also:</h3>   <a
+         * <p>Gets a summary of the most recent executions for a pipeline.</p> 
+         * <p>When applying the filter for pipeline executions that have succeeded in the
+         * stage, the operation returns all executions in the current pipeline version
+         * beginning on February 1, 2024.</p> <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/ListPipelineExecutions">AWS
          * API Reference</a></p>
          */
@@ -683,13 +697,13 @@ namespace CodePipeline
          * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/ListPipelines">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListPipelinesOutcome ListPipelines(const Model::ListPipelinesRequest& request) const;
+        virtual Model::ListPipelinesOutcome ListPipelines(const Model::ListPipelinesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListPipelines that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListPipelinesRequestT = Model::ListPipelinesRequest>
-        Model::ListPipelinesOutcomeCallable ListPipelinesCallable(const ListPipelinesRequestT& request) const
+        Model::ListPipelinesOutcomeCallable ListPipelinesCallable(const ListPipelinesRequestT& request = {}) const
         {
             return SubmitCallable(&CodePipelineClient::ListPipelines, request);
         }
@@ -698,9 +712,65 @@ namespace CodePipeline
          * An Async wrapper for ListPipelines that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListPipelinesRequestT = Model::ListPipelinesRequest>
-        void ListPipelinesAsync(const ListPipelinesRequestT& request, const ListPipelinesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListPipelinesAsync(const ListPipelinesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListPipelinesRequestT& request = {}) const
         {
             return SubmitAsync(&CodePipelineClient::ListPipelines, request, handler, context);
+        }
+
+        /**
+         * <p>Lists the rule executions that have occurred in a pipeline configured for
+         * conditions with rules.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/ListRuleExecutions">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListRuleExecutionsOutcome ListRuleExecutions(const Model::ListRuleExecutionsRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListRuleExecutions that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListRuleExecutionsRequestT = Model::ListRuleExecutionsRequest>
+        Model::ListRuleExecutionsOutcomeCallable ListRuleExecutionsCallable(const ListRuleExecutionsRequestT& request) const
+        {
+            return SubmitCallable(&CodePipelineClient::ListRuleExecutions, request);
+        }
+
+        /**
+         * An Async wrapper for ListRuleExecutions that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListRuleExecutionsRequestT = Model::ListRuleExecutionsRequest>
+        void ListRuleExecutionsAsync(const ListRuleExecutionsRequestT& request, const ListRuleExecutionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CodePipelineClient::ListRuleExecutions, request, handler, context);
+        }
+
+        /**
+         * <p>Lists the rules for the condition. For more information about conditions, see
+         * <a
+         * href="https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html">Stage
+         * conditions</a>. For more information about rules, see the <a
+         * href="https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html">CodePipeline
+         * rule reference</a>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/ListRuleTypes">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListRuleTypesOutcome ListRuleTypes(const Model::ListRuleTypesRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListRuleTypes that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListRuleTypesRequestT = Model::ListRuleTypesRequest>
+        Model::ListRuleTypesOutcomeCallable ListRuleTypesCallable(const ListRuleTypesRequestT& request = {}) const
+        {
+            return SubmitCallable(&CodePipelineClient::ListRuleTypes, request);
+        }
+
+        /**
+         * An Async wrapper for ListRuleTypes that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListRuleTypesRequestT = Model::ListRuleTypesRequest>
+        void ListRuleTypesAsync(const ListRuleTypesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListRuleTypesRequestT& request = {}) const
+        {
+            return SubmitAsync(&CodePipelineClient::ListRuleTypes, request, handler, context);
         }
 
         /**
@@ -730,19 +800,21 @@ namespace CodePipeline
         }
 
         /**
-         * <p>Gets a listing of all the webhooks in this AWS Region for this account. The
-         * output lists all webhooks and includes the webhook URL and ARN and the
-         * configuration for each webhook.</p><p><h3>See Also:</h3>   <a
+         * <p>Gets a listing of all the webhooks in this Amazon Web Services Region for
+         * this account. The output lists all webhooks and includes the webhook URL and ARN
+         * and the configuration for each webhook.</p>  <p>If a secret token was
+         * provided, it will be redacted in the response.</p> <p><h3>See Also:</h3> 
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/ListWebhooks">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListWebhooksOutcome ListWebhooks(const Model::ListWebhooksRequest& request) const;
+        virtual Model::ListWebhooksOutcome ListWebhooks(const Model::ListWebhooksRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListWebhooks that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListWebhooksRequestT = Model::ListWebhooksRequest>
-        Model::ListWebhooksOutcomeCallable ListWebhooksCallable(const ListWebhooksRequestT& request) const
+        Model::ListWebhooksOutcomeCallable ListWebhooksCallable(const ListWebhooksRequestT& request = {}) const
         {
             return SubmitCallable(&CodePipelineClient::ListWebhooks, request);
         }
@@ -751,21 +823,46 @@ namespace CodePipeline
          * An Async wrapper for ListWebhooks that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListWebhooksRequestT = Model::ListWebhooksRequest>
-        void ListWebhooksAsync(const ListWebhooksRequestT& request, const ListWebhooksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListWebhooksAsync(const ListWebhooksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListWebhooksRequestT& request = {}) const
         {
             return SubmitAsync(&CodePipelineClient::ListWebhooks, request, handler, context);
         }
 
         /**
-         * <p>Returns information about any jobs for AWS CodePipeline to act on.
+         * <p>Used to override a stage condition.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/OverrideStageCondition">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::OverrideStageConditionOutcome OverrideStageCondition(const Model::OverrideStageConditionRequest& request) const;
+
+        /**
+         * A Callable wrapper for OverrideStageCondition that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename OverrideStageConditionRequestT = Model::OverrideStageConditionRequest>
+        Model::OverrideStageConditionOutcomeCallable OverrideStageConditionCallable(const OverrideStageConditionRequestT& request) const
+        {
+            return SubmitCallable(&CodePipelineClient::OverrideStageCondition, request);
+        }
+
+        /**
+         * An Async wrapper for OverrideStageCondition that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename OverrideStageConditionRequestT = Model::OverrideStageConditionRequest>
+        void OverrideStageConditionAsync(const OverrideStageConditionRequestT& request, const OverrideStageConditionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CodePipelineClient::OverrideStageCondition, request, handler, context);
+        }
+
+        /**
+         * <p>Returns information about any jobs for CodePipeline to act on.
          * <code>PollForJobs</code> is valid only for action types with "Custom" in the
-         * owner field. If the action type contains "AWS" or "ThirdParty" in the owner
-         * field, the <code>PollForJobs</code> action returns an error.</p> 
-         * <p>When this API is called, AWS CodePipeline returns temporary credentials for
-         * the S3 bucket used to store artifacts for the pipeline, if the action requires
-         * access to that S3 bucket for input or output artifacts. This API also returns
-         * any secret values defined for the action.</p> <p><h3>See Also:</h3> 
-         * <a
+         * owner field. If the action type contains <code>AWS</code> or
+         * <code>ThirdParty</code> in the owner field, the <code>PollForJobs</code> action
+         * returns an error.</p>  <p>When this API is called, CodePipeline
+         * returns temporary credentials for the S3 bucket used to store artifacts for the
+         * pipeline, if the action requires access to that S3 bucket for input or output
+         * artifacts. This API also returns any secret values defined for the action.</p>
+         * <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/PollForJobs">AWS
          * API Reference</a></p>
          */
@@ -791,7 +888,7 @@ namespace CodePipeline
 
         /**
          * <p>Determines whether there are any third party jobs for a job worker to act on.
-         * Used for partner actions only.</p>  <p>When this API is called, AWS
+         * Used for partner actions only.</p>  <p>When this API is called,
          * CodePipeline returns temporary credentials for the S3 bucket used to store
          * artifacts for the pipeline, if the action requires access to that S3 bucket for
          * input or output artifacts.</p> <p><h3>See Also:</h3>   <a
@@ -819,7 +916,7 @@ namespace CodePipeline
         }
 
         /**
-         * <p>Provides information to AWS CodePipeline about new revisions to a
+         * <p>Provides information to CodePipeline about new revisions to a
          * source.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/PutActionRevision">AWS
          * API Reference</a></p>
@@ -845,7 +942,7 @@ namespace CodePipeline
         }
 
         /**
-         * <p>Provides the response to a manual approval request to AWS CodePipeline. Valid
+         * <p>Provides the response to a manual approval request to CodePipeline. Valid
          * responses include Approved and Rejected.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/PutApprovalResult">AWS
          * API Reference</a></p>
@@ -982,7 +1079,16 @@ namespace CodePipeline
          * satisfied the authentication and filtering requirements supplied when defining
          * the webhook. RegisterWebhookWithThirdParty and DeregisterWebhookWithThirdParty
          * APIs can be used to automatically configure supported third parties to call the
-         * generated webhook URL.</p><p><h3>See Also:</h3>   <a
+         * generated webhook URL.</p>  <p>When creating CodePipeline webhooks,
+         * do not use your own credentials or reuse the same secret token across multiple
+         * webhooks. For optimal security, generate a unique secret token for each webhook
+         * you create. The secret token is an arbitrary string that you provide, which
+         * GitHub uses to compute and sign the webhook payloads sent to CodePipeline, for
+         * protecting the integrity and authenticity of the webhook payloads. Using your
+         * own credentials or reusing the same token across multiple webhooks can lead to
+         * security vulnerabilities.</p>   <p>If a secret token was
+         * provided, it will be redacted in the response.</p> <p><h3>See Also:</h3> 
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/PutWebhook">AWS
          * API Reference</a></p>
          */
@@ -1012,13 +1118,13 @@ namespace CodePipeline
          * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/RegisterWebhookWithThirdParty">AWS
          * API Reference</a></p>
          */
-        virtual Model::RegisterWebhookWithThirdPartyOutcome RegisterWebhookWithThirdParty(const Model::RegisterWebhookWithThirdPartyRequest& request) const;
+        virtual Model::RegisterWebhookWithThirdPartyOutcome RegisterWebhookWithThirdParty(const Model::RegisterWebhookWithThirdPartyRequest& request = {}) const;
 
         /**
          * A Callable wrapper for RegisterWebhookWithThirdParty that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename RegisterWebhookWithThirdPartyRequestT = Model::RegisterWebhookWithThirdPartyRequest>
-        Model::RegisterWebhookWithThirdPartyOutcomeCallable RegisterWebhookWithThirdPartyCallable(const RegisterWebhookWithThirdPartyRequestT& request) const
+        Model::RegisterWebhookWithThirdPartyOutcomeCallable RegisterWebhookWithThirdPartyCallable(const RegisterWebhookWithThirdPartyRequestT& request = {}) const
         {
             return SubmitCallable(&CodePipelineClient::RegisterWebhookWithThirdParty, request);
         }
@@ -1027,16 +1133,21 @@ namespace CodePipeline
          * An Async wrapper for RegisterWebhookWithThirdParty that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename RegisterWebhookWithThirdPartyRequestT = Model::RegisterWebhookWithThirdPartyRequest>
-        void RegisterWebhookWithThirdPartyAsync(const RegisterWebhookWithThirdPartyRequestT& request, const RegisterWebhookWithThirdPartyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void RegisterWebhookWithThirdPartyAsync(const RegisterWebhookWithThirdPartyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const RegisterWebhookWithThirdPartyRequestT& request = {}) const
         {
             return SubmitAsync(&CodePipelineClient::RegisterWebhookWithThirdParty, request, handler, context);
         }
 
         /**
-         * <p>Resumes the pipeline execution by retrying the last failed actions in a
-         * stage. You can retry a stage immediately if any of the actions in the stage
-         * fail. When you retry, all actions that are still in progress continue working,
-         * and failed actions are triggered again.</p><p><h3>See Also:</h3>   <a
+         * <p>You can retry a stage that has failed without having to run a pipeline again
+         * from the beginning. You do this by either retrying the failed actions in a stage
+         * or by retrying all actions in the stage starting from the first action in the
+         * stage. When you retry the failed actions in a stage, all actions that are still
+         * in progress continue working, and failed actions are triggered again. When you
+         * retry a failed stage from the first action in the stage, the stage cannot have
+         * any actions in progress. Before a stage can be retried, it must either have all
+         * actions failed or some actions failed and some succeeded.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/RetryStageExecution">AWS
          * API Reference</a></p>
          */
@@ -1058,6 +1169,31 @@ namespace CodePipeline
         void RetryStageExecutionAsync(const RetryStageExecutionRequestT& request, const RetryStageExecutionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&CodePipelineClient::RetryStageExecution, request, handler, context);
+        }
+
+        /**
+         * <p>Rolls back a stage execution.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/RollbackStage">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::RollbackStageOutcome RollbackStage(const Model::RollbackStageRequest& request) const;
+
+        /**
+         * A Callable wrapper for RollbackStage that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename RollbackStageRequestT = Model::RollbackStageRequest>
+        Model::RollbackStageOutcomeCallable RollbackStageCallable(const RollbackStageRequestT& request) const
+        {
+            return SubmitCallable(&CodePipelineClient::RollbackStage, request);
+        }
+
+        /**
+         * An Async wrapper for RollbackStage that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename RollbackStageRequestT = Model::RollbackStageRequest>
+        void RollbackStageAsync(const RollbackStageRequestT& request, const RollbackStageResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CodePipelineClient::RollbackStage, request, handler, context);
         }
 
         /**
@@ -1144,7 +1280,8 @@ namespace CodePipeline
         }
 
         /**
-         * <p>Removes tags from an AWS resource.</p><p><h3>See Also:</h3>   <a
+         * <p>Removes tags from an Amazon Web Services resource.</p><p><h3>See Also:</h3>  
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/UntagResource">AWS
          * API Reference</a></p>
          */
@@ -1229,11 +1366,7 @@ namespace CodePipeline
       std::shared_ptr<CodePipelineEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<CodePipelineClient>;
-      void init(const CodePipelineClientConfiguration& clientConfiguration);
 
-      CodePipelineClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<CodePipelineEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace CodePipeline

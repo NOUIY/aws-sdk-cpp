@@ -33,26 +33,13 @@ ElasticsearchDomainConfig::ElasticsearchDomainConfig() :
     m_domainEndpointOptionsHasBeenSet(false),
     m_advancedSecurityOptionsHasBeenSet(false),
     m_autoTuneOptionsHasBeenSet(false),
-    m_changeProgressDetailsHasBeenSet(false)
+    m_changeProgressDetailsHasBeenSet(false),
+    m_modifyingPropertiesHasBeenSet(false)
 {
 }
 
-ElasticsearchDomainConfig::ElasticsearchDomainConfig(JsonView jsonValue) : 
-    m_elasticsearchVersionHasBeenSet(false),
-    m_elasticsearchClusterConfigHasBeenSet(false),
-    m_eBSOptionsHasBeenSet(false),
-    m_accessPoliciesHasBeenSet(false),
-    m_snapshotOptionsHasBeenSet(false),
-    m_vPCOptionsHasBeenSet(false),
-    m_cognitoOptionsHasBeenSet(false),
-    m_encryptionAtRestOptionsHasBeenSet(false),
-    m_nodeToNodeEncryptionOptionsHasBeenSet(false),
-    m_advancedOptionsHasBeenSet(false),
-    m_logPublishingOptionsHasBeenSet(false),
-    m_domainEndpointOptionsHasBeenSet(false),
-    m_advancedSecurityOptionsHasBeenSet(false),
-    m_autoTuneOptionsHasBeenSet(false),
-    m_changeProgressDetailsHasBeenSet(false)
+ElasticsearchDomainConfig::ElasticsearchDomainConfig(JsonView jsonValue)
+  : ElasticsearchDomainConfig()
 {
   *this = jsonValue;
 }
@@ -164,6 +151,16 @@ ElasticsearchDomainConfig& ElasticsearchDomainConfig::operator =(JsonView jsonVa
     m_changeProgressDetailsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ModifyingProperties"))
+  {
+    Aws::Utils::Array<JsonView> modifyingPropertiesJsonList = jsonValue.GetArray("ModifyingProperties");
+    for(unsigned modifyingPropertiesIndex = 0; modifyingPropertiesIndex < modifyingPropertiesJsonList.GetLength(); ++modifyingPropertiesIndex)
+    {
+      m_modifyingProperties.push_back(modifyingPropertiesJsonList[modifyingPropertiesIndex].AsObject());
+    }
+    m_modifyingPropertiesHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -258,6 +255,17 @@ JsonValue ElasticsearchDomainConfig::Jsonize() const
   if(m_changeProgressDetailsHasBeenSet)
   {
    payload.WithObject("ChangeProgressDetails", m_changeProgressDetails.Jsonize());
+
+  }
+
+  if(m_modifyingPropertiesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> modifyingPropertiesJsonList(m_modifyingProperties.size());
+   for(unsigned modifyingPropertiesIndex = 0; modifyingPropertiesIndex < modifyingPropertiesJsonList.GetLength(); ++modifyingPropertiesIndex)
+   {
+     modifyingPropertiesJsonList[modifyingPropertiesIndex].AsObject(m_modifyingProperties[modifyingPropertiesIndex].Jsonize());
+   }
+   payload.WithArray("ModifyingProperties", std::move(modifyingPropertiesJsonList));
 
   }
 

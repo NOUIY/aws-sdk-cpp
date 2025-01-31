@@ -23,9 +23,8 @@ StartReplicationResult::StartReplicationResult() :
 {
 }
 
-StartReplicationResult::StartReplicationResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_isArchived(false),
-    m_replicationType(ReplicationType::NOT_SET)
+StartReplicationResult::StartReplicationResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : StartReplicationResult()
 {
   *this = result;
 }
@@ -42,6 +41,12 @@ StartReplicationResult& StartReplicationResult::operator =(const Aws::AmazonWebS
   if(jsonValue.ValueExists("arn"))
   {
     m_arn = jsonValue.GetString("arn");
+
+  }
+
+  if(jsonValue.ValueExists("connectorAction"))
+  {
+    m_connectorAction = jsonValue.GetObject("connectorAction");
 
   }
 

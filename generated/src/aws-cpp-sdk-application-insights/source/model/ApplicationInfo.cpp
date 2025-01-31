@@ -19,9 +19,11 @@ namespace Model
 {
 
 ApplicationInfo::ApplicationInfo() : 
+    m_accountIdHasBeenSet(false),
     m_resourceGroupNameHasBeenSet(false),
     m_lifeCycleHasBeenSet(false),
     m_opsItemSNSTopicArnHasBeenSet(false),
+    m_sNSNotificationArnHasBeenSet(false),
     m_opsCenterEnabled(false),
     m_opsCenterEnabledHasBeenSet(false),
     m_cWEMonitorEnabled(false),
@@ -30,29 +32,27 @@ ApplicationInfo::ApplicationInfo() :
     m_autoConfigEnabled(false),
     m_autoConfigEnabledHasBeenSet(false),
     m_discoveryType(DiscoveryType::NOT_SET),
-    m_discoveryTypeHasBeenSet(false)
+    m_discoveryTypeHasBeenSet(false),
+    m_attachMissingPermission(false),
+    m_attachMissingPermissionHasBeenSet(false)
 {
 }
 
-ApplicationInfo::ApplicationInfo(JsonView jsonValue) : 
-    m_resourceGroupNameHasBeenSet(false),
-    m_lifeCycleHasBeenSet(false),
-    m_opsItemSNSTopicArnHasBeenSet(false),
-    m_opsCenterEnabled(false),
-    m_opsCenterEnabledHasBeenSet(false),
-    m_cWEMonitorEnabled(false),
-    m_cWEMonitorEnabledHasBeenSet(false),
-    m_remarksHasBeenSet(false),
-    m_autoConfigEnabled(false),
-    m_autoConfigEnabledHasBeenSet(false),
-    m_discoveryType(DiscoveryType::NOT_SET),
-    m_discoveryTypeHasBeenSet(false)
+ApplicationInfo::ApplicationInfo(JsonView jsonValue)
+  : ApplicationInfo()
 {
   *this = jsonValue;
 }
 
 ApplicationInfo& ApplicationInfo::operator =(JsonView jsonValue)
 {
+  if(jsonValue.ValueExists("AccountId"))
+  {
+    m_accountId = jsonValue.GetString("AccountId");
+
+    m_accountIdHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("ResourceGroupName"))
   {
     m_resourceGroupName = jsonValue.GetString("ResourceGroupName");
@@ -72,6 +72,13 @@ ApplicationInfo& ApplicationInfo::operator =(JsonView jsonValue)
     m_opsItemSNSTopicArn = jsonValue.GetString("OpsItemSNSTopicArn");
 
     m_opsItemSNSTopicArnHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("SNSNotificationArn"))
+  {
+    m_sNSNotificationArn = jsonValue.GetString("SNSNotificationArn");
+
+    m_sNSNotificationArnHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("OpsCenterEnabled"))
@@ -109,12 +116,25 @@ ApplicationInfo& ApplicationInfo::operator =(JsonView jsonValue)
     m_discoveryTypeHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("AttachMissingPermission"))
+  {
+    m_attachMissingPermission = jsonValue.GetBool("AttachMissingPermission");
+
+    m_attachMissingPermissionHasBeenSet = true;
+  }
+
   return *this;
 }
 
 JsonValue ApplicationInfo::Jsonize() const
 {
   JsonValue payload;
+
+  if(m_accountIdHasBeenSet)
+  {
+   payload.WithString("AccountId", m_accountId);
+
+  }
 
   if(m_resourceGroupNameHasBeenSet)
   {
@@ -131,6 +151,12 @@ JsonValue ApplicationInfo::Jsonize() const
   if(m_opsItemSNSTopicArnHasBeenSet)
   {
    payload.WithString("OpsItemSNSTopicArn", m_opsItemSNSTopicArn);
+
+  }
+
+  if(m_sNSNotificationArnHasBeenSet)
+  {
+   payload.WithString("SNSNotificationArn", m_sNSNotificationArn);
 
   }
 
@@ -161,6 +187,12 @@ JsonValue ApplicationInfo::Jsonize() const
   if(m_discoveryTypeHasBeenSet)
   {
    payload.WithString("DiscoveryType", DiscoveryTypeMapper::GetNameForDiscoveryType(m_discoveryType));
+  }
+
+  if(m_attachMissingPermissionHasBeenSet)
+  {
+   payload.WithBool("AttachMissingPermission", m_attachMissingPermission);
+
   }
 
   return payload;

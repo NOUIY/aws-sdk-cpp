@@ -36,29 +36,13 @@ CustomLineItemVersionListElement::CustomLineItemVersionListElement() :
     m_endBillingPeriodHasBeenSet(false),
     m_arnHasBeenSet(false),
     m_startTime(0),
-    m_startTimeHasBeenSet(false)
+    m_startTimeHasBeenSet(false),
+    m_accountIdHasBeenSet(false)
 {
 }
 
-CustomLineItemVersionListElement::CustomLineItemVersionListElement(JsonView jsonValue) : 
-    m_nameHasBeenSet(false),
-    m_chargeDetailsHasBeenSet(false),
-    m_currencyCode(CurrencyCode::NOT_SET),
-    m_currencyCodeHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_productCodeHasBeenSet(false),
-    m_billingGroupArnHasBeenSet(false),
-    m_creationTime(0),
-    m_creationTimeHasBeenSet(false),
-    m_lastModifiedTime(0),
-    m_lastModifiedTimeHasBeenSet(false),
-    m_associationSize(0),
-    m_associationSizeHasBeenSet(false),
-    m_startBillingPeriodHasBeenSet(false),
-    m_endBillingPeriodHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_startTime(0),
-    m_startTimeHasBeenSet(false)
+CustomLineItemVersionListElement::CustomLineItemVersionListElement(JsonView jsonValue)
+  : CustomLineItemVersionListElement()
 {
   *this = jsonValue;
 }
@@ -156,6 +140,13 @@ CustomLineItemVersionListElement& CustomLineItemVersionListElement::operator =(J
     m_startTimeHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("AccountId"))
+  {
+    m_accountId = jsonValue.GetString("AccountId");
+
+    m_accountIdHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -237,6 +228,12 @@ JsonValue CustomLineItemVersionListElement::Jsonize() const
   if(m_startTimeHasBeenSet)
   {
    payload.WithInt64("StartTime", m_startTime);
+
+  }
+
+  if(m_accountIdHasBeenSet)
+  {
+   payload.WithString("AccountId", m_accountId);
 
   }
 

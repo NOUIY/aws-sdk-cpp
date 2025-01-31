@@ -20,13 +20,17 @@ namespace Model
 
 AgentInfo::AgentInfo() : 
     m_idHasBeenSet(false),
-    m_connectedToAgentTimestampHasBeenSet(false)
+    m_connectedToAgentTimestampHasBeenSet(false),
+    m_agentPauseDurationInSeconds(0),
+    m_agentPauseDurationInSecondsHasBeenSet(false),
+    m_hierarchyGroupsHasBeenSet(false),
+    m_deviceInfoHasBeenSet(false),
+    m_capabilitiesHasBeenSet(false)
 {
 }
 
-AgentInfo::AgentInfo(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_connectedToAgentTimestampHasBeenSet(false)
+AgentInfo::AgentInfo(JsonView jsonValue)
+  : AgentInfo()
 {
   *this = jsonValue;
 }
@@ -47,6 +51,34 @@ AgentInfo& AgentInfo::operator =(JsonView jsonValue)
     m_connectedToAgentTimestampHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("AgentPauseDurationInSeconds"))
+  {
+    m_agentPauseDurationInSeconds = jsonValue.GetInteger("AgentPauseDurationInSeconds");
+
+    m_agentPauseDurationInSecondsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("HierarchyGroups"))
+  {
+    m_hierarchyGroups = jsonValue.GetObject("HierarchyGroups");
+
+    m_hierarchyGroupsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("DeviceInfo"))
+  {
+    m_deviceInfo = jsonValue.GetObject("DeviceInfo");
+
+    m_deviceInfoHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Capabilities"))
+  {
+    m_capabilities = jsonValue.GetObject("Capabilities");
+
+    m_capabilitiesHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +95,30 @@ JsonValue AgentInfo::Jsonize() const
   if(m_connectedToAgentTimestampHasBeenSet)
   {
    payload.WithDouble("ConnectedToAgentTimestamp", m_connectedToAgentTimestamp.SecondsWithMSPrecision());
+  }
+
+  if(m_agentPauseDurationInSecondsHasBeenSet)
+  {
+   payload.WithInteger("AgentPauseDurationInSeconds", m_agentPauseDurationInSeconds);
+
+  }
+
+  if(m_hierarchyGroupsHasBeenSet)
+  {
+   payload.WithObject("HierarchyGroups", m_hierarchyGroups.Jsonize());
+
+  }
+
+  if(m_deviceInfoHasBeenSet)
+  {
+   payload.WithObject("DeviceInfo", m_deviceInfo.Jsonize());
+
+  }
+
+  if(m_capabilitiesHasBeenSet)
+  {
+   payload.WithObject("Capabilities", m_capabilities.Jsonize());
+
   }
 
   return payload;

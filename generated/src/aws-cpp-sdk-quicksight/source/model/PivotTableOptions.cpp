@@ -33,26 +33,16 @@ PivotTableOptions::PivotTableOptions() :
     m_rowFieldNamesStyleHasBeenSet(false),
     m_rowAlternateColorOptionsHasBeenSet(false),
     m_collapsedRowDimensionsVisibility(Visibility::NOT_SET),
-    m_collapsedRowDimensionsVisibilityHasBeenSet(false)
+    m_collapsedRowDimensionsVisibilityHasBeenSet(false),
+    m_rowsLayout(PivotTableRowsLayout::NOT_SET),
+    m_rowsLayoutHasBeenSet(false),
+    m_rowsLabelOptionsHasBeenSet(false),
+    m_defaultCellWidthHasBeenSet(false)
 {
 }
 
-PivotTableOptions::PivotTableOptions(JsonView jsonValue) : 
-    m_metricPlacement(PivotTableMetricPlacement::NOT_SET),
-    m_metricPlacementHasBeenSet(false),
-    m_singleMetricVisibility(Visibility::NOT_SET),
-    m_singleMetricVisibilityHasBeenSet(false),
-    m_columnNamesVisibility(Visibility::NOT_SET),
-    m_columnNamesVisibilityHasBeenSet(false),
-    m_toggleButtonsVisibility(Visibility::NOT_SET),
-    m_toggleButtonsVisibilityHasBeenSet(false),
-    m_columnHeaderStyleHasBeenSet(false),
-    m_rowHeaderStyleHasBeenSet(false),
-    m_cellStyleHasBeenSet(false),
-    m_rowFieldNamesStyleHasBeenSet(false),
-    m_rowAlternateColorOptionsHasBeenSet(false),
-    m_collapsedRowDimensionsVisibility(Visibility::NOT_SET),
-    m_collapsedRowDimensionsVisibilityHasBeenSet(false)
+PivotTableOptions::PivotTableOptions(JsonView jsonValue)
+  : PivotTableOptions()
 {
   *this = jsonValue;
 }
@@ -129,6 +119,27 @@ PivotTableOptions& PivotTableOptions::operator =(JsonView jsonValue)
     m_collapsedRowDimensionsVisibilityHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("RowsLayout"))
+  {
+    m_rowsLayout = PivotTableRowsLayoutMapper::GetPivotTableRowsLayoutForName(jsonValue.GetString("RowsLayout"));
+
+    m_rowsLayoutHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("RowsLabelOptions"))
+  {
+    m_rowsLabelOptions = jsonValue.GetObject("RowsLabelOptions");
+
+    m_rowsLabelOptionsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("DefaultCellWidth"))
+  {
+    m_defaultCellWidth = jsonValue.GetString("DefaultCellWidth");
+
+    m_defaultCellWidthHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -189,6 +200,23 @@ JsonValue PivotTableOptions::Jsonize() const
   if(m_collapsedRowDimensionsVisibilityHasBeenSet)
   {
    payload.WithString("CollapsedRowDimensionsVisibility", VisibilityMapper::GetNameForVisibility(m_collapsedRowDimensionsVisibility));
+  }
+
+  if(m_rowsLayoutHasBeenSet)
+  {
+   payload.WithString("RowsLayout", PivotTableRowsLayoutMapper::GetNameForPivotTableRowsLayout(m_rowsLayout));
+  }
+
+  if(m_rowsLabelOptionsHasBeenSet)
+  {
+   payload.WithObject("RowsLabelOptions", m_rowsLabelOptions.Jsonize());
+
+  }
+
+  if(m_defaultCellWidthHasBeenSet)
+  {
+   payload.WithString("DefaultCellWidth", m_defaultCellWidth);
+
   }
 
   return payload;

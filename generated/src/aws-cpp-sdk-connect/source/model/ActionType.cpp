@@ -24,6 +24,10 @@ namespace Aws
         static const int ASSIGN_CONTACT_CATEGORY_HASH = HashingUtils::HashString("ASSIGN_CONTACT_CATEGORY");
         static const int GENERATE_EVENTBRIDGE_EVENT_HASH = HashingUtils::HashString("GENERATE_EVENTBRIDGE_EVENT");
         static const int SEND_NOTIFICATION_HASH = HashingUtils::HashString("SEND_NOTIFICATION");
+        static const int CREATE_CASE_HASH = HashingUtils::HashString("CREATE_CASE");
+        static const int UPDATE_CASE_HASH = HashingUtils::HashString("UPDATE_CASE");
+        static const int END_ASSOCIATED_TASKS_HASH = HashingUtils::HashString("END_ASSOCIATED_TASKS");
+        static const int SUBMIT_AUTO_EVALUATION_HASH = HashingUtils::HashString("SUBMIT_AUTO_EVALUATION");
 
 
         ActionType GetActionTypeForName(const Aws::String& name)
@@ -45,6 +49,22 @@ namespace Aws
           {
             return ActionType::SEND_NOTIFICATION;
           }
+          else if (hashCode == CREATE_CASE_HASH)
+          {
+            return ActionType::CREATE_CASE;
+          }
+          else if (hashCode == UPDATE_CASE_HASH)
+          {
+            return ActionType::UPDATE_CASE;
+          }
+          else if (hashCode == END_ASSOCIATED_TASKS_HASH)
+          {
+            return ActionType::END_ASSOCIATED_TASKS;
+          }
+          else if (hashCode == SUBMIT_AUTO_EVALUATION_HASH)
+          {
+            return ActionType::SUBMIT_AUTO_EVALUATION;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -59,6 +79,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ActionType::NOT_SET:
+            return {};
           case ActionType::CREATE_TASK:
             return "CREATE_TASK";
           case ActionType::ASSIGN_CONTACT_CATEGORY:
@@ -67,6 +89,14 @@ namespace Aws
             return "GENERATE_EVENTBRIDGE_EVENT";
           case ActionType::SEND_NOTIFICATION:
             return "SEND_NOTIFICATION";
+          case ActionType::CREATE_CASE:
+            return "CREATE_CASE";
+          case ActionType::UPDATE_CASE:
+            return "UPDATE_CASE";
+          case ActionType::END_ASSOCIATED_TASKS:
+            return "END_ASSOCIATED_TASKS";
+          case ActionType::SUBMIT_AUTO_EVALUATION:
+            return "SUBMIT_AUTO_EVALUATION";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

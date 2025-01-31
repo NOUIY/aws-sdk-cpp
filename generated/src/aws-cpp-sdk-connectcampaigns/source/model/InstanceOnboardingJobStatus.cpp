@@ -20,19 +20,15 @@ namespace Model
 
 InstanceOnboardingJobStatus::InstanceOnboardingJobStatus() : 
     m_connectInstanceIdHasBeenSet(false),
-    m_failureCode(InstanceOnboardingJobFailureCode::NOT_SET),
-    m_failureCodeHasBeenSet(false),
     m_status(InstanceOnboardingJobStatusCode::NOT_SET),
-    m_statusHasBeenSet(false)
+    m_statusHasBeenSet(false),
+    m_failureCode(InstanceOnboardingJobFailureCode::NOT_SET),
+    m_failureCodeHasBeenSet(false)
 {
 }
 
-InstanceOnboardingJobStatus::InstanceOnboardingJobStatus(JsonView jsonValue) : 
-    m_connectInstanceIdHasBeenSet(false),
-    m_failureCode(InstanceOnboardingJobFailureCode::NOT_SET),
-    m_failureCodeHasBeenSet(false),
-    m_status(InstanceOnboardingJobStatusCode::NOT_SET),
-    m_statusHasBeenSet(false)
+InstanceOnboardingJobStatus::InstanceOnboardingJobStatus(JsonView jsonValue)
+  : InstanceOnboardingJobStatus()
 {
   *this = jsonValue;
 }
@@ -46,18 +42,18 @@ InstanceOnboardingJobStatus& InstanceOnboardingJobStatus::operator =(JsonView js
     m_connectInstanceIdHasBeenSet = true;
   }
 
-  if(jsonValue.ValueExists("failureCode"))
-  {
-    m_failureCode = InstanceOnboardingJobFailureCodeMapper::GetInstanceOnboardingJobFailureCodeForName(jsonValue.GetString("failureCode"));
-
-    m_failureCodeHasBeenSet = true;
-  }
-
   if(jsonValue.ValueExists("status"))
   {
     m_status = InstanceOnboardingJobStatusCodeMapper::GetInstanceOnboardingJobStatusCodeForName(jsonValue.GetString("status"));
 
     m_statusHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("failureCode"))
+  {
+    m_failureCode = InstanceOnboardingJobFailureCodeMapper::GetInstanceOnboardingJobFailureCodeForName(jsonValue.GetString("failureCode"));
+
+    m_failureCodeHasBeenSet = true;
   }
 
   return *this;
@@ -73,14 +69,14 @@ JsonValue InstanceOnboardingJobStatus::Jsonize() const
 
   }
 
-  if(m_failureCodeHasBeenSet)
-  {
-   payload.WithString("failureCode", InstanceOnboardingJobFailureCodeMapper::GetNameForInstanceOnboardingJobFailureCode(m_failureCode));
-  }
-
   if(m_statusHasBeenSet)
   {
    payload.WithString("status", InstanceOnboardingJobStatusCodeMapper::GetNameForInstanceOnboardingJobStatusCode(m_status));
+  }
+
+  if(m_failureCodeHasBeenSet)
+  {
+   payload.WithString("failureCode", InstanceOnboardingJobFailureCodeMapper::GetNameForInstanceOnboardingJobFailureCode(m_failureCode));
   }
 
   return payload;

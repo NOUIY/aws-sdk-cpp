@@ -43,35 +43,13 @@ FileSystemDescription::FileSystemDescription() :
     m_availabilityZoneNameHasBeenSet(false),
     m_availabilityZoneIdHasBeenSet(false),
     m_tagsHasBeenSet(false),
+    m_fileSystemProtectionHasBeenSet(false),
     m_requestIdHasBeenSet(false)
 {
 }
 
-FileSystemDescription::FileSystemDescription(JsonView jsonValue) : 
-    m_ownerIdHasBeenSet(false),
-    m_creationTokenHasBeenSet(false),
-    m_fileSystemIdHasBeenSet(false),
-    m_fileSystemArnHasBeenSet(false),
-    m_creationTimeHasBeenSet(false),
-    m_lifeCycleState(LifeCycleState::NOT_SET),
-    m_lifeCycleStateHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_numberOfMountTargets(0),
-    m_numberOfMountTargetsHasBeenSet(false),
-    m_sizeInBytesHasBeenSet(false),
-    m_performanceMode(PerformanceMode::NOT_SET),
-    m_performanceModeHasBeenSet(false),
-    m_encrypted(false),
-    m_encryptedHasBeenSet(false),
-    m_kmsKeyIdHasBeenSet(false),
-    m_throughputMode(ThroughputMode::NOT_SET),
-    m_throughputModeHasBeenSet(false),
-    m_provisionedThroughputInMibps(0.0),
-    m_provisionedThroughputInMibpsHasBeenSet(false),
-    m_availabilityZoneNameHasBeenSet(false),
-    m_availabilityZoneIdHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_requestIdHasBeenSet(false)
+FileSystemDescription::FileSystemDescription(JsonView jsonValue)
+  : FileSystemDescription()
 {
   *this = jsonValue;
 }
@@ -200,6 +178,13 @@ FileSystemDescription& FileSystemDescription::operator =(JsonView jsonValue)
     m_tagsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("FileSystemProtection"))
+  {
+    m_fileSystemProtection = jsonValue.GetObject("FileSystemProtection");
+
+    m_fileSystemProtectionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -307,6 +292,12 @@ JsonValue FileSystemDescription::Jsonize() const
      tagsJsonList[tagsIndex].AsObject(m_tags[tagsIndex].Jsonize());
    }
    payload.WithArray("Tags", std::move(tagsJsonList));
+
+  }
+
+  if(m_fileSystemProtectionHasBeenSet)
+  {
+   payload.WithObject("FileSystemProtection", m_fileSystemProtection.Jsonize());
 
   }
 

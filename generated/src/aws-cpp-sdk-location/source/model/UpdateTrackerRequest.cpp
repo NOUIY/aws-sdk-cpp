@@ -13,10 +13,14 @@ using namespace Aws::Utils::Json;
 using namespace Aws::Utils;
 
 UpdateTrackerRequest::UpdateTrackerRequest() : 
+    m_trackerNameHasBeenSet(false),
     m_descriptionHasBeenSet(false),
     m_positionFiltering(PositionFiltering::NOT_SET),
     m_positionFilteringHasBeenSet(false),
-    m_trackerNameHasBeenSet(false)
+    m_eventBridgeEnabled(false),
+    m_eventBridgeEnabledHasBeenSet(false),
+    m_kmsKeyEnableGeospatialQueries(false),
+    m_kmsKeyEnableGeospatialQueriesHasBeenSet(false)
 {
 }
 
@@ -33,6 +37,18 @@ Aws::String UpdateTrackerRequest::SerializePayload() const
   if(m_positionFilteringHasBeenSet)
   {
    payload.WithString("PositionFiltering", PositionFilteringMapper::GetNameForPositionFiltering(m_positionFiltering));
+  }
+
+  if(m_eventBridgeEnabledHasBeenSet)
+  {
+   payload.WithBool("EventBridgeEnabled", m_eventBridgeEnabled);
+
+  }
+
+  if(m_kmsKeyEnableGeospatialQueriesHasBeenSet)
+  {
+   payload.WithBool("KmsKeyEnableGeospatialQueries", m_kmsKeyEnableGeospatialQueries);
+
   }
 
   return payload.View().WriteReadable();

@@ -39,32 +39,14 @@ AwsDynamoDbTableDetails::AwsDynamoDbTableDetails() :
     m_tableNameHasBeenSet(false),
     m_tableSizeBytes(0),
     m_tableSizeBytesHasBeenSet(false),
-    m_tableStatusHasBeenSet(false)
+    m_tableStatusHasBeenSet(false),
+    m_deletionProtectionEnabled(false),
+    m_deletionProtectionEnabledHasBeenSet(false)
 {
 }
 
-AwsDynamoDbTableDetails::AwsDynamoDbTableDetails(JsonView jsonValue) : 
-    m_attributeDefinitionsHasBeenSet(false),
-    m_billingModeSummaryHasBeenSet(false),
-    m_creationDateTimeHasBeenSet(false),
-    m_globalSecondaryIndexesHasBeenSet(false),
-    m_globalTableVersionHasBeenSet(false),
-    m_itemCount(0),
-    m_itemCountHasBeenSet(false),
-    m_keySchemaHasBeenSet(false),
-    m_latestStreamArnHasBeenSet(false),
-    m_latestStreamLabelHasBeenSet(false),
-    m_localSecondaryIndexesHasBeenSet(false),
-    m_provisionedThroughputHasBeenSet(false),
-    m_replicasHasBeenSet(false),
-    m_restoreSummaryHasBeenSet(false),
-    m_sseDescriptionHasBeenSet(false),
-    m_streamSpecificationHasBeenSet(false),
-    m_tableIdHasBeenSet(false),
-    m_tableNameHasBeenSet(false),
-    m_tableSizeBytes(0),
-    m_tableSizeBytesHasBeenSet(false),
-    m_tableStatusHasBeenSet(false)
+AwsDynamoDbTableDetails::AwsDynamoDbTableDetails(JsonView jsonValue)
+  : AwsDynamoDbTableDetails()
 {
   *this = jsonValue;
 }
@@ -219,6 +201,13 @@ AwsDynamoDbTableDetails& AwsDynamoDbTableDetails::operator =(JsonView jsonValue)
     m_tableStatusHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("DeletionProtectionEnabled"))
+  {
+    m_deletionProtectionEnabled = jsonValue.GetBool("DeletionProtectionEnabled");
+
+    m_deletionProtectionEnabledHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -362,6 +351,12 @@ JsonValue AwsDynamoDbTableDetails::Jsonize() const
   if(m_tableStatusHasBeenSet)
   {
    payload.WithString("TableStatus", m_tableStatus);
+
+  }
+
+  if(m_deletionProtectionEnabledHasBeenSet)
+  {
+   payload.WithBool("DeletionProtectionEnabled", m_deletionProtectionEnabled);
 
   }
 

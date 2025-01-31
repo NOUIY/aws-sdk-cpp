@@ -25,11 +25,8 @@ GetDataQualityRulesetEvaluationRunResult::GetDataQualityRulesetEvaluationRunResu
 {
 }
 
-GetDataQualityRulesetEvaluationRunResult::GetDataQualityRulesetEvaluationRunResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_numberOfWorkers(0),
-    m_timeout(0),
-    m_status(TaskStatusType::NOT_SET),
-    m_executionTime(0)
+GetDataQualityRulesetEvaluationRunResult::GetDataQualityRulesetEvaluationRunResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetDataQualityRulesetEvaluationRunResult()
 {
   *this = result;
 }
@@ -124,6 +121,15 @@ GetDataQualityRulesetEvaluationRunResult& GetDataQualityRulesetEvaluationRunResu
     for(unsigned resultIdsIndex = 0; resultIdsIndex < resultIdsJsonList.GetLength(); ++resultIdsIndex)
     {
       m_resultIds.push_back(resultIdsJsonList[resultIdsIndex].AsString());
+    }
+  }
+
+  if(jsonValue.ValueExists("AdditionalDataSources"))
+  {
+    Aws::Map<Aws::String, JsonView> additionalDataSourcesJsonMap = jsonValue.GetObject("AdditionalDataSources").GetAllObjects();
+    for(auto& additionalDataSourcesItem : additionalDataSourcesJsonMap)
+    {
+      m_additionalDataSources[additionalDataSourcesItem.first] = additionalDataSourcesItem.second.AsObject();
     }
   }
 

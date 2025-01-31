@@ -23,9 +23,8 @@ CreateAnnotationStoreResult::CreateAnnotationStoreResult() :
 {
 }
 
-CreateAnnotationStoreResult::CreateAnnotationStoreResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_storeFormat(StoreFormat::NOT_SET),
-    m_status(StoreStatus::NOT_SET)
+CreateAnnotationStoreResult::CreateAnnotationStoreResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : CreateAnnotationStoreResult()
 {
   *this = result;
 }
@@ -66,6 +65,12 @@ CreateAnnotationStoreResult& CreateAnnotationStoreResult::operator =(const Aws::
   if(jsonValue.ValueExists("name"))
   {
     m_name = jsonValue.GetString("name");
+
+  }
+
+  if(jsonValue.ValueExists("versionName"))
+  {
+    m_versionName = jsonValue.GetString("versionName");
 
   }
 

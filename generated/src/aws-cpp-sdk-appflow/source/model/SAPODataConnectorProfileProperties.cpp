@@ -26,19 +26,14 @@ SAPODataConnectorProfileProperties::SAPODataConnectorProfileProperties() :
     m_clientNumberHasBeenSet(false),
     m_logonLanguageHasBeenSet(false),
     m_privateLinkServiceNameHasBeenSet(false),
-    m_oAuthPropertiesHasBeenSet(false)
+    m_oAuthPropertiesHasBeenSet(false),
+    m_disableSSO(false),
+    m_disableSSOHasBeenSet(false)
 {
 }
 
-SAPODataConnectorProfileProperties::SAPODataConnectorProfileProperties(JsonView jsonValue) : 
-    m_applicationHostUrlHasBeenSet(false),
-    m_applicationServicePathHasBeenSet(false),
-    m_portNumber(0),
-    m_portNumberHasBeenSet(false),
-    m_clientNumberHasBeenSet(false),
-    m_logonLanguageHasBeenSet(false),
-    m_privateLinkServiceNameHasBeenSet(false),
-    m_oAuthPropertiesHasBeenSet(false)
+SAPODataConnectorProfileProperties::SAPODataConnectorProfileProperties(JsonView jsonValue)
+  : SAPODataConnectorProfileProperties()
 {
   *this = jsonValue;
 }
@@ -94,6 +89,13 @@ SAPODataConnectorProfileProperties& SAPODataConnectorProfileProperties::operator
     m_oAuthPropertiesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("disableSSO"))
+  {
+    m_disableSSO = jsonValue.GetBool("disableSSO");
+
+    m_disableSSOHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -140,6 +142,12 @@ JsonValue SAPODataConnectorProfileProperties::Jsonize() const
   if(m_oAuthPropertiesHasBeenSet)
   {
    payload.WithObject("oAuthProperties", m_oAuthProperties.Jsonize());
+
+  }
+
+  if(m_disableSSOHasBeenSet)
+  {
+   payload.WithBool("disableSSO", m_disableSSO);
 
   }
 

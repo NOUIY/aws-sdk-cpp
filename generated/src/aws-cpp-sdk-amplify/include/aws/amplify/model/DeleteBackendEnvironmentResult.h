@@ -26,8 +26,8 @@ namespace Amplify
 namespace Model
 {
   /**
-   * <p> The result structure of the delete backend environment result.
-   * </p><p><h3>See Also:</h3>   <a
+   * <p>The result structure of the delete backend environment result. </p><p><h3>See
+   * Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/amplify-2017-07-25/DeleteBackendEnvironmentResult">AWS
    * API Reference</a></p>
    */
@@ -39,53 +39,27 @@ namespace Model
     AWS_AMPLIFY_API DeleteBackendEnvironmentResult& operator=(const Aws::AmazonWebServiceResult<Aws::Utils::Json::JsonValue>& result);
 
 
+    ///@{
     /**
-     * <p> Describes the backend environment for an Amplify app. </p>
+     * <p>Describes the backend environment for an Amplify app. </p>
      */
     inline const BackendEnvironment& GetBackendEnvironment() const{ return m_backendEnvironment; }
-
-    /**
-     * <p> Describes the backend environment for an Amplify app. </p>
-     */
     inline void SetBackendEnvironment(const BackendEnvironment& value) { m_backendEnvironment = value; }
-
-    /**
-     * <p> Describes the backend environment for an Amplify app. </p>
-     */
     inline void SetBackendEnvironment(BackendEnvironment&& value) { m_backendEnvironment = std::move(value); }
-
-    /**
-     * <p> Describes the backend environment for an Amplify app. </p>
-     */
     inline DeleteBackendEnvironmentResult& WithBackendEnvironment(const BackendEnvironment& value) { SetBackendEnvironment(value); return *this;}
-
-    /**
-     * <p> Describes the backend environment for an Amplify app. </p>
-     */
     inline DeleteBackendEnvironmentResult& WithBackendEnvironment(BackendEnvironment&& value) { SetBackendEnvironment(std::move(value)); return *this;}
+    ///@}
 
-
+    ///@{
     
     inline const Aws::String& GetRequestId() const{ return m_requestId; }
-
-    
     inline void SetRequestId(const Aws::String& value) { m_requestId = value; }
-
-    
     inline void SetRequestId(Aws::String&& value) { m_requestId = std::move(value); }
-
-    
     inline void SetRequestId(const char* value) { m_requestId.assign(value); }
-
-    
     inline DeleteBackendEnvironmentResult& WithRequestId(const Aws::String& value) { SetRequestId(value); return *this;}
-
-    
     inline DeleteBackendEnvironmentResult& WithRequestId(Aws::String&& value) { SetRequestId(std::move(value)); return *this;}
-
-    
     inline DeleteBackendEnvironmentResult& WithRequestId(const char* value) { SetRequestId(value); return *this;}
-
+    ///@}
   private:
 
     BackendEnvironment m_backendEnvironment;

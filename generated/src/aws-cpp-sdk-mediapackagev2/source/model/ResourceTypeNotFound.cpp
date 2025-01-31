@@ -23,6 +23,7 @@ namespace Aws
         static const int CHANNEL_GROUP_HASH = HashingUtils::HashString("CHANNEL_GROUP");
         static const int CHANNEL_HASH = HashingUtils::HashString("CHANNEL");
         static const int ORIGIN_ENDPOINT_HASH = HashingUtils::HashString("ORIGIN_ENDPOINT");
+        static const int HARVEST_JOB_HASH = HashingUtils::HashString("HARVEST_JOB");
 
 
         ResourceTypeNotFound GetResourceTypeNotFoundForName(const Aws::String& name)
@@ -40,6 +41,10 @@ namespace Aws
           {
             return ResourceTypeNotFound::ORIGIN_ENDPOINT;
           }
+          else if (hashCode == HARVEST_JOB_HASH)
+          {
+            return ResourceTypeNotFound::HARVEST_JOB;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -54,12 +59,16 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ResourceTypeNotFound::NOT_SET:
+            return {};
           case ResourceTypeNotFound::CHANNEL_GROUP:
             return "CHANNEL_GROUP";
           case ResourceTypeNotFound::CHANNEL:
             return "CHANNEL";
           case ResourceTypeNotFound::ORIGIN_ENDPOINT:
             return "ORIGIN_ENDPOINT";
+          case ResourceTypeNotFound::HARVEST_JOB:
+            return "HARVEST_JOB";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

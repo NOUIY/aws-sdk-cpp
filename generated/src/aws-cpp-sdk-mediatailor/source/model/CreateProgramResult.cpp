@@ -22,8 +22,8 @@ CreateProgramResult::CreateProgramResult() :
 {
 }
 
-CreateProgramResult::CreateProgramResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_durationMillis(0)
+CreateProgramResult::CreateProgramResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : CreateProgramResult()
 {
   *this = result;
 }
@@ -52,21 +52,9 @@ CreateProgramResult& CreateProgramResult::operator =(const Aws::AmazonWebService
 
   }
 
-  if(jsonValue.ValueExists("ClipRange"))
-  {
-    m_clipRange = jsonValue.GetObject("ClipRange");
-
-  }
-
   if(jsonValue.ValueExists("CreationTime"))
   {
     m_creationTime = jsonValue.GetDouble("CreationTime");
-
-  }
-
-  if(jsonValue.ValueExists("DurationMillis"))
-  {
-    m_durationMillis = jsonValue.GetInt64("DurationMillis");
 
   }
 
@@ -98,6 +86,27 @@ CreateProgramResult& CreateProgramResult::operator =(const Aws::AmazonWebService
   {
     m_vodSourceName = jsonValue.GetString("VodSourceName");
 
+  }
+
+  if(jsonValue.ValueExists("ClipRange"))
+  {
+    m_clipRange = jsonValue.GetObject("ClipRange");
+
+  }
+
+  if(jsonValue.ValueExists("DurationMillis"))
+  {
+    m_durationMillis = jsonValue.GetInt64("DurationMillis");
+
+  }
+
+  if(jsonValue.ValueExists("AudienceMedia"))
+  {
+    Aws::Utils::Array<JsonView> audienceMediaJsonList = jsonValue.GetArray("AudienceMedia");
+    for(unsigned audienceMediaIndex = 0; audienceMediaIndex < audienceMediaJsonList.GetLength(); ++audienceMediaIndex)
+    {
+      m_audienceMedia.push_back(audienceMediaJsonList[audienceMediaIndex].AsObject());
+    }
   }
 
 

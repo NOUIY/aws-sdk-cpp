@@ -6,24 +6,36 @@
 #pragma once
 #include <aws/kinesisvideo/KinesisVideo_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/kinesisvideo/KinesisVideoServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/kinesisvideo/KinesisVideoErrorMarshaller.h>
 
 namespace Aws
 {
 namespace KinesisVideo
 {
+  AWS_KINESISVIDEO_API extern const char SERVICE_NAME[];
   /**
    * <p/>
    */
-  class AWS_KINESISVIDEO_API KinesisVideoClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<KinesisVideoClient>
+  class AWS_KINESISVIDEO_API KinesisVideoClient : smithy::client::AwsSmithyClientT<Aws::KinesisVideo::SERVICE_NAME,
+      Aws::KinesisVideo::KinesisVideoClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      KinesisVideoEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::KinesisVideoErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<KinesisVideoClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Kinesis Video"; }
 
       typedef KinesisVideoClientConfiguration ClientConfigurationType;
       typedef KinesisVideoEndpointProvider EndpointProviderType;
@@ -33,14 +45,14 @@ namespace KinesisVideo
         * is not specified, it will be initialized to default values.
         */
         KinesisVideoClient(const Aws::KinesisVideo::KinesisVideoClientConfiguration& clientConfiguration = Aws::KinesisVideo::KinesisVideoClientConfiguration(),
-                           std::shared_ptr<KinesisVideoEndpointProviderBase> endpointProvider = Aws::MakeShared<KinesisVideoEndpointProvider>(ALLOCATION_TAG));
+                           std::shared_ptr<KinesisVideoEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         KinesisVideoClient(const Aws::Auth::AWSCredentials& credentials,
-                           std::shared_ptr<KinesisVideoEndpointProviderBase> endpointProvider = Aws::MakeShared<KinesisVideoEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<KinesisVideoEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::KinesisVideo::KinesisVideoClientConfiguration& clientConfiguration = Aws::KinesisVideo::KinesisVideoClientConfiguration());
 
        /**
@@ -48,7 +60,7 @@ namespace KinesisVideo
         * the default http client factory will be used
         */
         KinesisVideoClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                           std::shared_ptr<KinesisVideoEndpointProviderBase> endpointProvider = Aws::MakeShared<KinesisVideoEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<KinesisVideoEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::KinesisVideo::KinesisVideoClientConfiguration& clientConfiguration = Aws::KinesisVideo::KinesisVideoClientConfiguration());
 
 
@@ -135,6 +147,39 @@ namespace KinesisVideo
         }
 
         /**
+         * <p>An asynchronous API that deletes a stream’s existing edge configuration, as
+         * well as the corresponding media from the Edge Agent.</p> <p>When you invoke this
+         * API, the sync status is set to <code>DELETING</code>. A deletion process starts,
+         * in which active edge jobs are stopped and all media is deleted from the edge
+         * device. The time to delete varies, depending on the total amount of stored
+         * media. If the deletion process fails, the sync status changes to
+         * <code>DELETE_FAILED</code>. You will need to re-try the deletion.</p> <p>When
+         * the deletion process has completed successfully, the edge configuration is no
+         * longer accessible.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/DeleteEdgeConfiguration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteEdgeConfigurationOutcome DeleteEdgeConfiguration(const Model::DeleteEdgeConfigurationRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for DeleteEdgeConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteEdgeConfigurationRequestT = Model::DeleteEdgeConfigurationRequest>
+        Model::DeleteEdgeConfigurationOutcomeCallable DeleteEdgeConfigurationCallable(const DeleteEdgeConfigurationRequestT& request = {}) const
+        {
+            return SubmitCallable(&KinesisVideoClient::DeleteEdgeConfiguration, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteEdgeConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteEdgeConfigurationRequestT = Model::DeleteEdgeConfigurationRequest>
+        void DeleteEdgeConfigurationAsync(const DeleteEdgeConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DeleteEdgeConfigurationRequestT& request = {}) const
+        {
+            return SubmitAsync(&KinesisVideoClient::DeleteEdgeConfiguration, request, handler, context);
+        }
+
+        /**
          * <p>Deletes a specified signaling channel. <code>DeleteSignalingChannel</code> is
          * an asynchronous operation. If you don't specify the channel's current version,
          * the most recent version is deleted.</p><p><h3>See Also:</h3>   <a
@@ -196,19 +241,21 @@ namespace KinesisVideo
 
         /**
          * <p>Describes a stream’s edge configuration that was set using the
-         * <code>StartEdgeConfigurationUpdate</code> API. Use this API to get the status of
-         * the configuration if the configuration is in sync with the Edge
-         * Agent.</p><p><h3>See Also:</h3>   <a
+         * <code>StartEdgeConfigurationUpdate</code> API and the latest status of the edge
+         * agent's recorder and uploader jobs. Use this API to get the status of the
+         * configuration to determine if the configuration is in sync with the Edge Agent.
+         * Use this API to evaluate the health of the Edge Agent.</p><p><h3>See Also:</h3> 
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/DescribeEdgeConfiguration">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeEdgeConfigurationOutcome DescribeEdgeConfiguration(const Model::DescribeEdgeConfigurationRequest& request) const;
+        virtual Model::DescribeEdgeConfigurationOutcome DescribeEdgeConfiguration(const Model::DescribeEdgeConfigurationRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeEdgeConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeEdgeConfigurationRequestT = Model::DescribeEdgeConfigurationRequest>
-        Model::DescribeEdgeConfigurationOutcomeCallable DescribeEdgeConfigurationCallable(const DescribeEdgeConfigurationRequestT& request) const
+        Model::DescribeEdgeConfigurationOutcomeCallable DescribeEdgeConfigurationCallable(const DescribeEdgeConfigurationRequestT& request = {}) const
         {
             return SubmitCallable(&KinesisVideoClient::DescribeEdgeConfiguration, request);
         }
@@ -217,7 +264,7 @@ namespace KinesisVideo
          * An Async wrapper for DescribeEdgeConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeEdgeConfigurationRequestT = Model::DescribeEdgeConfigurationRequest>
-        void DescribeEdgeConfigurationAsync(const DescribeEdgeConfigurationRequestT& request, const DescribeEdgeConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeEdgeConfigurationAsync(const DescribeEdgeConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeEdgeConfigurationRequestT& request = {}) const
         {
             return SubmitAsync(&KinesisVideoClient::DescribeEdgeConfiguration, request, handler, context);
         }
@@ -228,13 +275,13 @@ namespace KinesisVideo
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/DescribeImageGenerationConfiguration">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeImageGenerationConfigurationOutcome DescribeImageGenerationConfiguration(const Model::DescribeImageGenerationConfigurationRequest& request) const;
+        virtual Model::DescribeImageGenerationConfigurationOutcome DescribeImageGenerationConfiguration(const Model::DescribeImageGenerationConfigurationRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeImageGenerationConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeImageGenerationConfigurationRequestT = Model::DescribeImageGenerationConfigurationRequest>
-        Model::DescribeImageGenerationConfigurationOutcomeCallable DescribeImageGenerationConfigurationCallable(const DescribeImageGenerationConfigurationRequestT& request) const
+        Model::DescribeImageGenerationConfigurationOutcomeCallable DescribeImageGenerationConfigurationCallable(const DescribeImageGenerationConfigurationRequestT& request = {}) const
         {
             return SubmitCallable(&KinesisVideoClient::DescribeImageGenerationConfiguration, request);
         }
@@ -243,27 +290,25 @@ namespace KinesisVideo
          * An Async wrapper for DescribeImageGenerationConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeImageGenerationConfigurationRequestT = Model::DescribeImageGenerationConfigurationRequest>
-        void DescribeImageGenerationConfigurationAsync(const DescribeImageGenerationConfigurationRequestT& request, const DescribeImageGenerationConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeImageGenerationConfigurationAsync(const DescribeImageGenerationConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeImageGenerationConfigurationRequestT& request = {}) const
         {
             return SubmitAsync(&KinesisVideoClient::DescribeImageGenerationConfiguration, request, handler, context);
         }
 
         /**
-         * <p>Returns the most current information about the stream. Either streamName or
-         * streamARN should be provided in the input.</p> <p>Returns the most current
-         * information about the stream. The <code>streamName</code> or
-         * <code>streamARN</code> should be provided in the input.</p><p><h3>See Also:</h3>
-         * <a
+         * <p>Returns the most current information about the stream. The
+         * <code>streamName</code> or <code>streamARN</code> should be provided in the
+         * input.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/DescribeMappedResourceConfiguration">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeMappedResourceConfigurationOutcome DescribeMappedResourceConfiguration(const Model::DescribeMappedResourceConfigurationRequest& request) const;
+        virtual Model::DescribeMappedResourceConfigurationOutcome DescribeMappedResourceConfiguration(const Model::DescribeMappedResourceConfigurationRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeMappedResourceConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeMappedResourceConfigurationRequestT = Model::DescribeMappedResourceConfigurationRequest>
-        Model::DescribeMappedResourceConfigurationOutcomeCallable DescribeMappedResourceConfigurationCallable(const DescribeMappedResourceConfigurationRequestT& request) const
+        Model::DescribeMappedResourceConfigurationOutcomeCallable DescribeMappedResourceConfigurationCallable(const DescribeMappedResourceConfigurationRequestT& request = {}) const
         {
             return SubmitCallable(&KinesisVideoClient::DescribeMappedResourceConfiguration, request);
         }
@@ -272,7 +317,7 @@ namespace KinesisVideo
          * An Async wrapper for DescribeMappedResourceConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeMappedResourceConfigurationRequestT = Model::DescribeMappedResourceConfigurationRequest>
-        void DescribeMappedResourceConfigurationAsync(const DescribeMappedResourceConfigurationRequestT& request, const DescribeMappedResourceConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeMappedResourceConfigurationAsync(const DescribeMappedResourceConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeMappedResourceConfigurationRequestT& request = {}) const
         {
             return SubmitAsync(&KinesisVideoClient::DescribeMappedResourceConfiguration, request, handler, context);
         }
@@ -284,13 +329,13 @@ namespace KinesisVideo
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/DescribeMediaStorageConfiguration">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeMediaStorageConfigurationOutcome DescribeMediaStorageConfiguration(const Model::DescribeMediaStorageConfigurationRequest& request) const;
+        virtual Model::DescribeMediaStorageConfigurationOutcome DescribeMediaStorageConfiguration(const Model::DescribeMediaStorageConfigurationRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeMediaStorageConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeMediaStorageConfigurationRequestT = Model::DescribeMediaStorageConfigurationRequest>
-        Model::DescribeMediaStorageConfigurationOutcomeCallable DescribeMediaStorageConfigurationCallable(const DescribeMediaStorageConfigurationRequestT& request) const
+        Model::DescribeMediaStorageConfigurationOutcomeCallable DescribeMediaStorageConfigurationCallable(const DescribeMediaStorageConfigurationRequestT& request = {}) const
         {
             return SubmitCallable(&KinesisVideoClient::DescribeMediaStorageConfiguration, request);
         }
@@ -299,7 +344,7 @@ namespace KinesisVideo
          * An Async wrapper for DescribeMediaStorageConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeMediaStorageConfigurationRequestT = Model::DescribeMediaStorageConfigurationRequest>
-        void DescribeMediaStorageConfigurationAsync(const DescribeMediaStorageConfigurationRequestT& request, const DescribeMediaStorageConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeMediaStorageConfigurationAsync(const DescribeMediaStorageConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeMediaStorageConfigurationRequestT& request = {}) const
         {
             return SubmitAsync(&KinesisVideoClient::DescribeMediaStorageConfiguration, request, handler, context);
         }
@@ -310,13 +355,13 @@ namespace KinesisVideo
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/DescribeNotificationConfiguration">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeNotificationConfigurationOutcome DescribeNotificationConfiguration(const Model::DescribeNotificationConfigurationRequest& request) const;
+        virtual Model::DescribeNotificationConfigurationOutcome DescribeNotificationConfiguration(const Model::DescribeNotificationConfigurationRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeNotificationConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeNotificationConfigurationRequestT = Model::DescribeNotificationConfigurationRequest>
-        Model::DescribeNotificationConfigurationOutcomeCallable DescribeNotificationConfigurationCallable(const DescribeNotificationConfigurationRequestT& request) const
+        Model::DescribeNotificationConfigurationOutcomeCallable DescribeNotificationConfigurationCallable(const DescribeNotificationConfigurationRequestT& request = {}) const
         {
             return SubmitCallable(&KinesisVideoClient::DescribeNotificationConfiguration, request);
         }
@@ -325,7 +370,7 @@ namespace KinesisVideo
          * An Async wrapper for DescribeNotificationConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeNotificationConfigurationRequestT = Model::DescribeNotificationConfigurationRequest>
-        void DescribeNotificationConfigurationAsync(const DescribeNotificationConfigurationRequestT& request, const DescribeNotificationConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeNotificationConfigurationAsync(const DescribeNotificationConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeNotificationConfigurationRequestT& request = {}) const
         {
             return SubmitAsync(&KinesisVideoClient::DescribeNotificationConfiguration, request, handler, context);
         }
@@ -337,13 +382,13 @@ namespace KinesisVideo
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/DescribeSignalingChannel">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeSignalingChannelOutcome DescribeSignalingChannel(const Model::DescribeSignalingChannelRequest& request) const;
+        virtual Model::DescribeSignalingChannelOutcome DescribeSignalingChannel(const Model::DescribeSignalingChannelRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeSignalingChannel that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeSignalingChannelRequestT = Model::DescribeSignalingChannelRequest>
-        Model::DescribeSignalingChannelOutcomeCallable DescribeSignalingChannelCallable(const DescribeSignalingChannelRequestT& request) const
+        Model::DescribeSignalingChannelOutcomeCallable DescribeSignalingChannelCallable(const DescribeSignalingChannelRequestT& request = {}) const
         {
             return SubmitCallable(&KinesisVideoClient::DescribeSignalingChannel, request);
         }
@@ -352,7 +397,7 @@ namespace KinesisVideo
          * An Async wrapper for DescribeSignalingChannel that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeSignalingChannelRequestT = Model::DescribeSignalingChannelRequest>
-        void DescribeSignalingChannelAsync(const DescribeSignalingChannelRequestT& request, const DescribeSignalingChannelResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeSignalingChannelAsync(const DescribeSignalingChannelResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeSignalingChannelRequestT& request = {}) const
         {
             return SubmitAsync(&KinesisVideoClient::DescribeSignalingChannel, request, handler, context);
         }
@@ -364,13 +409,13 @@ namespace KinesisVideo
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/DescribeStream">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeStreamOutcome DescribeStream(const Model::DescribeStreamRequest& request) const;
+        virtual Model::DescribeStreamOutcome DescribeStream(const Model::DescribeStreamRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeStream that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeStreamRequestT = Model::DescribeStreamRequest>
-        Model::DescribeStreamOutcomeCallable DescribeStreamCallable(const DescribeStreamRequestT& request) const
+        Model::DescribeStreamOutcomeCallable DescribeStreamCallable(const DescribeStreamRequestT& request = {}) const
         {
             return SubmitCallable(&KinesisVideoClient::DescribeStream, request);
         }
@@ -379,7 +424,7 @@ namespace KinesisVideo
          * An Async wrapper for DescribeStream that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeStreamRequestT = Model::DescribeStreamRequest>
-        void DescribeStreamAsync(const DescribeStreamRequestT& request, const DescribeStreamResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeStreamAsync(const DescribeStreamResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeStreamRequestT& request = {}) const
         {
             return SubmitAsync(&KinesisVideoClient::DescribeStream, request, handler, context);
         }
@@ -454,6 +499,33 @@ namespace KinesisVideo
         }
 
         /**
+         * <p>Returns an array of edge configurations associated with the specified Edge
+         * Agent.</p> <p>In the request, you must specify the Edge Agent
+         * <code>HubDeviceArn</code>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/ListEdgeAgentConfigurations">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListEdgeAgentConfigurationsOutcome ListEdgeAgentConfigurations(const Model::ListEdgeAgentConfigurationsRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListEdgeAgentConfigurations that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListEdgeAgentConfigurationsRequestT = Model::ListEdgeAgentConfigurationsRequest>
+        Model::ListEdgeAgentConfigurationsOutcomeCallable ListEdgeAgentConfigurationsCallable(const ListEdgeAgentConfigurationsRequestT& request) const
+        {
+            return SubmitCallable(&KinesisVideoClient::ListEdgeAgentConfigurations, request);
+        }
+
+        /**
+         * An Async wrapper for ListEdgeAgentConfigurations that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListEdgeAgentConfigurationsRequestT = Model::ListEdgeAgentConfigurationsRequest>
+        void ListEdgeAgentConfigurationsAsync(const ListEdgeAgentConfigurationsRequestT& request, const ListEdgeAgentConfigurationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&KinesisVideoClient::ListEdgeAgentConfigurations, request, handler, context);
+        }
+
+        /**
          * <p>Returns an array of <code>ChannelInfo</code> objects. Each object describes a
          * signaling channel. To retrieve only those channels that satisfy a specific
          * condition, you can specify a <code>ChannelNameCondition</code>.</p><p><h3>See
@@ -461,13 +533,13 @@ namespace KinesisVideo
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/ListSignalingChannels">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListSignalingChannelsOutcome ListSignalingChannels(const Model::ListSignalingChannelsRequest& request) const;
+        virtual Model::ListSignalingChannelsOutcome ListSignalingChannels(const Model::ListSignalingChannelsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListSignalingChannels that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListSignalingChannelsRequestT = Model::ListSignalingChannelsRequest>
-        Model::ListSignalingChannelsOutcomeCallable ListSignalingChannelsCallable(const ListSignalingChannelsRequestT& request) const
+        Model::ListSignalingChannelsOutcomeCallable ListSignalingChannelsCallable(const ListSignalingChannelsRequestT& request = {}) const
         {
             return SubmitCallable(&KinesisVideoClient::ListSignalingChannels, request);
         }
@@ -476,7 +548,7 @@ namespace KinesisVideo
          * An Async wrapper for ListSignalingChannels that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListSignalingChannelsRequestT = Model::ListSignalingChannelsRequest>
-        void ListSignalingChannelsAsync(const ListSignalingChannelsRequestT& request, const ListSignalingChannelsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListSignalingChannelsAsync(const ListSignalingChannelsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListSignalingChannelsRequestT& request = {}) const
         {
             return SubmitAsync(&KinesisVideoClient::ListSignalingChannels, request, handler, context);
         }
@@ -488,13 +560,13 @@ namespace KinesisVideo
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/ListStreams">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListStreamsOutcome ListStreams(const Model::ListStreamsRequest& request) const;
+        virtual Model::ListStreamsOutcome ListStreams(const Model::ListStreamsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListStreams that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListStreamsRequestT = Model::ListStreamsRequest>
-        Model::ListStreamsOutcomeCallable ListStreamsCallable(const ListStreamsRequestT& request) const
+        Model::ListStreamsOutcomeCallable ListStreamsCallable(const ListStreamsRequestT& request = {}) const
         {
             return SubmitCallable(&KinesisVideoClient::ListStreams, request);
         }
@@ -503,7 +575,7 @@ namespace KinesisVideo
          * An Async wrapper for ListStreams that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListStreamsRequestT = Model::ListStreamsRequest>
-        void ListStreamsAsync(const ListStreamsRequestT& request, const ListStreamsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListStreamsAsync(const ListStreamsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListStreamsRequestT& request = {}) const
         {
             return SubmitAsync(&KinesisVideoClient::ListStreams, request, handler, context);
         }
@@ -541,13 +613,13 @@ namespace KinesisVideo
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/ListTagsForStream">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListTagsForStreamOutcome ListTagsForStream(const Model::ListTagsForStreamRequest& request) const;
+        virtual Model::ListTagsForStreamOutcome ListTagsForStream(const Model::ListTagsForStreamRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListTagsForStream that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListTagsForStreamRequestT = Model::ListTagsForStreamRequest>
-        Model::ListTagsForStreamOutcomeCallable ListTagsForStreamCallable(const ListTagsForStreamRequestT& request) const
+        Model::ListTagsForStreamOutcomeCallable ListTagsForStreamCallable(const ListTagsForStreamRequestT& request = {}) const
         {
             return SubmitCallable(&KinesisVideoClient::ListTagsForStream, request);
         }
@@ -556,7 +628,7 @@ namespace KinesisVideo
          * An Async wrapper for ListTagsForStream that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListTagsForStreamRequestT = Model::ListTagsForStreamRequest>
-        void ListTagsForStreamAsync(const ListTagsForStreamRequestT& request, const ListTagsForStreamResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListTagsForStreamAsync(const ListTagsForStreamResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListTagsForStreamRequestT& request = {}) const
         {
             return SubmitAsync(&KinesisVideoClient::ListTagsForStream, request, handler, context);
         }
@@ -575,7 +647,10 @@ namespace KinesisVideo
          * during the syncing process, a <code>ResourceInUseException</code> will be
          * thrown. The connectivity of the stream’s edge configuration and the Edge Agent
          * will be retried for 15 minutes. After 15 minutes, the status will transition
-         * into the <code>SYNC_FAILED</code> state.</p><p><h3>See Also:</h3>   <a
+         * into the <code>SYNC_FAILED</code> state.</p> <p>To move an edge configuration
+         * from one device to another, use <a>DeleteEdgeConfiguration</a> to delete the
+         * current edge configuration. You can then invoke StartEdgeConfigurationUpdate
+         * with an updated Hub Device ARN.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/StartEdgeConfigurationUpdate">AWS
          * API Reference</a></p>
          */
@@ -721,17 +796,16 @@ namespace KinesisVideo
         }
 
         /**
-         * <p> Increases or decreases the stream's data retention period by the value that
+         * <p>Increases or decreases the stream's data retention period by the value that
          * you specify. To indicate whether you want to increase or decrease the data
          * retention period, specify the <code>Operation</code> parameter in the request
          * body. In the request, you must specify either the <code>StreamName</code> or the
-         * <code>StreamARN</code>. </p>  <p>The retention period that you specify
-         * replaces the current value.</p>  <p>This operation requires permission
-         * for the <code>KinesisVideo:UpdateDataRetention</code> action.</p> <p>Changing
-         * the data retention period affects the data in the stream as follows:</p> <ul>
-         * <li> <p>If the data retention period is increased, existing data is retained for
-         * the new retention period. For example, if the data retention period is increased
-         * from one hour to seven hours, all existing data is retained for seven hours.</p>
+         * <code>StreamARN</code>. </p> <p>This operation requires permission for the
+         * <code>KinesisVideo:UpdateDataRetention</code> action.</p> <p>Changing the data
+         * retention period affects the data in the stream as follows:</p> <ul> <li> <p>If
+         * the data retention period is increased, existing data is retained for the new
+         * retention period. For example, if the data retention period is increased from
+         * one hour to seven hours, all existing data is retained for seven hours.</p>
          * </li> <li> <p>If the data retention period is decreased, existing data is
          * retained for the new retention period. For example, if the data retention period
          * is decreased from seven hours to one hour, all existing data is retained for one
@@ -766,13 +840,13 @@ namespace KinesisVideo
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/UpdateImageGenerationConfiguration">AWS
          * API Reference</a></p>
          */
-        virtual Model::UpdateImageGenerationConfigurationOutcome UpdateImageGenerationConfiguration(const Model::UpdateImageGenerationConfigurationRequest& request) const;
+        virtual Model::UpdateImageGenerationConfigurationOutcome UpdateImageGenerationConfiguration(const Model::UpdateImageGenerationConfigurationRequest& request = {}) const;
 
         /**
          * A Callable wrapper for UpdateImageGenerationConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename UpdateImageGenerationConfigurationRequestT = Model::UpdateImageGenerationConfigurationRequest>
-        Model::UpdateImageGenerationConfigurationOutcomeCallable UpdateImageGenerationConfigurationCallable(const UpdateImageGenerationConfigurationRequestT& request) const
+        Model::UpdateImageGenerationConfigurationOutcomeCallable UpdateImageGenerationConfigurationCallable(const UpdateImageGenerationConfigurationRequestT& request = {}) const
         {
             return SubmitCallable(&KinesisVideoClient::UpdateImageGenerationConfiguration, request);
         }
@@ -781,18 +855,24 @@ namespace KinesisVideo
          * An Async wrapper for UpdateImageGenerationConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename UpdateImageGenerationConfigurationRequestT = Model::UpdateImageGenerationConfigurationRequest>
-        void UpdateImageGenerationConfigurationAsync(const UpdateImageGenerationConfigurationRequestT& request, const UpdateImageGenerationConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void UpdateImageGenerationConfigurationAsync(const UpdateImageGenerationConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const UpdateImageGenerationConfigurationRequestT& request = {}) const
         {
             return SubmitAsync(&KinesisVideoClient::UpdateImageGenerationConfiguration, request, handler, context);
         }
 
         /**
          * <p>Associates a <code>SignalingChannel</code> to a stream to store the media.
-         * There are two signaling modes that can specified :</p> <ul> <li> <p>If the
-         * <code>StorageStatus</code> is disabled, no data will be stored, and the
-         * <code>StreamARN</code> parameter will not be needed. </p> </li> <li> <p>If the
+         * There are two signaling modes that you can specify :</p> <ul> <li> <p>If
          * <code>StorageStatus</code> is enabled, the data will be stored in the
-         * <code>StreamARN</code> provided. </p> </li> </ul><p><h3>See Also:</h3>   <a
+         * <code>StreamARN</code> provided. In order for WebRTC Ingestion to work, the
+         * stream must have data retention enabled.</p> </li> <li> <p>If
+         * <code>StorageStatus</code> is disabled, no data will be stored, and the
+         * <code>StreamARN</code> parameter will not be needed. </p> </li> </ul>
+         *  <p>If <code>StorageStatus</code> is enabled, direct peer-to-peer
+         * (master-viewer) connections no longer occur. Peers connect directly to the
+         * storage session. You must call the <code>JoinStorageSession</code> API to
+         * trigger an SDP offer send and establish a connection between a peer and the
+         * storage session. </p> <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/UpdateMediaStorageConfiguration">AWS
          * API Reference</a></p>
          */
@@ -822,13 +902,13 @@ namespace KinesisVideo
          * href="http://docs.aws.amazon.com/goto/WebAPI/kinesisvideo-2017-09-30/UpdateNotificationConfiguration">AWS
          * API Reference</a></p>
          */
-        virtual Model::UpdateNotificationConfigurationOutcome UpdateNotificationConfiguration(const Model::UpdateNotificationConfigurationRequest& request) const;
+        virtual Model::UpdateNotificationConfigurationOutcome UpdateNotificationConfiguration(const Model::UpdateNotificationConfigurationRequest& request = {}) const;
 
         /**
          * A Callable wrapper for UpdateNotificationConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename UpdateNotificationConfigurationRequestT = Model::UpdateNotificationConfigurationRequest>
-        Model::UpdateNotificationConfigurationOutcomeCallable UpdateNotificationConfigurationCallable(const UpdateNotificationConfigurationRequestT& request) const
+        Model::UpdateNotificationConfigurationOutcomeCallable UpdateNotificationConfigurationCallable(const UpdateNotificationConfigurationRequestT& request = {}) const
         {
             return SubmitCallable(&KinesisVideoClient::UpdateNotificationConfiguration, request);
         }
@@ -837,7 +917,7 @@ namespace KinesisVideo
          * An Async wrapper for UpdateNotificationConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename UpdateNotificationConfigurationRequestT = Model::UpdateNotificationConfigurationRequest>
-        void UpdateNotificationConfigurationAsync(const UpdateNotificationConfigurationRequestT& request, const UpdateNotificationConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void UpdateNotificationConfigurationAsync(const UpdateNotificationConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const UpdateNotificationConfigurationRequestT& request = {}) const
         {
             return SubmitAsync(&KinesisVideoClient::UpdateNotificationConfiguration, request, handler, context);
         }
@@ -909,11 +989,7 @@ namespace KinesisVideo
       std::shared_ptr<KinesisVideoEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<KinesisVideoClient>;
-      void init(const KinesisVideoClientConfiguration& clientConfiguration);
 
-      KinesisVideoClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<KinesisVideoEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace KinesisVideo

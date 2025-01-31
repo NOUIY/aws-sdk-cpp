@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/ebs/EBS_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/ebs/EBSServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/ebs/EBSErrorMarshaller.h>
 
 namespace Aws
 {
 namespace EBS
 {
+  AWS_EBS_API extern const char SERVICE_NAME[];
   /**
    * <p>You can use the Amazon Elastic Block Store (Amazon EBS) direct APIs to create
    * Amazon EBS snapshots, write data directly to your snapshots, read data on your
@@ -42,12 +46,20 @@ namespace EBS
    * Elastic Block Store Endpoints and Quotas</a> in the <i>Amazon Web Services
    * General Reference</i>.</p>
    */
-  class AWS_EBS_API EBSClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<EBSClient>
+  class AWS_EBS_API EBSClient : smithy::client::AwsSmithyClientT<Aws::EBS::SERVICE_NAME,
+      Aws::EBS::EBSClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      EBSEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::EBSErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<EBSClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "EBS"; }
 
       typedef EBSClientConfiguration ClientConfigurationType;
       typedef EBSEndpointProvider EndpointProviderType;
@@ -57,14 +69,14 @@ namespace EBS
         * is not specified, it will be initialized to default values.
         */
         EBSClient(const Aws::EBS::EBSClientConfiguration& clientConfiguration = Aws::EBS::EBSClientConfiguration(),
-                  std::shared_ptr<EBSEndpointProviderBase> endpointProvider = Aws::MakeShared<EBSEndpointProvider>(ALLOCATION_TAG));
+                  std::shared_ptr<EBSEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         EBSClient(const Aws::Auth::AWSCredentials& credentials,
-                  std::shared_ptr<EBSEndpointProviderBase> endpointProvider = Aws::MakeShared<EBSEndpointProvider>(ALLOCATION_TAG),
+                  std::shared_ptr<EBSEndpointProviderBase> endpointProvider = nullptr,
                   const Aws::EBS::EBSClientConfiguration& clientConfiguration = Aws::EBS::EBSClientConfiguration());
 
        /**
@@ -72,7 +84,7 @@ namespace EBS
         * the default http client factory will be used
         */
         EBSClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                  std::shared_ptr<EBSEndpointProviderBase> endpointProvider = Aws::MakeShared<EBSEndpointProvider>(ALLOCATION_TAG),
+                  std::shared_ptr<EBSEndpointProviderBase> endpointProvider = nullptr,
                   const Aws::EBS::EBSClientConfiguration& clientConfiguration = Aws::EBS::EBSClientConfiguration());
 
 
@@ -104,7 +116,13 @@ namespace EBS
          * <p>Seals and completes the snapshot after all of the required blocks of data
          * have been written to it. Completing the snapshot changes the status to
          * <code>completed</code>. You cannot write new blocks to a snapshot after it has
-         * been completed.</p><p><h3>See Also:</h3>   <a
+         * been completed.</p>  <p>You should always retry requests that receive
+         * server (<code>5xx</code>) error responses, and <code>ThrottlingException</code>
+         * and <code>RequestThrottledException</code> client error responses. For more
+         * information see <a
+         * href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html">Error
+         * retries</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>
+         * <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/ebs-2019-11-02/CompleteSnapshot">AWS
          * API Reference</a></p>
          */
@@ -129,8 +147,14 @@ namespace EBS
         }
 
         /**
-         * <p>Returns the data in a block in an Amazon Elastic Block Store
-         * snapshot.</p><p><h3>See Also:</h3>   <a
+         * <p>Returns the data in a block in an Amazon Elastic Block Store snapshot.</p>
+         *  <p>You should always retry requests that receive server
+         * (<code>5xx</code>) error responses, and <code>ThrottlingException</code> and
+         * <code>RequestThrottledException</code> client error responses. For more
+         * information see <a
+         * href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html">Error
+         * retries</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>
+         * <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/ebs-2019-11-02/GetSnapshotBlock">AWS
          * API Reference</a></p>
          */
@@ -156,8 +180,14 @@ namespace EBS
 
         /**
          * <p>Returns information about the blocks that are different between two Amazon
-         * Elastic Block Store snapshots of the same volume/snapshot lineage.</p><p><h3>See
-         * Also:</h3>   <a
+         * Elastic Block Store snapshots of the same volume/snapshot lineage.</p> 
+         * <p>You should always retry requests that receive server (<code>5xx</code>) error
+         * responses, and <code>ThrottlingException</code> and
+         * <code>RequestThrottledException</code> client error responses. For more
+         * information see <a
+         * href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html">Error
+         * retries</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>
+         * <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/ebs-2019-11-02/ListChangedBlocks">AWS
          * API Reference</a></p>
          */
@@ -183,7 +213,13 @@ namespace EBS
 
         /**
          * <p>Returns information about the blocks in an Amazon Elastic Block Store
-         * snapshot.</p><p><h3>See Also:</h3>   <a
+         * snapshot.</p>  <p>You should always retry requests that receive server
+         * (<code>5xx</code>) error responses, and <code>ThrottlingException</code> and
+         * <code>RequestThrottledException</code> client error responses. For more
+         * information see <a
+         * href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html">Error
+         * retries</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>
+         * <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/ebs-2019-11-02/ListSnapshotBlocks">AWS
          * API Reference</a></p>
          */
@@ -211,7 +247,13 @@ namespace EBS
          * <p>Writes a block of data to a snapshot. If the specified block contains data,
          * the existing data is overwritten. The target snapshot must be in the
          * <code>pending</code> state.</p> <p>Data written to a snapshot must be aligned
-         * with 512-KiB sectors.</p><p><h3>See Also:</h3>   <a
+         * with 512-KiB sectors.</p>  <p>You should always retry requests that
+         * receive server (<code>5xx</code>) error responses, and
+         * <code>ThrottlingException</code> and <code>RequestThrottledException</code>
+         * client error responses. For more information see <a
+         * href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html">Error
+         * retries</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>
+         * <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/ebs-2019-11-02/PutSnapshotBlock">AWS
          * API Reference</a></p>
          */
@@ -240,8 +282,14 @@ namespace EBS
          * <code>pending</code> state after the request completes. </p> <p>After creating
          * the snapshot, use <a
          * href="https://docs.aws.amazon.com/ebs/latest/APIReference/API_PutSnapshotBlock.html">
-         * PutSnapshotBlock</a> to write blocks of data to the snapshot.</p><p><h3>See
-         * Also:</h3>   <a
+         * PutSnapshotBlock</a> to write blocks of data to the snapshot.</p>  <p>You
+         * should always retry requests that receive server (<code>5xx</code>) error
+         * responses, and <code>ThrottlingException</code> and
+         * <code>RequestThrottledException</code> client error responses. For more
+         * information see <a
+         * href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html">Error
+         * retries</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>
+         * <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/ebs-2019-11-02/StartSnapshot">AWS
          * API Reference</a></p>
          */
@@ -270,11 +318,7 @@ namespace EBS
       std::shared_ptr<EBSEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<EBSClient>;
-      void init(const EBSClientConfiguration& clientConfiguration);
 
-      EBSClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<EBSEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace EBS

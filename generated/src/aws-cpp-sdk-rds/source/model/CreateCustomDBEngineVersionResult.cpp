@@ -23,17 +23,15 @@ CreateCustomDBEngineVersionResult::CreateCustomDBEngineVersionResult() :
     m_supportsParallelQuery(false),
     m_supportsGlobalDatabases(false),
     m_supportsBabelfish(false),
-    m_supportsCertificateRotationWithoutRestart(false)
+    m_supportsLimitlessDatabase(false),
+    m_supportsCertificateRotationWithoutRestart(false),
+    m_supportsLocalWriteForwarding(false),
+    m_supportsIntegrations(false)
 {
 }
 
-CreateCustomDBEngineVersionResult::CreateCustomDBEngineVersionResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
-    m_supportsLogExportsToCloudwatchLogs(false),
-    m_supportsReadReplica(false),
-    m_supportsParallelQuery(false),
-    m_supportsGlobalDatabases(false),
-    m_supportsBabelfish(false),
-    m_supportsCertificateRotationWithoutRestart(false)
+CreateCustomDBEngineVersionResult::CreateCustomDBEngineVersionResult(const Aws::AmazonWebServiceResult<XmlDocument>& result)
+  : CreateCustomDBEngineVersionResult()
 {
   *this = result;
 }
@@ -243,6 +241,11 @@ CreateCustomDBEngineVersionResult& CreateCustomDBEngineVersionResult::operator =
     {
       m_customDBEngineVersionManifest = Aws::Utils::Xml::DecodeEscapedXmlText(customDBEngineVersionManifestNode.GetText());
     }
+    XmlNode supportsLimitlessDatabaseNode = resultNode.FirstChild("SupportsLimitlessDatabase");
+    if(!supportsLimitlessDatabaseNode.IsNull())
+    {
+      m_supportsLimitlessDatabase = StringUtils::ConvertToBool(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(supportsLimitlessDatabaseNode.GetText()).c_str()).c_str());
+    }
     XmlNode supportsCertificateRotationWithoutRestartNode = resultNode.FirstChild("SupportsCertificateRotationWithoutRestart");
     if(!supportsCertificateRotationWithoutRestartNode.IsNull())
     {
@@ -258,6 +261,21 @@ CreateCustomDBEngineVersionResult& CreateCustomDBEngineVersionResult::operator =
         supportedCACertificateIdentifiersMember = supportedCACertificateIdentifiersMember.NextNode("member");
       }
 
+    }
+    XmlNode supportsLocalWriteForwardingNode = resultNode.FirstChild("SupportsLocalWriteForwarding");
+    if(!supportsLocalWriteForwardingNode.IsNull())
+    {
+      m_supportsLocalWriteForwarding = StringUtils::ConvertToBool(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(supportsLocalWriteForwardingNode.GetText()).c_str()).c_str());
+    }
+    XmlNode supportsIntegrationsNode = resultNode.FirstChild("SupportsIntegrations");
+    if(!supportsIntegrationsNode.IsNull())
+    {
+      m_supportsIntegrations = StringUtils::ConvertToBool(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(supportsIntegrationsNode.GetText()).c_str()).c_str());
+    }
+    XmlNode serverlessV2FeaturesSupportNode = resultNode.FirstChild("ServerlessV2FeaturesSupport");
+    if(!serverlessV2FeaturesSupportNode.IsNull())
+    {
+      m_serverlessV2FeaturesSupport = serverlessV2FeaturesSupportNode;
     }
   }
 

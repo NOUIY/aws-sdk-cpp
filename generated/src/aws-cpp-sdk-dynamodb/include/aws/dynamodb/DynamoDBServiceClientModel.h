@@ -7,7 +7,7 @@
 
 /* Generic header includes */
 #include <aws/dynamodb/DynamoDBErrors.h>
-#include <aws/core/client/GenericClientConfiguration.h>
+#include <aws/dynamodb/DynamoDBClientConfiguration.h>
 #include <aws/core/client/AWSError.h>
 #include <aws/core/utils/memory/stl/AWSString.h>
 #include <aws/core/client/AsyncCallerContext.h>
@@ -27,6 +27,7 @@
 #include <aws/dynamodb/model/CreateTableResult.h>
 #include <aws/dynamodb/model/DeleteBackupResult.h>
 #include <aws/dynamodb/model/DeleteItemResult.h>
+#include <aws/dynamodb/model/DeleteResourcePolicyResult.h>
 #include <aws/dynamodb/model/DeleteTableResult.h>
 #include <aws/dynamodb/model/DescribeBackupResult.h>
 #include <aws/dynamodb/model/DescribeContinuousBackupsResult.h>
@@ -47,6 +48,7 @@
 #include <aws/dynamodb/model/ExecuteTransactionResult.h>
 #include <aws/dynamodb/model/ExportTableToPointInTimeResult.h>
 #include <aws/dynamodb/model/GetItemResult.h>
+#include <aws/dynamodb/model/GetResourcePolicyResult.h>
 #include <aws/dynamodb/model/ImportTableResult.h>
 #include <aws/dynamodb/model/ListBackupsResult.h>
 #include <aws/dynamodb/model/ListContributorInsightsResult.h>
@@ -56,6 +58,7 @@
 #include <aws/dynamodb/model/ListTablesResult.h>
 #include <aws/dynamodb/model/ListTagsOfResourceResult.h>
 #include <aws/dynamodb/model/PutItemResult.h>
+#include <aws/dynamodb/model/PutResourcePolicyResult.h>
 #include <aws/dynamodb/model/QueryResult.h>
 #include <aws/dynamodb/model/RestoreTableFromBackupResult.h>
 #include <aws/dynamodb/model/RestoreTableToPointInTimeResult.h>
@@ -67,9 +70,18 @@
 #include <aws/dynamodb/model/UpdateGlobalTableResult.h>
 #include <aws/dynamodb/model/UpdateGlobalTableSettingsResult.h>
 #include <aws/dynamodb/model/UpdateItemResult.h>
+#include <aws/dynamodb/model/UpdateKinesisStreamingDestinationResult.h>
 #include <aws/dynamodb/model/UpdateTableResult.h>
 #include <aws/dynamodb/model/UpdateTableReplicaAutoScalingResult.h>
 #include <aws/dynamodb/model/UpdateTimeToLiveResult.h>
+#include <aws/dynamodb/model/DescribeLimitsRequest.h>
+#include <aws/dynamodb/model/ListGlobalTablesRequest.h>
+#include <aws/dynamodb/model/ListImportsRequest.h>
+#include <aws/dynamodb/model/ListBackupsRequest.h>
+#include <aws/dynamodb/model/ListContributorInsightsRequest.h>
+#include <aws/dynamodb/model/ListTablesRequest.h>
+#include <aws/dynamodb/model/DescribeEndpointsRequest.h>
+#include <aws/dynamodb/model/ListExportsRequest.h>
 #include <aws/core/NoResult.h>
 /* End of service model headers required in DynamoDBClient header */
 
@@ -104,7 +116,6 @@ namespace Aws
 
   namespace DynamoDB
   {
-    using DynamoDBClientConfiguration = Aws::Client::GenericClientConfiguration<true>;
     using DynamoDBEndpointProviderBase = Aws::DynamoDB::Endpoint::DynamoDBEndpointProviderBase;
     using DynamoDBEndpointProvider = Aws::DynamoDB::Endpoint::DynamoDBEndpointProvider;
 
@@ -119,6 +130,7 @@ namespace Aws
       class CreateTableRequest;
       class DeleteBackupRequest;
       class DeleteItemRequest;
+      class DeleteResourcePolicyRequest;
       class DeleteTableRequest;
       class DescribeBackupRequest;
       class DescribeContinuousBackupsRequest;
@@ -139,6 +151,7 @@ namespace Aws
       class ExecuteTransactionRequest;
       class ExportTableToPointInTimeRequest;
       class GetItemRequest;
+      class GetResourcePolicyRequest;
       class ImportTableRequest;
       class ListBackupsRequest;
       class ListContributorInsightsRequest;
@@ -148,6 +161,7 @@ namespace Aws
       class ListTablesRequest;
       class ListTagsOfResourceRequest;
       class PutItemRequest;
+      class PutResourcePolicyRequest;
       class QueryRequest;
       class RestoreTableFromBackupRequest;
       class RestoreTableToPointInTimeRequest;
@@ -161,6 +175,7 @@ namespace Aws
       class UpdateGlobalTableRequest;
       class UpdateGlobalTableSettingsRequest;
       class UpdateItemRequest;
+      class UpdateKinesisStreamingDestinationRequest;
       class UpdateTableRequest;
       class UpdateTableReplicaAutoScalingRequest;
       class UpdateTimeToLiveRequest;
@@ -175,6 +190,7 @@ namespace Aws
       typedef Aws::Utils::Outcome<CreateTableResult, DynamoDBError> CreateTableOutcome;
       typedef Aws::Utils::Outcome<DeleteBackupResult, DynamoDBError> DeleteBackupOutcome;
       typedef Aws::Utils::Outcome<DeleteItemResult, DynamoDBError> DeleteItemOutcome;
+      typedef Aws::Utils::Outcome<DeleteResourcePolicyResult, DynamoDBError> DeleteResourcePolicyOutcome;
       typedef Aws::Utils::Outcome<DeleteTableResult, DynamoDBError> DeleteTableOutcome;
       typedef Aws::Utils::Outcome<DescribeBackupResult, DynamoDBError> DescribeBackupOutcome;
       typedef Aws::Utils::Outcome<DescribeContinuousBackupsResult, DynamoDBError> DescribeContinuousBackupsOutcome;
@@ -195,6 +211,7 @@ namespace Aws
       typedef Aws::Utils::Outcome<ExecuteTransactionResult, DynamoDBError> ExecuteTransactionOutcome;
       typedef Aws::Utils::Outcome<ExportTableToPointInTimeResult, DynamoDBError> ExportTableToPointInTimeOutcome;
       typedef Aws::Utils::Outcome<GetItemResult, DynamoDBError> GetItemOutcome;
+      typedef Aws::Utils::Outcome<GetResourcePolicyResult, DynamoDBError> GetResourcePolicyOutcome;
       typedef Aws::Utils::Outcome<ImportTableResult, DynamoDBError> ImportTableOutcome;
       typedef Aws::Utils::Outcome<ListBackupsResult, DynamoDBError> ListBackupsOutcome;
       typedef Aws::Utils::Outcome<ListContributorInsightsResult, DynamoDBError> ListContributorInsightsOutcome;
@@ -204,6 +221,7 @@ namespace Aws
       typedef Aws::Utils::Outcome<ListTablesResult, DynamoDBError> ListTablesOutcome;
       typedef Aws::Utils::Outcome<ListTagsOfResourceResult, DynamoDBError> ListTagsOfResourceOutcome;
       typedef Aws::Utils::Outcome<PutItemResult, DynamoDBError> PutItemOutcome;
+      typedef Aws::Utils::Outcome<PutResourcePolicyResult, DynamoDBError> PutResourcePolicyOutcome;
       typedef Aws::Utils::Outcome<QueryResult, DynamoDBError> QueryOutcome;
       typedef Aws::Utils::Outcome<RestoreTableFromBackupResult, DynamoDBError> RestoreTableFromBackupOutcome;
       typedef Aws::Utils::Outcome<RestoreTableToPointInTimeResult, DynamoDBError> RestoreTableToPointInTimeOutcome;
@@ -217,6 +235,7 @@ namespace Aws
       typedef Aws::Utils::Outcome<UpdateGlobalTableResult, DynamoDBError> UpdateGlobalTableOutcome;
       typedef Aws::Utils::Outcome<UpdateGlobalTableSettingsResult, DynamoDBError> UpdateGlobalTableSettingsOutcome;
       typedef Aws::Utils::Outcome<UpdateItemResult, DynamoDBError> UpdateItemOutcome;
+      typedef Aws::Utils::Outcome<UpdateKinesisStreamingDestinationResult, DynamoDBError> UpdateKinesisStreamingDestinationOutcome;
       typedef Aws::Utils::Outcome<UpdateTableResult, DynamoDBError> UpdateTableOutcome;
       typedef Aws::Utils::Outcome<UpdateTableReplicaAutoScalingResult, DynamoDBError> UpdateTableReplicaAutoScalingOutcome;
       typedef Aws::Utils::Outcome<UpdateTimeToLiveResult, DynamoDBError> UpdateTimeToLiveOutcome;
@@ -231,6 +250,7 @@ namespace Aws
       typedef std::future<CreateTableOutcome> CreateTableOutcomeCallable;
       typedef std::future<DeleteBackupOutcome> DeleteBackupOutcomeCallable;
       typedef std::future<DeleteItemOutcome> DeleteItemOutcomeCallable;
+      typedef std::future<DeleteResourcePolicyOutcome> DeleteResourcePolicyOutcomeCallable;
       typedef std::future<DeleteTableOutcome> DeleteTableOutcomeCallable;
       typedef std::future<DescribeBackupOutcome> DescribeBackupOutcomeCallable;
       typedef std::future<DescribeContinuousBackupsOutcome> DescribeContinuousBackupsOutcomeCallable;
@@ -251,6 +271,7 @@ namespace Aws
       typedef std::future<ExecuteTransactionOutcome> ExecuteTransactionOutcomeCallable;
       typedef std::future<ExportTableToPointInTimeOutcome> ExportTableToPointInTimeOutcomeCallable;
       typedef std::future<GetItemOutcome> GetItemOutcomeCallable;
+      typedef std::future<GetResourcePolicyOutcome> GetResourcePolicyOutcomeCallable;
       typedef std::future<ImportTableOutcome> ImportTableOutcomeCallable;
       typedef std::future<ListBackupsOutcome> ListBackupsOutcomeCallable;
       typedef std::future<ListContributorInsightsOutcome> ListContributorInsightsOutcomeCallable;
@@ -260,6 +281,7 @@ namespace Aws
       typedef std::future<ListTablesOutcome> ListTablesOutcomeCallable;
       typedef std::future<ListTagsOfResourceOutcome> ListTagsOfResourceOutcomeCallable;
       typedef std::future<PutItemOutcome> PutItemOutcomeCallable;
+      typedef std::future<PutResourcePolicyOutcome> PutResourcePolicyOutcomeCallable;
       typedef std::future<QueryOutcome> QueryOutcomeCallable;
       typedef std::future<RestoreTableFromBackupOutcome> RestoreTableFromBackupOutcomeCallable;
       typedef std::future<RestoreTableToPointInTimeOutcome> RestoreTableToPointInTimeOutcomeCallable;
@@ -273,6 +295,7 @@ namespace Aws
       typedef std::future<UpdateGlobalTableOutcome> UpdateGlobalTableOutcomeCallable;
       typedef std::future<UpdateGlobalTableSettingsOutcome> UpdateGlobalTableSettingsOutcomeCallable;
       typedef std::future<UpdateItemOutcome> UpdateItemOutcomeCallable;
+      typedef std::future<UpdateKinesisStreamingDestinationOutcome> UpdateKinesisStreamingDestinationOutcomeCallable;
       typedef std::future<UpdateTableOutcome> UpdateTableOutcomeCallable;
       typedef std::future<UpdateTableReplicaAutoScalingOutcome> UpdateTableReplicaAutoScalingOutcomeCallable;
       typedef std::future<UpdateTimeToLiveOutcome> UpdateTimeToLiveOutcomeCallable;
@@ -290,6 +313,7 @@ namespace Aws
     typedef std::function<void(const DynamoDBClient*, const Model::CreateTableRequest&, const Model::CreateTableOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CreateTableResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::DeleteBackupRequest&, const Model::DeleteBackupOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteBackupResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::DeleteItemRequest&, const Model::DeleteItemOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteItemResponseReceivedHandler;
+    typedef std::function<void(const DynamoDBClient*, const Model::DeleteResourcePolicyRequest&, const Model::DeleteResourcePolicyOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteResourcePolicyResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::DeleteTableRequest&, const Model::DeleteTableOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteTableResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::DescribeBackupRequest&, const Model::DescribeBackupOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeBackupResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::DescribeContinuousBackupsRequest&, const Model::DescribeContinuousBackupsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeContinuousBackupsResponseReceivedHandler;
@@ -310,6 +334,7 @@ namespace Aws
     typedef std::function<void(const DynamoDBClient*, const Model::ExecuteTransactionRequest&, const Model::ExecuteTransactionOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ExecuteTransactionResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::ExportTableToPointInTimeRequest&, const Model::ExportTableToPointInTimeOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ExportTableToPointInTimeResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::GetItemRequest&, const Model::GetItemOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetItemResponseReceivedHandler;
+    typedef std::function<void(const DynamoDBClient*, const Model::GetResourcePolicyRequest&, const Model::GetResourcePolicyOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetResourcePolicyResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::ImportTableRequest&, const Model::ImportTableOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ImportTableResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::ListBackupsRequest&, const Model::ListBackupsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListBackupsResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::ListContributorInsightsRequest&, const Model::ListContributorInsightsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListContributorInsightsResponseReceivedHandler;
@@ -319,6 +344,7 @@ namespace Aws
     typedef std::function<void(const DynamoDBClient*, const Model::ListTablesRequest&, const Model::ListTablesOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListTablesResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::ListTagsOfResourceRequest&, const Model::ListTagsOfResourceOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListTagsOfResourceResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::PutItemRequest&, const Model::PutItemOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > PutItemResponseReceivedHandler;
+    typedef std::function<void(const DynamoDBClient*, const Model::PutResourcePolicyRequest&, const Model::PutResourcePolicyOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > PutResourcePolicyResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::QueryRequest&, const Model::QueryOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > QueryResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::RestoreTableFromBackupRequest&, const Model::RestoreTableFromBackupOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > RestoreTableFromBackupResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::RestoreTableToPointInTimeRequest&, const Model::RestoreTableToPointInTimeOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > RestoreTableToPointInTimeResponseReceivedHandler;
@@ -332,6 +358,7 @@ namespace Aws
     typedef std::function<void(const DynamoDBClient*, const Model::UpdateGlobalTableRequest&, const Model::UpdateGlobalTableOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > UpdateGlobalTableResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::UpdateGlobalTableSettingsRequest&, const Model::UpdateGlobalTableSettingsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > UpdateGlobalTableSettingsResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::UpdateItemRequest&, const Model::UpdateItemOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > UpdateItemResponseReceivedHandler;
+    typedef std::function<void(const DynamoDBClient*, const Model::UpdateKinesisStreamingDestinationRequest&, const Model::UpdateKinesisStreamingDestinationOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > UpdateKinesisStreamingDestinationResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::UpdateTableRequest&, const Model::UpdateTableOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > UpdateTableResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::UpdateTableReplicaAutoScalingRequest&, const Model::UpdateTableReplicaAutoScalingOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > UpdateTableReplicaAutoScalingResponseReceivedHandler;
     typedef std::function<void(const DynamoDBClient*, const Model::UpdateTimeToLiveRequest&, const Model::UpdateTimeToLiveOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > UpdateTimeToLiveResponseReceivedHandler;

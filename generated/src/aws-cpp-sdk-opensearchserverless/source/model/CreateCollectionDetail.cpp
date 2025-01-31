@@ -28,6 +28,8 @@ CreateCollectionDetail::CreateCollectionDetail() :
     m_lastModifiedDate(0),
     m_lastModifiedDateHasBeenSet(false),
     m_nameHasBeenSet(false),
+    m_standbyReplicas(StandbyReplicas::NOT_SET),
+    m_standbyReplicasHasBeenSet(false),
     m_status(CollectionStatus::NOT_SET),
     m_statusHasBeenSet(false),
     m_type(CollectionType::NOT_SET),
@@ -35,20 +37,8 @@ CreateCollectionDetail::CreateCollectionDetail() :
 {
 }
 
-CreateCollectionDetail::CreateCollectionDetail(JsonView jsonValue) : 
-    m_arnHasBeenSet(false),
-    m_createdDate(0),
-    m_createdDateHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_idHasBeenSet(false),
-    m_kmsKeyArnHasBeenSet(false),
-    m_lastModifiedDate(0),
-    m_lastModifiedDateHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_status(CollectionStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_type(CollectionType::NOT_SET),
-    m_typeHasBeenSet(false)
+CreateCollectionDetail::CreateCollectionDetail(JsonView jsonValue)
+  : CreateCollectionDetail()
 {
   *this = jsonValue;
 }
@@ -102,6 +92,13 @@ CreateCollectionDetail& CreateCollectionDetail::operator =(JsonView jsonValue)
     m_name = jsonValue.GetString("name");
 
     m_nameHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("standbyReplicas"))
+  {
+    m_standbyReplicas = StandbyReplicasMapper::GetStandbyReplicasForName(jsonValue.GetString("standbyReplicas"));
+
+    m_standbyReplicasHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("status"))
@@ -165,6 +162,11 @@ JsonValue CreateCollectionDetail::Jsonize() const
   {
    payload.WithString("name", m_name);
 
+  }
+
+  if(m_standbyReplicasHasBeenSet)
+  {
+   payload.WithString("standbyReplicas", StandbyReplicasMapper::GetNameForStandbyReplicas(m_standbyReplicas));
   }
 
   if(m_statusHasBeenSet)

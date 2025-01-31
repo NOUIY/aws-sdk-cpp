@@ -6,30 +6,44 @@
 #pragma once
 #include <aws/rds-data/RDSDataService_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/rds-data/RDSDataServiceServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/rds-data/RDSDataServiceErrorMarshaller.h>
 
 namespace Aws
 {
 namespace RDSDataService
 {
+  AWS_RDSDATASERVICE_API extern const char SERVICE_NAME[];
   /**
-   * <p><fullname>Amazon RDS Data Service</fullname> <p>Amazon RDS provides an HTTP
-   * endpoint to run SQL statements on an Amazon Aurora Serverless v1 DB cluster. To
-   * run these statements, you work with the Data Service API.</p>  <p>The Data
-   * Service API isn't supported on Amazon Aurora Serverless v2 DB clusters.</p>
-   *  <p>For more information about the Data Service API, see <a
+   * <p><fullname>RDS Data API</fullname> <p>Amazon RDS provides an HTTP endpoint to
+   * run SQL statements on an Amazon Aurora DB cluster. To run these statements, you
+   * use the RDS Data API (Data API).</p> <p>Data API is available with the following
+   * types of Aurora databases:</p> <ul> <li> <p>Aurora PostgreSQL - Serverless v2,
+   * provisioned, and Serverless v1</p> </li> <li> <p>Aurora MySQL - Serverless v2,
+   * provisioned, and Serverless v1</p> </li> </ul> <p>For more information about the
+   * Data API, see <a
    * href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html">Using
-   * the Data API</a> in the <i>Amazon Aurora User Guide</i>.</p></p>
+   * RDS Data API</a> in the <i>Amazon Aurora User Guide</i>.</p></p>
    */
-  class AWS_RDSDATASERVICE_API RDSDataServiceClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<RDSDataServiceClient>
+  class AWS_RDSDATASERVICE_API RDSDataServiceClient : smithy::client::AwsSmithyClientT<Aws::RDSDataService::SERVICE_NAME,
+      Aws::RDSDataService::RDSDataServiceClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      RDSDataServiceEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::RDSDataServiceErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<RDSDataServiceClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "RDS Data"; }
 
       typedef RDSDataServiceClientConfiguration ClientConfigurationType;
       typedef RDSDataServiceEndpointProvider EndpointProviderType;
@@ -39,14 +53,14 @@ namespace RDSDataService
         * is not specified, it will be initialized to default values.
         */
         RDSDataServiceClient(const Aws::RDSDataService::RDSDataServiceClientConfiguration& clientConfiguration = Aws::RDSDataService::RDSDataServiceClientConfiguration(),
-                             std::shared_ptr<RDSDataServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<RDSDataServiceEndpointProvider>(ALLOCATION_TAG));
+                             std::shared_ptr<RDSDataServiceEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         RDSDataServiceClient(const Aws::Auth::AWSCredentials& credentials,
-                             std::shared_ptr<RDSDataServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<RDSDataServiceEndpointProvider>(ALLOCATION_TAG),
+                             std::shared_ptr<RDSDataServiceEndpointProviderBase> endpointProvider = nullptr,
                              const Aws::RDSDataService::RDSDataServiceClientConfiguration& clientConfiguration = Aws::RDSDataService::RDSDataServiceClientConfiguration());
 
        /**
@@ -54,7 +68,7 @@ namespace RDSDataService
         * the default http client factory will be used
         */
         RDSDataServiceClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                             std::shared_ptr<RDSDataServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<RDSDataServiceEndpointProvider>(ALLOCATION_TAG),
+                             std::shared_ptr<RDSDataServiceEndpointProviderBase> endpointProvider = nullptr,
                              const Aws::RDSDataService::RDSDataServiceClientConfiguration& clientConfiguration = Aws::RDSDataService::RDSDataServiceClientConfiguration());
 
 
@@ -126,10 +140,10 @@ namespace RDSDataService
          * of 24 hours. A transaction is terminated and rolled back automatically after 24
          * hours.</p> <p>A transaction times out if no calls use its transaction ID in
          * three minutes. If a transaction times out before it's committed, it's rolled
-         * back automatically.</p> <p>DDL statements inside a transaction cause an implicit
-         * commit. We recommend that you run each DDL statement in a separate
-         * <code>ExecuteStatement</code> call with <code>continueAfterTimeout</code>
-         * enabled.</p> <p><h3>See Also:</h3>   <a
+         * back automatically.</p> <p>For Aurora MySQL, DDL statements inside a transaction
+         * cause an implicit commit. We recommend that you run each MySQL DDL statement in
+         * a separate <code>ExecuteStatement</code> call with
+         * <code>continueAfterTimeout</code> enabled.</p> <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/rds-data-2018-08-01/BeginTransaction">AWS
          * API Reference</a></p>
          */
@@ -239,11 +253,7 @@ namespace RDSDataService
       std::shared_ptr<RDSDataServiceEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<RDSDataServiceClient>;
-      void init(const RDSDataServiceClientConfiguration& clientConfiguration);
 
-      RDSDataServiceClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<RDSDataServiceEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace RDSDataService

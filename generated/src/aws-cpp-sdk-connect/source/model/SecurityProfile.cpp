@@ -26,19 +26,16 @@ SecurityProfile::SecurityProfile() :
     m_descriptionHasBeenSet(false),
     m_tagsHasBeenSet(false),
     m_allowedAccessControlTagsHasBeenSet(false),
-    m_tagRestrictedResourcesHasBeenSet(false)
+    m_tagRestrictedResourcesHasBeenSet(false),
+    m_lastModifiedTimeHasBeenSet(false),
+    m_lastModifiedRegionHasBeenSet(false),
+    m_hierarchyRestrictedResourcesHasBeenSet(false),
+    m_allowedAccessControlHierarchyGroupIdHasBeenSet(false)
 {
 }
 
-SecurityProfile::SecurityProfile(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_organizationResourceIdHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_securityProfileNameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_allowedAccessControlTagsHasBeenSet(false),
-    m_tagRestrictedResourcesHasBeenSet(false)
+SecurityProfile::SecurityProfile(JsonView jsonValue)
+  : SecurityProfile()
 {
   *this = jsonValue;
 }
@@ -110,6 +107,37 @@ SecurityProfile& SecurityProfile::operator =(JsonView jsonValue)
     m_tagRestrictedResourcesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("LastModifiedTime"))
+  {
+    m_lastModifiedTime = jsonValue.GetDouble("LastModifiedTime");
+
+    m_lastModifiedTimeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("LastModifiedRegion"))
+  {
+    m_lastModifiedRegion = jsonValue.GetString("LastModifiedRegion");
+
+    m_lastModifiedRegionHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("HierarchyRestrictedResources"))
+  {
+    Aws::Utils::Array<JsonView> hierarchyRestrictedResourcesJsonList = jsonValue.GetArray("HierarchyRestrictedResources");
+    for(unsigned hierarchyRestrictedResourcesIndex = 0; hierarchyRestrictedResourcesIndex < hierarchyRestrictedResourcesJsonList.GetLength(); ++hierarchyRestrictedResourcesIndex)
+    {
+      m_hierarchyRestrictedResources.push_back(hierarchyRestrictedResourcesJsonList[hierarchyRestrictedResourcesIndex].AsString());
+    }
+    m_hierarchyRestrictedResourcesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AllowedAccessControlHierarchyGroupId"))
+  {
+    m_allowedAccessControlHierarchyGroupId = jsonValue.GetString("AllowedAccessControlHierarchyGroupId");
+
+    m_allowedAccessControlHierarchyGroupIdHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -177,6 +205,34 @@ JsonValue SecurityProfile::Jsonize() const
      tagRestrictedResourcesJsonList[tagRestrictedResourcesIndex].AsString(m_tagRestrictedResources[tagRestrictedResourcesIndex]);
    }
    payload.WithArray("TagRestrictedResources", std::move(tagRestrictedResourcesJsonList));
+
+  }
+
+  if(m_lastModifiedTimeHasBeenSet)
+  {
+   payload.WithDouble("LastModifiedTime", m_lastModifiedTime.SecondsWithMSPrecision());
+  }
+
+  if(m_lastModifiedRegionHasBeenSet)
+  {
+   payload.WithString("LastModifiedRegion", m_lastModifiedRegion);
+
+  }
+
+  if(m_hierarchyRestrictedResourcesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> hierarchyRestrictedResourcesJsonList(m_hierarchyRestrictedResources.size());
+   for(unsigned hierarchyRestrictedResourcesIndex = 0; hierarchyRestrictedResourcesIndex < hierarchyRestrictedResourcesJsonList.GetLength(); ++hierarchyRestrictedResourcesIndex)
+   {
+     hierarchyRestrictedResourcesJsonList[hierarchyRestrictedResourcesIndex].AsString(m_hierarchyRestrictedResources[hierarchyRestrictedResourcesIndex]);
+   }
+   payload.WithArray("HierarchyRestrictedResources", std::move(hierarchyRestrictedResourcesJsonList));
+
+  }
+
+  if(m_allowedAccessControlHierarchyGroupIdHasBeenSet)
+  {
+   payload.WithString("AllowedAccessControlHierarchyGroupId", m_allowedAccessControlHierarchyGroupId);
 
   }
 

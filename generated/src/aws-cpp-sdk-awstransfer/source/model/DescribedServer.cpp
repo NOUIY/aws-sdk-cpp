@@ -42,35 +42,15 @@ DescribedServer::DescribedServer() :
     m_tagsHasBeenSet(false),
     m_userCount(0),
     m_userCountHasBeenSet(false),
-    m_workflowDetailsHasBeenSet(false)
+    m_workflowDetailsHasBeenSet(false),
+    m_structuredLogDestinationsHasBeenSet(false),
+    m_s3StorageOptionsHasBeenSet(false),
+    m_as2ServiceManagedEgressIpAddressesHasBeenSet(false)
 {
 }
 
-DescribedServer::DescribedServer(JsonView jsonValue) : 
-    m_arnHasBeenSet(false),
-    m_certificateHasBeenSet(false),
-    m_protocolDetailsHasBeenSet(false),
-    m_domain(Domain::NOT_SET),
-    m_domainHasBeenSet(false),
-    m_endpointDetailsHasBeenSet(false),
-    m_endpointType(EndpointType::NOT_SET),
-    m_endpointTypeHasBeenSet(false),
-    m_hostKeyFingerprintHasBeenSet(false),
-    m_identityProviderDetailsHasBeenSet(false),
-    m_identityProviderType(IdentityProviderType::NOT_SET),
-    m_identityProviderTypeHasBeenSet(false),
-    m_loggingRoleHasBeenSet(false),
-    m_postAuthenticationLoginBannerHasBeenSet(false),
-    m_preAuthenticationLoginBannerHasBeenSet(false),
-    m_protocolsHasBeenSet(false),
-    m_securityPolicyNameHasBeenSet(false),
-    m_serverIdHasBeenSet(false),
-    m_state(State::NOT_SET),
-    m_stateHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_userCount(0),
-    m_userCountHasBeenSet(false),
-    m_workflowDetailsHasBeenSet(false)
+DescribedServer::DescribedServer(JsonView jsonValue)
+  : DescribedServer()
 {
   *this = jsonValue;
 }
@@ -216,6 +196,33 @@ DescribedServer& DescribedServer::operator =(JsonView jsonValue)
     m_workflowDetailsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("StructuredLogDestinations"))
+  {
+    Aws::Utils::Array<JsonView> structuredLogDestinationsJsonList = jsonValue.GetArray("StructuredLogDestinations");
+    for(unsigned structuredLogDestinationsIndex = 0; structuredLogDestinationsIndex < structuredLogDestinationsJsonList.GetLength(); ++structuredLogDestinationsIndex)
+    {
+      m_structuredLogDestinations.push_back(structuredLogDestinationsJsonList[structuredLogDestinationsIndex].AsString());
+    }
+    m_structuredLogDestinationsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("S3StorageOptions"))
+  {
+    m_s3StorageOptions = jsonValue.GetObject("S3StorageOptions");
+
+    m_s3StorageOptionsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("As2ServiceManagedEgressIpAddresses"))
+  {
+    Aws::Utils::Array<JsonView> as2ServiceManagedEgressIpAddressesJsonList = jsonValue.GetArray("As2ServiceManagedEgressIpAddresses");
+    for(unsigned as2ServiceManagedEgressIpAddressesIndex = 0; as2ServiceManagedEgressIpAddressesIndex < as2ServiceManagedEgressIpAddressesJsonList.GetLength(); ++as2ServiceManagedEgressIpAddressesIndex)
+    {
+      m_as2ServiceManagedEgressIpAddresses.push_back(as2ServiceManagedEgressIpAddressesJsonList[as2ServiceManagedEgressIpAddressesIndex].AsString());
+    }
+    m_as2ServiceManagedEgressIpAddressesHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -340,6 +347,34 @@ JsonValue DescribedServer::Jsonize() const
   if(m_workflowDetailsHasBeenSet)
   {
    payload.WithObject("WorkflowDetails", m_workflowDetails.Jsonize());
+
+  }
+
+  if(m_structuredLogDestinationsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> structuredLogDestinationsJsonList(m_structuredLogDestinations.size());
+   for(unsigned structuredLogDestinationsIndex = 0; structuredLogDestinationsIndex < structuredLogDestinationsJsonList.GetLength(); ++structuredLogDestinationsIndex)
+   {
+     structuredLogDestinationsJsonList[structuredLogDestinationsIndex].AsString(m_structuredLogDestinations[structuredLogDestinationsIndex]);
+   }
+   payload.WithArray("StructuredLogDestinations", std::move(structuredLogDestinationsJsonList));
+
+  }
+
+  if(m_s3StorageOptionsHasBeenSet)
+  {
+   payload.WithObject("S3StorageOptions", m_s3StorageOptions.Jsonize());
+
+  }
+
+  if(m_as2ServiceManagedEgressIpAddressesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> as2ServiceManagedEgressIpAddressesJsonList(m_as2ServiceManagedEgressIpAddresses.size());
+   for(unsigned as2ServiceManagedEgressIpAddressesIndex = 0; as2ServiceManagedEgressIpAddressesIndex < as2ServiceManagedEgressIpAddressesJsonList.GetLength(); ++as2ServiceManagedEgressIpAddressesIndex)
+   {
+     as2ServiceManagedEgressIpAddressesJsonList[as2ServiceManagedEgressIpAddressesIndex].AsString(m_as2ServiceManagedEgressIpAddresses[as2ServiceManagedEgressIpAddressesIndex]);
+   }
+   payload.WithArray("As2ServiceManagedEgressIpAddresses", std::move(as2ServiceManagedEgressIpAddressesJsonList));
 
   }
 

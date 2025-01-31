@@ -20,13 +20,13 @@ namespace Model
 
 AssetHierarchy::AssetHierarchy() : 
     m_idHasBeenSet(false),
-    m_nameHasBeenSet(false)
+    m_nameHasBeenSet(false),
+    m_externalIdHasBeenSet(false)
 {
 }
 
-AssetHierarchy::AssetHierarchy(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_nameHasBeenSet(false)
+AssetHierarchy::AssetHierarchy(JsonView jsonValue)
+  : AssetHierarchy()
 {
   *this = jsonValue;
 }
@@ -47,6 +47,13 @@ AssetHierarchy& AssetHierarchy::operator =(JsonView jsonValue)
     m_nameHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("externalId"))
+  {
+    m_externalId = jsonValue.GetString("externalId");
+
+    m_externalIdHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +70,12 @@ JsonValue AssetHierarchy::Jsonize() const
   if(m_nameHasBeenSet)
   {
    payload.WithString("name", m_name);
+
+  }
+
+  if(m_externalIdHasBeenSet)
+  {
+   payload.WithString("externalId", m_externalId);
 
   }
 

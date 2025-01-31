@@ -22,15 +22,16 @@ PullThroughCacheRule::PullThroughCacheRule() :
     m_ecrRepositoryPrefixHasBeenSet(false),
     m_upstreamRegistryUrlHasBeenSet(false),
     m_createdAtHasBeenSet(false),
-    m_registryIdHasBeenSet(false)
+    m_registryIdHasBeenSet(false),
+    m_credentialArnHasBeenSet(false),
+    m_upstreamRegistry(UpstreamRegistry::NOT_SET),
+    m_upstreamRegistryHasBeenSet(false),
+    m_updatedAtHasBeenSet(false)
 {
 }
 
-PullThroughCacheRule::PullThroughCacheRule(JsonView jsonValue) : 
-    m_ecrRepositoryPrefixHasBeenSet(false),
-    m_upstreamRegistryUrlHasBeenSet(false),
-    m_createdAtHasBeenSet(false),
-    m_registryIdHasBeenSet(false)
+PullThroughCacheRule::PullThroughCacheRule(JsonView jsonValue)
+  : PullThroughCacheRule()
 {
   *this = jsonValue;
 }
@@ -65,6 +66,27 @@ PullThroughCacheRule& PullThroughCacheRule::operator =(JsonView jsonValue)
     m_registryIdHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("credentialArn"))
+  {
+    m_credentialArn = jsonValue.GetString("credentialArn");
+
+    m_credentialArnHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("upstreamRegistry"))
+  {
+    m_upstreamRegistry = UpstreamRegistryMapper::GetUpstreamRegistryForName(jsonValue.GetString("upstreamRegistry"));
+
+    m_upstreamRegistryHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("updatedAt"))
+  {
+    m_updatedAt = jsonValue.GetDouble("updatedAt");
+
+    m_updatedAtHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -93,6 +115,22 @@ JsonValue PullThroughCacheRule::Jsonize() const
   {
    payload.WithString("registryId", m_registryId);
 
+  }
+
+  if(m_credentialArnHasBeenSet)
+  {
+   payload.WithString("credentialArn", m_credentialArn);
+
+  }
+
+  if(m_upstreamRegistryHasBeenSet)
+  {
+   payload.WithString("upstreamRegistry", UpstreamRegistryMapper::GetNameForUpstreamRegistry(m_upstreamRegistry));
+  }
+
+  if(m_updatedAtHasBeenSet)
+  {
+   payload.WithDouble("updatedAt", m_updatedAt.SecondsWithMSPrecision());
   }
 
   return payload;

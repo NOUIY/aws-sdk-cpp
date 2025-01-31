@@ -24,6 +24,7 @@ RecordingConfiguration::RecordingConfiguration() :
     m_nameHasBeenSet(false),
     m_recordingReconnectWindowSeconds(0),
     m_recordingReconnectWindowSecondsHasBeenSet(false),
+    m_renditionConfigurationHasBeenSet(false),
     m_state(RecordingConfigurationState::NOT_SET),
     m_stateHasBeenSet(false),
     m_tagsHasBeenSet(false),
@@ -31,16 +32,8 @@ RecordingConfiguration::RecordingConfiguration() :
 {
 }
 
-RecordingConfiguration::RecordingConfiguration(JsonView jsonValue) : 
-    m_arnHasBeenSet(false),
-    m_destinationConfigurationHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_recordingReconnectWindowSeconds(0),
-    m_recordingReconnectWindowSecondsHasBeenSet(false),
-    m_state(RecordingConfigurationState::NOT_SET),
-    m_stateHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_thumbnailConfigurationHasBeenSet(false)
+RecordingConfiguration::RecordingConfiguration(JsonView jsonValue)
+  : RecordingConfiguration()
 {
   *this = jsonValue;
 }
@@ -73,6 +66,13 @@ RecordingConfiguration& RecordingConfiguration::operator =(JsonView jsonValue)
     m_recordingReconnectWindowSeconds = jsonValue.GetInteger("recordingReconnectWindowSeconds");
 
     m_recordingReconnectWindowSecondsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("renditionConfiguration"))
+  {
+    m_renditionConfiguration = jsonValue.GetObject("renditionConfiguration");
+
+    m_renditionConfigurationHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("state"))
@@ -127,6 +127,12 @@ JsonValue RecordingConfiguration::Jsonize() const
   if(m_recordingReconnectWindowSecondsHasBeenSet)
   {
    payload.WithInteger("recordingReconnectWindowSeconds", m_recordingReconnectWindowSeconds);
+
+  }
+
+  if(m_renditionConfigurationHasBeenSet)
+  {
+   payload.WithObject("renditionConfiguration", m_renditionConfiguration.Jsonize());
 
   }
 

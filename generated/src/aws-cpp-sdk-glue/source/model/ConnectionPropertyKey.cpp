@@ -46,10 +46,29 @@ namespace Aws
         static const int KAFKA_CLIENT_KEY_PASSWORD_HASH = HashingUtils::HashString("KAFKA_CLIENT_KEY_PASSWORD");
         static const int ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD_HASH = HashingUtils::HashString("ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD");
         static const int ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD_HASH = HashingUtils::HashString("ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD");
+        static const int KAFKA_SASL_MECHANISM_HASH = HashingUtils::HashString("KAFKA_SASL_MECHANISM");
+        static const int KAFKA_SASL_PLAIN_USERNAME_HASH = HashingUtils::HashString("KAFKA_SASL_PLAIN_USERNAME");
+        static const int KAFKA_SASL_PLAIN_PASSWORD_HASH = HashingUtils::HashString("KAFKA_SASL_PLAIN_PASSWORD");
+        static const int ENCRYPTED_KAFKA_SASL_PLAIN_PASSWORD_HASH = HashingUtils::HashString("ENCRYPTED_KAFKA_SASL_PLAIN_PASSWORD");
+        static const int KAFKA_SASL_SCRAM_USERNAME_HASH = HashingUtils::HashString("KAFKA_SASL_SCRAM_USERNAME");
+        static const int KAFKA_SASL_SCRAM_PASSWORD_HASH = HashingUtils::HashString("KAFKA_SASL_SCRAM_PASSWORD");
+        static const int KAFKA_SASL_SCRAM_SECRETS_ARN_HASH = HashingUtils::HashString("KAFKA_SASL_SCRAM_SECRETS_ARN");
+        static const int ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD_HASH = HashingUtils::HashString("ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD");
+        static const int KAFKA_SASL_GSSAPI_KEYTAB_HASH = HashingUtils::HashString("KAFKA_SASL_GSSAPI_KEYTAB");
+        static const int KAFKA_SASL_GSSAPI_KRB5_CONF_HASH = HashingUtils::HashString("KAFKA_SASL_GSSAPI_KRB5_CONF");
+        static const int KAFKA_SASL_GSSAPI_SERVICE_HASH = HashingUtils::HashString("KAFKA_SASL_GSSAPI_SERVICE");
+        static const int KAFKA_SASL_GSSAPI_PRINCIPAL_HASH = HashingUtils::HashString("KAFKA_SASL_GSSAPI_PRINCIPAL");
         static const int SECRET_ID_HASH = HashingUtils::HashString("SECRET_ID");
         static const int CONNECTOR_URL_HASH = HashingUtils::HashString("CONNECTOR_URL");
         static const int CONNECTOR_TYPE_HASH = HashingUtils::HashString("CONNECTOR_TYPE");
         static const int CONNECTOR_CLASS_NAME_HASH = HashingUtils::HashString("CONNECTOR_CLASS_NAME");
+        static const int ENDPOINT_HASH = HashingUtils::HashString("ENDPOINT");
+        static const int ENDPOINT_TYPE_HASH = HashingUtils::HashString("ENDPOINT_TYPE");
+        static const int ROLE_ARN_HASH = HashingUtils::HashString("ROLE_ARN");
+        static const int REGION_HASH = HashingUtils::HashString("REGION");
+        static const int WORKGROUP_NAME_HASH = HashingUtils::HashString("WORKGROUP_NAME");
+        static const int CLUSTER_IDENTIFIER_HASH = HashingUtils::HashString("CLUSTER_IDENTIFIER");
+        static const int DATABASE_HASH = HashingUtils::HashString("DATABASE");
 
 
         ConnectionPropertyKey GetConnectionPropertyKeyForName(const Aws::String& name)
@@ -159,6 +178,54 @@ namespace Aws
           {
             return ConnectionPropertyKey::ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD;
           }
+          else if (hashCode == KAFKA_SASL_MECHANISM_HASH)
+          {
+            return ConnectionPropertyKey::KAFKA_SASL_MECHANISM;
+          }
+          else if (hashCode == KAFKA_SASL_PLAIN_USERNAME_HASH)
+          {
+            return ConnectionPropertyKey::KAFKA_SASL_PLAIN_USERNAME;
+          }
+          else if (hashCode == KAFKA_SASL_PLAIN_PASSWORD_HASH)
+          {
+            return ConnectionPropertyKey::KAFKA_SASL_PLAIN_PASSWORD;
+          }
+          else if (hashCode == ENCRYPTED_KAFKA_SASL_PLAIN_PASSWORD_HASH)
+          {
+            return ConnectionPropertyKey::ENCRYPTED_KAFKA_SASL_PLAIN_PASSWORD;
+          }
+          else if (hashCode == KAFKA_SASL_SCRAM_USERNAME_HASH)
+          {
+            return ConnectionPropertyKey::KAFKA_SASL_SCRAM_USERNAME;
+          }
+          else if (hashCode == KAFKA_SASL_SCRAM_PASSWORD_HASH)
+          {
+            return ConnectionPropertyKey::KAFKA_SASL_SCRAM_PASSWORD;
+          }
+          else if (hashCode == KAFKA_SASL_SCRAM_SECRETS_ARN_HASH)
+          {
+            return ConnectionPropertyKey::KAFKA_SASL_SCRAM_SECRETS_ARN;
+          }
+          else if (hashCode == ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD_HASH)
+          {
+            return ConnectionPropertyKey::ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD;
+          }
+          else if (hashCode == KAFKA_SASL_GSSAPI_KEYTAB_HASH)
+          {
+            return ConnectionPropertyKey::KAFKA_SASL_GSSAPI_KEYTAB;
+          }
+          else if (hashCode == KAFKA_SASL_GSSAPI_KRB5_CONF_HASH)
+          {
+            return ConnectionPropertyKey::KAFKA_SASL_GSSAPI_KRB5_CONF;
+          }
+          else if (hashCode == KAFKA_SASL_GSSAPI_SERVICE_HASH)
+          {
+            return ConnectionPropertyKey::KAFKA_SASL_GSSAPI_SERVICE;
+          }
+          else if (hashCode == KAFKA_SASL_GSSAPI_PRINCIPAL_HASH)
+          {
+            return ConnectionPropertyKey::KAFKA_SASL_GSSAPI_PRINCIPAL;
+          }
           else if (hashCode == SECRET_ID_HASH)
           {
             return ConnectionPropertyKey::SECRET_ID;
@@ -175,6 +242,34 @@ namespace Aws
           {
             return ConnectionPropertyKey::CONNECTOR_CLASS_NAME;
           }
+          else if (hashCode == ENDPOINT_HASH)
+          {
+            return ConnectionPropertyKey::ENDPOINT;
+          }
+          else if (hashCode == ENDPOINT_TYPE_HASH)
+          {
+            return ConnectionPropertyKey::ENDPOINT_TYPE;
+          }
+          else if (hashCode == ROLE_ARN_HASH)
+          {
+            return ConnectionPropertyKey::ROLE_ARN;
+          }
+          else if (hashCode == REGION_HASH)
+          {
+            return ConnectionPropertyKey::REGION;
+          }
+          else if (hashCode == WORKGROUP_NAME_HASH)
+          {
+            return ConnectionPropertyKey::WORKGROUP_NAME;
+          }
+          else if (hashCode == CLUSTER_IDENTIFIER_HASH)
+          {
+            return ConnectionPropertyKey::CLUSTER_IDENTIFIER;
+          }
+          else if (hashCode == DATABASE_HASH)
+          {
+            return ConnectionPropertyKey::DATABASE;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -189,6 +284,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ConnectionPropertyKey::NOT_SET:
+            return {};
           case ConnectionPropertyKey::HOST:
             return "HOST";
           case ConnectionPropertyKey::PORT:
@@ -241,6 +338,30 @@ namespace Aws
             return "ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD";
           case ConnectionPropertyKey::ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD:
             return "ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD";
+          case ConnectionPropertyKey::KAFKA_SASL_MECHANISM:
+            return "KAFKA_SASL_MECHANISM";
+          case ConnectionPropertyKey::KAFKA_SASL_PLAIN_USERNAME:
+            return "KAFKA_SASL_PLAIN_USERNAME";
+          case ConnectionPropertyKey::KAFKA_SASL_PLAIN_PASSWORD:
+            return "KAFKA_SASL_PLAIN_PASSWORD";
+          case ConnectionPropertyKey::ENCRYPTED_KAFKA_SASL_PLAIN_PASSWORD:
+            return "ENCRYPTED_KAFKA_SASL_PLAIN_PASSWORD";
+          case ConnectionPropertyKey::KAFKA_SASL_SCRAM_USERNAME:
+            return "KAFKA_SASL_SCRAM_USERNAME";
+          case ConnectionPropertyKey::KAFKA_SASL_SCRAM_PASSWORD:
+            return "KAFKA_SASL_SCRAM_PASSWORD";
+          case ConnectionPropertyKey::KAFKA_SASL_SCRAM_SECRETS_ARN:
+            return "KAFKA_SASL_SCRAM_SECRETS_ARN";
+          case ConnectionPropertyKey::ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD:
+            return "ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD";
+          case ConnectionPropertyKey::KAFKA_SASL_GSSAPI_KEYTAB:
+            return "KAFKA_SASL_GSSAPI_KEYTAB";
+          case ConnectionPropertyKey::KAFKA_SASL_GSSAPI_KRB5_CONF:
+            return "KAFKA_SASL_GSSAPI_KRB5_CONF";
+          case ConnectionPropertyKey::KAFKA_SASL_GSSAPI_SERVICE:
+            return "KAFKA_SASL_GSSAPI_SERVICE";
+          case ConnectionPropertyKey::KAFKA_SASL_GSSAPI_PRINCIPAL:
+            return "KAFKA_SASL_GSSAPI_PRINCIPAL";
           case ConnectionPropertyKey::SECRET_ID:
             return "SECRET_ID";
           case ConnectionPropertyKey::CONNECTOR_URL:
@@ -249,6 +370,20 @@ namespace Aws
             return "CONNECTOR_TYPE";
           case ConnectionPropertyKey::CONNECTOR_CLASS_NAME:
             return "CONNECTOR_CLASS_NAME";
+          case ConnectionPropertyKey::ENDPOINT:
+            return "ENDPOINT";
+          case ConnectionPropertyKey::ENDPOINT_TYPE:
+            return "ENDPOINT_TYPE";
+          case ConnectionPropertyKey::ROLE_ARN:
+            return "ROLE_ARN";
+          case ConnectionPropertyKey::REGION:
+            return "REGION";
+          case ConnectionPropertyKey::WORKGROUP_NAME:
+            return "WORKGROUP_NAME";
+          case ConnectionPropertyKey::CLUSTER_IDENTIFIER:
+            return "CLUSTER_IDENTIFIER";
+          case ConnectionPropertyKey::DATABASE:
+            return "DATABASE";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

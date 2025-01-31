@@ -77,6 +77,23 @@
 #include <aws/directconnect/model/UpdateDirectConnectGatewayAssociationResult.h>
 #include <aws/directconnect/model/UpdateLagResult.h>
 #include <aws/directconnect/model/UpdateVirtualInterfaceAttributesResult.h>
+#include <aws/directconnect/model/DeleteBGPPeerRequest.h>
+#include <aws/directconnect/model/DescribeLocationsRequest.h>
+#include <aws/directconnect/model/DescribeConnectionsRequest.h>
+#include <aws/directconnect/model/DescribeCustomerMetadataRequest.h>
+#include <aws/directconnect/model/DescribeVirtualGatewaysRequest.h>
+#include <aws/directconnect/model/DescribeDirectConnectGatewayAssociationProposalsRequest.h>
+#include <aws/directconnect/model/DescribeDirectConnectGatewayAttachmentsRequest.h>
+#include <aws/directconnect/model/DescribeLagsRequest.h>
+#include <aws/directconnect/model/CreateBGPPeerRequest.h>
+#include <aws/directconnect/model/DescribeDirectConnectGatewaysRequest.h>
+#include <aws/directconnect/model/ConfirmCustomerAgreementRequest.h>
+#include <aws/directconnect/model/UpdateDirectConnectGatewayAssociationRequest.h>
+#include <aws/directconnect/model/ListVirtualInterfaceTestHistoryRequest.h>
+#include <aws/directconnect/model/DescribeInterconnectsRequest.h>
+#include <aws/directconnect/model/DescribeVirtualInterfacesRequest.h>
+#include <aws/directconnect/model/DeleteDirectConnectGatewayAssociationRequest.h>
+#include <aws/directconnect/model/DescribeDirectConnectGatewayAssociationsRequest.h>
 /* End of service model headers required in DirectConnectClient header */
 
 namespace Aws
@@ -110,7 +127,7 @@ namespace Aws
 
   namespace DirectConnect
   {
-    using DirectConnectClientConfiguration = Aws::Client::GenericClientConfiguration<false>;
+    using DirectConnectClientConfiguration = Aws::Client::GenericClientConfiguration;
     using DirectConnectEndpointProviderBase = Aws::DirectConnect::Endpoint::DirectConnectEndpointProviderBase;
     using DirectConnectEndpointProvider = Aws::DirectConnect::Endpoint::DirectConnectEndpointProvider;
 
@@ -150,6 +167,7 @@ namespace Aws
       class DeleteLagRequest;
       class DeleteVirtualInterfaceRequest;
       class DescribeConnectionsRequest;
+      class DescribeCustomerMetadataRequest;
       class DescribeDirectConnectGatewayAssociationProposalsRequest;
       class DescribeDirectConnectGatewayAssociationsRequest;
       class DescribeDirectConnectGatewayAttachmentsRequest;
@@ -158,8 +176,10 @@ namespace Aws
       class DescribeInterconnectsRequest;
       class DescribeLagsRequest;
       class DescribeLoaRequest;
+      class DescribeLocationsRequest;
       class DescribeRouterConfigurationRequest;
       class DescribeTagsRequest;
+      class DescribeVirtualGatewaysRequest;
       class DescribeVirtualInterfacesRequest;
       class DisassociateConnectionFromLagRequest;
       class DisassociateMacSecKeyRequest;
@@ -336,7 +356,7 @@ namespace Aws
     typedef std::function<void(const DirectConnectClient*, const Model::DeleteLagRequest&, const Model::DeleteLagOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteLagResponseReceivedHandler;
     typedef std::function<void(const DirectConnectClient*, const Model::DeleteVirtualInterfaceRequest&, const Model::DeleteVirtualInterfaceOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteVirtualInterfaceResponseReceivedHandler;
     typedef std::function<void(const DirectConnectClient*, const Model::DescribeConnectionsRequest&, const Model::DescribeConnectionsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeConnectionsResponseReceivedHandler;
-    typedef std::function<void(const DirectConnectClient*, const Model::DescribeCustomerMetadataOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeCustomerMetadataResponseReceivedHandler;
+    typedef std::function<void(const DirectConnectClient*, const Model::DescribeCustomerMetadataRequest&, const Model::DescribeCustomerMetadataOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeCustomerMetadataResponseReceivedHandler;
     typedef std::function<void(const DirectConnectClient*, const Model::DescribeDirectConnectGatewayAssociationProposalsRequest&, const Model::DescribeDirectConnectGatewayAssociationProposalsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeDirectConnectGatewayAssociationProposalsResponseReceivedHandler;
     typedef std::function<void(const DirectConnectClient*, const Model::DescribeDirectConnectGatewayAssociationsRequest&, const Model::DescribeDirectConnectGatewayAssociationsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeDirectConnectGatewayAssociationsResponseReceivedHandler;
     typedef std::function<void(const DirectConnectClient*, const Model::DescribeDirectConnectGatewayAttachmentsRequest&, const Model::DescribeDirectConnectGatewayAttachmentsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeDirectConnectGatewayAttachmentsResponseReceivedHandler;
@@ -345,10 +365,10 @@ namespace Aws
     typedef std::function<void(const DirectConnectClient*, const Model::DescribeInterconnectsRequest&, const Model::DescribeInterconnectsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeInterconnectsResponseReceivedHandler;
     typedef std::function<void(const DirectConnectClient*, const Model::DescribeLagsRequest&, const Model::DescribeLagsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeLagsResponseReceivedHandler;
     typedef std::function<void(const DirectConnectClient*, const Model::DescribeLoaRequest&, const Model::DescribeLoaOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeLoaResponseReceivedHandler;
-    typedef std::function<void(const DirectConnectClient*, const Model::DescribeLocationsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeLocationsResponseReceivedHandler;
+    typedef std::function<void(const DirectConnectClient*, const Model::DescribeLocationsRequest&, const Model::DescribeLocationsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeLocationsResponseReceivedHandler;
     typedef std::function<void(const DirectConnectClient*, const Model::DescribeRouterConfigurationRequest&, const Model::DescribeRouterConfigurationOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeRouterConfigurationResponseReceivedHandler;
     typedef std::function<void(const DirectConnectClient*, const Model::DescribeTagsRequest&, const Model::DescribeTagsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeTagsResponseReceivedHandler;
-    typedef std::function<void(const DirectConnectClient*, const Model::DescribeVirtualGatewaysOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeVirtualGatewaysResponseReceivedHandler;
+    typedef std::function<void(const DirectConnectClient*, const Model::DescribeVirtualGatewaysRequest&, const Model::DescribeVirtualGatewaysOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeVirtualGatewaysResponseReceivedHandler;
     typedef std::function<void(const DirectConnectClient*, const Model::DescribeVirtualInterfacesRequest&, const Model::DescribeVirtualInterfacesOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeVirtualInterfacesResponseReceivedHandler;
     typedef std::function<void(const DirectConnectClient*, const Model::DisassociateConnectionFromLagRequest&, const Model::DisassociateConnectionFromLagOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DisassociateConnectionFromLagResponseReceivedHandler;
     typedef std::function<void(const DirectConnectClient*, const Model::DisassociateMacSecKeyRequest&, const Model::DisassociateMacSecKeyOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DisassociateMacSecKeyResponseReceivedHandler;

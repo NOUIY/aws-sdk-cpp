@@ -19,10 +19,13 @@ UpdateApplicationRequest::UpdateApplicationRequest() :
     m_cWEMonitorEnabled(false),
     m_cWEMonitorEnabledHasBeenSet(false),
     m_opsItemSNSTopicArnHasBeenSet(false),
+    m_sNSNotificationArnHasBeenSet(false),
     m_removeSNSTopic(false),
     m_removeSNSTopicHasBeenSet(false),
     m_autoConfigEnabled(false),
-    m_autoConfigEnabledHasBeenSet(false)
+    m_autoConfigEnabledHasBeenSet(false),
+    m_attachMissingPermission(false),
+    m_attachMissingPermissionHasBeenSet(false)
 {
 }
 
@@ -54,6 +57,12 @@ Aws::String UpdateApplicationRequest::SerializePayload() const
 
   }
 
+  if(m_sNSNotificationArnHasBeenSet)
+  {
+   payload.WithString("SNSNotificationArn", m_sNSNotificationArn);
+
+  }
+
   if(m_removeSNSTopicHasBeenSet)
   {
    payload.WithBool("RemoveSNSTopic", m_removeSNSTopic);
@@ -63,6 +72,12 @@ Aws::String UpdateApplicationRequest::SerializePayload() const
   if(m_autoConfigEnabledHasBeenSet)
   {
    payload.WithBool("AutoConfigEnabled", m_autoConfigEnabled);
+
+  }
+
+  if(m_attachMissingPermissionHasBeenSet)
+  {
+   payload.WithBool("AttachMissingPermission", m_attachMissingPermission);
 
   }
 

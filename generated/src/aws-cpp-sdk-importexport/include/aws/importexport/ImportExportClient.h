@@ -28,8 +28,8 @@ namespace ImportExport
   {
     public:
       typedef Aws::Client::AWSXMLClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
 
       typedef ImportExportClientConfiguration ClientConfigurationType;
       typedef ImportExportEndpointProvider EndpointProviderType;
@@ -39,14 +39,14 @@ namespace ImportExport
         * is not specified, it will be initialized to default values.
         */
         ImportExportClient(const Aws::ImportExport::ImportExportClientConfiguration& clientConfiguration = Aws::ImportExport::ImportExportClientConfiguration(),
-                           std::shared_ptr<ImportExportEndpointProviderBase> endpointProvider = Aws::MakeShared<ImportExportEndpointProvider>(ALLOCATION_TAG));
+                           std::shared_ptr<ImportExportEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         ImportExportClient(const Aws::Auth::AWSCredentials& credentials,
-                           std::shared_ptr<ImportExportEndpointProviderBase> endpointProvider = Aws::MakeShared<ImportExportEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<ImportExportEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::ImportExport::ImportExportClientConfiguration& clientConfiguration = Aws::ImportExport::ImportExportClientConfiguration());
 
        /**
@@ -54,7 +54,7 @@ namespace ImportExport
         * the default http client factory will be used
         */
         ImportExportClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                           std::shared_ptr<ImportExportEndpointProviderBase> endpointProvider = Aws::MakeShared<ImportExportEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<ImportExportEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::ImportExport::ImportExportClientConfiguration& clientConfiguration = Aws::ImportExport::ImportExportClientConfiguration());
 
 
@@ -208,13 +208,13 @@ namespace ImportExport
          * href="http://docs.aws.amazon.com/goto/WebAPI/importexport-2010-06-01/ListJobs">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListJobsOutcome ListJobs(const Model::ListJobsRequest& request) const;
+        virtual Model::ListJobsOutcome ListJobs(const Model::ListJobsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListJobs that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListJobsRequestT = Model::ListJobsRequest>
-        Model::ListJobsOutcomeCallable ListJobsCallable(const ListJobsRequestT& request) const
+        Model::ListJobsOutcomeCallable ListJobsCallable(const ListJobsRequestT& request = {}) const
         {
             return SubmitCallable(&ImportExportClient::ListJobs, request);
         }
@@ -223,7 +223,7 @@ namespace ImportExport
          * An Async wrapper for ListJobs that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListJobsRequestT = Model::ListJobsRequest>
-        void ListJobsAsync(const ListJobsRequestT& request, const ListJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListJobsAsync(const ListJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListJobsRequestT& request = {}) const
         {
             return SubmitAsync(&ImportExportClient::ListJobs, request, handler, context);
         }
@@ -265,7 +265,6 @@ namespace ImportExport
         void init(const ImportExportClientConfiguration& clientConfiguration);
 
         ImportExportClientConfiguration m_clientConfiguration;
-        std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
         std::shared_ptr<ImportExportEndpointProviderBase> m_endpointProvider;
   };
 

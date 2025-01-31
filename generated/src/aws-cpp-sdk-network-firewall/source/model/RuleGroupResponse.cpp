@@ -37,30 +37,13 @@ RuleGroupResponse::RuleGroupResponse() :
     m_encryptionConfigurationHasBeenSet(false),
     m_sourceMetadataHasBeenSet(false),
     m_snsTopicHasBeenSet(false),
-    m_lastModifiedTimeHasBeenSet(false)
+    m_lastModifiedTimeHasBeenSet(false),
+    m_analysisResultsHasBeenSet(false)
 {
 }
 
-RuleGroupResponse::RuleGroupResponse(JsonView jsonValue) : 
-    m_ruleGroupArnHasBeenSet(false),
-    m_ruleGroupNameHasBeenSet(false),
-    m_ruleGroupIdHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_type(RuleGroupType::NOT_SET),
-    m_typeHasBeenSet(false),
-    m_capacity(0),
-    m_capacityHasBeenSet(false),
-    m_ruleGroupStatus(ResourceStatus::NOT_SET),
-    m_ruleGroupStatusHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_consumedCapacity(0),
-    m_consumedCapacityHasBeenSet(false),
-    m_numberOfAssociations(0),
-    m_numberOfAssociationsHasBeenSet(false),
-    m_encryptionConfigurationHasBeenSet(false),
-    m_sourceMetadataHasBeenSet(false),
-    m_snsTopicHasBeenSet(false),
-    m_lastModifiedTimeHasBeenSet(false)
+RuleGroupResponse::RuleGroupResponse(JsonView jsonValue)
+  : RuleGroupResponse()
 {
   *this = jsonValue;
 }
@@ -168,6 +151,16 @@ RuleGroupResponse& RuleGroupResponse::operator =(JsonView jsonValue)
     m_lastModifiedTimeHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("AnalysisResults"))
+  {
+    Aws::Utils::Array<JsonView> analysisResultsJsonList = jsonValue.GetArray("AnalysisResults");
+    for(unsigned analysisResultsIndex = 0; analysisResultsIndex < analysisResultsJsonList.GetLength(); ++analysisResultsIndex)
+    {
+      m_analysisResults.push_back(analysisResultsJsonList[analysisResultsIndex].AsObject());
+    }
+    m_analysisResultsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -259,6 +252,17 @@ JsonValue RuleGroupResponse::Jsonize() const
   if(m_lastModifiedTimeHasBeenSet)
   {
    payload.WithDouble("LastModifiedTime", m_lastModifiedTime.SecondsWithMSPrecision());
+  }
+
+  if(m_analysisResultsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> analysisResultsJsonList(m_analysisResults.size());
+   for(unsigned analysisResultsIndex = 0; analysisResultsIndex < analysisResultsJsonList.GetLength(); ++analysisResultsIndex)
+   {
+     analysisResultsJsonList[analysisResultsIndex].AsObject(m_analysisResults[analysisResultsIndex].Jsonize());
+   }
+   payload.WithArray("AnalysisResults", std::move(analysisResultsJsonList));
+
   }
 
   return payload;

@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/timestream-write/TimestreamWrite_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/timestream-write/TimestreamWriteServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/timestream-write/TimestreamWriteErrorMarshaller.h>
 
 namespace Aws
 {
 namespace TimestreamWrite
 {
+  AWS_TIMESTREAMWRITE_API extern const char SERVICE_NAME[];
   /**
    * <fullname>Amazon Timestream Write</fullname> <p>Amazon Timestream is a fast,
    * scalable, fully managed time-series database service that makes it easy to store
@@ -31,12 +35,20 @@ namespace TimestreamWrite
    * engine spans across storage tiers to provide fast analysis while reducing
    * costs.</p>
    */
-  class AWS_TIMESTREAMWRITE_API TimestreamWriteClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<TimestreamWriteClient>
+  class AWS_TIMESTREAMWRITE_API TimestreamWriteClient : smithy::client::AwsSmithyClientT<Aws::TimestreamWrite::SERVICE_NAME,
+      Aws::TimestreamWrite::TimestreamWriteClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      TimestreamWriteEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::TimestreamWriteErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<TimestreamWriteClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Timestream Write"; }
 
       typedef TimestreamWriteClientConfiguration ClientConfigurationType;
       typedef TimestreamWriteEndpointProvider EndpointProviderType;
@@ -46,14 +58,14 @@ namespace TimestreamWrite
         * is not specified, it will be initialized to default values.
         */
         TimestreamWriteClient(const Aws::TimestreamWrite::TimestreamWriteClientConfiguration& clientConfiguration = Aws::TimestreamWrite::TimestreamWriteClientConfiguration(),
-                              std::shared_ptr<TimestreamWriteEndpointProviderBase> endpointProvider = Aws::MakeShared<TimestreamWriteEndpointProvider>(ALLOCATION_TAG));
+                              std::shared_ptr<TimestreamWriteEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         TimestreamWriteClient(const Aws::Auth::AWSCredentials& credentials,
-                              std::shared_ptr<TimestreamWriteEndpointProviderBase> endpointProvider = Aws::MakeShared<TimestreamWriteEndpointProvider>(ALLOCATION_TAG),
+                              std::shared_ptr<TimestreamWriteEndpointProviderBase> endpointProvider = nullptr,
                               const Aws::TimestreamWrite::TimestreamWriteClientConfiguration& clientConfiguration = Aws::TimestreamWrite::TimestreamWriteClientConfiguration());
 
        /**
@@ -61,7 +73,7 @@ namespace TimestreamWrite
         * the default http client factory will be used
         */
         TimestreamWriteClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                              std::shared_ptr<TimestreamWriteEndpointProviderBase> endpointProvider = Aws::MakeShared<TimestreamWriteEndpointProvider>(ALLOCATION_TAG),
+                              std::shared_ptr<TimestreamWriteEndpointProviderBase> endpointProvider = nullptr,
                               const Aws::TimestreamWrite::TimestreamWriteClientConfiguration& clientConfiguration = Aws::TimestreamWrite::TimestreamWriteClientConfiguration());
 
 
@@ -94,8 +106,9 @@ namespace TimestreamWrite
          * from a CSV source in an S3 location and writes to a Timestream table. A mapping
          * from source to target is defined in a batch load task. Errors and events are
          * written to a report at an S3 location. For the report, if the KMS key is not
-         * specified, the batch load task will be encrypted with a Timestream managed KMS
-         * key located in your account. For more information, see <a
+         * specified, the report will be encrypted with an S3 managed key when
+         * <code>SSE_S3</code> is the option. Otherwise an error is thrown. For more
+         * information, see <a
          * href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk">Amazon
          * Web Services managed keys</a>. <a
          * href="https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html">Service
@@ -334,13 +347,13 @@ namespace TimestreamWrite
          * href="http://docs.aws.amazon.com/goto/WebAPI/timestream-write-2018-11-01/DescribeEndpoints">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeEndpointsOutcome DescribeEndpoints(const Model::DescribeEndpointsRequest& request) const;
+        virtual Model::DescribeEndpointsOutcome DescribeEndpoints(const Model::DescribeEndpointsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeEndpoints that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeEndpointsRequestT = Model::DescribeEndpointsRequest>
-        Model::DescribeEndpointsOutcomeCallable DescribeEndpointsCallable(const DescribeEndpointsRequestT& request) const
+        Model::DescribeEndpointsOutcomeCallable DescribeEndpointsCallable(const DescribeEndpointsRequestT& request = {}) const
         {
             return SubmitCallable(&TimestreamWriteClient::DescribeEndpoints, request);
         }
@@ -349,7 +362,7 @@ namespace TimestreamWrite
          * An Async wrapper for DescribeEndpoints that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeEndpointsRequestT = Model::DescribeEndpointsRequest>
-        void DescribeEndpointsAsync(const DescribeEndpointsRequestT& request, const DescribeEndpointsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeEndpointsAsync(const DescribeEndpointsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeEndpointsRequestT& request = {}) const
         {
             return SubmitAsync(&TimestreamWriteClient::DescribeEndpoints, request, handler, context);
         }
@@ -392,13 +405,13 @@ namespace TimestreamWrite
          * href="http://docs.aws.amazon.com/goto/WebAPI/timestream-write-2018-11-01/ListBatchLoadTasks">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListBatchLoadTasksOutcome ListBatchLoadTasks(const Model::ListBatchLoadTasksRequest& request) const;
+        virtual Model::ListBatchLoadTasksOutcome ListBatchLoadTasks(const Model::ListBatchLoadTasksRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListBatchLoadTasks that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListBatchLoadTasksRequestT = Model::ListBatchLoadTasksRequest>
-        Model::ListBatchLoadTasksOutcomeCallable ListBatchLoadTasksCallable(const ListBatchLoadTasksRequestT& request) const
+        Model::ListBatchLoadTasksOutcomeCallable ListBatchLoadTasksCallable(const ListBatchLoadTasksRequestT& request = {}) const
         {
             return SubmitCallable(&TimestreamWriteClient::ListBatchLoadTasks, request);
         }
@@ -407,7 +420,7 @@ namespace TimestreamWrite
          * An Async wrapper for ListBatchLoadTasks that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListBatchLoadTasksRequestT = Model::ListBatchLoadTasksRequest>
-        void ListBatchLoadTasksAsync(const ListBatchLoadTasksRequestT& request, const ListBatchLoadTasksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListBatchLoadTasksAsync(const ListBatchLoadTasksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListBatchLoadTasksRequestT& request = {}) const
         {
             return SubmitAsync(&TimestreamWriteClient::ListBatchLoadTasks, request, handler, context);
         }
@@ -421,13 +434,13 @@ namespace TimestreamWrite
          * href="http://docs.aws.amazon.com/goto/WebAPI/timestream-write-2018-11-01/ListDatabases">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListDatabasesOutcome ListDatabases(const Model::ListDatabasesRequest& request) const;
+        virtual Model::ListDatabasesOutcome ListDatabases(const Model::ListDatabasesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListDatabases that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListDatabasesRequestT = Model::ListDatabasesRequest>
-        Model::ListDatabasesOutcomeCallable ListDatabasesCallable(const ListDatabasesRequestT& request) const
+        Model::ListDatabasesOutcomeCallable ListDatabasesCallable(const ListDatabasesRequestT& request = {}) const
         {
             return SubmitCallable(&TimestreamWriteClient::ListDatabases, request);
         }
@@ -436,7 +449,7 @@ namespace TimestreamWrite
          * An Async wrapper for ListDatabases that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListDatabasesRequestT = Model::ListDatabasesRequest>
-        void ListDatabasesAsync(const ListDatabasesRequestT& request, const ListDatabasesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListDatabasesAsync(const ListDatabasesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListDatabasesRequestT& request = {}) const
         {
             return SubmitAsync(&TimestreamWriteClient::ListDatabases, request, handler, context);
         }
@@ -449,13 +462,13 @@ namespace TimestreamWrite
          * href="http://docs.aws.amazon.com/goto/WebAPI/timestream-write-2018-11-01/ListTables">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListTablesOutcome ListTables(const Model::ListTablesRequest& request) const;
+        virtual Model::ListTablesOutcome ListTables(const Model::ListTablesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListTables that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListTablesRequestT = Model::ListTablesRequest>
-        Model::ListTablesOutcomeCallable ListTablesCallable(const ListTablesRequestT& request) const
+        Model::ListTablesOutcomeCallable ListTablesCallable(const ListTablesRequestT& request = {}) const
         {
             return SubmitCallable(&TimestreamWriteClient::ListTables, request);
         }
@@ -464,7 +477,7 @@ namespace TimestreamWrite
          * An Async wrapper for ListTables that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListTablesRequestT = Model::ListTablesRequest>
-        void ListTablesAsync(const ListTablesRequestT& request, const ListTablesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListTablesAsync(const ListTablesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListTablesRequestT& request = {}) const
         {
             return SubmitAsync(&TimestreamWriteClient::ListTables, request, handler, context);
         }
@@ -705,12 +718,13 @@ namespace TimestreamWrite
       std::shared_ptr<TimestreamWriteEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<TimestreamWriteClient>;
-      void init(const TimestreamWriteClientConfiguration& clientConfiguration);
 
+      void OptionallyUpdateDescribeEndpointsCache(Aws::Endpoint::AWSEndpoint& resolvedEndpoint,
+        const Aws::String& operationName,
+        const Aws::String& endpointKey,
+        const Aws::TimestreamWrite::Model::DescribeEndpointsRequest& endpointRequest,
+        bool enforceDiscovery) const;
       mutable Aws::Utils::ConcurrentCache<Aws::String, Aws::String> m_endpointsCache;
-      TimestreamWriteClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<TimestreamWriteEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace TimestreamWrite

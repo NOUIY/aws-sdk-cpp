@@ -28,19 +28,13 @@ UserGroup::UserGroup() :
     m_minimumEngineVersionHasBeenSet(false),
     m_pendingChangesHasBeenSet(false),
     m_replicationGroupsHasBeenSet(false),
+    m_serverlessCachesHasBeenSet(false),
     m_aRNHasBeenSet(false)
 {
 }
 
-UserGroup::UserGroup(const XmlNode& xmlNode) : 
-    m_userGroupIdHasBeenSet(false),
-    m_statusHasBeenSet(false),
-    m_engineHasBeenSet(false),
-    m_userIdsHasBeenSet(false),
-    m_minimumEngineVersionHasBeenSet(false),
-    m_pendingChangesHasBeenSet(false),
-    m_replicationGroupsHasBeenSet(false),
-    m_aRNHasBeenSet(false)
+UserGroup::UserGroup(const XmlNode& xmlNode)
+  : UserGroup()
 {
   *this = xmlNode;
 }
@@ -105,6 +99,18 @@ UserGroup& UserGroup::operator =(const XmlNode& xmlNode)
 
       m_replicationGroupsHasBeenSet = true;
     }
+    XmlNode serverlessCachesNode = resultNode.FirstChild("ServerlessCaches");
+    if(!serverlessCachesNode.IsNull())
+    {
+      XmlNode serverlessCachesMember = serverlessCachesNode.FirstChild("member");
+      while(!serverlessCachesMember.IsNull())
+      {
+        m_serverlessCaches.push_back(serverlessCachesMember.GetText());
+        serverlessCachesMember = serverlessCachesMember.NextNode("member");
+      }
+
+      m_serverlessCachesHasBeenSet = true;
+    }
     XmlNode aRNNode = resultNode.FirstChild("ARN");
     if(!aRNNode.IsNull())
     {
@@ -163,6 +169,15 @@ void UserGroup::OutputToStream(Aws::OStream& oStream, const char* location, unsi
       }
   }
 
+  if(m_serverlessCachesHasBeenSet)
+  {
+      unsigned serverlessCachesIdx = 1;
+      for(auto& item : m_serverlessCaches)
+      {
+        oStream << location << index << locationValue << ".ServerlessCaches.member." << serverlessCachesIdx++ << "=" << StringUtils::URLEncode(item.c_str()) << "&";
+      }
+  }
+
   if(m_aRNHasBeenSet)
   {
       oStream << location << index << locationValue << ".ARN=" << StringUtils::URLEncode(m_aRN.c_str()) << "&";
@@ -211,6 +226,14 @@ void UserGroup::OutputToStream(Aws::OStream& oStream, const char* location) cons
       for(auto& item : m_replicationGroups)
       {
         oStream << location << ".ReplicationGroups.member." << replicationGroupsIdx++ << "=" << StringUtils::URLEncode(item.c_str()) << "&";
+      }
+  }
+  if(m_serverlessCachesHasBeenSet)
+  {
+      unsigned serverlessCachesIdx = 1;
+      for(auto& item : m_serverlessCaches)
+      {
+        oStream << location << ".ServerlessCaches.member." << serverlessCachesIdx++ << "=" << StringUtils::URLEncode(item.c_str()) << "&";
       }
   }
   if(m_aRNHasBeenSet)

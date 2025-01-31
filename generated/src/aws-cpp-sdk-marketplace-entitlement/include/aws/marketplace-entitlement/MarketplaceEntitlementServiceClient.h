@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/marketplace-entitlement/MarketplaceEntitlementService_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/marketplace-entitlement/MarketplaceEntitlementServiceServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/marketplace-entitlement/MarketplaceEntitlementServiceErrorMarshaller.h>
 
 namespace Aws
 {
 namespace MarketplaceEntitlementService
 {
+  AWS_MARKETPLACEENTITLEMENTSERVICE_API extern const char SERVICE_NAME[];
   /**
    * <fullname>AWS Marketplace Entitlement Service</fullname> <p>This reference
    * provides descriptions of the AWS Marketplace Entitlement Service API.</p> <p>AWS
@@ -26,12 +30,20 @@ namespace MarketplaceEntitlementService
    * <i>GetEntitlements</i>- Gets the entitlements for a Marketplace product.</p>
    * </li> </ul>
    */
-  class AWS_MARKETPLACEENTITLEMENTSERVICE_API MarketplaceEntitlementServiceClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<MarketplaceEntitlementServiceClient>
+  class AWS_MARKETPLACEENTITLEMENTSERVICE_API MarketplaceEntitlementServiceClient : smithy::client::AwsSmithyClientT<Aws::MarketplaceEntitlementService::SERVICE_NAME,
+      Aws::MarketplaceEntitlementService::MarketplaceEntitlementServiceClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      MarketplaceEntitlementServiceEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::MarketplaceEntitlementServiceErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<MarketplaceEntitlementServiceClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Marketplace Entitlement Service"; }
 
       typedef MarketplaceEntitlementServiceClientConfiguration ClientConfigurationType;
       typedef MarketplaceEntitlementServiceEndpointProvider EndpointProviderType;
@@ -41,14 +53,14 @@ namespace MarketplaceEntitlementService
         * is not specified, it will be initialized to default values.
         */
         MarketplaceEntitlementServiceClient(const Aws::MarketplaceEntitlementService::MarketplaceEntitlementServiceClientConfiguration& clientConfiguration = Aws::MarketplaceEntitlementService::MarketplaceEntitlementServiceClientConfiguration(),
-                                            std::shared_ptr<MarketplaceEntitlementServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<MarketplaceEntitlementServiceEndpointProvider>(ALLOCATION_TAG));
+                                            std::shared_ptr<MarketplaceEntitlementServiceEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         MarketplaceEntitlementServiceClient(const Aws::Auth::AWSCredentials& credentials,
-                                            std::shared_ptr<MarketplaceEntitlementServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<MarketplaceEntitlementServiceEndpointProvider>(ALLOCATION_TAG),
+                                            std::shared_ptr<MarketplaceEntitlementServiceEndpointProviderBase> endpointProvider = nullptr,
                                             const Aws::MarketplaceEntitlementService::MarketplaceEntitlementServiceClientConfiguration& clientConfiguration = Aws::MarketplaceEntitlementService::MarketplaceEntitlementServiceClientConfiguration());
 
        /**
@@ -56,7 +68,7 @@ namespace MarketplaceEntitlementService
         * the default http client factory will be used
         */
         MarketplaceEntitlementServiceClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                            std::shared_ptr<MarketplaceEntitlementServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<MarketplaceEntitlementServiceEndpointProvider>(ALLOCATION_TAG),
+                                            std::shared_ptr<MarketplaceEntitlementServiceEndpointProviderBase> endpointProvider = nullptr,
                                             const Aws::MarketplaceEntitlementService::MarketplaceEntitlementServiceClientConfiguration& clientConfiguration = Aws::MarketplaceEntitlementService::MarketplaceEntitlementServiceClientConfiguration());
 
 
@@ -116,11 +128,7 @@ namespace MarketplaceEntitlementService
       std::shared_ptr<MarketplaceEntitlementServiceEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<MarketplaceEntitlementServiceClient>;
-      void init(const MarketplaceEntitlementServiceClientConfiguration& clientConfiguration);
 
-      MarketplaceEntitlementServiceClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<MarketplaceEntitlementServiceEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace MarketplaceEntitlementService

@@ -6,26 +6,46 @@
 #pragma once
 #include <aws/ec2-instance-connect/EC2InstanceConnect_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/ec2-instance-connect/EC2InstanceConnectServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/ec2-instance-connect/EC2InstanceConnectErrorMarshaller.h>
 
 namespace Aws
 {
 namespace EC2InstanceConnect
 {
+  AWS_EC2INSTANCECONNECT_API extern const char SERVICE_NAME[];
   /**
-   * <p>Amazon EC2 Instance Connect enables system administrators to publish one-time
-   * use SSH public keys to EC2, providing users a simple and secure way to connect
-   * to their instances.</p>
+   * <p>This is the <i> Amazon EC2 Instance Connect API Reference</i>. It provides
+   * descriptions, syntax, and usage examples for each of the actions for Amazon EC2
+   * Instance Connect. Amazon EC2 Instance Connect enables system administrators to
+   * publish one-time use SSH public keys to EC2, providing users a simple and secure
+   * way to connect to their instances.</p> <p>To view the Amazon EC2 Instance
+   * Connect content in the <i> Amazon EC2 User Guide</i>, see <a
+   * href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Connect-using-EC2-Instance-Connect.html">Connect
+   * to your Linux instance using EC2 Instance Connect</a>.</p> <p>For Amazon EC2
+   * APIs, see the <a
+   * href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Welcome.html">Amazon
+   * EC2 API Reference</a>.</p>
    */
-  class AWS_EC2INSTANCECONNECT_API EC2InstanceConnectClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<EC2InstanceConnectClient>
+  class AWS_EC2INSTANCECONNECT_API EC2InstanceConnectClient : smithy::client::AwsSmithyClientT<Aws::EC2InstanceConnect::SERVICE_NAME,
+      Aws::EC2InstanceConnect::EC2InstanceConnectClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      EC2InstanceConnectEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::EC2InstanceConnectErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<EC2InstanceConnectClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "EC2 Instance Connect"; }
 
       typedef EC2InstanceConnectClientConfiguration ClientConfigurationType;
       typedef EC2InstanceConnectEndpointProvider EndpointProviderType;
@@ -35,14 +55,14 @@ namespace EC2InstanceConnect
         * is not specified, it will be initialized to default values.
         */
         EC2InstanceConnectClient(const Aws::EC2InstanceConnect::EC2InstanceConnectClientConfiguration& clientConfiguration = Aws::EC2InstanceConnect::EC2InstanceConnectClientConfiguration(),
-                                 std::shared_ptr<EC2InstanceConnectEndpointProviderBase> endpointProvider = Aws::MakeShared<EC2InstanceConnectEndpointProvider>(ALLOCATION_TAG));
+                                 std::shared_ptr<EC2InstanceConnectEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         EC2InstanceConnectClient(const Aws::Auth::AWSCredentials& credentials,
-                                 std::shared_ptr<EC2InstanceConnectEndpointProviderBase> endpointProvider = Aws::MakeShared<EC2InstanceConnectEndpointProvider>(ALLOCATION_TAG),
+                                 std::shared_ptr<EC2InstanceConnectEndpointProviderBase> endpointProvider = nullptr,
                                  const Aws::EC2InstanceConnect::EC2InstanceConnectClientConfiguration& clientConfiguration = Aws::EC2InstanceConnect::EC2InstanceConnectClientConfiguration());
 
        /**
@@ -50,7 +70,7 @@ namespace EC2InstanceConnect
         * the default http client factory will be used
         */
         EC2InstanceConnectClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                 std::shared_ptr<EC2InstanceConnectEndpointProviderBase> endpointProvider = Aws::MakeShared<EC2InstanceConnectEndpointProvider>(ALLOCATION_TAG),
+                                 std::shared_ptr<EC2InstanceConnectEndpointProviderBase> endpointProvider = nullptr,
                                  const Aws::EC2InstanceConnect::EC2InstanceConnectClientConfiguration& clientConfiguration = Aws::EC2InstanceConnect::EC2InstanceConnectClientConfiguration());
 
 
@@ -142,11 +162,7 @@ namespace EC2InstanceConnect
       std::shared_ptr<EC2InstanceConnectEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<EC2InstanceConnectClient>;
-      void init(const EC2InstanceConnectClientConfiguration& clientConfiguration);
 
-      EC2InstanceConnectClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<EC2InstanceConnectEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace EC2InstanceConnect

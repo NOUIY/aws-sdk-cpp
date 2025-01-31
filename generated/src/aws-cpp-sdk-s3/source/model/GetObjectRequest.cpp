@@ -6,6 +6,7 @@
 #include <aws/s3/model/GetObjectRequest.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/memory/stl/AWSStringStream.h>
+#include <aws/core/utils/UnreferencedParam.h>
 #include <aws/core/http/URI.h>
 #include <aws/core/utils/memory/stl/AWSStringStream.h>
 
@@ -184,7 +185,7 @@ Aws::Http::HeaderValueCollection GetObjectRequest::GetRequestSpecificHeaders() c
     ss.str("");
   }
 
-  if(m_requestPayerHasBeenSet)
+  if(m_requestPayerHasBeenSet && m_requestPayer != RequestPayer::NOT_SET)
   {
     headers.emplace("x-amz-request-payer", RequestPayerMapper::GetNameForRequestPayer(m_requestPayer));
   }
@@ -196,7 +197,7 @@ Aws::Http::HeaderValueCollection GetObjectRequest::GetRequestSpecificHeaders() c
     ss.str("");
   }
 
-  if(m_checksumModeHasBeenSet)
+  if(m_checksumModeHasBeenSet && m_checksumMode != ChecksumMode::NOT_SET)
   {
     headers.emplace("x-amz-checksum-mode", ChecksumModeMapper::GetNameForChecksumMode(m_checksumMode));
   }
@@ -211,6 +212,9 @@ GetObjectRequest::EndpointParameters GetObjectRequest::GetEndpointContextParams(
     if (BucketHasBeenSet()) {
         parameters.emplace_back(Aws::String("Bucket"), this->GetBucket(), Aws::Endpoint::EndpointParameter::ParameterOrigin::OPERATION_CONTEXT);
     }
+    if (KeyHasBeenSet()) {
+        parameters.emplace_back(Aws::String("Key"), this->GetKey(), Aws::Endpoint::EndpointParameter::ParameterOrigin::OPERATION_CONTEXT);
+    }
     return parameters;
 }
 bool GetObjectRequest::ShouldValidateResponseChecksum() const
@@ -221,6 +225,7 @@ bool GetObjectRequest::ShouldValidateResponseChecksum() const
 Aws::Vector<Aws::String> GetObjectRequest::GetResponseChecksumAlgorithmNames() const
 {
   Aws::Vector<Aws::String> responseChecksumAlgorithmNames;
+  responseChecksumAlgorithmNames.push_back("CRC64NVME");
   responseChecksumAlgorithmNames.push_back("CRC32");
   responseChecksumAlgorithmNames.push_back("CRC32C");
   responseChecksumAlgorithmNames.push_back("SHA256");

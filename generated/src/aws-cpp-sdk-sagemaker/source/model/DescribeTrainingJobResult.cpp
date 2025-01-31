@@ -29,15 +29,8 @@ DescribeTrainingJobResult::DescribeTrainingJobResult() :
 {
 }
 
-DescribeTrainingJobResult::DescribeTrainingJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_trainingJobStatus(TrainingJobStatus::NOT_SET),
-    m_secondaryStatus(SecondaryStatus::NOT_SET),
-    m_enableNetworkIsolation(false),
-    m_enableInterContainerTrafficEncryption(false),
-    m_enableManagedSpotTraining(false),
-    m_trainingTimeInSeconds(0),
-    m_billableTimeInSeconds(0),
-    m_profilingStatus(ProfilingStatus::NOT_SET)
+DescribeTrainingJobResult::DescribeTrainingJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeTrainingJobResult()
 {
   *this = result;
 }
@@ -138,6 +131,12 @@ DescribeTrainingJobResult& DescribeTrainingJobResult::operator =(const Aws::Amaz
   if(jsonValue.ValueExists("ResourceConfig"))
   {
     m_resourceConfig = jsonValue.GetObject("ResourceConfig");
+
+  }
+
+  if(jsonValue.ValueExists("WarmPoolStatus"))
+  {
+    m_warmPoolStatus = jsonValue.GetObject("WarmPoolStatus");
 
   }
 
@@ -297,12 +296,6 @@ DescribeTrainingJobResult& DescribeTrainingJobResult::operator =(const Aws::Amaz
 
   }
 
-  if(jsonValue.ValueExists("RetryStrategy"))
-  {
-    m_retryStrategy = jsonValue.GetObject("RetryStrategy");
-
-  }
-
   if(jsonValue.ValueExists("Environment"))
   {
     Aws::Map<Aws::String, JsonView> environmentJsonMap = jsonValue.GetObject("Environment").GetAllObjects();
@@ -312,9 +305,21 @@ DescribeTrainingJobResult& DescribeTrainingJobResult::operator =(const Aws::Amaz
     }
   }
 
-  if(jsonValue.ValueExists("WarmPoolStatus"))
+  if(jsonValue.ValueExists("RetryStrategy"))
   {
-    m_warmPoolStatus = jsonValue.GetObject("WarmPoolStatus");
+    m_retryStrategy = jsonValue.GetObject("RetryStrategy");
+
+  }
+
+  if(jsonValue.ValueExists("RemoteDebugConfig"))
+  {
+    m_remoteDebugConfig = jsonValue.GetObject("RemoteDebugConfig");
+
+  }
+
+  if(jsonValue.ValueExists("InfraCheckConfig"))
+  {
+    m_infraCheckConfig = jsonValue.GetObject("InfraCheckConfig");
 
   }
 

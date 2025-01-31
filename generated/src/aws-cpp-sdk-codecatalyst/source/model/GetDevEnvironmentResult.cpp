@@ -24,10 +24,8 @@ GetDevEnvironmentResult::GetDevEnvironmentResult() :
 {
 }
 
-GetDevEnvironmentResult::GetDevEnvironmentResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(DevEnvironmentStatus::NOT_SET),
-    m_instanceType(InstanceType::NOT_SET),
-    m_inactivityTimeoutMinutes(0)
+GetDevEnvironmentResult::GetDevEnvironmentResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetDevEnvironmentResult()
 {
   *this = result;
 }
@@ -116,6 +114,12 @@ GetDevEnvironmentResult& GetDevEnvironmentResult::operator =(const Aws::AmazonWe
   if(jsonValue.ValueExists("persistentStorage"))
   {
     m_persistentStorage = jsonValue.GetObject("persistentStorage");
+
+  }
+
+  if(jsonValue.ValueExists("vpcConnectionName"))
+  {
+    m_vpcConnectionName = jsonValue.GetString("vpcConnectionName");
 
   }
 

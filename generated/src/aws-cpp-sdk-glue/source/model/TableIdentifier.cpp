@@ -21,14 +21,13 @@ namespace Model
 TableIdentifier::TableIdentifier() : 
     m_catalogIdHasBeenSet(false),
     m_databaseNameHasBeenSet(false),
-    m_nameHasBeenSet(false)
+    m_nameHasBeenSet(false),
+    m_regionHasBeenSet(false)
 {
 }
 
-TableIdentifier::TableIdentifier(JsonView jsonValue) : 
-    m_catalogIdHasBeenSet(false),
-    m_databaseNameHasBeenSet(false),
-    m_nameHasBeenSet(false)
+TableIdentifier::TableIdentifier(JsonView jsonValue)
+  : TableIdentifier()
 {
   *this = jsonValue;
 }
@@ -56,6 +55,13 @@ TableIdentifier& TableIdentifier::operator =(JsonView jsonValue)
     m_nameHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Region"))
+  {
+    m_region = jsonValue.GetString("Region");
+
+    m_regionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -78,6 +84,12 @@ JsonValue TableIdentifier::Jsonize() const
   if(m_nameHasBeenSet)
   {
    payload.WithString("Name", m_name);
+
+  }
+
+  if(m_regionHasBeenSet)
+  {
+   payload.WithString("Region", m_region);
 
   }
 

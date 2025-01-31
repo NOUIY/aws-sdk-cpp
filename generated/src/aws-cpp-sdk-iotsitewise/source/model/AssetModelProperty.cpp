@@ -20,23 +20,19 @@ namespace Model
 
 AssetModelProperty::AssetModelProperty() : 
     m_idHasBeenSet(false),
+    m_externalIdHasBeenSet(false),
     m_nameHasBeenSet(false),
     m_dataType(PropertyDataType::NOT_SET),
     m_dataTypeHasBeenSet(false),
     m_dataTypeSpecHasBeenSet(false),
     m_unitHasBeenSet(false),
-    m_typeHasBeenSet(false)
+    m_typeHasBeenSet(false),
+    m_pathHasBeenSet(false)
 {
 }
 
-AssetModelProperty::AssetModelProperty(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_dataType(PropertyDataType::NOT_SET),
-    m_dataTypeHasBeenSet(false),
-    m_dataTypeSpecHasBeenSet(false),
-    m_unitHasBeenSet(false),
-    m_typeHasBeenSet(false)
+AssetModelProperty::AssetModelProperty(JsonView jsonValue)
+  : AssetModelProperty()
 {
   *this = jsonValue;
 }
@@ -48,6 +44,13 @@ AssetModelProperty& AssetModelProperty::operator =(JsonView jsonValue)
     m_id = jsonValue.GetString("id");
 
     m_idHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("externalId"))
+  {
+    m_externalId = jsonValue.GetString("externalId");
+
+    m_externalIdHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("name"))
@@ -85,6 +88,16 @@ AssetModelProperty& AssetModelProperty::operator =(JsonView jsonValue)
     m_typeHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("path"))
+  {
+    Aws::Utils::Array<JsonView> pathJsonList = jsonValue.GetArray("path");
+    for(unsigned pathIndex = 0; pathIndex < pathJsonList.GetLength(); ++pathIndex)
+    {
+      m_path.push_back(pathJsonList[pathIndex].AsObject());
+    }
+    m_pathHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -95,6 +108,12 @@ JsonValue AssetModelProperty::Jsonize() const
   if(m_idHasBeenSet)
   {
    payload.WithString("id", m_id);
+
+  }
+
+  if(m_externalIdHasBeenSet)
+  {
+   payload.WithString("externalId", m_externalId);
 
   }
 
@@ -124,6 +143,17 @@ JsonValue AssetModelProperty::Jsonize() const
   if(m_typeHasBeenSet)
   {
    payload.WithObject("type", m_type.Jsonize());
+
+  }
+
+  if(m_pathHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> pathJsonList(m_path.size());
+   for(unsigned pathIndex = 0; pathIndex < pathJsonList.GetLength(); ++pathIndex)
+   {
+     pathJsonList[pathIndex].AsObject(m_path[pathIndex].Jsonize());
+   }
+   payload.WithArray("path", std::move(pathJsonList));
 
   }
 

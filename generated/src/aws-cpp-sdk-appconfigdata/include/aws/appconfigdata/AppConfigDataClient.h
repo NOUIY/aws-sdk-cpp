@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/appconfigdata/AppConfigData_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/appconfigdata/AppConfigDataServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/appconfigdata/AppConfigDataErrorMarshaller.h>
 
 namespace Aws
 {
 namespace AppConfigData
 {
+  AWS_APPCONFIGDATA_API extern const char SERVICE_NAME[];
   /**
    * <p>AppConfig Data provides the data plane APIs your application uses to retrieve
    * configuration data. Here's how it works:</p> <p>Your application retrieves
@@ -57,12 +61,20 @@ namespace AppConfigData
    * href="http://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-retrieving-the-configuration">Retrieving
    * the configuration</a> in the <i>AppConfig User Guide</i>.</p>
    */
-  class AWS_APPCONFIGDATA_API AppConfigDataClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<AppConfigDataClient>
+  class AWS_APPCONFIGDATA_API AppConfigDataClient : smithy::client::AwsSmithyClientT<Aws::AppConfigData::SERVICE_NAME,
+      Aws::AppConfigData::AppConfigDataClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      AppConfigDataEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::AppConfigDataErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<AppConfigDataClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "AppConfigData"; }
 
       typedef AppConfigDataClientConfiguration ClientConfigurationType;
       typedef AppConfigDataEndpointProvider EndpointProviderType;
@@ -72,14 +84,14 @@ namespace AppConfigData
         * is not specified, it will be initialized to default values.
         */
         AppConfigDataClient(const Aws::AppConfigData::AppConfigDataClientConfiguration& clientConfiguration = Aws::AppConfigData::AppConfigDataClientConfiguration(),
-                            std::shared_ptr<AppConfigDataEndpointProviderBase> endpointProvider = Aws::MakeShared<AppConfigDataEndpointProvider>(ALLOCATION_TAG));
+                            std::shared_ptr<AppConfigDataEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         AppConfigDataClient(const Aws::Auth::AWSCredentials& credentials,
-                            std::shared_ptr<AppConfigDataEndpointProviderBase> endpointProvider = Aws::MakeShared<AppConfigDataEndpointProvider>(ALLOCATION_TAG),
+                            std::shared_ptr<AppConfigDataEndpointProviderBase> endpointProvider = nullptr,
                             const Aws::AppConfigData::AppConfigDataClientConfiguration& clientConfiguration = Aws::AppConfigData::AppConfigDataClientConfiguration());
 
        /**
@@ -87,7 +99,7 @@ namespace AppConfigData
         * the default http client factory will be used
         */
         AppConfigDataClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                            std::shared_ptr<AppConfigDataEndpointProviderBase> endpointProvider = Aws::MakeShared<AppConfigDataEndpointProvider>(ALLOCATION_TAG),
+                            std::shared_ptr<AppConfigDataEndpointProviderBase> endpointProvider = nullptr,
                             const Aws::AppConfigData::AppConfigDataClientConfiguration& clientConfiguration = Aws::AppConfigData::AppConfigDataClientConfiguration());
 
 
@@ -189,11 +201,7 @@ namespace AppConfigData
       std::shared_ptr<AppConfigDataEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<AppConfigDataClient>;
-      void init(const AppConfigDataClientConfiguration& clientConfiguration);
 
-      AppConfigDataClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<AppConfigDataEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace AppConfigData

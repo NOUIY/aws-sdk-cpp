@@ -25,18 +25,14 @@ LifecyclePolicySummary::LifecyclePolicySummary() :
     m_stateHasBeenSet(false),
     m_tagsHasBeenSet(false),
     m_policyType(PolicyTypeValues::NOT_SET),
-    m_policyTypeHasBeenSet(false)
+    m_policyTypeHasBeenSet(false),
+    m_defaultPolicy(false),
+    m_defaultPolicyHasBeenSet(false)
 {
 }
 
-LifecyclePolicySummary::LifecyclePolicySummary(JsonView jsonValue) : 
-    m_policyIdHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_state(GettablePolicyStateValues::NOT_SET),
-    m_stateHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_policyType(PolicyTypeValues::NOT_SET),
-    m_policyTypeHasBeenSet(false)
+LifecyclePolicySummary::LifecyclePolicySummary(JsonView jsonValue)
+  : LifecyclePolicySummary()
 {
   *this = jsonValue;
 }
@@ -81,6 +77,13 @@ LifecyclePolicySummary& LifecyclePolicySummary::operator =(JsonView jsonValue)
     m_policyTypeHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("DefaultPolicy"))
+  {
+    m_defaultPolicy = jsonValue.GetBool("DefaultPolicy");
+
+    m_defaultPolicyHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -119,6 +122,12 @@ JsonValue LifecyclePolicySummary::Jsonize() const
   if(m_policyTypeHasBeenSet)
   {
    payload.WithString("PolicyType", PolicyTypeValuesMapper::GetNameForPolicyTypeValues(m_policyType));
+  }
+
+  if(m_defaultPolicyHasBeenSet)
+  {
+   payload.WithBool("DefaultPolicy", m_defaultPolicy);
+
   }
 
   return payload;

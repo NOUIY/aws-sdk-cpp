@@ -34,25 +34,14 @@ VerifiedAccessTrustProvider::VerifiedAccessTrustProvider() :
     m_policyReferenceNameHasBeenSet(false),
     m_creationTimeHasBeenSet(false),
     m_lastUpdatedTimeHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+    m_tagsHasBeenSet(false),
+    m_sseSpecificationHasBeenSet(false),
+    m_nativeApplicationOidcOptionsHasBeenSet(false)
 {
 }
 
-VerifiedAccessTrustProvider::VerifiedAccessTrustProvider(const XmlNode& xmlNode) : 
-    m_verifiedAccessTrustProviderIdHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_trustProviderType(TrustProviderType::NOT_SET),
-    m_trustProviderTypeHasBeenSet(false),
-    m_userTrustProviderType(UserTrustProviderType::NOT_SET),
-    m_userTrustProviderTypeHasBeenSet(false),
-    m_deviceTrustProviderType(DeviceTrustProviderType::NOT_SET),
-    m_deviceTrustProviderTypeHasBeenSet(false),
-    m_oidcOptionsHasBeenSet(false),
-    m_deviceOptionsHasBeenSet(false),
-    m_policyReferenceNameHasBeenSet(false),
-    m_creationTimeHasBeenSet(false),
-    m_lastUpdatedTimeHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+VerifiedAccessTrustProvider::VerifiedAccessTrustProvider(const XmlNode& xmlNode)
+  : VerifiedAccessTrustProvider()
 {
   *this = xmlNode;
 }
@@ -135,6 +124,18 @@ VerifiedAccessTrustProvider& VerifiedAccessTrustProvider::operator =(const XmlNo
 
       m_tagsHasBeenSet = true;
     }
+    XmlNode sseSpecificationNode = resultNode.FirstChild("sseSpecification");
+    if(!sseSpecificationNode.IsNull())
+    {
+      m_sseSpecification = sseSpecificationNode;
+      m_sseSpecificationHasBeenSet = true;
+    }
+    XmlNode nativeApplicationOidcOptionsNode = resultNode.FirstChild("nativeApplicationOidcOptions");
+    if(!nativeApplicationOidcOptionsNode.IsNull())
+    {
+      m_nativeApplicationOidcOptions = nativeApplicationOidcOptionsNode;
+      m_nativeApplicationOidcOptionsHasBeenSet = true;
+    }
   }
 
   return *this;
@@ -207,6 +208,20 @@ void VerifiedAccessTrustProvider::OutputToStream(Aws::OStream& oStream, const ch
       }
   }
 
+  if(m_sseSpecificationHasBeenSet)
+  {
+      Aws::StringStream sseSpecificationLocationAndMemberSs;
+      sseSpecificationLocationAndMemberSs << location << index << locationValue << ".SseSpecification";
+      m_sseSpecification.OutputToStream(oStream, sseSpecificationLocationAndMemberSs.str().c_str());
+  }
+
+  if(m_nativeApplicationOidcOptionsHasBeenSet)
+  {
+      Aws::StringStream nativeApplicationOidcOptionsLocationAndMemberSs;
+      nativeApplicationOidcOptionsLocationAndMemberSs << location << index << locationValue << ".NativeApplicationOidcOptions";
+      m_nativeApplicationOidcOptions.OutputToStream(oStream, nativeApplicationOidcOptionsLocationAndMemberSs.str().c_str());
+  }
+
 }
 
 void VerifiedAccessTrustProvider::OutputToStream(Aws::OStream& oStream, const char* location) const
@@ -264,6 +279,18 @@ void VerifiedAccessTrustProvider::OutputToStream(Aws::OStream& oStream, const ch
         tagsSs << location <<  ".TagSet." << tagsIdx++;
         item.OutputToStream(oStream, tagsSs.str().c_str());
       }
+  }
+  if(m_sseSpecificationHasBeenSet)
+  {
+      Aws::String sseSpecificationLocationAndMember(location);
+      sseSpecificationLocationAndMember += ".SseSpecification";
+      m_sseSpecification.OutputToStream(oStream, sseSpecificationLocationAndMember.c_str());
+  }
+  if(m_nativeApplicationOidcOptionsHasBeenSet)
+  {
+      Aws::String nativeApplicationOidcOptionsLocationAndMember(location);
+      nativeApplicationOidcOptionsLocationAndMember += ".NativeApplicationOidcOptions";
+      m_nativeApplicationOidcOptions.OutputToStream(oStream, nativeApplicationOidcOptionsLocationAndMember.c_str());
   }
 }
 

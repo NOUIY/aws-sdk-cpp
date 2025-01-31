@@ -20,6 +20,7 @@ namespace Model
 
 Outpost::Outpost() : 
     m_outpostArnHasBeenSet(false),
+    m_s3OutpostArnHasBeenSet(false),
     m_outpostIdHasBeenSet(false),
     m_ownerIdHasBeenSet(false),
     m_capacityInBytes(0),
@@ -27,12 +28,8 @@ Outpost::Outpost() :
 {
 }
 
-Outpost::Outpost(JsonView jsonValue) : 
-    m_outpostArnHasBeenSet(false),
-    m_outpostIdHasBeenSet(false),
-    m_ownerIdHasBeenSet(false),
-    m_capacityInBytes(0),
-    m_capacityInBytesHasBeenSet(false)
+Outpost::Outpost(JsonView jsonValue)
+  : Outpost()
 {
   *this = jsonValue;
 }
@@ -44,6 +41,13 @@ Outpost& Outpost::operator =(JsonView jsonValue)
     m_outpostArn = jsonValue.GetString("OutpostArn");
 
     m_outpostArnHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("S3OutpostArn"))
+  {
+    m_s3OutpostArn = jsonValue.GetString("S3OutpostArn");
+
+    m_s3OutpostArnHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("OutpostId"))
@@ -77,6 +81,12 @@ JsonValue Outpost::Jsonize() const
   if(m_outpostArnHasBeenSet)
   {
    payload.WithString("OutpostArn", m_outpostArn);
+
+  }
+
+  if(m_s3OutpostArnHasBeenSet)
+  {
+   payload.WithString("S3OutpostArn", m_s3OutpostArn);
 
   }
 

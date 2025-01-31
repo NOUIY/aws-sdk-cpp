@@ -22,8 +22,8 @@ DescribeHyperParameterTuningJobResult::DescribeHyperParameterTuningJobResult() :
 {
 }
 
-DescribeHyperParameterTuningJobResult::DescribeHyperParameterTuningJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_hyperParameterTuningJobStatus(HyperParameterTuningJobStatus::NOT_SET)
+DescribeHyperParameterTuningJobResult::DescribeHyperParameterTuningJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeHyperParameterTuningJobResult()
 {
   *this = result;
 }
@@ -115,6 +115,12 @@ DescribeHyperParameterTuningJobResult& DescribeHyperParameterTuningJobResult::op
   if(jsonValue.ValueExists("WarmStartConfig"))
   {
     m_warmStartConfig = jsonValue.GetObject("WarmStartConfig");
+
+  }
+
+  if(jsonValue.ValueExists("Autotune"))
+  {
+    m_autotune = jsonValue.GetObject("Autotune");
 
   }
 

@@ -20,13 +20,14 @@ namespace Model
 
 KPIConditionalFormattingOption::KPIConditionalFormattingOption() : 
     m_primaryValueHasBeenSet(false),
-    m_progressBarHasBeenSet(false)
+    m_progressBarHasBeenSet(false),
+    m_actualValueHasBeenSet(false),
+    m_comparisonValueHasBeenSet(false)
 {
 }
 
-KPIConditionalFormattingOption::KPIConditionalFormattingOption(JsonView jsonValue) : 
-    m_primaryValueHasBeenSet(false),
-    m_progressBarHasBeenSet(false)
+KPIConditionalFormattingOption::KPIConditionalFormattingOption(JsonView jsonValue)
+  : KPIConditionalFormattingOption()
 {
   *this = jsonValue;
 }
@@ -47,6 +48,20 @@ KPIConditionalFormattingOption& KPIConditionalFormattingOption::operator =(JsonV
     m_progressBarHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ActualValue"))
+  {
+    m_actualValue = jsonValue.GetObject("ActualValue");
+
+    m_actualValueHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("ComparisonValue"))
+  {
+    m_comparisonValue = jsonValue.GetObject("ComparisonValue");
+
+    m_comparisonValueHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +78,18 @@ JsonValue KPIConditionalFormattingOption::Jsonize() const
   if(m_progressBarHasBeenSet)
   {
    payload.WithObject("ProgressBar", m_progressBar.Jsonize());
+
+  }
+
+  if(m_actualValueHasBeenSet)
+  {
+   payload.WithObject("ActualValue", m_actualValue.Jsonize());
+
+  }
+
+  if(m_comparisonValueHasBeenSet)
+  {
+   payload.WithObject("ComparisonValue", m_comparisonValue.Jsonize());
 
   }
 

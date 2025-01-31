@@ -6,83 +6,95 @@
 #pragma once
 #include <aws/discovery/ApplicationDiscoveryService_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/discovery/ApplicationDiscoveryServiceServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/discovery/ApplicationDiscoveryServiceErrorMarshaller.h>
 
 namespace Aws
 {
 namespace ApplicationDiscoveryService
 {
+  AWS_APPLICATIONDISCOVERYSERVICE_API extern const char SERVICE_NAME[];
   /**
    * <fullname>Amazon Web Services Application Discovery Service</fullname> <p>Amazon
-   * Web Services Application Discovery Service helps you plan application migration
-   * projects. It automatically identifies servers, virtual machines (VMs), and
-   * network dependencies in your on-premises data centers. For more information, see
-   * the <a href="http://aws.amazon.com/application-discovery/faqs/">Amazon Web
-   * Services Application Discovery Service FAQ</a>. Application Discovery Service
+   * Web Services Application Discovery Service (Application Discovery Service) helps
+   * you plan application migration projects. It automatically identifies servers,
+   * virtual machines (VMs), and network dependencies in your on-premises data
+   * centers. For more information, see the <a
+   * href="http://aws.amazon.com/application-discovery/faqs/">Amazon Web Services
+   * Application Discovery Service FAQ</a>. </p> <p>Application Discovery Service
    * offers three ways of performing discovery and collecting data about your
-   * on-premises servers:</p> <ul> <li> <p> <b>Agentless discovery</b> is recommended
-   * for environments that use VMware vCenter Server. This mode doesn't require you
-   * to install an agent on each host. It does not work in non-VMware
-   * environments.</p> <ul> <li> <p>Agentless discovery gathers server information
-   * regardless of the operating systems, which minimizes the time required for
-   * initial on-premises infrastructure assessment.</p> </li> <li> <p>Agentless
-   * discovery doesn't collect information about network dependencies, only
-   * agent-based discovery collects that information.</p> </li> </ul> </li> </ul>
-   * <ul> <li> <p> <b>Agent-based discovery</b> collects a richer set of data than
-   * agentless discovery by using the Amazon Web Services Application Discovery
-   * Agent, which you install on one or more hosts in your data center.</p> <ul> <li>
-   * <p> The agent captures infrastructure and application information, including an
-   * inventory of running processes, system performance information, resource
-   * utilization, and network dependencies.</p> </li> <li> <p>The information
-   * collected by agents is secured at rest and in transit to the Application
-   * Discovery Service database in the cloud. </p> </li> </ul> </li> </ul> <ul> <li>
-   * <p> <b>Amazon Web Services Partner Network (APN) solutions</b> integrate with
-   * Application Discovery Service, enabling you to import details of your
-   * on-premises environment directly into Migration Hub without using the discovery
-   * connector or discovery agent.</p> <ul> <li> <p>Third-party application discovery
-   * tools can query Amazon Web Services Application Discovery Service, and they can
-   * write to the Application Discovery Service database using the public API.</p>
-   * </li> <li> <p>In this way, you can import data into Migration Hub and view it,
-   * so that you can associate applications with servers and track migrations.</p>
-   * </li> </ul> </li> </ul> <p> <b>Recommendations</b> </p> <p>We recommend that you
-   * use agent-based discovery for non-VMware environments, and whenever you want to
-   * collect information about network dependencies. You can run agent-based and
-   * agentless discovery simultaneously. Use agentless discovery to complete the
-   * initial infrastructure assessment quickly, and then install agents on select
-   * hosts to collect additional information.</p> <p> <b>Working With This Guide</b>
-   * </p> <p>This API reference provides descriptions, syntax, and usage examples for
-   * each of the actions and data types for Application Discovery Service. The topic
-   * for each action shows the API request parameters and the response.
-   * Alternatively, you can use one of the Amazon Web Services SDKs to access an API
-   * that is tailored to the programming language or platform that you're using. For
-   * more information, see <a href="http://aws.amazon.com/tools/#SDKs">Amazon Web
-   * Services SDKs</a>.</p>  <ul> <li> <p>Remember that you must set your
-   * Migration Hub home region before you call any of these APIs.</p> </li> <li>
-   * <p>You must make API calls for write actions (create, notify, associate,
-   * disassociate, import, or put) while in your home region, or a
-   * <code>HomeRegionNotSetException</code> error is returned.</p> </li> <li> <p>API
-   * calls for read actions (list, describe, stop, and delete) are permitted outside
-   * of your home region.</p> </li> <li> <p>Although it is unlikely, the Migration
-   * Hub home region could change. If you call APIs outside the home region, an
-   * <code>InvalidInputException</code> is returned.</p> </li> <li> <p>You must call
-   * <code>GetHomeRegion</code> to obtain the latest Migration Hub home region.</p>
-   * </li> </ul>  <p>This guide is intended for use with the <a
-   * href="http://docs.aws.amazon.com/application-discovery/latest/userguide/">Amazon
+   * on-premises servers:</p> <ul> <li> <p> <b>Agentless discovery</b> using Amazon
+   * Web Services Application Discovery Service Agentless Collector (Agentless
+   * Collector), which doesn't require you to install an agent on each host.</p> <ul>
+   * <li> <p>Agentless Collector gathers server information regardless of the
+   * operating systems, which minimizes the time required for initial on-premises
+   * infrastructure assessment.</p> </li> <li> <p>Agentless Collector doesn't collect
+   * information about network dependencies, only agent-based discovery collects that
+   * information. </p> </li> </ul> </li> </ul> <ul> <li> <p> <b>Agent-based
+   * discovery</b> using the Amazon Web Services Application Discovery Agent
+   * (Application Discovery Agent) collects a richer set of data than agentless
+   * discovery, which you install on one or more hosts in your data center.</p> <ul>
+   * <li> <p> The agent captures infrastructure and application information,
+   * including an inventory of running processes, system performance information,
+   * resource utilization, and network dependencies.</p> </li> <li> <p>The
+   * information collected by agents is secured at rest and in transit to the
+   * Application Discovery Service database in the Amazon Web Services cloud. For
+   * more information, see <a
+   * href="https://docs.aws.amazon.com/application-discovery/latest/userguide/discovery-agent.html">Amazon
+   * Web Services Application Discovery Agent</a>.</p> </li> </ul> </li> </ul> <ul>
+   * <li> <p> <b>Amazon Web Services Partner Network (APN) solutions</b> integrate
+   * with Application Discovery Service, enabling you to import details of your
+   * on-premises environment directly into Amazon Web Services Migration Hub
+   * (Migration Hub) without using Agentless Collector or Application Discovery
+   * Agent.</p> <ul> <li> <p>Third-party application discovery tools can query Amazon
+   * Web Services Application Discovery Service, and they can write to the
+   * Application Discovery Service database using the public API.</p> </li> <li>
+   * <p>In this way, you can import data into Migration Hub and view it, so that you
+   * can associate applications with servers and track migrations.</p> </li> </ul>
+   * </li> </ul> <p> <b>Working With This Guide</b> </p> <p>This API reference
+   * provides descriptions, syntax, and usage examples for each of the actions and
+   * data types for Application Discovery Service. The topic for each action shows
+   * the API request parameters and the response. Alternatively, you can use one of
+   * the Amazon Web Services SDKs to access an API that is tailored to the
+   * programming language or platform that you're using. For more information, see <a
+   * href="http://aws.amazon.com/tools/#SDKs">Amazon Web Services SDKs</a>.</p>
+   *  <ul> <li> <p>Remember that you must set your Migration Hub home Region
+   * before you call any of these APIs.</p> </li> <li> <p>You must make API calls for
+   * write actions (create, notify, associate, disassociate, import, or put) while in
+   * your home Region, or a <code>HomeRegionNotSetException</code> error is
+   * returned.</p> </li> <li> <p>API calls for read actions (list, describe, stop,
+   * and delete) are permitted outside of your home Region.</p> </li> <li>
+   * <p>Although it is unlikely, the Migration Hub home Region could change. If you
+   * call APIs outside the home Region, an <code>InvalidInputException</code> is
+   * returned.</p> </li> <li> <p>You must call <code>GetHomeRegion</code> to obtain
+   * the latest Migration Hub home Region.</p> </li> </ul>  <p>This guide is
+   * intended for use with the <a
+   * href="https://docs.aws.amazon.com/application-discovery/latest/userguide/">Amazon
    * Web Services Application Discovery Service User Guide</a>.</p> 
    * <p>All data is handled according to the <a
-   * href="http://aws.amazon.com/privacy/">Amazon Web Services Privacy Policy</a>.
+   * href="https://aws.amazon.com/privacy/">Amazon Web Services Privacy Policy</a>.
    * You can operate Application Discovery Service offline to inspect collected data
    * before it is shared with the service.</p> 
    */
-  class AWS_APPLICATIONDISCOVERYSERVICE_API ApplicationDiscoveryServiceClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<ApplicationDiscoveryServiceClient>
+  class AWS_APPLICATIONDISCOVERYSERVICE_API ApplicationDiscoveryServiceClient : smithy::client::AwsSmithyClientT<Aws::ApplicationDiscoveryService::SERVICE_NAME,
+      Aws::ApplicationDiscoveryService::ApplicationDiscoveryServiceClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      ApplicationDiscoveryServiceEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::ApplicationDiscoveryServiceErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<ApplicationDiscoveryServiceClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Application Discovery Service"; }
 
       typedef ApplicationDiscoveryServiceClientConfiguration ClientConfigurationType;
       typedef ApplicationDiscoveryServiceEndpointProvider EndpointProviderType;
@@ -92,14 +104,14 @@ namespace ApplicationDiscoveryService
         * is not specified, it will be initialized to default values.
         */
         ApplicationDiscoveryServiceClient(const Aws::ApplicationDiscoveryService::ApplicationDiscoveryServiceClientConfiguration& clientConfiguration = Aws::ApplicationDiscoveryService::ApplicationDiscoveryServiceClientConfiguration(),
-                                          std::shared_ptr<ApplicationDiscoveryServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<ApplicationDiscoveryServiceEndpointProvider>(ALLOCATION_TAG));
+                                          std::shared_ptr<ApplicationDiscoveryServiceEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         ApplicationDiscoveryServiceClient(const Aws::Auth::AWSCredentials& credentials,
-                                          std::shared_ptr<ApplicationDiscoveryServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<ApplicationDiscoveryServiceEndpointProvider>(ALLOCATION_TAG),
+                                          std::shared_ptr<ApplicationDiscoveryServiceEndpointProviderBase> endpointProvider = nullptr,
                                           const Aws::ApplicationDiscoveryService::ApplicationDiscoveryServiceClientConfiguration& clientConfiguration = Aws::ApplicationDiscoveryService::ApplicationDiscoveryServiceClientConfiguration());
 
        /**
@@ -107,7 +119,7 @@ namespace ApplicationDiscoveryService
         * the default http client factory will be used
         */
         ApplicationDiscoveryServiceClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                          std::shared_ptr<ApplicationDiscoveryServiceEndpointProviderBase> endpointProvider = Aws::MakeShared<ApplicationDiscoveryServiceEndpointProvider>(ALLOCATION_TAG),
+                                          std::shared_ptr<ApplicationDiscoveryServiceEndpointProviderBase> endpointProvider = nullptr,
                                           const Aws::ApplicationDiscoveryService::ApplicationDiscoveryServiceClientConfiguration& clientConfiguration = Aws::ApplicationDiscoveryService::ApplicationDiscoveryServiceClientConfiguration());
 
 
@@ -159,6 +171,34 @@ namespace ApplicationDiscoveryService
         void AssociateConfigurationItemsToApplicationAsync(const AssociateConfigurationItemsToApplicationRequestT& request, const AssociateConfigurationItemsToApplicationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ApplicationDiscoveryServiceClient::AssociateConfigurationItemsToApplication, request, handler, context);
+        }
+
+        /**
+         * <p> Deletes one or more agents or collectors as specified by ID. Deleting an
+         * agent or collector does not delete the previously discovered data. To delete the
+         * data collected, use <code>StartBatchDeleteConfigurationTask</code>.
+         * </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/discovery-2015-11-01/BatchDeleteAgents">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::BatchDeleteAgentsOutcome BatchDeleteAgents(const Model::BatchDeleteAgentsRequest& request) const;
+
+        /**
+         * A Callable wrapper for BatchDeleteAgents that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename BatchDeleteAgentsRequestT = Model::BatchDeleteAgentsRequest>
+        Model::BatchDeleteAgentsOutcomeCallable BatchDeleteAgentsCallable(const BatchDeleteAgentsRequestT& request) const
+        {
+            return SubmitCallable(&ApplicationDiscoveryServiceClient::BatchDeleteAgents, request);
+        }
+
+        /**
+         * An Async wrapper for BatchDeleteAgents that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename BatchDeleteAgentsRequestT = Model::BatchDeleteAgentsRequest>
+        void BatchDeleteAgentsAsync(const BatchDeleteAgentsRequestT& request, const BatchDeleteAgentsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ApplicationDiscoveryServiceClient::BatchDeleteAgents, request, handler, context);
         }
 
         /**
@@ -302,20 +342,20 @@ namespace ApplicationDiscoveryService
         }
 
         /**
-         * <p>Lists agents or connectors as specified by ID or other filters. All
-         * agents/connectors associated with your user account can be listed if you call
+         * <p>Lists agents or collectors as specified by ID or other filters. All
+         * agents/collectors associated with your user can be listed if you call
          * <code>DescribeAgents</code> as is without passing any parameters.</p><p><h3>See
          * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/discovery-2015-11-01/DescribeAgents">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeAgentsOutcome DescribeAgents(const Model::DescribeAgentsRequest& request) const;
+        virtual Model::DescribeAgentsOutcome DescribeAgents(const Model::DescribeAgentsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeAgents that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeAgentsRequestT = Model::DescribeAgentsRequest>
-        Model::DescribeAgentsOutcomeCallable DescribeAgentsCallable(const DescribeAgentsRequestT& request) const
+        Model::DescribeAgentsOutcomeCallable DescribeAgentsCallable(const DescribeAgentsRequestT& request = {}) const
         {
             return SubmitCallable(&ApplicationDiscoveryServiceClient::DescribeAgents, request);
         }
@@ -324,9 +364,35 @@ namespace ApplicationDiscoveryService
          * An Async wrapper for DescribeAgents that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeAgentsRequestT = Model::DescribeAgentsRequest>
-        void DescribeAgentsAsync(const DescribeAgentsRequestT& request, const DescribeAgentsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeAgentsAsync(const DescribeAgentsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeAgentsRequestT& request = {}) const
         {
             return SubmitAsync(&ApplicationDiscoveryServiceClient::DescribeAgents, request, handler, context);
+        }
+
+        /**
+         * <p> Takes a unique deletion task identifier as input and returns metadata about
+         * a configuration deletion task.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/discovery-2015-11-01/DescribeBatchDeleteConfigurationTask">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeBatchDeleteConfigurationTaskOutcome DescribeBatchDeleteConfigurationTask(const Model::DescribeBatchDeleteConfigurationTaskRequest& request) const;
+
+        /**
+         * A Callable wrapper for DescribeBatchDeleteConfigurationTask that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeBatchDeleteConfigurationTaskRequestT = Model::DescribeBatchDeleteConfigurationTaskRequest>
+        Model::DescribeBatchDeleteConfigurationTaskOutcomeCallable DescribeBatchDeleteConfigurationTaskCallable(const DescribeBatchDeleteConfigurationTaskRequestT& request) const
+        {
+            return SubmitCallable(&ApplicationDiscoveryServiceClient::DescribeBatchDeleteConfigurationTask, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeBatchDeleteConfigurationTask that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeBatchDeleteConfigurationTaskRequestT = Model::DescribeBatchDeleteConfigurationTaskRequest>
+        void DescribeBatchDeleteConfigurationTaskAsync(const DescribeBatchDeleteConfigurationTaskRequestT& request, const DescribeBatchDeleteConfigurationTaskResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ApplicationDiscoveryServiceClient::DescribeBatchDeleteConfigurationTask, request, handler, context);
         }
 
         /**
@@ -366,18 +432,18 @@ namespace ApplicationDiscoveryService
 
         /**
          * <p>Lists exports as specified by ID. All continuous exports associated with your
-         * user account can be listed if you call <code>DescribeContinuousExports</code> as
-         * is without passing any parameters.</p><p><h3>See Also:</h3>   <a
+         * user can be listed if you call <code>DescribeContinuousExports</code> as is
+         * without passing any parameters.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/discovery-2015-11-01/DescribeContinuousExports">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeContinuousExportsOutcome DescribeContinuousExports(const Model::DescribeContinuousExportsRequest& request) const;
+        virtual Model::DescribeContinuousExportsOutcome DescribeContinuousExports(const Model::DescribeContinuousExportsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeContinuousExports that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeContinuousExportsRequestT = Model::DescribeContinuousExportsRequest>
-        Model::DescribeContinuousExportsOutcomeCallable DescribeContinuousExportsCallable(const DescribeContinuousExportsRequestT& request) const
+        Model::DescribeContinuousExportsOutcomeCallable DescribeContinuousExportsCallable(const DescribeContinuousExportsRequestT& request = {}) const
         {
             return SubmitCallable(&ApplicationDiscoveryServiceClient::DescribeContinuousExports, request);
         }
@@ -386,7 +452,7 @@ namespace ApplicationDiscoveryService
          * An Async wrapper for DescribeContinuousExports that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeContinuousExportsRequestT = Model::DescribeContinuousExportsRequest>
-        void DescribeContinuousExportsAsync(const DescribeContinuousExportsRequestT& request, const DescribeContinuousExportsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeContinuousExportsAsync(const DescribeContinuousExportsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeContinuousExportsRequestT& request = {}) const
         {
             return SubmitAsync(&ApplicationDiscoveryServiceClient::DescribeContinuousExports, request, handler, context);
         }
@@ -397,13 +463,13 @@ namespace ApplicationDiscoveryService
          * href="http://docs.aws.amazon.com/goto/WebAPI/discovery-2015-11-01/DescribeExportTasks">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeExportTasksOutcome DescribeExportTasks(const Model::DescribeExportTasksRequest& request) const;
+        virtual Model::DescribeExportTasksOutcome DescribeExportTasks(const Model::DescribeExportTasksRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeExportTasks that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeExportTasksRequestT = Model::DescribeExportTasksRequest>
-        Model::DescribeExportTasksOutcomeCallable DescribeExportTasksCallable(const DescribeExportTasksRequestT& request) const
+        Model::DescribeExportTasksOutcomeCallable DescribeExportTasksCallable(const DescribeExportTasksRequestT& request = {}) const
         {
             return SubmitCallable(&ApplicationDiscoveryServiceClient::DescribeExportTasks, request);
         }
@@ -412,7 +478,7 @@ namespace ApplicationDiscoveryService
          * An Async wrapper for DescribeExportTasks that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeExportTasksRequestT = Model::DescribeExportTasksRequest>
-        void DescribeExportTasksAsync(const DescribeExportTasksRequestT& request, const DescribeExportTasksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeExportTasksAsync(const DescribeExportTasksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeExportTasksRequestT& request = {}) const
         {
             return SubmitAsync(&ApplicationDiscoveryServiceClient::DescribeExportTasks, request, handler, context);
         }
@@ -424,13 +490,13 @@ namespace ApplicationDiscoveryService
          * href="http://docs.aws.amazon.com/goto/WebAPI/discovery-2015-11-01/DescribeImportTasks">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeImportTasksOutcome DescribeImportTasks(const Model::DescribeImportTasksRequest& request) const;
+        virtual Model::DescribeImportTasksOutcome DescribeImportTasks(const Model::DescribeImportTasksRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeImportTasks that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeImportTasksRequestT = Model::DescribeImportTasksRequest>
-        Model::DescribeImportTasksOutcomeCallable DescribeImportTasksCallable(const DescribeImportTasksRequestT& request) const
+        Model::DescribeImportTasksOutcomeCallable DescribeImportTasksCallable(const DescribeImportTasksRequestT& request = {}) const
         {
             return SubmitCallable(&ApplicationDiscoveryServiceClient::DescribeImportTasks, request);
         }
@@ -439,7 +505,7 @@ namespace ApplicationDiscoveryService
          * An Async wrapper for DescribeImportTasks that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeImportTasksRequestT = Model::DescribeImportTasksRequest>
-        void DescribeImportTasksAsync(const DescribeImportTasksRequestT& request, const DescribeImportTasksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeImportTasksAsync(const DescribeImportTasksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeImportTasksRequestT& request = {}) const
         {
             return SubmitAsync(&ApplicationDiscoveryServiceClient::DescribeImportTasks, request, handler, context);
         }
@@ -449,19 +515,19 @@ namespace ApplicationDiscoveryService
          * key-value pairs, name and value, passed to the optional parameter
          * <code>filters</code>.</p> <p>There are three valid tag filter names:</p> <ul>
          * <li> <p>tagKey</p> </li> <li> <p>tagValue</p> </li> <li> <p>configurationId</p>
-         * </li> </ul> <p>Also, all configuration items associated with your user account
-         * that have tags can be listed if you call <code>DescribeTags</code> as is without
-         * passing any parameters.</p><p><h3>See Also:</h3>   <a
+         * </li> </ul> <p>Also, all configuration items associated with your user that have
+         * tags can be listed if you call <code>DescribeTags</code> as is without passing
+         * any parameters.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/discovery-2015-11-01/DescribeTags">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeTagsOutcome DescribeTags(const Model::DescribeTagsRequest& request) const;
+        virtual Model::DescribeTagsOutcome DescribeTags(const Model::DescribeTagsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeTags that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeTagsRequestT = Model::DescribeTagsRequest>
-        Model::DescribeTagsOutcomeCallable DescribeTagsCallable(const DescribeTagsRequestT& request) const
+        Model::DescribeTagsOutcomeCallable DescribeTagsCallable(const DescribeTagsRequestT& request = {}) const
         {
             return SubmitCallable(&ApplicationDiscoveryServiceClient::DescribeTags, request);
         }
@@ -470,7 +536,7 @@ namespace ApplicationDiscoveryService
          * An Async wrapper for DescribeTags that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeTagsRequestT = Model::DescribeTagsRequest>
-        void DescribeTagsAsync(const DescribeTagsRequestT& request, const DescribeTagsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeTagsAsync(const DescribeTagsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeTagsRequestT& request = {}) const
         {
             return SubmitAsync(&ApplicationDiscoveryServiceClient::DescribeTags, request, handler, context);
         }
@@ -508,13 +574,13 @@ namespace ApplicationDiscoveryService
          * href="http://docs.aws.amazon.com/goto/WebAPI/discovery-2015-11-01/GetDiscoverySummary">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetDiscoverySummaryOutcome GetDiscoverySummary(const Model::GetDiscoverySummaryRequest& request) const;
+        virtual Model::GetDiscoverySummaryOutcome GetDiscoverySummary(const Model::GetDiscoverySummaryRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetDiscoverySummary that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetDiscoverySummaryRequestT = Model::GetDiscoverySummaryRequest>
-        Model::GetDiscoverySummaryOutcomeCallable GetDiscoverySummaryCallable(const GetDiscoverySummaryRequestT& request) const
+        Model::GetDiscoverySummaryOutcomeCallable GetDiscoverySummaryCallable(const GetDiscoverySummaryRequestT& request = {}) const
         {
             return SubmitCallable(&ApplicationDiscoveryServiceClient::GetDiscoverySummary, request);
         }
@@ -523,7 +589,7 @@ namespace ApplicationDiscoveryService
          * An Async wrapper for GetDiscoverySummary that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetDiscoverySummaryRequestT = Model::GetDiscoverySummaryRequest>
-        void GetDiscoverySummaryAsync(const GetDiscoverySummaryRequestT& request, const GetDiscoverySummaryResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetDiscoverySummaryAsync(const GetDiscoverySummaryResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetDiscoverySummaryRequestT& request = {}) const
         {
             return SubmitAsync(&ApplicationDiscoveryServiceClient::GetDiscoverySummary, request, handler, context);
         }
@@ -582,18 +648,45 @@ namespace ApplicationDiscoveryService
         }
 
         /**
+         * <p> Takes a list of configurationId as input and starts an asynchronous deletion
+         * task to remove the configurationItems. Returns a unique deletion task
+         * identifier. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/discovery-2015-11-01/StartBatchDeleteConfigurationTask">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::StartBatchDeleteConfigurationTaskOutcome StartBatchDeleteConfigurationTask(const Model::StartBatchDeleteConfigurationTaskRequest& request) const;
+
+        /**
+         * A Callable wrapper for StartBatchDeleteConfigurationTask that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename StartBatchDeleteConfigurationTaskRequestT = Model::StartBatchDeleteConfigurationTaskRequest>
+        Model::StartBatchDeleteConfigurationTaskOutcomeCallable StartBatchDeleteConfigurationTaskCallable(const StartBatchDeleteConfigurationTaskRequestT& request) const
+        {
+            return SubmitCallable(&ApplicationDiscoveryServiceClient::StartBatchDeleteConfigurationTask, request);
+        }
+
+        /**
+         * An Async wrapper for StartBatchDeleteConfigurationTask that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename StartBatchDeleteConfigurationTaskRequestT = Model::StartBatchDeleteConfigurationTaskRequest>
+        void StartBatchDeleteConfigurationTaskAsync(const StartBatchDeleteConfigurationTaskRequestT& request, const StartBatchDeleteConfigurationTaskResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ApplicationDiscoveryServiceClient::StartBatchDeleteConfigurationTask, request, handler, context);
+        }
+
+        /**
          * <p>Start the continuous flow of agent's discovered data into Amazon
          * Athena.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/discovery-2015-11-01/StartContinuousExport">AWS
          * API Reference</a></p>
          */
-        virtual Model::StartContinuousExportOutcome StartContinuousExport(const Model::StartContinuousExportRequest& request) const;
+        virtual Model::StartContinuousExportOutcome StartContinuousExport(const Model::StartContinuousExportRequest& request = {}) const;
 
         /**
          * A Callable wrapper for StartContinuousExport that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename StartContinuousExportRequestT = Model::StartContinuousExportRequest>
-        Model::StartContinuousExportOutcomeCallable StartContinuousExportCallable(const StartContinuousExportRequestT& request) const
+        Model::StartContinuousExportOutcomeCallable StartContinuousExportCallable(const StartContinuousExportRequestT& request = {}) const
         {
             return SubmitCallable(&ApplicationDiscoveryServiceClient::StartContinuousExport, request);
         }
@@ -602,14 +695,14 @@ namespace ApplicationDiscoveryService
          * An Async wrapper for StartContinuousExport that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename StartContinuousExportRequestT = Model::StartContinuousExportRequest>
-        void StartContinuousExportAsync(const StartContinuousExportRequestT& request, const StartContinuousExportResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void StartContinuousExportAsync(const StartContinuousExportResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const StartContinuousExportRequestT& request = {}) const
         {
             return SubmitAsync(&ApplicationDiscoveryServiceClient::StartContinuousExport, request, handler, context);
         }
 
         /**
-         * <p>Instructs the specified agents or connectors to start collecting
-         * data.</p><p><h3>See Also:</h3>   <a
+         * <p>Instructs the specified agents to start collecting data.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/discovery-2015-11-01/StartDataCollectionByAgentIds">AWS
          * API Reference</a></p>
          */
@@ -634,26 +727,37 @@ namespace ApplicationDiscoveryService
         }
 
         /**
-         * <p> Begins the export of discovered data to an S3 bucket.</p> <p> If you specify
-         * <code>agentIds</code> in a filter, the task exports up to 72 hours of detailed
-         * data collected by the identified Application Discovery Agent, including network,
-         * process, and performance details. A time range for exported agent data may be
-         * set by using <code>startTime</code> and <code>endTime</code>. Export of detailed
-         * agent data is limited to five concurrently running exports. </p> <p> If you do
-         * not include an <code>agentIds</code> filter, summary data is exported that
-         * includes both Amazon Web Services Agentless Discovery Connector data and summary
-         * data from Amazon Web Services Discovery Agents. Export of summary data is
-         * limited to two exports per day. </p><p><h3>See Also:</h3>   <a
+         * <p>Begins the export of a discovered data report to an Amazon S3 bucket managed
+         * by Amazon Web Services.</p>  <p>Exports might provide an estimate of fees
+         * and savings based on certain information that you provide. Fee estimates do not
+         * include any taxes that might apply. Your actual fees and savings depend on a
+         * variety of factors, including your actual usage of Amazon Web Services services,
+         * which might vary from the estimates provided in this report.</p>  <p>If
+         * you do not specify <code>preferences</code> or <code>agentIds</code> in the
+         * filter, a summary of all servers, applications, tags, and performance is
+         * generated. This data is an aggregation of all server data collected through
+         * on-premises tooling, file import, application grouping and applying tags.</p>
+         * <p>If you specify <code>agentIds</code> in a filter, the task exports up to 72
+         * hours of detailed data collected by the identified Application Discovery Agent,
+         * including network, process, and performance details. A time range for exported
+         * agent data may be set by using <code>startTime</code> and <code>endTime</code>.
+         * Export of detailed agent data is limited to five concurrently running exports.
+         * Export of detailed agent data is limited to two exports per day.</p> <p>If you
+         * enable <code>ec2RecommendationsPreferences</code> in <code>preferences</code> ,
+         * an Amazon EC2 instance matching the characteristics of each server in
+         * Application Discovery Service is generated. Changing the attributes of the
+         * <code>ec2RecommendationsPreferences</code> changes the criteria of the
+         * recommendation.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/discovery-2015-11-01/StartExportTask">AWS
          * API Reference</a></p>
          */
-        virtual Model::StartExportTaskOutcome StartExportTask(const Model::StartExportTaskRequest& request) const;
+        virtual Model::StartExportTaskOutcome StartExportTask(const Model::StartExportTaskRequest& request = {}) const;
 
         /**
          * A Callable wrapper for StartExportTask that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename StartExportTaskRequestT = Model::StartExportTaskRequest>
-        Model::StartExportTaskOutcomeCallable StartExportTaskCallable(const StartExportTaskRequestT& request) const
+        Model::StartExportTaskOutcomeCallable StartExportTaskCallable(const StartExportTaskRequestT& request = {}) const
         {
             return SubmitCallable(&ApplicationDiscoveryServiceClient::StartExportTask, request);
         }
@@ -662,7 +766,7 @@ namespace ApplicationDiscoveryService
          * An Async wrapper for StartExportTask that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename StartExportTaskRequestT = Model::StartExportTaskRequest>
-        void StartExportTaskAsync(const StartExportTaskRequestT& request, const StartExportTaskResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void StartExportTaskAsync(const StartExportTaskResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const StartExportTaskRequestT& request = {}) const
         {
             return SubmitAsync(&ApplicationDiscoveryServiceClient::StartExportTask, request, handler, context);
         }
@@ -670,13 +774,14 @@ namespace ApplicationDiscoveryService
         /**
          * <p>Starts an import task, which allows you to import details of your on-premises
          * environment directly into Amazon Web Services Migration Hub without having to
-         * use the Application Discovery Service (ADS) tools such as the Discovery
-         * Connector or Discovery Agent. This gives you the option to perform migration
-         * assessment and planning directly from your imported data, including the ability
-         * to group your devices as applications and track their migration status.</p>
-         * <p>To start an import request, do this:</p> <ol> <li> <p>Download the specially
-         * formatted comma separated value (CSV) import template, which you can find here:
-         * <a
+         * use the Amazon Web Services Application Discovery Service (Application Discovery
+         * Service) tools such as the Amazon Web Services Application Discovery Service
+         * Agentless Collector or Application Discovery Agent. This gives you the option to
+         * perform migration assessment and planning directly from your imported data,
+         * including the ability to group your devices as applications and track their
+         * migration status.</p> <p>To start an import request, do this:</p> <ol> <li>
+         * <p>Download the specially formatted comma separated value (CSV) import template,
+         * which you can find here: <a
          * href="https://s3.us-west-2.amazonaws.com/templates-7cffcf56-bd96-4b1c-b45b-a5b42f282e46/import_template.csv">https://s3.us-west-2.amazonaws.com/templates-7cffcf56-bd96-4b1c-b45b-a5b42f282e46/import_template.csv</a>.</p>
          * </li> <li> <p>Fill out the template with your server and application data.</p>
          * </li> <li> <p>Upload your import file to an Amazon S3 bucket, and make a note of
@@ -744,8 +849,8 @@ namespace ApplicationDiscoveryService
         }
 
         /**
-         * <p>Instructs the specified agents or connectors to stop collecting
-         * data.</p><p><h3>See Also:</h3>   <a
+         * <p>Instructs the specified agents to stop collecting data.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/discovery-2015-11-01/StopDataCollectionByAgentIds">AWS
          * API Reference</a></p>
          */
@@ -799,11 +904,7 @@ namespace ApplicationDiscoveryService
       std::shared_ptr<ApplicationDiscoveryServiceEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<ApplicationDiscoveryServiceClient>;
-      void init(const ApplicationDiscoveryServiceClientConfiguration& clientConfiguration);
 
-      ApplicationDiscoveryServiceClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<ApplicationDiscoveryServiceEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace ApplicationDiscoveryService

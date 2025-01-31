@@ -1,4 +1,6 @@
-﻿# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿#!/usr/bin/env python3
+
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0.
 #
 import argparse
@@ -34,11 +36,13 @@ def main():
     exe_extension = ".exe" if platform.system() == "Windows" else ""
 
     test_list = [
-        # "aws-cpp-sdk-transcribestreaming-integration-tests", # Temporarily disabled while investigated
+        "aws-cpp-sdk-transcribestreaming-integ-tests",
+        "aws-cpp-sdk-dynamodb-unit-tests",
         "aws-cpp-sdk-dynamodb-integration-tests",
         "aws-cpp-sdk-sqs-integration-tests",
         "aws-cpp-sdk-s3-integration-tests",
-        #"aws-cpp-sdk-s3-crt-integration-tests",
+        "aws-cpp-sdk-s3-unit-tests",
+        "aws-cpp-sdk-s3-crt-integration-tests",
         #"aws-cpp-sdk-s3control-integration-tests",
         # "aws-cpp-sdk-lambda-integration-tests",
         "aws-cpp-sdk-cognitoidentity-integration-tests",
@@ -51,6 +55,17 @@ def main():
         "aws-cpp-sdk-rds-integration-tests",
         "aws-cpp-sdk-ec2-integration-tests",
         "aws-cpp-sdk-timestream-query-integration-tests"]
+
+    # check for existence of these binaries before adding them to tests
+    # as they will not always be present
+    cmake_dependent_tests = [
+        "aws-cpp-sdk-s3-crt-memory-checked-integration-tests"
+    ]
+
+    for test in cmake_dependent_tests:
+        test_exe = os.path.join(arguments["testDir"], test if test_has_parent_dir else "", test) + exe_extension
+        if os.path.isfile(test_exe):
+            test_list.append("aws-cpp-sdk-s3-crt-memory-checked-integration-tests")
 
     random.shuffle(test_list)
 
@@ -66,7 +81,7 @@ def main():
         print("prefix = " + prefix)
         gtest_brief = "--gtest_brief=1"
         add_executable_bit(test_exe)
-        subprocess.check_call([test_exe, prefix, gtest_brief])
+        subprocess.check_call([test_exe, prefix, gtest_brief], timeout=20*60)
 
 
 # Run from powershell; make sure msbuild is in PATH environment variable

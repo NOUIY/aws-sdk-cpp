@@ -30,23 +30,13 @@ ScheduleEntry::ScheduleEntry() :
     m_scheduleEntryType(ScheduleEntryType::NOT_SET),
     m_scheduleEntryTypeHasBeenSet(false),
     m_sourceLocationNameHasBeenSet(false),
-    m_vodSourceNameHasBeenSet(false)
+    m_vodSourceNameHasBeenSet(false),
+    m_audiencesHasBeenSet(false)
 {
 }
 
-ScheduleEntry::ScheduleEntry(JsonView jsonValue) : 
-    m_approximateDurationSeconds(0),
-    m_approximateDurationSecondsHasBeenSet(false),
-    m_approximateStartTimeHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_channelNameHasBeenSet(false),
-    m_liveSourceNameHasBeenSet(false),
-    m_programNameHasBeenSet(false),
-    m_scheduleAdBreaksHasBeenSet(false),
-    m_scheduleEntryType(ScheduleEntryType::NOT_SET),
-    m_scheduleEntryTypeHasBeenSet(false),
-    m_sourceLocationNameHasBeenSet(false),
-    m_vodSourceNameHasBeenSet(false)
+ScheduleEntry::ScheduleEntry(JsonView jsonValue)
+  : ScheduleEntry()
 {
   *this = jsonValue;
 }
@@ -126,6 +116,16 @@ ScheduleEntry& ScheduleEntry::operator =(JsonView jsonValue)
     m_vodSourceNameHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Audiences"))
+  {
+    Aws::Utils::Array<JsonView> audiencesJsonList = jsonValue.GetArray("Audiences");
+    for(unsigned audiencesIndex = 0; audiencesIndex < audiencesJsonList.GetLength(); ++audiencesIndex)
+    {
+      m_audiences.push_back(audiencesJsonList[audiencesIndex].AsString());
+    }
+    m_audiencesHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -193,6 +193,17 @@ JsonValue ScheduleEntry::Jsonize() const
   if(m_vodSourceNameHasBeenSet)
   {
    payload.WithString("VodSourceName", m_vodSourceName);
+
+  }
+
+  if(m_audiencesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> audiencesJsonList(m_audiences.size());
+   for(unsigned audiencesIndex = 0; audiencesIndex < audiencesJsonList.GetLength(); ++audiencesIndex)
+   {
+     audiencesJsonList[audiencesIndex].AsString(m_audiences[audiencesIndex]);
+   }
+   payload.WithArray("Audiences", std::move(audiencesJsonList));
 
   }
 

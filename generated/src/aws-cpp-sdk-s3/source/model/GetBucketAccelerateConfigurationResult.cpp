@@ -17,12 +17,13 @@ using namespace Aws::Utils;
 using namespace Aws;
 
 GetBucketAccelerateConfigurationResult::GetBucketAccelerateConfigurationResult() : 
-    m_status(BucketAccelerateStatus::NOT_SET)
+    m_status(BucketAccelerateStatus::NOT_SET),
+    m_requestCharged(RequestCharged::NOT_SET)
 {
 }
 
-GetBucketAccelerateConfigurationResult::GetBucketAccelerateConfigurationResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
-    m_status(BucketAccelerateStatus::NOT_SET)
+GetBucketAccelerateConfigurationResult::GetBucketAccelerateConfigurationResult(const Aws::AmazonWebServiceResult<XmlDocument>& result)
+  : GetBucketAccelerateConfigurationResult()
 {
   *this = result;
 }
@@ -42,6 +43,12 @@ GetBucketAccelerateConfigurationResult& GetBucketAccelerateConfigurationResult::
   }
 
   const auto& headers = result.GetHeaderValueCollection();
+  const auto& requestChargedIter = headers.find("x-amz-request-charged");
+  if(requestChargedIter != headers.end())
+  {
+    m_requestCharged = RequestChargedMapper::GetRequestChargedForName(requestChargedIter->second);
+  }
+
   const auto& requestIdIter = headers.find("x-amz-request-id");
   if(requestIdIter != headers.end())
   {

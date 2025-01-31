@@ -20,23 +20,17 @@ namespace Model
 
 RecommendationJobInferenceBenchmark::RecommendationJobInferenceBenchmark() : 
     m_metricsHasBeenSet(false),
+    m_endpointMetricsHasBeenSet(false),
     m_endpointConfigurationHasBeenSet(false),
     m_modelConfigurationHasBeenSet(false),
     m_failureReasonHasBeenSet(false),
-    m_endpointMetricsHasBeenSet(false),
     m_invocationEndTimeHasBeenSet(false),
     m_invocationStartTimeHasBeenSet(false)
 {
 }
 
-RecommendationJobInferenceBenchmark::RecommendationJobInferenceBenchmark(JsonView jsonValue) : 
-    m_metricsHasBeenSet(false),
-    m_endpointConfigurationHasBeenSet(false),
-    m_modelConfigurationHasBeenSet(false),
-    m_failureReasonHasBeenSet(false),
-    m_endpointMetricsHasBeenSet(false),
-    m_invocationEndTimeHasBeenSet(false),
-    m_invocationStartTimeHasBeenSet(false)
+RecommendationJobInferenceBenchmark::RecommendationJobInferenceBenchmark(JsonView jsonValue)
+  : RecommendationJobInferenceBenchmark()
 {
   *this = jsonValue;
 }
@@ -48,6 +42,13 @@ RecommendationJobInferenceBenchmark& RecommendationJobInferenceBenchmark::operat
     m_metrics = jsonValue.GetObject("Metrics");
 
     m_metricsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("EndpointMetrics"))
+  {
+    m_endpointMetrics = jsonValue.GetObject("EndpointMetrics");
+
+    m_endpointMetricsHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("EndpointConfiguration"))
@@ -69,13 +70,6 @@ RecommendationJobInferenceBenchmark& RecommendationJobInferenceBenchmark::operat
     m_failureReason = jsonValue.GetString("FailureReason");
 
     m_failureReasonHasBeenSet = true;
-  }
-
-  if(jsonValue.ValueExists("EndpointMetrics"))
-  {
-    m_endpointMetrics = jsonValue.GetObject("EndpointMetrics");
-
-    m_endpointMetricsHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("InvocationEndTime"))
@@ -105,6 +99,12 @@ JsonValue RecommendationJobInferenceBenchmark::Jsonize() const
 
   }
 
+  if(m_endpointMetricsHasBeenSet)
+  {
+   payload.WithObject("EndpointMetrics", m_endpointMetrics.Jsonize());
+
+  }
+
   if(m_endpointConfigurationHasBeenSet)
   {
    payload.WithObject("EndpointConfiguration", m_endpointConfiguration.Jsonize());
@@ -120,12 +120,6 @@ JsonValue RecommendationJobInferenceBenchmark::Jsonize() const
   if(m_failureReasonHasBeenSet)
   {
    payload.WithString("FailureReason", m_failureReason);
-
-  }
-
-  if(m_endpointMetricsHasBeenSet)
-  {
-   payload.WithObject("EndpointMetrics", m_endpointMetrics.Jsonize());
 
   }
 

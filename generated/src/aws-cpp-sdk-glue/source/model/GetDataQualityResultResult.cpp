@@ -22,8 +22,8 @@ GetDataQualityResultResult::GetDataQualityResultResult() :
 {
 }
 
-GetDataQualityResultResult::GetDataQualityResultResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_score(0.0)
+GetDataQualityResultResult::GetDataQualityResultResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetDataQualityResultResult()
 {
   *this = result;
 }
@@ -34,6 +34,12 @@ GetDataQualityResultResult& GetDataQualityResultResult::operator =(const Aws::Am
   if(jsonValue.ValueExists("ResultId"))
   {
     m_resultId = jsonValue.GetString("ResultId");
+
+  }
+
+  if(jsonValue.ValueExists("ProfileId"))
+  {
+    m_profileId = jsonValue.GetString("ProfileId");
 
   }
 
@@ -97,6 +103,24 @@ GetDataQualityResultResult& GetDataQualityResultResult::operator =(const Aws::Am
     for(unsigned ruleResultsIndex = 0; ruleResultsIndex < ruleResultsJsonList.GetLength(); ++ruleResultsIndex)
     {
       m_ruleResults.push_back(ruleResultsJsonList[ruleResultsIndex].AsObject());
+    }
+  }
+
+  if(jsonValue.ValueExists("AnalyzerResults"))
+  {
+    Aws::Utils::Array<JsonView> analyzerResultsJsonList = jsonValue.GetArray("AnalyzerResults");
+    for(unsigned analyzerResultsIndex = 0; analyzerResultsIndex < analyzerResultsJsonList.GetLength(); ++analyzerResultsIndex)
+    {
+      m_analyzerResults.push_back(analyzerResultsJsonList[analyzerResultsIndex].AsObject());
+    }
+  }
+
+  if(jsonValue.ValueExists("Observations"))
+  {
+    Aws::Utils::Array<JsonView> observationsJsonList = jsonValue.GetArray("Observations");
+    for(unsigned observationsIndex = 0; observationsIndex < observationsJsonList.GetLength(); ++observationsIndex)
+    {
+      m_observations.push_back(observationsJsonList[observationsIndex].AsObject());
     }
   }
 

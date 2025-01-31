@@ -24,17 +24,14 @@ ResourceStatus::ResourceStatus() :
     m_ecr(Status::NOT_SET),
     m_ecrHasBeenSet(false),
     m_lambda(Status::NOT_SET),
-    m_lambdaHasBeenSet(false)
+    m_lambdaHasBeenSet(false),
+    m_lambdaCode(Status::NOT_SET),
+    m_lambdaCodeHasBeenSet(false)
 {
 }
 
-ResourceStatus::ResourceStatus(JsonView jsonValue) : 
-    m_ec2(Status::NOT_SET),
-    m_ec2HasBeenSet(false),
-    m_ecr(Status::NOT_SET),
-    m_ecrHasBeenSet(false),
-    m_lambda(Status::NOT_SET),
-    m_lambdaHasBeenSet(false)
+ResourceStatus::ResourceStatus(JsonView jsonValue)
+  : ResourceStatus()
 {
   *this = jsonValue;
 }
@@ -62,6 +59,13 @@ ResourceStatus& ResourceStatus::operator =(JsonView jsonValue)
     m_lambdaHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("lambdaCode"))
+  {
+    m_lambdaCode = StatusMapper::GetStatusForName(jsonValue.GetString("lambdaCode"));
+
+    m_lambdaCodeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -82,6 +86,11 @@ JsonValue ResourceStatus::Jsonize() const
   if(m_lambdaHasBeenSet)
   {
    payload.WithString("lambda", StatusMapper::GetNameForStatus(m_lambda));
+  }
+
+  if(m_lambdaCodeHasBeenSet)
+  {
+   payload.WithString("lambdaCode", StatusMapper::GetNameForStatus(m_lambdaCode));
   }
 
   return payload;

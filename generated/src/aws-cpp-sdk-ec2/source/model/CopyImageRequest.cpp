@@ -20,10 +20,11 @@ CopyImageRequest::CopyImageRequest() :
     m_sourceImageIdHasBeenSet(false),
     m_sourceRegionHasBeenSet(false),
     m_destinationOutpostArnHasBeenSet(false),
-    m_dryRun(false),
-    m_dryRunHasBeenSet(false),
     m_copyImageTags(false),
-    m_copyImageTagsHasBeenSet(false)
+    m_copyImageTagsHasBeenSet(false),
+    m_tagSpecificationsHasBeenSet(false),
+    m_dryRun(false),
+    m_dryRunHasBeenSet(false)
 {
 }
 
@@ -71,14 +72,24 @@ Aws::String CopyImageRequest::SerializePayload() const
     ss << "DestinationOutpostArn=" << StringUtils::URLEncode(m_destinationOutpostArn.c_str()) << "&";
   }
 
-  if(m_dryRunHasBeenSet)
-  {
-    ss << "DryRun=" << std::boolalpha << m_dryRun << "&";
-  }
-
   if(m_copyImageTagsHasBeenSet)
   {
     ss << "CopyImageTags=" << std::boolalpha << m_copyImageTags << "&";
+  }
+
+  if(m_tagSpecificationsHasBeenSet)
+  {
+    unsigned tagSpecificationsCount = 1;
+    for(auto& item : m_tagSpecifications)
+    {
+      item.OutputToStream(ss, "TagSpecification.", tagSpecificationsCount, "");
+      tagSpecificationsCount++;
+    }
+  }
+
+  if(m_dryRunHasBeenSet)
+  {
+    ss << "DryRun=" << std::boolalpha << m_dryRun << "&";
   }
 
   ss << "Version=2016-11-15";

@@ -23,9 +23,8 @@ DescribeAgentResult::DescribeAgentResult() :
 {
 }
 
-DescribeAgentResult::DescribeAgentResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(AgentStatus::NOT_SET),
-    m_endpointType(EndpointType::NOT_SET)
+DescribeAgentResult::DescribeAgentResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeAgentResult()
 {
   *this = result;
 }
@@ -72,6 +71,12 @@ DescribeAgentResult& DescribeAgentResult::operator =(const Aws::AmazonWebService
   if(jsonValue.ValueExists("PrivateLinkConfig"))
   {
     m_privateLinkConfig = jsonValue.GetObject("PrivateLinkConfig");
+
+  }
+
+  if(jsonValue.ValueExists("Platform"))
+  {
+    m_platform = jsonValue.GetObject("Platform");
 
   }
 

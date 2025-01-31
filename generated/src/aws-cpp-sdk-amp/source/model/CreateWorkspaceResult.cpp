@@ -35,6 +35,12 @@ CreateWorkspaceResult& CreateWorkspaceResult::operator =(const Aws::AmazonWebSer
 
   }
 
+  if(jsonValue.ValueExists("kmsKeyArn"))
+  {
+    m_kmsKeyArn = jsonValue.GetString("kmsKeyArn");
+
+  }
+
   if(jsonValue.ValueExists("status"))
   {
     m_status = jsonValue.GetObject("status");

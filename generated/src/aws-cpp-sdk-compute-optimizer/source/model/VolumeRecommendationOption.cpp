@@ -24,17 +24,13 @@ VolumeRecommendationOption::VolumeRecommendationOption() :
     m_performanceRiskHasBeenSet(false),
     m_rank(0),
     m_rankHasBeenSet(false),
-    m_savingsOpportunityHasBeenSet(false)
+    m_savingsOpportunityHasBeenSet(false),
+    m_savingsOpportunityAfterDiscountsHasBeenSet(false)
 {
 }
 
-VolumeRecommendationOption::VolumeRecommendationOption(JsonView jsonValue) : 
-    m_configurationHasBeenSet(false),
-    m_performanceRisk(0.0),
-    m_performanceRiskHasBeenSet(false),
-    m_rank(0),
-    m_rankHasBeenSet(false),
-    m_savingsOpportunityHasBeenSet(false)
+VolumeRecommendationOption::VolumeRecommendationOption(JsonView jsonValue)
+  : VolumeRecommendationOption()
 {
   *this = jsonValue;
 }
@@ -69,6 +65,13 @@ VolumeRecommendationOption& VolumeRecommendationOption::operator =(JsonView json
     m_savingsOpportunityHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("savingsOpportunityAfterDiscounts"))
+  {
+    m_savingsOpportunityAfterDiscounts = jsonValue.GetObject("savingsOpportunityAfterDiscounts");
+
+    m_savingsOpportunityAfterDiscountsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -97,6 +100,12 @@ JsonValue VolumeRecommendationOption::Jsonize() const
   if(m_savingsOpportunityHasBeenSet)
   {
    payload.WithObject("savingsOpportunity", m_savingsOpportunity.Jsonize());
+
+  }
+
+  if(m_savingsOpportunityAfterDiscountsHasBeenSet)
+  {
+   payload.WithObject("savingsOpportunityAfterDiscounts", m_savingsOpportunityAfterDiscounts.Jsonize());
 
   }
 

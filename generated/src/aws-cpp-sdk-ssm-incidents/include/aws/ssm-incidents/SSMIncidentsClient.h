@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/ssm-incidents/SSMIncidents_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/ssm-incidents/SSMIncidentsServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/ssm-incidents/SSMIncidentsErrorMarshaller.h>
 
 namespace Aws
 {
 namespace SSMIncidents
 {
+  AWS_SSMINCIDENTS_API extern const char SERVICE_NAME[];
   /**
    * <p>Systems Manager Incident Manager is an incident management console designed
    * to help users mitigate and recover from incidents affecting their Amazon Web
@@ -26,12 +30,20 @@ namespace SSMIncidents
    * critical incidents, Incident Manager automates response plans and enables
    * responder team escalation. </p>
    */
-  class AWS_SSMINCIDENTS_API SSMIncidentsClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<SSMIncidentsClient>
+  class AWS_SSMINCIDENTS_API SSMIncidentsClient : smithy::client::AwsSmithyClientT<Aws::SSMIncidents::SERVICE_NAME,
+      Aws::SSMIncidents::SSMIncidentsClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      SSMIncidentsEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::SSMIncidentsErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<SSMIncidentsClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "SSM Incidents"; }
 
       typedef SSMIncidentsClientConfiguration ClientConfigurationType;
       typedef SSMIncidentsEndpointProvider EndpointProviderType;
@@ -41,14 +53,14 @@ namespace SSMIncidents
         * is not specified, it will be initialized to default values.
         */
         SSMIncidentsClient(const Aws::SSMIncidents::SSMIncidentsClientConfiguration& clientConfiguration = Aws::SSMIncidents::SSMIncidentsClientConfiguration(),
-                           std::shared_ptr<SSMIncidentsEndpointProviderBase> endpointProvider = Aws::MakeShared<SSMIncidentsEndpointProvider>(ALLOCATION_TAG));
+                           std::shared_ptr<SSMIncidentsEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         SSMIncidentsClient(const Aws::Auth::AWSCredentials& credentials,
-                           std::shared_ptr<SSMIncidentsEndpointProviderBase> endpointProvider = Aws::MakeShared<SSMIncidentsEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<SSMIncidentsEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::SSMIncidents::SSMIncidentsClientConfiguration& clientConfiguration = Aws::SSMIncidents::SSMIncidentsClientConfiguration());
 
        /**
@@ -56,7 +68,7 @@ namespace SSMIncidents
         * the default http client factory will be used
         */
         SSMIncidentsClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                           std::shared_ptr<SSMIncidentsEndpointProviderBase> endpointProvider = Aws::MakeShared<SSMIncidentsEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<SSMIncidentsEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::SSMIncidents::SSMIncidentsClientConfiguration& clientConfiguration = Aws::SSMIncidents::SSMIncidentsClientConfiguration());
 
 
@@ -83,6 +95,35 @@ namespace SSMIncidents
 
         /* End of legacy constructors due deprecation */
         virtual ~SSMIncidentsClient();
+
+        /**
+         * <p>Retrieves details about all specified findings for an incident, including
+         * descriptive details about each finding. A finding represents a recent
+         * application environment change made by an CodeDeploy deployment or an
+         * CloudFormation stack creation or update that can be investigated as a potential
+         * cause of the incident.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ssm-incidents-2018-05-10/BatchGetIncidentFindings">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::BatchGetIncidentFindingsOutcome BatchGetIncidentFindings(const Model::BatchGetIncidentFindingsRequest& request) const;
+
+        /**
+         * A Callable wrapper for BatchGetIncidentFindings that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename BatchGetIncidentFindingsRequestT = Model::BatchGetIncidentFindingsRequest>
+        Model::BatchGetIncidentFindingsOutcomeCallable BatchGetIncidentFindingsCallable(const BatchGetIncidentFindingsRequestT& request) const
+        {
+            return SubmitCallable(&SSMIncidentsClient::BatchGetIncidentFindings, request);
+        }
+
+        /**
+         * An Async wrapper for BatchGetIncidentFindings that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename BatchGetIncidentFindingsRequestT = Model::BatchGetIncidentFindingsRequest>
+        void BatchGetIncidentFindingsAsync(const BatchGetIncidentFindingsRequestT& request, const BatchGetIncidentFindingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&SSMIncidentsClient::BatchGetIncidentFindings, request, handler, context);
+        }
 
         /**
          * <p>A replication set replicates and encrypts your data to the provided Regions
@@ -426,19 +467,48 @@ namespace SSMIncidents
         }
 
         /**
+         * <p>Retrieves a list of the IDs of findings, plus their last modified times, that
+         * have been identified for a specified incident. A finding represents a recent
+         * application environment change made by an CloudFormation stack creation or
+         * update or an CodeDeploy deployment that can be investigated as a potential cause
+         * of the incident.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ssm-incidents-2018-05-10/ListIncidentFindings">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListIncidentFindingsOutcome ListIncidentFindings(const Model::ListIncidentFindingsRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListIncidentFindings that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListIncidentFindingsRequestT = Model::ListIncidentFindingsRequest>
+        Model::ListIncidentFindingsOutcomeCallable ListIncidentFindingsCallable(const ListIncidentFindingsRequestT& request) const
+        {
+            return SubmitCallable(&SSMIncidentsClient::ListIncidentFindings, request);
+        }
+
+        /**
+         * An Async wrapper for ListIncidentFindings that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListIncidentFindingsRequestT = Model::ListIncidentFindingsRequest>
+        void ListIncidentFindingsAsync(const ListIncidentFindingsRequestT& request, const ListIncidentFindingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&SSMIncidentsClient::ListIncidentFindings, request, handler, context);
+        }
+
+        /**
          * <p>Lists all incident records in your account. Use this command to retrieve the
          * Amazon Resource Name (ARN) of the incident record you want to update.
          * </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/ssm-incidents-2018-05-10/ListIncidentRecords">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListIncidentRecordsOutcome ListIncidentRecords(const Model::ListIncidentRecordsRequest& request) const;
+        virtual Model::ListIncidentRecordsOutcome ListIncidentRecords(const Model::ListIncidentRecordsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListIncidentRecords that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListIncidentRecordsRequestT = Model::ListIncidentRecordsRequest>
-        Model::ListIncidentRecordsOutcomeCallable ListIncidentRecordsCallable(const ListIncidentRecordsRequestT& request) const
+        Model::ListIncidentRecordsOutcomeCallable ListIncidentRecordsCallable(const ListIncidentRecordsRequestT& request = {}) const
         {
             return SubmitCallable(&SSMIncidentsClient::ListIncidentRecords, request);
         }
@@ -447,7 +517,7 @@ namespace SSMIncidents
          * An Async wrapper for ListIncidentRecords that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListIncidentRecordsRequestT = Model::ListIncidentRecordsRequest>
-        void ListIncidentRecordsAsync(const ListIncidentRecordsRequestT& request, const ListIncidentRecordsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListIncidentRecordsAsync(const ListIncidentRecordsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListIncidentRecordsRequestT& request = {}) const
         {
             return SubmitAsync(&SSMIncidentsClient::ListIncidentRecords, request, handler, context);
         }
@@ -483,13 +553,13 @@ namespace SSMIncidents
          * href="http://docs.aws.amazon.com/goto/WebAPI/ssm-incidents-2018-05-10/ListReplicationSets">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListReplicationSetsOutcome ListReplicationSets(const Model::ListReplicationSetsRequest& request) const;
+        virtual Model::ListReplicationSetsOutcome ListReplicationSets(const Model::ListReplicationSetsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListReplicationSets that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListReplicationSetsRequestT = Model::ListReplicationSetsRequest>
-        Model::ListReplicationSetsOutcomeCallable ListReplicationSetsCallable(const ListReplicationSetsRequestT& request) const
+        Model::ListReplicationSetsOutcomeCallable ListReplicationSetsCallable(const ListReplicationSetsRequestT& request = {}) const
         {
             return SubmitCallable(&SSMIncidentsClient::ListReplicationSets, request);
         }
@@ -498,7 +568,7 @@ namespace SSMIncidents
          * An Async wrapper for ListReplicationSets that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListReplicationSetsRequestT = Model::ListReplicationSetsRequest>
-        void ListReplicationSetsAsync(const ListReplicationSetsRequestT& request, const ListReplicationSetsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListReplicationSetsAsync(const ListReplicationSetsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListReplicationSetsRequestT& request = {}) const
         {
             return SubmitAsync(&SSMIncidentsClient::ListReplicationSets, request, handler, context);
         }
@@ -508,13 +578,13 @@ namespace SSMIncidents
          * href="http://docs.aws.amazon.com/goto/WebAPI/ssm-incidents-2018-05-10/ListResponsePlans">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListResponsePlansOutcome ListResponsePlans(const Model::ListResponsePlansRequest& request) const;
+        virtual Model::ListResponsePlansOutcome ListResponsePlans(const Model::ListResponsePlansRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListResponsePlans that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListResponsePlansRequestT = Model::ListResponsePlansRequest>
-        Model::ListResponsePlansOutcomeCallable ListResponsePlansCallable(const ListResponsePlansRequestT& request) const
+        Model::ListResponsePlansOutcomeCallable ListResponsePlansCallable(const ListResponsePlansRequestT& request = {}) const
         {
             return SubmitCallable(&SSMIncidentsClient::ListResponsePlans, request);
         }
@@ -523,14 +593,14 @@ namespace SSMIncidents
          * An Async wrapper for ListResponsePlans that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListResponsePlansRequestT = Model::ListResponsePlansRequest>
-        void ListResponsePlansAsync(const ListResponsePlansRequestT& request, const ListResponsePlansResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListResponsePlansAsync(const ListResponsePlansResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListResponsePlansRequestT& request = {}) const
         {
             return SubmitAsync(&SSMIncidentsClient::ListResponsePlans, request, handler, context);
         }
 
         /**
-         * <p>Lists the tags that are attached to the specified response
-         * plan.</p><p><h3>See Also:</h3>   <a
+         * <p>Lists the tags that are attached to the specified response plan or
+         * incident.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/ssm-incidents-2018-05-10/ListTagsForResource">AWS
          * API Reference</a></p>
          */
@@ -848,11 +918,7 @@ namespace SSMIncidents
       std::shared_ptr<SSMIncidentsEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<SSMIncidentsClient>;
-      void init(const SSMIncidentsClientConfiguration& clientConfiguration);
 
-      SSMIncidentsClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<SSMIncidentsEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace SSMIncidents

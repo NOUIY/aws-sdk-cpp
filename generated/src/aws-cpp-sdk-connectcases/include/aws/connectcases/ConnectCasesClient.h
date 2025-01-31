@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/connectcases/ConnectCases_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/connectcases/ConnectCasesServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/connectcases/ConnectCasesErrorMarshaller.h>
 
 namespace Aws
 {
 namespace ConnectCases
 {
+  AWS_CONNECTCASES_API extern const char SERVICE_NAME[];
   /**
    * <p>With Amazon Connect Cases, your agents can track and manage customer issues
    * that require multiple interactions, follow-up tasks, and teams in your contact
@@ -24,12 +28,20 @@ namespace ConnectCases
    * href="https://docs.aws.amazon.com/connect/latest/adminguide/cases.html">Amazon
    * Connect Cases</a> in the <i>Amazon Connect Administrator Guide</i>.</p>
    */
-  class AWS_CONNECTCASES_API ConnectCasesClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<ConnectCasesClient>
+  class AWS_CONNECTCASES_API ConnectCasesClient : smithy::client::AwsSmithyClientT<Aws::ConnectCases::SERVICE_NAME,
+      Aws::ConnectCases::ConnectCasesClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      ConnectCasesEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::ConnectCasesErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<ConnectCasesClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "ConnectCases"; }
 
       typedef ConnectCasesClientConfiguration ClientConfigurationType;
       typedef ConnectCasesEndpointProvider EndpointProviderType;
@@ -39,14 +51,14 @@ namespace ConnectCases
         * is not specified, it will be initialized to default values.
         */
         ConnectCasesClient(const Aws::ConnectCases::ConnectCasesClientConfiguration& clientConfiguration = Aws::ConnectCases::ConnectCasesClientConfiguration(),
-                           std::shared_ptr<ConnectCasesEndpointProviderBase> endpointProvider = Aws::MakeShared<ConnectCasesEndpointProvider>(ALLOCATION_TAG));
+                           std::shared_ptr<ConnectCasesEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         ConnectCasesClient(const Aws::Auth::AWSCredentials& credentials,
-                           std::shared_ptr<ConnectCasesEndpointProviderBase> endpointProvider = Aws::MakeShared<ConnectCasesEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<ConnectCasesEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::ConnectCases::ConnectCasesClientConfiguration& clientConfiguration = Aws::ConnectCases::ConnectCasesClientConfiguration());
 
        /**
@@ -54,7 +66,7 @@ namespace ConnectCases
         * the default http client factory will be used
         */
         ConnectCasesClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                           std::shared_ptr<ConnectCasesEndpointProviderBase> endpointProvider = Aws::MakeShared<ConnectCasesEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<ConnectCasesEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::ConnectCases::ConnectCasesClientConfiguration& clientConfiguration = Aws::ConnectCases::ConnectCasesClientConfiguration());
 
 
@@ -135,15 +147,20 @@ namespace ConnectCases
         }
 
         /**
-         * <p>Creates a case in the specified Cases domain. Case system and custom fields
-         * are taken as an array id/value pairs with a declared data types.</p> 
-         * <p>The following fields are required when creating a case:</p> <pre><code>
-         * &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;customer_id&lt;/code&gt; - You must
-         * provide the full customer profile ARN in this format:
-         * &lt;code&gt;arn:aws:profile:your AWS Region:your AWS account ID:domains/profiles
-         * domain name/profiles/profile ID&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt;
-         * &lt;p&gt; &lt;code&gt;title&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt;
-         * &lt;/note&gt; </code></pre><p><h3>See Also:</h3>   <a
+         *  <p>If you provide a value for <code>PerformedBy.UserArn</code> you must
+         * also have <a
+         * href="https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html">connect:DescribeUser</a>
+         * permission on the User ARN resource that you provide</p>  <pre><code>
+         * &lt;p&gt;Creates a case in the specified Cases domain. Case system and custom
+         * fields are taken as an array id/value pairs with a declared data
+         * types.&lt;/p&gt; &lt;p&gt;The following fields are required when creating a
+         * case:&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt;
+         * &lt;code&gt;customer_id&lt;/code&gt; - You must provide the full customer
+         * profile ARN in this format:
+         * &lt;code&gt;arn:aws:profile:your_AWS_Region:your_AWS_account
+         * ID:domains/your_profiles_domain_name/profiles/profile_ID&lt;/code&gt; &lt;/p&gt;
+         * &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;title&lt;/code&gt; &lt;/p&gt;
+         * &lt;/li&gt; &lt;/ul&gt; </code></pre><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/connectcases-2022-10-03/CreateCase">AWS
          * API Reference</a></p>
          */
@@ -176,7 +193,8 @@ namespace ConnectCases
          * API. You need specific IAM permissions to successfully associate the Cases
          * domain. For more information, see <a
          * href="https://docs.aws.amazon.com/connect/latest/adminguide/required-permissions-iam-cases.html#onboard-cases-iam">Onboard
-         * to Cases</a>.</p> <p><h3>See Also:</h3>   <a
+         * to Cases</a>.</p> <pre><code> &lt;/important&gt; </code></pre><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/connectcases-2022-10-03/CreateDomain">AWS
          * API Reference</a></p>
          */
@@ -259,12 +277,16 @@ namespace ConnectCases
 
         /**
          * <p>Creates a related item (comments, tasks, and contacts) and associates it with
-         * a case.</p>  <p>A Related Item is a resource that is associated with a
-         * case. It may or may not have an external identifier linking it to an external
-         * resource (for example, a <code>contactArn</code>). All Related Items have their
-         * own internal identifier, the <code>relatedItemArn</code>. Examples of related
-         * items include <code>comments</code> and <code>contacts</code>.</p>
-         * <p><h3>See Also:</h3>   <a
+         * a case.</p>  <ul> <li> <p>A Related Item is a resource that is associated
+         * with a case. It may or may not have an external identifier linking it to an
+         * external resource (for example, a <code>contactArn</code>). All Related Items
+         * have their own internal identifier, the <code>relatedItemArn</code>. Examples of
+         * related items include <code>comments</code> and <code>contacts</code>.</p> </li>
+         * <li> <p>If you provide a value for <code>performedBy.userArn</code> you must
+         * also have <a
+         * href="https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html">DescribeUser</a>
+         * permission on the ARN of the user that you provide.</p> </li> </ul> <pre><code>
+         * &lt;/note&gt; </code></pre><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/connectcases-2022-10-03/CreateRelatedItem">AWS
          * API Reference</a></p>
          */
@@ -320,7 +342,12 @@ namespace ConnectCases
         }
 
         /**
-         * <p>Deletes a domain.</p><p><h3>See Also:</h3>   <a
+         * <p>Deletes a Cases domain.</p> <pre><code> &lt;note&gt; &lt;p&gt;After deleting
+         * your domain you must disassociate the deleted domain from your Amazon Connect
+         * instance with another API call before being able to use Cases again with this
+         * Amazon Connect instance. See &lt;a
+         * href=&quot;https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteIntegrationAssociation.html&quot;&gt;DeleteIntegrationAssociation&lt;/a&gt;.&lt;/p&gt;
+         * &lt;/note&gt; </code></pre><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/connectcases-2022-10-03/DeleteDomain">AWS
          * API Reference</a></p>
          */
@@ -342,6 +369,122 @@ namespace ConnectCases
         void DeleteDomainAsync(const DeleteDomainRequestT& request, const DeleteDomainResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ConnectCasesClient::DeleteDomain, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes a field from a cases template. You can delete up to 100 fields per
+         * domain.</p> <p>After a field is deleted:</p> <ul> <li> <p>You can still retrieve
+         * the field by calling <code>BatchGetField</code>.</p> </li> <li> <p>You cannot
+         * update a deleted field by calling <code>UpdateField</code>; it throws a
+         * <code>ValidationException</code>.</p> </li> <li> <p>Deleted fields are not
+         * included in the <code>ListFields</code> response.</p> </li> <li> <p>Calling
+         * <code>CreateCase</code> with a deleted field throws a
+         * <code>ValidationException</code> denoting which field IDs in the request have
+         * been deleted.</p> </li> <li> <p>Calling <code>GetCase</code> with a deleted
+         * field ID returns the deleted field's value if one exists.</p> </li> <li>
+         * <p>Calling <code>UpdateCase</code> with a deleted field ID throws a
+         * <code>ValidationException</code> if the case does not already contain a value
+         * for the deleted field. Otherwise it succeeds, allowing you to update or remove
+         * (using <code>emptyValue: {}</code>) the field's value from the case.</p> </li>
+         * <li> <p> <code>GetTemplate</code> does not return field IDs for deleted
+         * fields.</p> </li> <li> <p> <code>GetLayout</code> does not return field IDs for
+         * deleted fields.</p> </li> <li> <p>Calling <code>SearchCases</code> with the
+         * deleted field ID as a filter returns any cases that have a value for the deleted
+         * field that matches the filter criteria.</p> </li> <li> <p>Calling
+         * <code>SearchCases</code> with a <code>searchTerm</code> value that matches a
+         * deleted field's value on a case returns the case in the response.</p> </li> <li>
+         * <p>Calling <code>BatchPutFieldOptions</code> with a deleted field ID throw a
+         * <code>ValidationException</code>.</p> </li> <li> <p>Calling
+         * <code>GetCaseEventConfiguration</code> does not return field IDs for deleted
+         * fields.</p> </li> </ul><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/connectcases-2022-10-03/DeleteField">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteFieldOutcome DeleteField(const Model::DeleteFieldRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteField that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteFieldRequestT = Model::DeleteFieldRequest>
+        Model::DeleteFieldOutcomeCallable DeleteFieldCallable(const DeleteFieldRequestT& request) const
+        {
+            return SubmitCallable(&ConnectCasesClient::DeleteField, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteField that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteFieldRequestT = Model::DeleteFieldRequest>
+        void DeleteFieldAsync(const DeleteFieldRequestT& request, const DeleteFieldResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ConnectCasesClient::DeleteField, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes a layout from a cases template. You can delete up to 100 layouts per
+         * domain.</p> <pre><code> &lt;p&gt;After a layout is deleted:&lt;/p&gt; &lt;ul&gt;
+         * &lt;li&gt; &lt;p&gt;You can still retrieve the layout by calling
+         * &lt;code&gt;GetLayout&lt;/code&gt;.&lt;/p&gt; &lt;/li&gt; &lt;li&gt;
+         * &lt;p&gt;You cannot update a deleted layout by calling
+         * &lt;code&gt;UpdateLayout&lt;/code&gt;; it throws a
+         * &lt;code&gt;ValidationException&lt;/code&gt;.&lt;/p&gt; &lt;/li&gt; &lt;li&gt;
+         * &lt;p&gt;Deleted layouts are not included in the
+         * &lt;code&gt;ListLayouts&lt;/code&gt; response.&lt;/p&gt; &lt;/li&gt; &lt;/ul&gt;
+         * </code></pre><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/connectcases-2022-10-03/DeleteLayout">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteLayoutOutcome DeleteLayout(const Model::DeleteLayoutRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteLayout that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteLayoutRequestT = Model::DeleteLayoutRequest>
+        Model::DeleteLayoutOutcomeCallable DeleteLayoutCallable(const DeleteLayoutRequestT& request) const
+        {
+            return SubmitCallable(&ConnectCasesClient::DeleteLayout, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteLayout that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteLayoutRequestT = Model::DeleteLayoutRequest>
+        void DeleteLayoutAsync(const DeleteLayoutRequestT& request, const DeleteLayoutResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ConnectCasesClient::DeleteLayout, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes a cases template. You can delete up to 100 templates per domain.</p>
+         * <pre><code> &lt;p&gt;After a cases template is deleted:&lt;/p&gt; &lt;ul&gt;
+         * &lt;li&gt; &lt;p&gt;You can still retrieve the template by calling
+         * &lt;code&gt;GetTemplate&lt;/code&gt;.&lt;/p&gt; &lt;/li&gt; &lt;li&gt;
+         * &lt;p&gt;You cannot update the template. &lt;/p&gt; &lt;/li&gt; &lt;li&gt;
+         * &lt;p&gt;You cannot create a case by using the deleted template.&lt;/p&gt;
+         * &lt;/li&gt; &lt;li&gt; &lt;p&gt;Deleted templates are not included in the
+         * &lt;code&gt;ListTemplates&lt;/code&gt; response.&lt;/p&gt; &lt;/li&gt;
+         * &lt;/ul&gt; </code></pre><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/connectcases-2022-10-03/DeleteTemplate">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteTemplateOutcome DeleteTemplate(const Model::DeleteTemplateRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteTemplate that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteTemplateRequestT = Model::DeleteTemplateRequest>
+        Model::DeleteTemplateOutcomeCallable DeleteTemplateCallable(const DeleteTemplateRequestT& request) const
+        {
+            return SubmitCallable(&ConnectCasesClient::DeleteTemplate, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteTemplate that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteTemplateRequestT = Model::DeleteTemplateRequest>
+        void DeleteTemplateAsync(const DeleteTemplateRequestT& request, const DeleteTemplateResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ConnectCasesClient::DeleteTemplate, request, handler, context);
         }
 
         /**
@@ -368,6 +511,32 @@ namespace ConnectCases
         void GetCaseAsync(const GetCaseRequestT& request, const GetCaseResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ConnectCasesClient::GetCase, request, handler, context);
+        }
+
+        /**
+         * <p>Returns the audit history about a specific case if it exists.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/connectcases-2022-10-03/GetCaseAuditEvents">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetCaseAuditEventsOutcome GetCaseAuditEvents(const Model::GetCaseAuditEventsRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetCaseAuditEvents that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetCaseAuditEventsRequestT = Model::GetCaseAuditEventsRequest>
+        Model::GetCaseAuditEventsOutcomeCallable GetCaseAuditEventsCallable(const GetCaseAuditEventsRequestT& request) const
+        {
+            return SubmitCallable(&ConnectCasesClient::GetCaseAuditEvents, request);
+        }
+
+        /**
+         * An Async wrapper for GetCaseAuditEvents that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetCaseAuditEventsRequestT = Model::GetCaseAuditEventsRequest>
+        void GetCaseAuditEventsAsync(const GetCaseAuditEventsRequestT& request, const GetCaseAuditEventsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ConnectCasesClient::GetCaseAuditEvents, request, handler, context);
         }
 
         /**
@@ -504,13 +673,13 @@ namespace ConnectCases
          * href="http://docs.aws.amazon.com/goto/WebAPI/connectcases-2022-10-03/ListDomains">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListDomainsOutcome ListDomains(const Model::ListDomainsRequest& request) const;
+        virtual Model::ListDomainsOutcome ListDomains(const Model::ListDomainsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListDomains that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListDomainsRequestT = Model::ListDomainsRequest>
-        Model::ListDomainsOutcomeCallable ListDomainsCallable(const ListDomainsRequestT& request) const
+        Model::ListDomainsOutcomeCallable ListDomainsCallable(const ListDomainsRequestT& request = {}) const
         {
             return SubmitCallable(&ConnectCasesClient::ListDomains, request);
         }
@@ -519,7 +688,7 @@ namespace ConnectCases
          * An Async wrapper for ListDomains that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListDomainsRequestT = Model::ListDomainsRequest>
-        void ListDomainsAsync(const ListDomainsRequestT& request, const ListDomainsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListDomainsAsync(const ListDomainsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListDomainsRequestT& request = {}) const
         {
             return SubmitAsync(&ConnectCasesClient::ListDomains, request, handler, context);
         }
@@ -653,8 +822,11 @@ namespace ConnectCases
         }
 
         /**
-         * <p>API for adding case event publishing configuration</p><p><h3>See Also:</h3>  
-         * <a
+         * <p>Adds case event publishing configuration. For a complete list of fields you
+         * can add to the event message, see <a
+         * href="https://docs.aws.amazon.com/connect/latest/adminguide/case-fields.html">Create
+         * case fields</a> in the <i>Amazon Connect Administrator Guide</i> </p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/connectcases-2022-10-03/PutCaseEventConfiguration">AWS
          * API Reference</a></p>
          */
@@ -786,10 +958,15 @@ namespace ConnectCases
         }
 
         /**
-         * <p>Updates the values of fields on a case. Fields to be updated are received as
-         * an array of id/value pairs identical to the <code>CreateCase</code> input .</p>
-         * <p>If the action is successful, the service sends back an HTTP 200 response with
-         * an empty HTTP body.</p><p><h3>See Also:</h3>   <a
+         *  <p>If you provide a value for <code>PerformedBy.UserArn</code> you must
+         * also have <a
+         * href="https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html">connect:DescribeUser</a>
+         * permission on the User ARN resource that you provide</p>  <pre><code>
+         * &lt;p&gt;Updates the values of fields on a case. Fields to be updated are
+         * received as an array of id/value pairs identical to the
+         * &lt;code&gt;CreateCase&lt;/code&gt; input .&lt;/p&gt; &lt;p&gt;If the action is
+         * successful, the service sends back an HTTP 200 response with an empty HTTP
+         * body.&lt;/p&gt; </code></pre><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/connectcases-2022-10-03/UpdateCase">AWS
          * API Reference</a></p>
          */
@@ -903,11 +1080,7 @@ namespace ConnectCases
       std::shared_ptr<ConnectCasesEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<ConnectCasesClient>;
-      void init(const ConnectCasesClientConfiguration& clientConfiguration);
 
-      ConnectCasesClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<ConnectCasesEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace ConnectCases

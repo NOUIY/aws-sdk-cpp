@@ -26,8 +26,8 @@ namespace Polly
   {
     public:
       typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
 
       typedef PollyClientConfiguration ClientConfigurationType;
       typedef PollyEndpointProvider EndpointProviderType;
@@ -37,14 +37,14 @@ namespace Polly
         * is not specified, it will be initialized to default values.
         */
         PollyClient(const Aws::Polly::PollyClientConfiguration& clientConfiguration = Aws::Polly::PollyClientConfiguration(),
-                    std::shared_ptr<PollyEndpointProviderBase> endpointProvider = Aws::MakeShared<PollyEndpointProvider>(ALLOCATION_TAG));
+                    std::shared_ptr<PollyEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         PollyClient(const Aws::Auth::AWSCredentials& credentials,
-                    std::shared_ptr<PollyEndpointProviderBase> endpointProvider = Aws::MakeShared<PollyEndpointProvider>(ALLOCATION_TAG),
+                    std::shared_ptr<PollyEndpointProviderBase> endpointProvider = nullptr,
                     const Aws::Polly::PollyClientConfiguration& clientConfiguration = Aws::Polly::PollyClientConfiguration());
 
        /**
@@ -52,7 +52,7 @@ namespace Polly
         * the default http client factory will be used
         */
         PollyClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                    std::shared_ptr<PollyEndpointProviderBase> endpointProvider = Aws::MakeShared<PollyEndpointProvider>(ALLOCATION_TAG),
+                    std::shared_ptr<PollyEndpointProviderBase> endpointProvider = nullptr,
                     const Aws::Polly::PollyClientConfiguration& clientConfiguration = Aws::Polly::PollyClientConfiguration());
 
 
@@ -127,13 +127,13 @@ namespace Polly
          * href="http://docs.aws.amazon.com/goto/WebAPI/polly-2016-06-10/DescribeVoices">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeVoicesOutcome DescribeVoices(const Model::DescribeVoicesRequest& request) const;
+        virtual Model::DescribeVoicesOutcome DescribeVoices(const Model::DescribeVoicesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeVoices that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeVoicesRequestT = Model::DescribeVoicesRequest>
-        Model::DescribeVoicesOutcomeCallable DescribeVoicesCallable(const DescribeVoicesRequestT& request) const
+        Model::DescribeVoicesOutcomeCallable DescribeVoicesCallable(const DescribeVoicesRequestT& request = {}) const
         {
             return SubmitCallable(&PollyClient::DescribeVoices, request);
         }
@@ -142,7 +142,7 @@ namespace Polly
          * An Async wrapper for DescribeVoices that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeVoicesRequestT = Model::DescribeVoicesRequest>
-        void DescribeVoicesAsync(const DescribeVoicesRequestT& request, const DescribeVoicesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeVoicesAsync(const DescribeVoicesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeVoicesRequestT& request = {}) const
         {
             return SubmitAsync(&PollyClient::DescribeVoices, request, handler, context);
         }
@@ -211,13 +211,13 @@ namespace Polly
          * href="http://docs.aws.amazon.com/goto/WebAPI/polly-2016-06-10/ListLexicons">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListLexiconsOutcome ListLexicons(const Model::ListLexiconsRequest& request) const;
+        virtual Model::ListLexiconsOutcome ListLexicons(const Model::ListLexiconsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListLexicons that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListLexiconsRequestT = Model::ListLexiconsRequest>
-        Model::ListLexiconsOutcomeCallable ListLexiconsCallable(const ListLexiconsRequestT& request) const
+        Model::ListLexiconsOutcomeCallable ListLexiconsCallable(const ListLexiconsRequestT& request = {}) const
         {
             return SubmitCallable(&PollyClient::ListLexicons, request);
         }
@@ -226,7 +226,7 @@ namespace Polly
          * An Async wrapper for ListLexicons that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListLexiconsRequestT = Model::ListLexiconsRequest>
-        void ListLexiconsAsync(const ListLexiconsRequestT& request, const ListLexiconsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListLexiconsAsync(const ListLexiconsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListLexiconsRequestT& request = {}) const
         {
             return SubmitAsync(&PollyClient::ListLexicons, request, handler, context);
         }
@@ -238,13 +238,13 @@ namespace Polly
          * href="http://docs.aws.amazon.com/goto/WebAPI/polly-2016-06-10/ListSpeechSynthesisTasks">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListSpeechSynthesisTasksOutcome ListSpeechSynthesisTasks(const Model::ListSpeechSynthesisTasksRequest& request) const;
+        virtual Model::ListSpeechSynthesisTasksOutcome ListSpeechSynthesisTasks(const Model::ListSpeechSynthesisTasksRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListSpeechSynthesisTasks that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListSpeechSynthesisTasksRequestT = Model::ListSpeechSynthesisTasksRequest>
-        Model::ListSpeechSynthesisTasksOutcomeCallable ListSpeechSynthesisTasksCallable(const ListSpeechSynthesisTasksRequestT& request) const
+        Model::ListSpeechSynthesisTasksOutcomeCallable ListSpeechSynthesisTasksCallable(const ListSpeechSynthesisTasksRequestT& request = {}) const
         {
             return SubmitCallable(&PollyClient::ListSpeechSynthesisTasks, request);
         }
@@ -253,7 +253,7 @@ namespace Polly
          * An Async wrapper for ListSpeechSynthesisTasks that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListSpeechSynthesisTasksRequestT = Model::ListSpeechSynthesisTasksRequest>
-        void ListSpeechSynthesisTasksAsync(const ListSpeechSynthesisTasksRequestT& request, const ListSpeechSynthesisTasksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListSpeechSynthesisTasksAsync(const ListSpeechSynthesisTasksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListSpeechSynthesisTasksRequestT& request = {}) const
         {
             return SubmitAsync(&PollyClient::ListSpeechSynthesisTasks, request, handler, context);
         }
@@ -361,7 +361,6 @@ namespace Polly
       void init(const PollyClientConfiguration& clientConfiguration);
 
       PollyClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
       std::shared_ptr<PollyEndpointProviderBase> m_endpointProvider;
   };
 

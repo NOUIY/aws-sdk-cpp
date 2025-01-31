@@ -22,13 +22,14 @@ namespace Model
 
 ValidDBInstanceModificationsMessage::ValidDBInstanceModificationsMessage() : 
     m_storageHasBeenSet(false),
-    m_validProcessorFeaturesHasBeenSet(false)
+    m_validProcessorFeaturesHasBeenSet(false),
+    m_supportsDedicatedLogVolume(false),
+    m_supportsDedicatedLogVolumeHasBeenSet(false)
 {
 }
 
-ValidDBInstanceModificationsMessage::ValidDBInstanceModificationsMessage(const XmlNode& xmlNode) : 
-    m_storageHasBeenSet(false),
-    m_validProcessorFeaturesHasBeenSet(false)
+ValidDBInstanceModificationsMessage::ValidDBInstanceModificationsMessage(const XmlNode& xmlNode)
+  : ValidDBInstanceModificationsMessage()
 {
   *this = xmlNode;
 }
@@ -63,6 +64,12 @@ ValidDBInstanceModificationsMessage& ValidDBInstanceModificationsMessage::operat
 
       m_validProcessorFeaturesHasBeenSet = true;
     }
+    XmlNode supportsDedicatedLogVolumeNode = resultNode.FirstChild("SupportsDedicatedLogVolume");
+    if(!supportsDedicatedLogVolumeNode.IsNull())
+    {
+      m_supportsDedicatedLogVolume = StringUtils::ConvertToBool(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(supportsDedicatedLogVolumeNode.GetText()).c_str()).c_str());
+      m_supportsDedicatedLogVolumeHasBeenSet = true;
+    }
   }
 
   return *this;
@@ -76,7 +83,7 @@ void ValidDBInstanceModificationsMessage::OutputToStream(Aws::OStream& oStream, 
       for(auto& item : m_storage)
       {
         Aws::StringStream storageSs;
-        storageSs << location << index << locationValue << ".ValidStorageOptions." << storageIdx++;
+        storageSs << location << index << locationValue << ".Storage.ValidStorageOptions." << storageIdx++;
         item.OutputToStream(oStream, storageSs.str().c_str());
       }
   }
@@ -87,9 +94,14 @@ void ValidDBInstanceModificationsMessage::OutputToStream(Aws::OStream& oStream, 
       for(auto& item : m_validProcessorFeatures)
       {
         Aws::StringStream validProcessorFeaturesSs;
-        validProcessorFeaturesSs << location << index << locationValue << ".AvailableProcessorFeature." << validProcessorFeaturesIdx++;
+        validProcessorFeaturesSs << location << index << locationValue << ".ValidProcessorFeatures.AvailableProcessorFeature." << validProcessorFeaturesIdx++;
         item.OutputToStream(oStream, validProcessorFeaturesSs.str().c_str());
       }
+  }
+
+  if(m_supportsDedicatedLogVolumeHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".SupportsDedicatedLogVolume=" << std::boolalpha << m_supportsDedicatedLogVolume << "&";
   }
 
 }
@@ -115,6 +127,10 @@ void ValidDBInstanceModificationsMessage::OutputToStream(Aws::OStream& oStream, 
         validProcessorFeaturesSs << location <<  ".AvailableProcessorFeature." << validProcessorFeaturesIdx++;
         item.OutputToStream(oStream, validProcessorFeaturesSs.str().c_str());
       }
+  }
+  if(m_supportsDedicatedLogVolumeHasBeenSet)
+  {
+      oStream << location << ".SupportsDedicatedLogVolume=" << std::boolalpha << m_supportsDedicatedLogVolume << "&";
   }
 }
 

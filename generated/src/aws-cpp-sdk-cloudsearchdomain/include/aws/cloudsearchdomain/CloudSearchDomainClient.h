@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/cloudsearchdomain/CloudSearchDomain_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/cloudsearchdomain/CloudSearchDomainServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/cloudsearchdomain/CloudSearchDomainErrorMarshaller.h>
 
 namespace Aws
 {
 namespace CloudSearchDomain
 {
+  AWS_CLOUDSEARCHDOMAIN_API extern const char SERVICE_NAME[];
   /**
    * <p>You use the AmazonCloudSearch2013 API to upload documents to a search domain
    * and search those documents. </p> <p>The endpoints for submitting
@@ -27,12 +31,20 @@ namespace CloudSearchDomain
    * href="http://docs.aws.amazon.com/cloudsearch/latest/developerguide">Amazon
    * CloudSearch Developer Guide</a>.</p>
    */
-  class AWS_CLOUDSEARCHDOMAIN_API CloudSearchDomainClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<CloudSearchDomainClient>
+  class AWS_CLOUDSEARCHDOMAIN_API CloudSearchDomainClient : smithy::client::AwsSmithyClientT<Aws::CloudSearchDomain::SERVICE_NAME,
+      Aws::CloudSearchDomain::CloudSearchDomainClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      CloudSearchDomainEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::CloudSearchDomainErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<CloudSearchDomainClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "CloudSearch Domain"; }
 
       typedef CloudSearchDomainClientConfiguration ClientConfigurationType;
       typedef CloudSearchDomainEndpointProvider EndpointProviderType;
@@ -42,14 +54,14 @@ namespace CloudSearchDomain
         * is not specified, it will be initialized to default values.
         */
         CloudSearchDomainClient(const Aws::CloudSearchDomain::CloudSearchDomainClientConfiguration& clientConfiguration = Aws::CloudSearchDomain::CloudSearchDomainClientConfiguration(),
-                                std::shared_ptr<CloudSearchDomainEndpointProviderBase> endpointProvider = Aws::MakeShared<CloudSearchDomainEndpointProvider>(ALLOCATION_TAG));
+                                std::shared_ptr<CloudSearchDomainEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         CloudSearchDomainClient(const Aws::Auth::AWSCredentials& credentials,
-                                std::shared_ptr<CloudSearchDomainEndpointProviderBase> endpointProvider = Aws::MakeShared<CloudSearchDomainEndpointProvider>(ALLOCATION_TAG),
+                                std::shared_ptr<CloudSearchDomainEndpointProviderBase> endpointProvider = nullptr,
                                 const Aws::CloudSearchDomain::CloudSearchDomainClientConfiguration& clientConfiguration = Aws::CloudSearchDomain::CloudSearchDomainClientConfiguration());
 
        /**
@@ -57,7 +69,7 @@ namespace CloudSearchDomain
         * the default http client factory will be used
         */
         CloudSearchDomainClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                std::shared_ptr<CloudSearchDomainEndpointProviderBase> endpointProvider = Aws::MakeShared<CloudSearchDomainEndpointProvider>(ALLOCATION_TAG),
+                                std::shared_ptr<CloudSearchDomainEndpointProviderBase> endpointProvider = nullptr,
                                 const Aws::CloudSearchDomain::CloudSearchDomainClientConfiguration& clientConfiguration = Aws::CloudSearchDomain::CloudSearchDomainClientConfiguration());
 
 
@@ -220,11 +232,7 @@ namespace CloudSearchDomain
       std::shared_ptr<CloudSearchDomainEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<CloudSearchDomainClient>;
-      void init(const CloudSearchDomainClientConfiguration& clientConfiguration);
 
-      CloudSearchDomainClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<CloudSearchDomainEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace CloudSearchDomain

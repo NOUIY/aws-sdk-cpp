@@ -18,8 +18,11 @@
 /* End of generic header includes */
 
 /* Service model headers required in PersonalizeRuntimeClient header */
+#include <aws/personalize-runtime/model/GetActionRecommendationsResult.h>
 #include <aws/personalize-runtime/model/GetPersonalizedRankingResult.h>
 #include <aws/personalize-runtime/model/GetRecommendationsResult.h>
+#include <aws/personalize-runtime/model/GetActionRecommendationsRequest.h>
+#include <aws/personalize-runtime/model/GetRecommendationsRequest.h>
 /* End of service model headers required in PersonalizeRuntimeClient header */
 
 namespace Aws
@@ -53,23 +56,26 @@ namespace Aws
 
   namespace PersonalizeRuntime
   {
-    using PersonalizeRuntimeClientConfiguration = Aws::Client::GenericClientConfiguration<false>;
+    using PersonalizeRuntimeClientConfiguration = Aws::Client::GenericClientConfiguration;
     using PersonalizeRuntimeEndpointProviderBase = Aws::PersonalizeRuntime::Endpoint::PersonalizeRuntimeEndpointProviderBase;
     using PersonalizeRuntimeEndpointProvider = Aws::PersonalizeRuntime::Endpoint::PersonalizeRuntimeEndpointProvider;
 
     namespace Model
     {
       /* Service model forward declarations required in PersonalizeRuntimeClient header */
+      class GetActionRecommendationsRequest;
       class GetPersonalizedRankingRequest;
       class GetRecommendationsRequest;
       /* End of service model forward declarations required in PersonalizeRuntimeClient header */
 
       /* Service model Outcome class definitions */
+      typedef Aws::Utils::Outcome<GetActionRecommendationsResult, PersonalizeRuntimeError> GetActionRecommendationsOutcome;
       typedef Aws::Utils::Outcome<GetPersonalizedRankingResult, PersonalizeRuntimeError> GetPersonalizedRankingOutcome;
       typedef Aws::Utils::Outcome<GetRecommendationsResult, PersonalizeRuntimeError> GetRecommendationsOutcome;
       /* End of service model Outcome class definitions */
 
       /* Service model Outcome callable definitions */
+      typedef std::future<GetActionRecommendationsOutcome> GetActionRecommendationsOutcomeCallable;
       typedef std::future<GetPersonalizedRankingOutcome> GetPersonalizedRankingOutcomeCallable;
       typedef std::future<GetRecommendationsOutcome> GetRecommendationsOutcomeCallable;
       /* End of service model Outcome callable definitions */
@@ -78,6 +84,7 @@ namespace Aws
     class PersonalizeRuntimeClient;
 
     /* Service model async handlers definitions */
+    typedef std::function<void(const PersonalizeRuntimeClient*, const Model::GetActionRecommendationsRequest&, const Model::GetActionRecommendationsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetActionRecommendationsResponseReceivedHandler;
     typedef std::function<void(const PersonalizeRuntimeClient*, const Model::GetPersonalizedRankingRequest&, const Model::GetPersonalizedRankingOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetPersonalizedRankingResponseReceivedHandler;
     typedef std::function<void(const PersonalizeRuntimeClient*, const Model::GetRecommendationsRequest&, const Model::GetRecommendationsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetRecommendationsResponseReceivedHandler;
     /* End of service model async handlers definitions */

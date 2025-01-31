@@ -6,25 +6,37 @@
 #pragma once
 #include <aws/route53domains/Route53Domains_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/route53domains/Route53DomainsServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/route53domains/Route53DomainsErrorMarshaller.h>
 
 namespace Aws
 {
 namespace Route53Domains
 {
+  AWS_ROUTE53DOMAINS_API extern const char SERVICE_NAME[];
   /**
    * <p>Amazon Route 53 API actions let you register domain names and perform related
    * operations.</p>
    */
-  class AWS_ROUTE53DOMAINS_API Route53DomainsClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<Route53DomainsClient>
+  class AWS_ROUTE53DOMAINS_API Route53DomainsClient : smithy::client::AwsSmithyClientT<Aws::Route53Domains::SERVICE_NAME,
+      Aws::Route53Domains::Route53DomainsClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      Route53DomainsEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::Route53DomainsErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<Route53DomainsClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Route 53 Domains"; }
 
       typedef Route53DomainsClientConfiguration ClientConfigurationType;
       typedef Route53DomainsEndpointProvider EndpointProviderType;
@@ -34,14 +46,14 @@ namespace Route53Domains
         * is not specified, it will be initialized to default values.
         */
         Route53DomainsClient(const Aws::Route53Domains::Route53DomainsClientConfiguration& clientConfiguration = Aws::Route53Domains::Route53DomainsClientConfiguration(),
-                             std::shared_ptr<Route53DomainsEndpointProviderBase> endpointProvider = Aws::MakeShared<Route53DomainsEndpointProvider>(ALLOCATION_TAG));
+                             std::shared_ptr<Route53DomainsEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         Route53DomainsClient(const Aws::Auth::AWSCredentials& credentials,
-                             std::shared_ptr<Route53DomainsEndpointProviderBase> endpointProvider = Aws::MakeShared<Route53DomainsEndpointProvider>(ALLOCATION_TAG),
+                             std::shared_ptr<Route53DomainsEndpointProviderBase> endpointProvider = nullptr,
                              const Aws::Route53Domains::Route53DomainsClientConfiguration& clientConfiguration = Aws::Route53Domains::Route53DomainsClientConfiguration());
 
        /**
@@ -49,7 +61,7 @@ namespace Route53Domains
         * the default http client factory will be used
         */
         Route53DomainsClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                             std::shared_ptr<Route53DomainsEndpointProviderBase> endpointProvider = Aws::MakeShared<Route53DomainsEndpointProvider>(ALLOCATION_TAG),
+                             std::shared_ptr<Route53DomainsEndpointProviderBase> endpointProvider = nullptr,
                              const Aws::Route53Domains::Route53DomainsClientConfiguration& clientConfiguration = Aws::Route53Domains::Route53DomainsClientConfiguration());
 
 
@@ -463,13 +475,13 @@ namespace Route53Domains
          * href="http://docs.aws.amazon.com/goto/WebAPI/route53domains-2014-05-15/GetContactReachabilityStatus">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetContactReachabilityStatusOutcome GetContactReachabilityStatus(const Model::GetContactReachabilityStatusRequest& request) const;
+        virtual Model::GetContactReachabilityStatusOutcome GetContactReachabilityStatus(const Model::GetContactReachabilityStatusRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetContactReachabilityStatus that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetContactReachabilityStatusRequestT = Model::GetContactReachabilityStatusRequest>
-        Model::GetContactReachabilityStatusOutcomeCallable GetContactReachabilityStatusCallable(const GetContactReachabilityStatusRequestT& request) const
+        Model::GetContactReachabilityStatusOutcomeCallable GetContactReachabilityStatusCallable(const GetContactReachabilityStatusRequestT& request = {}) const
         {
             return SubmitCallable(&Route53DomainsClient::GetContactReachabilityStatus, request);
         }
@@ -478,7 +490,7 @@ namespace Route53Domains
          * An Async wrapper for GetContactReachabilityStatus that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetContactReachabilityStatusRequestT = Model::GetContactReachabilityStatusRequest>
-        void GetContactReachabilityStatusAsync(const GetContactReachabilityStatusRequestT& request, const GetContactReachabilityStatusResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetContactReachabilityStatusAsync(const GetContactReachabilityStatusResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetContactReachabilityStatusRequestT& request = {}) const
         {
             return SubmitAsync(&Route53DomainsClient::GetContactReachabilityStatus, request, handler, context);
         }
@@ -569,13 +581,13 @@ namespace Route53Domains
          * href="http://docs.aws.amazon.com/goto/WebAPI/route53domains-2014-05-15/ListDomains">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListDomainsOutcome ListDomains(const Model::ListDomainsRequest& request) const;
+        virtual Model::ListDomainsOutcome ListDomains(const Model::ListDomainsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListDomains that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListDomainsRequestT = Model::ListDomainsRequest>
-        Model::ListDomainsOutcomeCallable ListDomainsCallable(const ListDomainsRequestT& request) const
+        Model::ListDomainsOutcomeCallable ListDomainsCallable(const ListDomainsRequestT& request = {}) const
         {
             return SubmitCallable(&Route53DomainsClient::ListDomains, request);
         }
@@ -584,7 +596,7 @@ namespace Route53Domains
          * An Async wrapper for ListDomains that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListDomainsRequestT = Model::ListDomainsRequest>
-        void ListDomainsAsync(const ListDomainsRequestT& request, const ListDomainsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListDomainsAsync(const ListDomainsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListDomainsRequestT& request = {}) const
         {
             return SubmitAsync(&Route53DomainsClient::ListDomains, request, handler, context);
         }
@@ -597,13 +609,13 @@ namespace Route53Domains
          * href="http://docs.aws.amazon.com/goto/WebAPI/route53domains-2014-05-15/ListOperations">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListOperationsOutcome ListOperations(const Model::ListOperationsRequest& request) const;
+        virtual Model::ListOperationsOutcome ListOperations(const Model::ListOperationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListOperations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListOperationsRequestT = Model::ListOperationsRequest>
-        Model::ListOperationsOutcomeCallable ListOperationsCallable(const ListOperationsRequestT& request) const
+        Model::ListOperationsOutcomeCallable ListOperationsCallable(const ListOperationsRequestT& request = {}) const
         {
             return SubmitCallable(&Route53DomainsClient::ListOperations, request);
         }
@@ -612,7 +624,7 @@ namespace Route53Domains
          * An Async wrapper for ListOperations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListOperationsRequestT = Model::ListOperationsRequest>
-        void ListOperationsAsync(const ListOperationsRequestT& request, const ListOperationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListOperationsAsync(const ListOperationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListOperationsRequestT& request = {}) const
         {
             return SubmitAsync(&Route53DomainsClient::ListOperations, request, handler, context);
         }
@@ -625,13 +637,13 @@ namespace Route53Domains
          * href="http://docs.aws.amazon.com/goto/WebAPI/route53domains-2014-05-15/ListPrices">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListPricesOutcome ListPrices(const Model::ListPricesRequest& request) const;
+        virtual Model::ListPricesOutcome ListPrices(const Model::ListPricesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListPrices that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListPricesRequestT = Model::ListPricesRequest>
-        Model::ListPricesOutcomeCallable ListPricesCallable(const ListPricesRequestT& request) const
+        Model::ListPricesOutcomeCallable ListPricesCallable(const ListPricesRequestT& request = {}) const
         {
             return SubmitCallable(&Route53DomainsClient::ListPrices, request);
         }
@@ -640,7 +652,7 @@ namespace Route53Domains
          * An Async wrapper for ListPrices that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListPricesRequestT = Model::ListPricesRequest>
-        void ListPricesAsync(const ListPricesRequestT& request, const ListPricesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListPricesAsync(const ListPricesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListPricesRequestT& request = {}) const
         {
             return SubmitAsync(&Route53DomainsClient::ListPrices, request, handler, context);
         }
@@ -702,29 +714,27 @@ namespace Route53Domains
         }
 
         /**
-         * <p>This operation registers a domain. Domains are registered either by Amazon
-         * Registrar (for .com, .net, and .org domains) or by our registrar associate,
-         * Gandi (for all other domains). For some top-level domains (TLDs), this operation
-         * requires extra parameters.</p> <p>When you register a domain, Amazon Route 53
-         * does the following:</p> <ul> <li> <p>Creates a Route 53 hosted zone that has the
-         * same name as the domain. Route 53 assigns four name servers to your hosted zone
-         * and automatically updates your domain registration with the names of these name
-         * servers.</p> </li> <li> <p>Enables auto renew, so your domain registration will
-         * renew automatically each year. We'll notify you in advance of the renewal date
-         * so you can choose whether to renew the registration.</p> </li> <li>
-         * <p>Optionally enables privacy protection, so WHOIS queries return contact
-         * information either for Amazon Registrar (for .com, .net, and .org domains) or
-         * for our registrar associate, Gandi (for all other TLDs). If you don't enable
-         * privacy protection, WHOIS queries return the information that you entered for
-         * the administrative, registrant, and technical contacts.</p>  <p>You must
-         * specify the same privacy setting for the administrative, registrant, and
-         * technical contacts.</p>  </li> <li> <p>If registration is successful,
-         * returns an operation ID that you can use to track the progress and completion of
-         * the action. If the request is not completed successfully, the domain registrant
-         * is notified by email.</p> </li> <li> <p>Charges your Amazon Web Services account
-         * an amount based on the top-level domain. For more information, see <a
-         * href="http://aws.amazon.com/route53/pricing/">Amazon Route 53 Pricing</a>.</p>
-         * </li> </ul><p><h3>See Also:</h3>   <a
+         * <p>This operation registers a domain. For some top-level domains (TLDs), this
+         * operation requires extra parameters.</p> <p>When you register a domain, Amazon
+         * Route 53 does the following:</p> <ul> <li> <p>Creates a Route 53 hosted zone
+         * that has the same name as the domain. Route 53 assigns four name servers to your
+         * hosted zone and automatically updates your domain registration with the names of
+         * these name servers.</p> </li> <li> <p>Enables auto renew, so your domain
+         * registration will renew automatically each year. We'll notify you in advance of
+         * the renewal date so you can choose whether to renew the registration.</p> </li>
+         * <li> <p>Optionally enables privacy protection, so WHOIS queries return contact
+         * for the registrar or the phrase "REDACTED FOR PRIVACY", or "On behalf of
+         * &lt;domain name&gt; owner." If you don't enable privacy protection, WHOIS
+         * queries return the information that you entered for the administrative,
+         * registrant, and technical contacts.</p>  <p>While some domains may allow
+         * different privacy settings per contact, we recommend specifying the same privacy
+         * setting for all contacts.</p>  </li> <li> <p>If registration is
+         * successful, returns an operation ID that you can use to track the progress and
+         * completion of the action. If the request is not completed successfully, the
+         * domain registrant is notified by email.</p> </li> <li> <p>Charges your Amazon
+         * Web Services account an amount based on the top-level domain. For more
+         * information, see <a href="http://aws.amazon.com/route53/pricing/">Amazon Route
+         * 53 Pricing</a>.</p> </li> </ul><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/route53domains-2014-05-15/RegisterDomain">AWS
          * API Reference</a></p>
          */
@@ -825,13 +835,13 @@ namespace Route53Domains
          * href="http://docs.aws.amazon.com/goto/WebAPI/route53domains-2014-05-15/ResendContactReachabilityEmail">AWS
          * API Reference</a></p>
          */
-        virtual Model::ResendContactReachabilityEmailOutcome ResendContactReachabilityEmail(const Model::ResendContactReachabilityEmailRequest& request) const;
+        virtual Model::ResendContactReachabilityEmailOutcome ResendContactReachabilityEmail(const Model::ResendContactReachabilityEmailRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ResendContactReachabilityEmail that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ResendContactReachabilityEmailRequestT = Model::ResendContactReachabilityEmailRequest>
-        Model::ResendContactReachabilityEmailOutcomeCallable ResendContactReachabilityEmailCallable(const ResendContactReachabilityEmailRequestT& request) const
+        Model::ResendContactReachabilityEmailOutcomeCallable ResendContactReachabilityEmailCallable(const ResendContactReachabilityEmailRequestT& request = {}) const
         {
             return SubmitCallable(&Route53DomainsClient::ResendContactReachabilityEmail, request);
         }
@@ -840,7 +850,7 @@ namespace Route53Domains
          * An Async wrapper for ResendContactReachabilityEmail that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ResendContactReachabilityEmailRequestT = Model::ResendContactReachabilityEmailRequest>
-        void ResendContactReachabilityEmailAsync(const ResendContactReachabilityEmailRequestT& request, const ResendContactReachabilityEmailResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ResendContactReachabilityEmailAsync(const ResendContactReachabilityEmailResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ResendContactReachabilityEmailRequestT& request = {}) const
         {
             return SubmitAsync(&Route53DomainsClient::ResendContactReachabilityEmail, request, handler, context);
         }
@@ -899,13 +909,10 @@ namespace Route53Domains
         }
 
         /**
-         * <p>Transfers a domain from another registrar to Amazon Route 53. When the
-         * transfer is complete, the domain is registered either with Amazon Registrar (for
-         * .com, .net, and .org domains) or with our registrar associate, Gandi (for all
-         * other TLDs).</p> <p>For more information about transferring domains, see the
-         * following topics:</p> <ul> <li> <p>For transfer requirements, a detailed
-         * procedure, and information about viewing the status of a domain that you're
-         * transferring to Route 53, see <a
+         * <p>Transfers a domain from another registrar to Amazon Route 53. </p> <p>For
+         * more information about transferring domains, see the following topics:</p> <ul>
+         * <li> <p>For transfer requirements, a detailed procedure, and information about
+         * viewing the status of a domain that you're transferring to Route 53, see <a
          * href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-transfer-to-route-53.html">Transferring
          * Registration for a Domain to Amazon Route 53</a> in the <i>Amazon Route 53
          * Developer Guide</i>.</p> </li> <li> <p>For information about how to transfer a
@@ -915,13 +922,19 @@ namespace Route53Domains
          * domain registrar, see <a
          * href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-transfer-from-route-53.html">Transferring
          * a Domain from Amazon Route 53 to Another Registrar</a> in the <i>Amazon Route 53
-         * Developer Guide</i>.</p> </li> </ul> <p>If the registrar for your domain is also
-         * the DNS service provider for the domain, we highly recommend that you transfer
-         * your DNS service to Route 53 or to another DNS service provider before you
-         * transfer your registration. Some registrars provide free DNS service when you
-         * purchase a domain registration. When you transfer the registration, the previous
-         * registrar will not renew your domain registration and could end your DNS service
-         * at any time.</p>  <p>If the registrar for your domain is also the DNS
+         * Developer Guide</i>.</p> </li> </ul>  <p>During the transfer of any
+         * country code top-level domains (ccTLDs) to Route 53, except for .cc and .tv,
+         * updates to the owner contact are ignored and the owner contact data from the
+         * registry is used. You can update the owner contact after the transfer is
+         * complete. For more information, see <a
+         * href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_UpdateDomainContact.html">UpdateDomainContact</a>.</p>
+         *  <p>If the registrar for your domain is also the DNS service
+         * provider for the domain, we highly recommend that you transfer your DNS service
+         * to Route 53 or to another DNS service provider before you transfer your
+         * registration. Some registrars provide free DNS service when you purchase a
+         * domain registration. When you transfer the registration, the previous registrar
+         * will not renew your domain registration and could end your DNS service at any
+         * time.</p>  <p>If the registrar for your domain is also the DNS
          * service provider for the domain and you don't transfer DNS service to another
          * provider, your website, email, and the web applications associated with the
          * domain might become unavailable.</p>  <p>If the transfer is
@@ -1035,14 +1048,14 @@ namespace Route53Domains
 
         /**
          * <p>This operation updates the specified domain contact's privacy setting. When
-         * privacy protection is enabled, contact information such as email address is
-         * replaced either with contact information for Amazon Registrar (for .com, .net,
-         * and .org domains) or with contact information for our registrar associate,
-         * Gandi.</p>  <p>You must specify the same privacy setting for the
-         * administrative, registrant, and technical contacts.</p>  <p>This
-         * operation affects only the contact information for the specified contact type
-         * (administrative, registrant, or technical). If the request succeeds, Amazon
-         * Route 53 returns an operation ID that you can use with <a
+         * privacy protection is enabled, your contact information is replaced with contact
+         * information for the registrar or with the phrase "REDACTED FOR PRIVACY", or "On
+         * behalf of &lt;domain name&gt; owner."</p>  <p>While some domains may allow
+         * different privacy settings per contact, we recommend specifying the same privacy
+         * setting for all contacts.</p>  <p>This operation affects only the contact
+         * information for the specified contact type (administrative, registrant, or
+         * technical). If the request succeeds, Amazon Route 53 returns an operation ID
+         * that you can use with <a
          * href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html">GetOperationDetail</a>
          * to track the progress and completion of the action. If the request doesn't
          * complete successfully, the domain registrant will be notified by email.</p>
@@ -1143,13 +1156,13 @@ namespace Route53Domains
          * href="http://docs.aws.amazon.com/goto/WebAPI/route53domains-2014-05-15/ViewBilling">AWS
          * API Reference</a></p>
          */
-        virtual Model::ViewBillingOutcome ViewBilling(const Model::ViewBillingRequest& request) const;
+        virtual Model::ViewBillingOutcome ViewBilling(const Model::ViewBillingRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ViewBilling that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ViewBillingRequestT = Model::ViewBillingRequest>
-        Model::ViewBillingOutcomeCallable ViewBillingCallable(const ViewBillingRequestT& request) const
+        Model::ViewBillingOutcomeCallable ViewBillingCallable(const ViewBillingRequestT& request = {}) const
         {
             return SubmitCallable(&Route53DomainsClient::ViewBilling, request);
         }
@@ -1158,7 +1171,7 @@ namespace Route53Domains
          * An Async wrapper for ViewBilling that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ViewBillingRequestT = Model::ViewBillingRequest>
-        void ViewBillingAsync(const ViewBillingRequestT& request, const ViewBillingResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ViewBillingAsync(const ViewBillingResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ViewBillingRequestT& request = {}) const
         {
             return SubmitAsync(&Route53DomainsClient::ViewBilling, request, handler, context);
         }
@@ -1168,11 +1181,7 @@ namespace Route53Domains
       std::shared_ptr<Route53DomainsEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<Route53DomainsClient>;
-      void init(const Route53DomainsClientConfiguration& clientConfiguration);
 
-      Route53DomainsClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<Route53DomainsEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace Route53Domains

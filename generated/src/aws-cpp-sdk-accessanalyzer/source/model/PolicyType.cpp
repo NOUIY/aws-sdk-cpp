@@ -23,6 +23,7 @@ namespace Aws
         static const int IDENTITY_POLICY_HASH = HashingUtils::HashString("IDENTITY_POLICY");
         static const int RESOURCE_POLICY_HASH = HashingUtils::HashString("RESOURCE_POLICY");
         static const int SERVICE_CONTROL_POLICY_HASH = HashingUtils::HashString("SERVICE_CONTROL_POLICY");
+        static const int RESOURCE_CONTROL_POLICY_HASH = HashingUtils::HashString("RESOURCE_CONTROL_POLICY");
 
 
         PolicyType GetPolicyTypeForName(const Aws::String& name)
@@ -40,6 +41,10 @@ namespace Aws
           {
             return PolicyType::SERVICE_CONTROL_POLICY;
           }
+          else if (hashCode == RESOURCE_CONTROL_POLICY_HASH)
+          {
+            return PolicyType::RESOURCE_CONTROL_POLICY;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -54,12 +59,16 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case PolicyType::NOT_SET:
+            return {};
           case PolicyType::IDENTITY_POLICY:
             return "IDENTITY_POLICY";
           case PolicyType::RESOURCE_POLICY:
             return "RESOURCE_POLICY";
           case PolicyType::SERVICE_CONTROL_POLICY:
             return "SERVICE_CONTROL_POLICY";
+          case PolicyType::RESOURCE_CONTROL_POLICY:
+            return "RESOURCE_CONTROL_POLICY";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

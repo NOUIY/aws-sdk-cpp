@@ -6,24 +6,32 @@
 #pragma once
 #include <aws/storagegateway/StorageGateway_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/storagegateway/StorageGatewayServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/storagegateway/StorageGatewayErrorMarshaller.h>
 
 namespace Aws
 {
 namespace StorageGateway
 {
+  AWS_STORAGEGATEWAY_API extern const char SERVICE_NAME[];
   /**
-   * <fullname>Storage Gateway Service</fullname> <p>Storage Gateway is the service
-   * that connects an on-premises software appliance with cloud-based storage to
-   * provide seamless and secure integration between an organization's on-premises IT
-   * environment and the Amazon Web Services storage infrastructure. The service
-   * enables you to securely upload data to the Amazon Web Services Cloud for cost
-   * effective backup and rapid disaster recovery.</p> <p>Use the following links to
-   * get started using the <i>Storage Gateway Service API Reference</i>:</p> <ul>
-   * <li> <p> <a
+   * <fullname>Storage Gateway Service</fullname>  <p>Amazon FSx File
+   * Gateway is no longer available to new customers. Existing customers of FSx File
+   * Gateway can continue to use the service normally. For capabilities similar to
+   * FSx File Gateway, visit <a
+   * href="https://aws.amazon.com/blogs/storage/switch-your-file-share-access-from-amazon-fsx-file-gateway-to-amazon-fsx-for-windows-file-server/">this
+   * blog post</a>.</p>  <p>Storage Gateway is the service that connects
+   * an on-premises software appliance with cloud-based storage to provide seamless
+   * and secure integration between an organization's on-premises IT environment and
+   * the Amazon Web Services storage infrastructure. The service enables you to
+   * securely upload data to the Amazon Web Services Cloud for cost effective backup
+   * and rapid disaster recovery.</p> <p>Use the following links to get started using
+   * the <i>Storage Gateway Service API Reference</i>:</p> <ul> <li> <p> <a
    * href="https://docs.aws.amazon.com/storagegateway/latest/userguide/AWSStorageGatewayAPI.html#AWSStorageGatewayHTTPRequestsHeaders">Storage
    * Gateway required request headers</a>: Describes the required headers that you
    * must send with every POST request to Storage Gateway.</p> </li> <li> <p> <a
@@ -61,12 +69,20 @@ namespace StorageGateway
    * Longer Storage Gateway volume and snapshot IDs coming in 2016</a>.</p>
    * 
    */
-  class AWS_STORAGEGATEWAY_API StorageGatewayClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<StorageGatewayClient>
+  class AWS_STORAGEGATEWAY_API StorageGatewayClient : smithy::client::AwsSmithyClientT<Aws::StorageGateway::SERVICE_NAME,
+      Aws::StorageGateway::StorageGatewayClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      StorageGatewayEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::StorageGatewayErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<StorageGatewayClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Storage Gateway"; }
 
       typedef StorageGatewayClientConfiguration ClientConfigurationType;
       typedef StorageGatewayEndpointProvider EndpointProviderType;
@@ -76,14 +92,14 @@ namespace StorageGateway
         * is not specified, it will be initialized to default values.
         */
         StorageGatewayClient(const Aws::StorageGateway::StorageGatewayClientConfiguration& clientConfiguration = Aws::StorageGateway::StorageGatewayClientConfiguration(),
-                             std::shared_ptr<StorageGatewayEndpointProviderBase> endpointProvider = Aws::MakeShared<StorageGatewayEndpointProvider>(ALLOCATION_TAG));
+                             std::shared_ptr<StorageGatewayEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         StorageGatewayClient(const Aws::Auth::AWSCredentials& credentials,
-                             std::shared_ptr<StorageGatewayEndpointProviderBase> endpointProvider = Aws::MakeShared<StorageGatewayEndpointProvider>(ALLOCATION_TAG),
+                             std::shared_ptr<StorageGatewayEndpointProviderBase> endpointProvider = nullptr,
                              const Aws::StorageGateway::StorageGatewayClientConfiguration& clientConfiguration = Aws::StorageGateway::StorageGatewayClientConfiguration());
 
        /**
@@ -91,7 +107,7 @@ namespace StorageGateway
         * the default http client factory will be used
         */
         StorageGatewayClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                             std::shared_ptr<StorageGatewayEndpointProviderBase> endpointProvider = Aws::MakeShared<StorageGatewayEndpointProvider>(ALLOCATION_TAG),
+                             std::shared_ptr<StorageGatewayEndpointProviderBase> endpointProvider = nullptr,
                              const Aws::StorageGateway::StorageGatewayClientConfiguration& clientConfiguration = Aws::StorageGateway::StorageGatewayClientConfiguration());
 
 
@@ -1262,10 +1278,10 @@ namespace StorageGateway
         }
 
         /**
-         * <p>Returns metadata about a gateway such as its name, network interfaces,
-         * configured time zone, and the state (whether the gateway is running or not). To
-         * specify which gateway to describe, use the Amazon Resource Name (ARN) of the
-         * gateway in your request.</p><p><h3>See Also:</h3>   <a
+         * <p>Returns metadata about a gateway such as its name, network interfaces, time
+         * zone, status, and software version. To specify which gateway to describe, use
+         * the Amazon Resource Name (ARN) of the gateway in your request.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/DescribeGatewayInformation">AWS
          * API Reference</a></p>
          */
@@ -1290,8 +1306,9 @@ namespace StorageGateway
         }
 
         /**
-         * <p>Returns your gateway's weekly maintenance start time including the day and
-         * time of the week. Note that values are in terms of the gateway's time
+         * <p>Returns your gateway's maintenance window schedule information, with values
+         * for monthly or weekly cadence, specific day and time to begin maintenance, and
+         * which types of updates to apply. Time values returned are for the gateway's time
          * zone.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/DescribeMaintenanceStartTime">AWS
          * API Reference</a></p>
@@ -1463,13 +1480,13 @@ namespace StorageGateway
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/DescribeTapeArchives">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeTapeArchivesOutcome DescribeTapeArchives(const Model::DescribeTapeArchivesRequest& request) const;
+        virtual Model::DescribeTapeArchivesOutcome DescribeTapeArchives(const Model::DescribeTapeArchivesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeTapeArchives that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeTapeArchivesRequestT = Model::DescribeTapeArchivesRequest>
-        Model::DescribeTapeArchivesOutcomeCallable DescribeTapeArchivesCallable(const DescribeTapeArchivesRequestT& request) const
+        Model::DescribeTapeArchivesOutcomeCallable DescribeTapeArchivesCallable(const DescribeTapeArchivesRequestT& request = {}) const
         {
             return SubmitCallable(&StorageGatewayClient::DescribeTapeArchives, request);
         }
@@ -1478,7 +1495,7 @@ namespace StorageGateway
          * An Async wrapper for DescribeTapeArchives that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeTapeArchivesRequestT = Model::DescribeTapeArchivesRequest>
-        void DescribeTapeArchivesAsync(const DescribeTapeArchivesRequestT& request, const DescribeTapeArchivesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeTapeArchivesAsync(const DescribeTapeArchivesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeTapeArchivesRequestT& request = {}) const
         {
             return SubmitAsync(&StorageGatewayClient::DescribeTapeArchives, request, handler, context);
         }
@@ -1514,10 +1531,16 @@ namespace StorageGateway
         }
 
         /**
-         * <p>Returns a description of the specified Amazon Resource Name (ARN) of virtual
-         * tapes. If a <code>TapeARN</code> is not specified, returns a description of all
-         * virtual tapes associated with the specified gateway. This operation is only
-         * supported in the tape gateway type.</p><p><h3>See Also:</h3>   <a
+         * <p>Returns a description of virtual tapes that correspond to the specified
+         * Amazon Resource Names (ARNs). If <code>TapeARN</code> is not specified, returns
+         * a description of the virtual tapes associated with the specified gateway. This
+         * operation is only supported for the tape gateway type.</p> <p>The operation
+         * supports pagination. By default, the operation returns a maximum of up to 100
+         * tapes. You can optionally specify the <code>Limit</code> field in the body to
+         * limit the number of tapes in the response. If the number of tapes returned in
+         * the response is truncated, the response includes a <code>Marker</code> field.
+         * You can use this <code>Marker</code> value in your subsequent request to
+         * retrieve the next set of tapes.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/DescribeTapes">AWS
          * API Reference</a></p>
          */
@@ -1720,8 +1743,15 @@ namespace StorageGateway
 
         /**
          * <p>Adds a file gateway to an Active Directory domain. This operation is only
-         * supported for file gateways that support the SMB file protocol.</p><p><h3>See
-         * Also:</h3>   <a
+         * supported for file gateways that support the SMB file protocol.</p> 
+         * <p>Joining a domain creates an Active Directory computer account in the default
+         * organizational unit, using the gateway's <b>Gateway ID</b> as the account name
+         * (for example, SGW-1234ADE). If your Active Directory environment requires that
+         * you pre-stage accounts to facilitate the join domain process, you will need to
+         * create this account ahead of time.</p> <p>To create the gateway's computer
+         * account in an organizational unit other than the default, you must specify the
+         * organizational unit when joining the domain.</p> <p><h3>See Also:</h3>  
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/JoinDomain">AWS
          * API Reference</a></p>
          */
@@ -1753,13 +1783,13 @@ namespace StorageGateway
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/ListAutomaticTapeCreationPolicies">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListAutomaticTapeCreationPoliciesOutcome ListAutomaticTapeCreationPolicies(const Model::ListAutomaticTapeCreationPoliciesRequest& request) const;
+        virtual Model::ListAutomaticTapeCreationPoliciesOutcome ListAutomaticTapeCreationPolicies(const Model::ListAutomaticTapeCreationPoliciesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListAutomaticTapeCreationPolicies that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListAutomaticTapeCreationPoliciesRequestT = Model::ListAutomaticTapeCreationPoliciesRequest>
-        Model::ListAutomaticTapeCreationPoliciesOutcomeCallable ListAutomaticTapeCreationPoliciesCallable(const ListAutomaticTapeCreationPoliciesRequestT& request) const
+        Model::ListAutomaticTapeCreationPoliciesOutcomeCallable ListAutomaticTapeCreationPoliciesCallable(const ListAutomaticTapeCreationPoliciesRequestT& request = {}) const
         {
             return SubmitCallable(&StorageGatewayClient::ListAutomaticTapeCreationPolicies, request);
         }
@@ -1768,25 +1798,25 @@ namespace StorageGateway
          * An Async wrapper for ListAutomaticTapeCreationPolicies that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListAutomaticTapeCreationPoliciesRequestT = Model::ListAutomaticTapeCreationPoliciesRequest>
-        void ListAutomaticTapeCreationPoliciesAsync(const ListAutomaticTapeCreationPoliciesRequestT& request, const ListAutomaticTapeCreationPoliciesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListAutomaticTapeCreationPoliciesAsync(const ListAutomaticTapeCreationPoliciesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListAutomaticTapeCreationPoliciesRequestT& request = {}) const
         {
             return SubmitAsync(&StorageGatewayClient::ListAutomaticTapeCreationPolicies, request, handler, context);
         }
 
         /**
          * <p>Gets a list of the file shares for a specific S3 File Gateway, or the list of
-         * file shares that belong to the calling user account. This operation is only
-         * supported for S3 File Gateways.</p><p><h3>See Also:</h3>   <a
+         * file shares that belong to the calling Amazon Web Services account. This
+         * operation is only supported for S3 File Gateways.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/ListFileShares">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListFileSharesOutcome ListFileShares(const Model::ListFileSharesRequest& request) const;
+        virtual Model::ListFileSharesOutcome ListFileShares(const Model::ListFileSharesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListFileShares that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListFileSharesRequestT = Model::ListFileSharesRequest>
-        Model::ListFileSharesOutcomeCallable ListFileSharesCallable(const ListFileSharesRequestT& request) const
+        Model::ListFileSharesOutcomeCallable ListFileSharesCallable(const ListFileSharesRequestT& request = {}) const
         {
             return SubmitCallable(&StorageGatewayClient::ListFileShares, request);
         }
@@ -1795,7 +1825,7 @@ namespace StorageGateway
          * An Async wrapper for ListFileShares that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListFileSharesRequestT = Model::ListFileSharesRequest>
-        void ListFileSharesAsync(const ListFileSharesRequestT& request, const ListFileSharesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListFileSharesAsync(const ListFileSharesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListFileSharesRequestT& request = {}) const
         {
             return SubmitAsync(&StorageGatewayClient::ListFileShares, request, handler, context);
         }
@@ -1807,13 +1837,13 @@ namespace StorageGateway
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/ListFileSystemAssociations">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListFileSystemAssociationsOutcome ListFileSystemAssociations(const Model::ListFileSystemAssociationsRequest& request) const;
+        virtual Model::ListFileSystemAssociationsOutcome ListFileSystemAssociations(const Model::ListFileSystemAssociationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListFileSystemAssociations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListFileSystemAssociationsRequestT = Model::ListFileSystemAssociationsRequest>
-        Model::ListFileSystemAssociationsOutcomeCallable ListFileSystemAssociationsCallable(const ListFileSystemAssociationsRequestT& request) const
+        Model::ListFileSystemAssociationsOutcomeCallable ListFileSystemAssociationsCallable(const ListFileSystemAssociationsRequestT& request = {}) const
         {
             return SubmitCallable(&StorageGatewayClient::ListFileSystemAssociations, request);
         }
@@ -1822,7 +1852,7 @@ namespace StorageGateway
          * An Async wrapper for ListFileSystemAssociations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListFileSystemAssociationsRequestT = Model::ListFileSystemAssociationsRequest>
-        void ListFileSystemAssociationsAsync(const ListFileSystemAssociationsRequestT& request, const ListFileSystemAssociationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListFileSystemAssociationsAsync(const ListFileSystemAssociationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListFileSystemAssociationsRequestT& request = {}) const
         {
             return SubmitAsync(&StorageGatewayClient::ListFileSystemAssociations, request, handler, context);
         }
@@ -1840,13 +1870,13 @@ namespace StorageGateway
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/ListGateways">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListGatewaysOutcome ListGateways(const Model::ListGatewaysRequest& request) const;
+        virtual Model::ListGatewaysOutcome ListGateways(const Model::ListGatewaysRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListGateways that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListGatewaysRequestT = Model::ListGatewaysRequest>
-        Model::ListGatewaysOutcomeCallable ListGatewaysCallable(const ListGatewaysRequestT& request) const
+        Model::ListGatewaysOutcomeCallable ListGatewaysCallable(const ListGatewaysRequestT& request = {}) const
         {
             return SubmitCallable(&StorageGatewayClient::ListGateways, request);
         }
@@ -1855,7 +1885,7 @@ namespace StorageGateway
          * An Async wrapper for ListGateways that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListGatewaysRequestT = Model::ListGatewaysRequest>
-        void ListGatewaysAsync(const ListGatewaysRequestT& request, const ListGatewaysResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListGatewaysAsync(const ListGatewaysResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListGatewaysRequestT& request = {}) const
         {
             return SubmitAsync(&StorageGatewayClient::ListGateways, request, handler, context);
         }
@@ -1931,13 +1961,13 @@ namespace StorageGateway
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/ListTapePools">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListTapePoolsOutcome ListTapePools(const Model::ListTapePoolsRequest& request) const;
+        virtual Model::ListTapePoolsOutcome ListTapePools(const Model::ListTapePoolsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListTapePools that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListTapePoolsRequestT = Model::ListTapePoolsRequest>
-        Model::ListTapePoolsOutcomeCallable ListTapePoolsCallable(const ListTapePoolsRequestT& request) const
+        Model::ListTapePoolsOutcomeCallable ListTapePoolsCallable(const ListTapePoolsRequestT& request = {}) const
         {
             return SubmitCallable(&StorageGatewayClient::ListTapePools, request);
         }
@@ -1946,7 +1976,7 @@ namespace StorageGateway
          * An Async wrapper for ListTapePools that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListTapePoolsRequestT = Model::ListTapePoolsRequest>
-        void ListTapePoolsAsync(const ListTapePoolsRequestT& request, const ListTapePoolsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListTapePoolsAsync(const ListTapePoolsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListTapePoolsRequestT& request = {}) const
         {
             return SubmitAsync(&StorageGatewayClient::ListTapePools, request, handler, context);
         }
@@ -1965,13 +1995,13 @@ namespace StorageGateway
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/ListTapes">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListTapesOutcome ListTapes(const Model::ListTapesRequest& request) const;
+        virtual Model::ListTapesOutcome ListTapes(const Model::ListTapesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListTapes that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListTapesRequestT = Model::ListTapesRequest>
-        Model::ListTapesOutcomeCallable ListTapesCallable(const ListTapesRequestT& request) const
+        Model::ListTapesOutcomeCallable ListTapesCallable(const ListTapesRequestT& request = {}) const
         {
             return SubmitCallable(&StorageGatewayClient::ListTapes, request);
         }
@@ -1980,7 +2010,7 @@ namespace StorageGateway
          * An Async wrapper for ListTapes that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListTapesRequestT = Model::ListTapesRequest>
-        void ListTapesAsync(const ListTapesRequestT& request, const ListTapesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListTapesAsync(const ListTapesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListTapesRequestT& request = {}) const
         {
             return SubmitAsync(&StorageGatewayClient::ListTapes, request, handler, context);
         }
@@ -2059,13 +2089,13 @@ namespace StorageGateway
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/ListVolumes">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListVolumesOutcome ListVolumes(const Model::ListVolumesRequest& request) const;
+        virtual Model::ListVolumesOutcome ListVolumes(const Model::ListVolumesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListVolumes that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListVolumesRequestT = Model::ListVolumesRequest>
-        Model::ListVolumesOutcomeCallable ListVolumesCallable(const ListVolumesRequestT& request) const
+        Model::ListVolumesOutcomeCallable ListVolumesCallable(const ListVolumesRequestT& request = {}) const
         {
             return SubmitCallable(&StorageGatewayClient::ListVolumes, request);
         }
@@ -2074,24 +2104,24 @@ namespace StorageGateway
          * An Async wrapper for ListVolumes that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListVolumesRequestT = Model::ListVolumesRequest>
-        void ListVolumesAsync(const ListVolumesRequestT& request, const ListVolumesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListVolumesAsync(const ListVolumesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListVolumesRequestT& request = {}) const
         {
             return SubmitAsync(&StorageGatewayClient::ListVolumes, request, handler, context);
         }
 
         /**
          * <p>Sends you notification through CloudWatch Events when all files written to
-         * your file share have been uploaded to S3. Amazon S3.</p> <p>Storage Gateway can
-         * send a notification through Amazon CloudWatch Events when all files written to
-         * your file share up to that point in time have been uploaded to Amazon S3. These
-         * files include files written to the file share up to the time that you make a
-         * request for notification. When the upload is done, Storage Gateway sends you
+         * your file share have been uploaded to Amazon S3.</p> <p>Storage Gateway can send
+         * a notification through Amazon CloudWatch Events when all files written to your
+         * file share up to that point in time have been uploaded to Amazon S3. These files
+         * include files written to the file share up to the time that you make a request
+         * for notification. When the upload is done, Storage Gateway sends you
          * notification through an Amazon CloudWatch Event. You can configure CloudWatch
          * Events to send the notification through event targets such as Amazon SNS or
          * Lambda function. This operation is only supported for S3 File Gateways.</p>
          * <p>For more information, see <a
-         * href="https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-upload-notification">Getting
-         * file upload notification</a> in the <i>Storage Gateway User
+         * href="https://docs.aws.amazon.com/filegateway/latest/files3/monitoring-file-gateway.html#get-notification">Getting
+         * file upload notification</a> in the <i>Amazon S3 File Gateway User
          * Guide</i>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/NotifyWhenUploaded">AWS
          * API Reference</a></p>
@@ -2126,31 +2156,29 @@ namespace StorageGateway
          * the S3 File Gateway types.</p> <p>You can subscribe to be notified through an
          * Amazon CloudWatch event when your <code>RefreshCache</code> operation completes.
          * For more information, see <a
-         * href="https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-notification">Getting
-         * notified about file operations</a> in the <i>Storage Gateway User Guide</i>.
-         * This operation is Only supported for S3 File Gateways.</p> <p>When this API is
-         * called, it only initiates the refresh operation. When the API call completes and
-         * returns a success code, it doesn't necessarily mean that the file refresh has
-         * completed. You should use the refresh-complete notification to determine that
-         * the operation has completed before you check for new files on the gateway file
-         * share. You can subscribe to be notified through a CloudWatch event when your
-         * <code>RefreshCache</code> operation completes.</p> <p>Throttle limit: This API
-         * is asynchronous, so the gateway will accept no more than two refreshes at any
-         * time. We recommend using the refresh-complete CloudWatch event notification
-         * before issuing additional requests. For more information, see <a
-         * href="https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-notification">Getting
-         * notified about file operations</a> in the <i>Storage Gateway User Guide</i>.</p>
-         *  <ul> <li> <p>Wait at least 60 seconds between consecutive
-         * RefreshCache API requests.</p> </li> <li> <p>RefreshCache does not evict cache
-         * entries if invoked consecutively within 60 seconds of a previous RefreshCache
-         * request.</p> </li> <li> <p>If you invoke the RefreshCache API when two requests
-         * are already being processed, any new request will cause an
-         * <code>InvalidGatewayRequestException</code> error because too many requests were
-         * sent to the server.</p> </li> </ul>   <p>The S3 bucket name
-         * does not need to be included when entering the list of folders in the FolderList
-         * parameter.</p>  <p>For more information, see <a
-         * href="https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-notification">Getting
-         * notified about file operations</a> in the <i>Storage Gateway User
+         * href="https://docs.aws.amazon.com/filegateway/latest/files3/monitoring-file-gateway.html#get-notification">Getting
+         * notified about file operations</a> in the <i>Amazon S3 File Gateway User
+         * Guide</i>. This operation is Only supported for S3 File Gateways.</p> <p>When
+         * this API is called, it only initiates the refresh operation. When the API call
+         * completes and returns a success code, it doesn't necessarily mean that the file
+         * refresh has completed. You should use the refresh-complete notification to
+         * determine that the operation has completed before you check for new files on the
+         * gateway file share. You can subscribe to be notified through a CloudWatch event
+         * when your <code>RefreshCache</code> operation completes.</p> <p>Throttle limit:
+         * This API is asynchronous, so the gateway will accept no more than two refreshes
+         * at any time. We recommend using the refresh-complete CloudWatch event
+         * notification before issuing additional requests. For more information, see <a
+         * href="https://docs.aws.amazon.com/filegateway/latest/files3/monitoring-file-gateway.html#get-notification">Getting
+         * notified about file operations</a> in the <i>Amazon S3 File Gateway User
+         * Guide</i>.</p>  <ul> <li> <p>Wait at least 60 seconds between
+         * consecutive RefreshCache API requests.</p> </li> <li> <p>If you invoke the
+         * RefreshCache API when two requests are already being processed, any new request
+         * will cause an <code>InvalidGatewayRequestException</code> error because too many
+         * requests were sent to the server.</p> </li> </ul>   <p>The S3
+         * bucket name does not need to be included when entering the list of folders in
+         * the FolderList parameter.</p>  <p>For more information, see <a
+         * href="https://docs.aws.amazon.com/filegateway/latest/files3/monitoring-file-gateway.html#get-notification">Getting
+         * notified about file operations</a> in the <i>Amazon S3 File Gateway User
          * Guide</i>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/RefreshCache">AWS
          * API Reference</a></p>
@@ -2359,23 +2387,24 @@ namespace StorageGateway
         }
 
         /**
-         * <p>Shuts down a gateway. To specify which gateway to shut down, use the Amazon
-         * Resource Name (ARN) of the gateway in the body of your request.</p> <p>The
-         * operation shuts down the gateway service component running in the gateway's
-         * virtual machine (VM) and not the host VM.</p>  <p>If you want to shut down
-         * the VM, it is recommended that you first shut down the gateway component in the
-         * VM to avoid unpredictable conditions.</p>  <p>After the gateway is
-         * shutdown, you cannot call any other API except <a>StartGateway</a>,
-         * <a>DescribeGatewayInformation</a>, and <a>ListGateways</a>. For more
-         * information, see <a>ActivateGateway</a>. Your applications cannot read from or
-         * write to the gateway's storage volumes, and there are no snapshots taken.</p>
-         *  <p>When you make a shutdown request, you will get a <code>200 OK</code>
-         * success response immediately. However, it might take some time for the gateway
-         * to shut down. You can call the <a>DescribeGatewayInformation</a> API to check
-         * the status. For more information, see <a>ActivateGateway</a>.</p>  <p>If
-         * do not intend to use the gateway again, you must delete the gateway (using
-         * <a>DeleteGateway</a>) to no longer pay software charges associated with the
-         * gateway.</p><p><h3>See Also:</h3>   <a
+         * <p>Shuts down a Tape Gateway or Volume Gateway. To specify which gateway to shut
+         * down, use the Amazon Resource Name (ARN) of the gateway in the body of your
+         * request.</p>  <p>This API action cannot be used to shut down S3 File
+         * Gateway or FSx File Gateway.</p>  <p>The operation shuts down the gateway
+         * service component running in the gateway's virtual machine (VM) and not the host
+         * VM.</p>  <p>If you want to shut down the VM, it is recommended that you
+         * first shut down the gateway component in the VM to avoid unpredictable
+         * conditions.</p>  <p>After the gateway is shutdown, you cannot call any
+         * other API except <a>StartGateway</a>, <a>DescribeGatewayInformation</a>, and
+         * <a>ListGateways</a>. For more information, see <a>ActivateGateway</a>. Your
+         * applications cannot read from or write to the gateway's storage volumes, and
+         * there are no snapshots taken.</p>  <p>When you make a shutdown request,
+         * you will get a <code>200 OK</code> success response immediately. However, it
+         * might take some time for the gateway to shut down. You can call the
+         * <a>DescribeGatewayInformation</a> API to check the status. For more information,
+         * see <a>ActivateGateway</a>.</p>  <p>If do not intend to use the gateway
+         * again, you must delete the gateway (using <a>DeleteGateway</a>) to no longer pay
+         * software charges associated with the gateway.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/ShutdownGateway">AWS
          * API Reference</a></p>
          */
@@ -2532,9 +2561,10 @@ namespace StorageGateway
          * <p> Updates the bandwidth rate limit schedule for a specified gateway. By
          * default, gateways do not have bandwidth rate limit schedules, which means no
          * bandwidth rate limiting is in effect. Use this to initiate or update a gateway's
-         * bandwidth rate limit schedule. This operation is supported only for volume, tape
-         * and S3 file gateways. FSx file gateways do not support bandwidth rate
-         * limits.</p><p><h3>See Also:</h3>   <a
+         * bandwidth rate limit schedule. This operation is supported for volume, tape, and
+         * S3 file gateways. S3 file gateways support bandwidth rate limits for upload
+         * only. FSx file gateways do not support bandwidth rate limits.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/UpdateBandwidthRateLimitSchedule">AWS
          * API Reference</a></p>
          */
@@ -2616,12 +2646,12 @@ namespace StorageGateway
         }
 
         /**
-         * <p>Updates a gateway's metadata, which includes the gateway's name and time
-         * zone. To specify which gateway to update, use the Amazon Resource Name (ARN) of
-         * the gateway in your request.</p>  <p>For gateways activated after
-         * September 2, 2015, the gateway's ARN contains the gateway ID rather than the
-         * gateway name. However, changing the name of the gateway has no effect on the
-         * gateway's ARN.</p> <p><h3>See Also:</h3>   <a
+         * <p>Updates a gateway's metadata, which includes the gateway's name, time zone,
+         * and metadata cache size. To specify which gateway to update, use the Amazon
+         * Resource Name (ARN) of the gateway in your request.</p>  <p>For gateways
+         * activated after September 2, 2015, the gateway's ARN contains the gateway ID
+         * rather than the gateway name. However, changing the name of the gateway has no
+         * effect on the gateway's ARN.</p> <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/UpdateGatewayInformation">AWS
          * API Reference</a></p>
          */
@@ -2684,9 +2714,19 @@ namespace StorageGateway
         }
 
         /**
-         * <p>Updates a gateway's weekly maintenance start time information, including day
-         * and time of the week. The maintenance time is the time in your gateway's time
-         * zone.</p><p><h3>See Also:</h3>   <a
+         * <p>Updates a gateway's maintenance window schedule, with settings for monthly or
+         * weekly cadence, specific day and time to begin maintenance, and which types of
+         * updates to apply. Time configuration uses the gateway's time zone. You can pass
+         * values for a complete maintenance schedule, or update policy, or both. Previous
+         * values will persist for whichever setting you choose not to modify. If an
+         * incomplete or invalid maintenance schedule is passed, the entire request will be
+         * rejected with an error and no changes will occur.</p> <p>A complete maintenance
+         * schedule must include values for <i>both</i> <code>MinuteOfHour</code> and
+         * <code>HourOfDay</code>, and <i>either</i> <code>DayOfMonth</code> <i>or</i>
+         * <code>DayOfWeek</code>.</p>  <p>We recommend keeping maintenance updates
+         * turned on, except in specific use cases where the brief disruptions caused by
+         * updating the gateway could critically impact your deployment.</p>
+         * <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/UpdateMaintenanceStartTime">AWS
          * API Reference</a></p>
          */
@@ -2834,9 +2874,13 @@ namespace StorageGateway
         }
 
         /**
-         * <p>Updates the SMB security strategy on a file gateway. This action is only
-         * supported in file gateways.</p>  <p>This API is called Security level in
-         * the User Guide.</p> <p>A higher security level can affect performance of the
+         * <p>Updates the SMB security strategy level for an Amazon S3 file gateway. This
+         * action is only supported for Amazon S3 file gateways.</p>  <p>For
+         * information about configuring this setting using the Amazon Web Services
+         * console, see <a
+         * href="https://docs.aws.amazon.com/filegateway/latest/files3/security-strategy.html">Setting
+         * a security level for your gateway</a> in the <i>Amazon S3 File Gateway User
+         * Guide</i>.</p> <p>A higher security strategy level can affect performance of the
          * gateway.</p> <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/UpdateSMBSecurityStrategy">AWS
          * API Reference</a></p>
@@ -2927,11 +2971,7 @@ namespace StorageGateway
       std::shared_ptr<StorageGatewayEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<StorageGatewayClient>;
-      void init(const StorageGatewayClientConfiguration& clientConfiguration);
 
-      StorageGatewayClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<StorageGatewayEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace StorageGateway

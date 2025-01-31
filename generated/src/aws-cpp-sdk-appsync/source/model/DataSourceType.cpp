@@ -28,6 +28,7 @@ namespace Aws
         static const int RELATIONAL_DATABASE_HASH = HashingUtils::HashString("RELATIONAL_DATABASE");
         static const int AMAZON_OPENSEARCH_SERVICE_HASH = HashingUtils::HashString("AMAZON_OPENSEARCH_SERVICE");
         static const int AMAZON_EVENTBRIDGE_HASH = HashingUtils::HashString("AMAZON_EVENTBRIDGE");
+        static const int AMAZON_BEDROCK_RUNTIME_HASH = HashingUtils::HashString("AMAZON_BEDROCK_RUNTIME");
 
 
         DataSourceType GetDataSourceTypeForName(const Aws::String& name)
@@ -65,6 +66,10 @@ namespace Aws
           {
             return DataSourceType::AMAZON_EVENTBRIDGE;
           }
+          else if (hashCode == AMAZON_BEDROCK_RUNTIME_HASH)
+          {
+            return DataSourceType::AMAZON_BEDROCK_RUNTIME;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -79,6 +84,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case DataSourceType::NOT_SET:
+            return {};
           case DataSourceType::AWS_LAMBDA:
             return "AWS_LAMBDA";
           case DataSourceType::AMAZON_DYNAMODB:
@@ -95,6 +102,8 @@ namespace Aws
             return "AMAZON_OPENSEARCH_SERVICE";
           case DataSourceType::AMAZON_EVENTBRIDGE:
             return "AMAZON_EVENTBRIDGE";
+          case DataSourceType::AMAZON_BEDROCK_RUNTIME:
+            return "AMAZON_BEDROCK_RUNTIME";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

@@ -28,12 +28,18 @@ CreateModelPackageRequest::CreateModelPackageRequest() :
     m_modelMetricsHasBeenSet(false),
     m_clientToken(Aws::Utils::UUID::PseudoRandomUUID()),
     m_clientTokenHasBeenSet(true),
-    m_customerMetadataPropertiesHasBeenSet(false),
-    m_driftCheckBaselinesHasBeenSet(false),
     m_domainHasBeenSet(false),
     m_taskHasBeenSet(false),
     m_samplePayloadUrlHasBeenSet(false),
-    m_additionalInferenceSpecificationsHasBeenSet(false)
+    m_customerMetadataPropertiesHasBeenSet(false),
+    m_driftCheckBaselinesHasBeenSet(false),
+    m_additionalInferenceSpecificationsHasBeenSet(false),
+    m_skipModelValidation(SkipModelValidation::NOT_SET),
+    m_skipModelValidationHasBeenSet(false),
+    m_sourceUriHasBeenSet(false),
+    m_securityConfigHasBeenSet(false),
+    m_modelCardHasBeenSet(false),
+    m_modelLifeCycleHasBeenSet(false)
 {
 }
 
@@ -117,23 +123,6 @@ Aws::String CreateModelPackageRequest::SerializePayload() const
 
   }
 
-  if(m_customerMetadataPropertiesHasBeenSet)
-  {
-   JsonValue customerMetadataPropertiesJsonMap;
-   for(auto& customerMetadataPropertiesItem : m_customerMetadataProperties)
-   {
-     customerMetadataPropertiesJsonMap.WithString(customerMetadataPropertiesItem.first, customerMetadataPropertiesItem.second);
-   }
-   payload.WithObject("CustomerMetadataProperties", std::move(customerMetadataPropertiesJsonMap));
-
-  }
-
-  if(m_driftCheckBaselinesHasBeenSet)
-  {
-   payload.WithObject("DriftCheckBaselines", m_driftCheckBaselines.Jsonize());
-
-  }
-
   if(m_domainHasBeenSet)
   {
    payload.WithString("Domain", m_domain);
@@ -152,6 +141,23 @@ Aws::String CreateModelPackageRequest::SerializePayload() const
 
   }
 
+  if(m_customerMetadataPropertiesHasBeenSet)
+  {
+   JsonValue customerMetadataPropertiesJsonMap;
+   for(auto& customerMetadataPropertiesItem : m_customerMetadataProperties)
+   {
+     customerMetadataPropertiesJsonMap.WithString(customerMetadataPropertiesItem.first, customerMetadataPropertiesItem.second);
+   }
+   payload.WithObject("CustomerMetadataProperties", std::move(customerMetadataPropertiesJsonMap));
+
+  }
+
+  if(m_driftCheckBaselinesHasBeenSet)
+  {
+   payload.WithObject("DriftCheckBaselines", m_driftCheckBaselines.Jsonize());
+
+  }
+
   if(m_additionalInferenceSpecificationsHasBeenSet)
   {
    Aws::Utils::Array<JsonValue> additionalInferenceSpecificationsJsonList(m_additionalInferenceSpecifications.size());
@@ -160,6 +166,35 @@ Aws::String CreateModelPackageRequest::SerializePayload() const
      additionalInferenceSpecificationsJsonList[additionalInferenceSpecificationsIndex].AsObject(m_additionalInferenceSpecifications[additionalInferenceSpecificationsIndex].Jsonize());
    }
    payload.WithArray("AdditionalInferenceSpecifications", std::move(additionalInferenceSpecificationsJsonList));
+
+  }
+
+  if(m_skipModelValidationHasBeenSet)
+  {
+   payload.WithString("SkipModelValidation", SkipModelValidationMapper::GetNameForSkipModelValidation(m_skipModelValidation));
+  }
+
+  if(m_sourceUriHasBeenSet)
+  {
+   payload.WithString("SourceUri", m_sourceUri);
+
+  }
+
+  if(m_securityConfigHasBeenSet)
+  {
+   payload.WithObject("SecurityConfig", m_securityConfig.Jsonize());
+
+  }
+
+  if(m_modelCardHasBeenSet)
+  {
+   payload.WithObject("ModelCard", m_modelCard.Jsonize());
+
+  }
+
+  if(m_modelLifeCycleHasBeenSet)
+  {
+   payload.WithObject("ModelLifeCycle", m_modelLifeCycle.Jsonize());
 
   }
 

@@ -22,6 +22,8 @@ TargetGroupConfig::TargetGroupConfig() :
     m_healthCheckHasBeenSet(false),
     m_ipAddressType(IpAddressType::NOT_SET),
     m_ipAddressTypeHasBeenSet(false),
+    m_lambdaEventStructureVersion(LambdaEventStructureVersion::NOT_SET),
+    m_lambdaEventStructureVersionHasBeenSet(false),
     m_port(0),
     m_portHasBeenSet(false),
     m_protocol(TargetGroupProtocol::NOT_SET),
@@ -32,17 +34,8 @@ TargetGroupConfig::TargetGroupConfig() :
 {
 }
 
-TargetGroupConfig::TargetGroupConfig(JsonView jsonValue) : 
-    m_healthCheckHasBeenSet(false),
-    m_ipAddressType(IpAddressType::NOT_SET),
-    m_ipAddressTypeHasBeenSet(false),
-    m_port(0),
-    m_portHasBeenSet(false),
-    m_protocol(TargetGroupProtocol::NOT_SET),
-    m_protocolHasBeenSet(false),
-    m_protocolVersion(TargetGroupProtocolVersion::NOT_SET),
-    m_protocolVersionHasBeenSet(false),
-    m_vpcIdentifierHasBeenSet(false)
+TargetGroupConfig::TargetGroupConfig(JsonView jsonValue)
+  : TargetGroupConfig()
 {
   *this = jsonValue;
 }
@@ -61,6 +54,13 @@ TargetGroupConfig& TargetGroupConfig::operator =(JsonView jsonValue)
     m_ipAddressType = IpAddressTypeMapper::GetIpAddressTypeForName(jsonValue.GetString("ipAddressType"));
 
     m_ipAddressTypeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("lambdaEventStructureVersion"))
+  {
+    m_lambdaEventStructureVersion = LambdaEventStructureVersionMapper::GetLambdaEventStructureVersionForName(jsonValue.GetString("lambdaEventStructureVersion"));
+
+    m_lambdaEventStructureVersionHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("port"))
@@ -107,6 +107,11 @@ JsonValue TargetGroupConfig::Jsonize() const
   if(m_ipAddressTypeHasBeenSet)
   {
    payload.WithString("ipAddressType", IpAddressTypeMapper::GetNameForIpAddressType(m_ipAddressType));
+  }
+
+  if(m_lambdaEventStructureVersionHasBeenSet)
+  {
+   payload.WithString("lambdaEventStructureVersion", LambdaEventStructureVersionMapper::GetNameForLambdaEventStructureVersion(m_lambdaEventStructureVersion));
   }
 
   if(m_portHasBeenSet)

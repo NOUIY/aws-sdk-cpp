@@ -20,13 +20,13 @@ namespace Model
 
 BatchPutGeofenceRequestEntry::BatchPutGeofenceRequestEntry() : 
     m_geofenceIdHasBeenSet(false),
-    m_geometryHasBeenSet(false)
+    m_geometryHasBeenSet(false),
+    m_geofencePropertiesHasBeenSet(false)
 {
 }
 
-BatchPutGeofenceRequestEntry::BatchPutGeofenceRequestEntry(JsonView jsonValue) : 
-    m_geofenceIdHasBeenSet(false),
-    m_geometryHasBeenSet(false)
+BatchPutGeofenceRequestEntry::BatchPutGeofenceRequestEntry(JsonView jsonValue)
+  : BatchPutGeofenceRequestEntry()
 {
   *this = jsonValue;
 }
@@ -47,6 +47,16 @@ BatchPutGeofenceRequestEntry& BatchPutGeofenceRequestEntry::operator =(JsonView 
     m_geometryHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("GeofenceProperties"))
+  {
+    Aws::Map<Aws::String, JsonView> geofencePropertiesJsonMap = jsonValue.GetObject("GeofenceProperties").GetAllObjects();
+    for(auto& geofencePropertiesItem : geofencePropertiesJsonMap)
+    {
+      m_geofenceProperties[geofencePropertiesItem.first] = geofencePropertiesItem.second.AsString();
+    }
+    m_geofencePropertiesHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +73,17 @@ JsonValue BatchPutGeofenceRequestEntry::Jsonize() const
   if(m_geometryHasBeenSet)
   {
    payload.WithObject("Geometry", m_geometry.Jsonize());
+
+  }
+
+  if(m_geofencePropertiesHasBeenSet)
+  {
+   JsonValue geofencePropertiesJsonMap;
+   for(auto& geofencePropertiesItem : m_geofenceProperties)
+   {
+     geofencePropertiesJsonMap.WithString(geofencePropertiesItem.first, geofencePropertiesItem.second);
+   }
+   payload.WithObject("GeofenceProperties", std::move(geofencePropertiesJsonMap));
 
   }
 

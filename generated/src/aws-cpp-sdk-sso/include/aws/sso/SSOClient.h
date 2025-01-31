@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/sso/SSO_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/sso/SSOServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/sso/SSOErrorMarshaller.h>
 
 namespace Aws
 {
 namespace SSO
 {
+  AWS_SSO_API extern const char SERVICE_NAME[];
   /**
    * <p>AWS IAM Identity Center (successor to AWS Single Sign-On) Portal is a web
    * service that makes it easy for you to assign user access to IAM Identity Center
@@ -34,12 +38,20 @@ namespace SSO
    * to download and install them, see <a href="http://aws.amazon.com/tools/">Tools
    * for Amazon Web Services</a>.</p> 
    */
-  class AWS_SSO_API SSOClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<SSOClient>
+  class AWS_SSO_API SSOClient : smithy::client::AwsSmithyClientT<Aws::SSO::SERVICE_NAME,
+      Aws::SSO::SSOClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      SSOEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::SSOErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<SSOClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "SSO"; }
 
       typedef SSOClientConfiguration ClientConfigurationType;
       typedef SSOEndpointProvider EndpointProviderType;
@@ -49,14 +61,14 @@ namespace SSO
         * is not specified, it will be initialized to default values.
         */
         SSOClient(const Aws::SSO::SSOClientConfiguration& clientConfiguration = Aws::SSO::SSOClientConfiguration(),
-                  std::shared_ptr<SSOEndpointProviderBase> endpointProvider = Aws::MakeShared<SSOEndpointProvider>(ALLOCATION_TAG));
+                  std::shared_ptr<SSOEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         SSOClient(const Aws::Auth::AWSCredentials& credentials,
-                  std::shared_ptr<SSOEndpointProviderBase> endpointProvider = Aws::MakeShared<SSOEndpointProvider>(ALLOCATION_TAG),
+                  std::shared_ptr<SSOEndpointProviderBase> endpointProvider = nullptr,
                   const Aws::SSO::SSOClientConfiguration& clientConfiguration = Aws::SSO::SSOClientConfiguration());
 
        /**
@@ -64,7 +76,7 @@ namespace SSO
         * the default http client factory will be used
         */
         SSOClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                  std::shared_ptr<SSOEndpointProviderBase> endpointProvider = Aws::MakeShared<SSOEndpointProvider>(ALLOCATION_TAG),
+                  std::shared_ptr<SSOEndpointProviderBase> endpointProvider = nullptr,
                   const Aws::SSO::SSOClientConfiguration& clientConfiguration = Aws::SSO::SSOClientConfiguration());
 
 
@@ -216,11 +228,7 @@ namespace SSO
       std::shared_ptr<SSOEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<SSOClient>;
-      void init(const SSOClientConfiguration& clientConfiguration);
 
-      SSOClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<SSOEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace SSO

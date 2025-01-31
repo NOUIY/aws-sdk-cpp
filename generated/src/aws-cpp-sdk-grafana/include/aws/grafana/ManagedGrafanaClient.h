@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/grafana/ManagedGrafana_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/grafana/ManagedGrafanaServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/grafana/ManagedGrafanaErrorMarshaller.h>
 
 namespace Aws
 {
 namespace ManagedGrafana
 {
+  AWS_MANAGEDGRAFANA_API extern const char SERVICE_NAME[];
   /**
    * <p>Amazon Managed Grafana is a fully managed and secure data visualization
    * service that you can use to instantly query, correlate, and visualize
@@ -26,12 +30,20 @@ namespace ManagedGrafana
    * visualizations to analyze your metrics, logs, and traces without having to
    * build, package, or deploy any hardware to run Grafana servers. </p>
    */
-  class AWS_MANAGEDGRAFANA_API ManagedGrafanaClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<ManagedGrafanaClient>
+  class AWS_MANAGEDGRAFANA_API ManagedGrafanaClient : smithy::client::AwsSmithyClientT<Aws::ManagedGrafana::SERVICE_NAME,
+      Aws::ManagedGrafana::ManagedGrafanaClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      ManagedGrafanaEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::ManagedGrafanaErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<ManagedGrafanaClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "grafana"; }
 
       typedef ManagedGrafanaClientConfiguration ClientConfigurationType;
       typedef ManagedGrafanaEndpointProvider EndpointProviderType;
@@ -41,14 +53,14 @@ namespace ManagedGrafana
         * is not specified, it will be initialized to default values.
         */
         ManagedGrafanaClient(const Aws::ManagedGrafana::ManagedGrafanaClientConfiguration& clientConfiguration = Aws::ManagedGrafana::ManagedGrafanaClientConfiguration(),
-                             std::shared_ptr<ManagedGrafanaEndpointProviderBase> endpointProvider = Aws::MakeShared<ManagedGrafanaEndpointProvider>(ALLOCATION_TAG));
+                             std::shared_ptr<ManagedGrafanaEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         ManagedGrafanaClient(const Aws::Auth::AWSCredentials& credentials,
-                             std::shared_ptr<ManagedGrafanaEndpointProviderBase> endpointProvider = Aws::MakeShared<ManagedGrafanaEndpointProvider>(ALLOCATION_TAG),
+                             std::shared_ptr<ManagedGrafanaEndpointProviderBase> endpointProvider = nullptr,
                              const Aws::ManagedGrafana::ManagedGrafanaClientConfiguration& clientConfiguration = Aws::ManagedGrafana::ManagedGrafanaClientConfiguration());
 
        /**
@@ -56,7 +68,7 @@ namespace ManagedGrafana
         * the default http client factory will be used
         */
         ManagedGrafanaClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                             std::shared_ptr<ManagedGrafanaEndpointProviderBase> endpointProvider = Aws::MakeShared<ManagedGrafanaEndpointProvider>(ALLOCATION_TAG),
+                             std::shared_ptr<ManagedGrafanaEndpointProviderBase> endpointProvider = nullptr,
                              const Aws::ManagedGrafana::ManagedGrafanaClientConfiguration& clientConfiguration = Aws::ManagedGrafana::ManagedGrafanaClientConfiguration());
 
 
@@ -85,7 +97,9 @@ namespace ManagedGrafana
         virtual ~ManagedGrafanaClient();
 
         /**
-         * <p>Assigns a Grafana Enterprise license to a workspace. Upgrading to Grafana
+         * <p>Assigns a Grafana Enterprise license to a workspace. To upgrade, you must use
+         * <code>ENTERPRISE</code> for the <code>licenseType</code>, and pass in a valid
+         * Grafana Labs token for the <code>grafanaToken</code>. Upgrading to Grafana
          * Enterprise incurs additional fees. For more information, see <a
          * href="https://docs.aws.amazon.com/grafana/latest/userguide/upgrade-to-Grafana-Enterprise.html">Upgrade
          * a workspace to Grafana Enterprise</a>.</p><p><h3>See Also:</h3>   <a
@@ -147,7 +161,10 @@ namespace ManagedGrafana
          * <p>Creates a Grafana API key for the workspace. This key can be used to
          * authenticate requests sent to the workspace's HTTP API. See <a
          * href="https://docs.aws.amazon.com/grafana/latest/userguide/Using-Grafana-APIs.html">https://docs.aws.amazon.com/grafana/latest/userguide/Using-Grafana-APIs.html</a>
-         * for available APIs and example requests.</p><p><h3>See Also:</h3>   <a
+         * for available APIs and example requests.</p>  <p>In workspaces compatible
+         * with Grafana version 9 or above, use workspace service accounts instead of API
+         * keys. API keys will be removed in a future release.</p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/grafana-2020-08-18/CreateWorkspaceApiKey">AWS
          * API Reference</a></p>
          */
@@ -169,6 +186,78 @@ namespace ManagedGrafana
         void CreateWorkspaceApiKeyAsync(const CreateWorkspaceApiKeyRequestT& request, const CreateWorkspaceApiKeyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ManagedGrafanaClient::CreateWorkspaceApiKey, request, handler, context);
+        }
+
+        /**
+         * <p>Creates a service account for the workspace. A service account can be used to
+         * call Grafana HTTP APIs, and run automated workloads. After creating the service
+         * account with the correct <code>GrafanaRole</code> for your use case, use
+         * <code>CreateWorkspaceServiceAccountToken</code> to create a token that can be
+         * used to authenticate and authorize Grafana HTTP API calls.</p> <p>You can only
+         * create service accounts for workspaces that are compatible with Grafana version
+         * 9 and above.</p>  <p>For more information about service accounts, see <a
+         * href="https://docs.aws.amazon.com/grafana/latest/userguide/service-accounts.html">Service
+         * accounts</a> in the <i>Amazon Managed Grafana User Guide</i>.</p> <p>For more
+         * information about the Grafana HTTP APIs, see <a
+         * href="https://docs.aws.amazon.com/grafana/latest/userguide/Using-Grafana-APIs.html">Using
+         * Grafana HTTP APIs</a> in the <i>Amazon Managed Grafana User Guide</i>.</p>
+         * <p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/grafana-2020-08-18/CreateWorkspaceServiceAccount">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateWorkspaceServiceAccountOutcome CreateWorkspaceServiceAccount(const Model::CreateWorkspaceServiceAccountRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateWorkspaceServiceAccount that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateWorkspaceServiceAccountRequestT = Model::CreateWorkspaceServiceAccountRequest>
+        Model::CreateWorkspaceServiceAccountOutcomeCallable CreateWorkspaceServiceAccountCallable(const CreateWorkspaceServiceAccountRequestT& request) const
+        {
+            return SubmitCallable(&ManagedGrafanaClient::CreateWorkspaceServiceAccount, request);
+        }
+
+        /**
+         * An Async wrapper for CreateWorkspaceServiceAccount that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateWorkspaceServiceAccountRequestT = Model::CreateWorkspaceServiceAccountRequest>
+        void CreateWorkspaceServiceAccountAsync(const CreateWorkspaceServiceAccountRequestT& request, const CreateWorkspaceServiceAccountResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ManagedGrafanaClient::CreateWorkspaceServiceAccount, request, handler, context);
+        }
+
+        /**
+         * <p>Creates a token that can be used to authenticate and authorize Grafana HTTP
+         * API operations for the given <a
+         * href="https://docs.aws.amazon.com/grafana/latest/userguide/service-accounts.html">workspace
+         * service account</a>. The service account acts as a user for the API operations,
+         * and defines the permissions that are used by the API.</p>  <p>When
+         * you create the service account token, you will receive a key that is used when
+         * calling Grafana APIs. Do not lose this key, as it will not be retrievable
+         * again.</p> <p>If you do lose the key, you can delete the token and recreate it
+         * to receive a new key. This will disable the initial key.</p> 
+         * <p>Service accounts are only available for workspaces that are compatible with
+         * Grafana version 9 and above.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/grafana-2020-08-18/CreateWorkspaceServiceAccountToken">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateWorkspaceServiceAccountTokenOutcome CreateWorkspaceServiceAccountToken(const Model::CreateWorkspaceServiceAccountTokenRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateWorkspaceServiceAccountToken that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateWorkspaceServiceAccountTokenRequestT = Model::CreateWorkspaceServiceAccountTokenRequest>
+        Model::CreateWorkspaceServiceAccountTokenOutcomeCallable CreateWorkspaceServiceAccountTokenCallable(const CreateWorkspaceServiceAccountTokenRequestT& request) const
+        {
+            return SubmitCallable(&ManagedGrafanaClient::CreateWorkspaceServiceAccountToken, request);
+        }
+
+        /**
+         * An Async wrapper for CreateWorkspaceServiceAccountToken that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateWorkspaceServiceAccountTokenRequestT = Model::CreateWorkspaceServiceAccountTokenRequest>
+        void CreateWorkspaceServiceAccountTokenAsync(const CreateWorkspaceServiceAccountTokenRequestT& request, const CreateWorkspaceServiceAccountTokenResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ManagedGrafanaClient::CreateWorkspaceServiceAccountToken, request, handler, context);
         }
 
         /**
@@ -197,7 +286,10 @@ namespace ManagedGrafana
         }
 
         /**
-         * <p>Deletes a Grafana API key for the workspace.</p><p><h3>See Also:</h3>   <a
+         * <p>Deletes a Grafana API key for the workspace.</p>  <p>In workspaces
+         * compatible with Grafana version 9 or above, use workspace service accounts
+         * instead of API keys. API keys will be removed in a future release.</p>
+         * <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/grafana-2020-08-18/DeleteWorkspaceApiKey">AWS
          * API Reference</a></p>
          */
@@ -219,6 +311,65 @@ namespace ManagedGrafana
         void DeleteWorkspaceApiKeyAsync(const DeleteWorkspaceApiKeyRequestT& request, const DeleteWorkspaceApiKeyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ManagedGrafanaClient::DeleteWorkspaceApiKey, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes a workspace service account from the workspace.</p> <p>This will
+         * delete any tokens created for the service account, as well. If the tokens are
+         * currently in use, the will fail to authenticate / authorize after they are
+         * deleted.</p> <p>Service accounts are only available for workspaces that are
+         * compatible with Grafana version 9 and above.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/grafana-2020-08-18/DeleteWorkspaceServiceAccount">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteWorkspaceServiceAccountOutcome DeleteWorkspaceServiceAccount(const Model::DeleteWorkspaceServiceAccountRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteWorkspaceServiceAccount that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteWorkspaceServiceAccountRequestT = Model::DeleteWorkspaceServiceAccountRequest>
+        Model::DeleteWorkspaceServiceAccountOutcomeCallable DeleteWorkspaceServiceAccountCallable(const DeleteWorkspaceServiceAccountRequestT& request) const
+        {
+            return SubmitCallable(&ManagedGrafanaClient::DeleteWorkspaceServiceAccount, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteWorkspaceServiceAccount that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteWorkspaceServiceAccountRequestT = Model::DeleteWorkspaceServiceAccountRequest>
+        void DeleteWorkspaceServiceAccountAsync(const DeleteWorkspaceServiceAccountRequestT& request, const DeleteWorkspaceServiceAccountResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ManagedGrafanaClient::DeleteWorkspaceServiceAccount, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes a token for the workspace service account.</p> <p>This will disable
+         * the key associated with the token. If any automation is currently using the key,
+         * it will no longer be authenticated or authorized to perform actions with the
+         * Grafana HTTP APIs.</p> <p>Service accounts are only available for workspaces
+         * that are compatible with Grafana version 9 and above.</p><p><h3>See Also:</h3>  
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/grafana-2020-08-18/DeleteWorkspaceServiceAccountToken">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteWorkspaceServiceAccountTokenOutcome DeleteWorkspaceServiceAccountToken(const Model::DeleteWorkspaceServiceAccountTokenRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteWorkspaceServiceAccountToken that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteWorkspaceServiceAccountTokenRequestT = Model::DeleteWorkspaceServiceAccountTokenRequest>
+        Model::DeleteWorkspaceServiceAccountTokenOutcomeCallable DeleteWorkspaceServiceAccountTokenCallable(const DeleteWorkspaceServiceAccountTokenRequestT& request) const
+        {
+            return SubmitCallable(&ManagedGrafanaClient::DeleteWorkspaceServiceAccountToken, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteWorkspaceServiceAccountToken that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteWorkspaceServiceAccountTokenRequestT = Model::DeleteWorkspaceServiceAccountTokenRequest>
+        void DeleteWorkspaceServiceAccountTokenAsync(const DeleteWorkspaceServiceAccountTokenRequestT& request, const DeleteWorkspaceServiceAccountTokenResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ManagedGrafanaClient::DeleteWorkspaceServiceAccountToken, request, handler, context);
         }
 
         /**
@@ -385,6 +536,89 @@ namespace ManagedGrafana
         }
 
         /**
+         * <p>Lists available versions of Grafana. These are available when calling
+         * <code>CreateWorkspace</code>. Optionally, include a workspace to list the
+         * versions to which it can be upgraded.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/grafana-2020-08-18/ListVersions">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListVersionsOutcome ListVersions(const Model::ListVersionsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListVersions that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListVersionsRequestT = Model::ListVersionsRequest>
+        Model::ListVersionsOutcomeCallable ListVersionsCallable(const ListVersionsRequestT& request = {}) const
+        {
+            return SubmitCallable(&ManagedGrafanaClient::ListVersions, request);
+        }
+
+        /**
+         * An Async wrapper for ListVersions that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListVersionsRequestT = Model::ListVersionsRequest>
+        void ListVersionsAsync(const ListVersionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListVersionsRequestT& request = {}) const
+        {
+            return SubmitAsync(&ManagedGrafanaClient::ListVersions, request, handler, context);
+        }
+
+        /**
+         * <p>Returns a list of tokens for a workspace service account.</p>  <p>This
+         * does not return the key for each token. You cannot access keys after they are
+         * created. To create a new key, delete the token and recreate it.</p> 
+         * <p>Service accounts are only available for workspaces that are compatible with
+         * Grafana version 9 and above.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/grafana-2020-08-18/ListWorkspaceServiceAccountTokens">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListWorkspaceServiceAccountTokensOutcome ListWorkspaceServiceAccountTokens(const Model::ListWorkspaceServiceAccountTokensRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListWorkspaceServiceAccountTokens that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListWorkspaceServiceAccountTokensRequestT = Model::ListWorkspaceServiceAccountTokensRequest>
+        Model::ListWorkspaceServiceAccountTokensOutcomeCallable ListWorkspaceServiceAccountTokensCallable(const ListWorkspaceServiceAccountTokensRequestT& request) const
+        {
+            return SubmitCallable(&ManagedGrafanaClient::ListWorkspaceServiceAccountTokens, request);
+        }
+
+        /**
+         * An Async wrapper for ListWorkspaceServiceAccountTokens that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListWorkspaceServiceAccountTokensRequestT = Model::ListWorkspaceServiceAccountTokensRequest>
+        void ListWorkspaceServiceAccountTokensAsync(const ListWorkspaceServiceAccountTokensRequestT& request, const ListWorkspaceServiceAccountTokensResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ManagedGrafanaClient::ListWorkspaceServiceAccountTokens, request, handler, context);
+        }
+
+        /**
+         * <p>Returns a list of service accounts for a workspace.</p> <p>Service accounts
+         * are only available for workspaces that are compatible with Grafana version 9 and
+         * above.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/grafana-2020-08-18/ListWorkspaceServiceAccounts">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListWorkspaceServiceAccountsOutcome ListWorkspaceServiceAccounts(const Model::ListWorkspaceServiceAccountsRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListWorkspaceServiceAccounts that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListWorkspaceServiceAccountsRequestT = Model::ListWorkspaceServiceAccountsRequest>
+        Model::ListWorkspaceServiceAccountsOutcomeCallable ListWorkspaceServiceAccountsCallable(const ListWorkspaceServiceAccountsRequestT& request) const
+        {
+            return SubmitCallable(&ManagedGrafanaClient::ListWorkspaceServiceAccounts, request);
+        }
+
+        /**
+         * An Async wrapper for ListWorkspaceServiceAccounts that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListWorkspaceServiceAccountsRequestT = Model::ListWorkspaceServiceAccountsRequest>
+        void ListWorkspaceServiceAccountsAsync(const ListWorkspaceServiceAccountsRequestT& request, const ListWorkspaceServiceAccountsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ManagedGrafanaClient::ListWorkspaceServiceAccounts, request, handler, context);
+        }
+
+        /**
          * <p>Returns a list of Amazon Managed Grafana workspaces in the account, with some
          * information about each workspace. For more complete information about one
          * workspace, use <a
@@ -393,13 +627,13 @@ namespace ManagedGrafana
          * href="http://docs.aws.amazon.com/goto/WebAPI/grafana-2020-08-18/ListWorkspaces">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListWorkspacesOutcome ListWorkspaces(const Model::ListWorkspacesRequest& request) const;
+        virtual Model::ListWorkspacesOutcome ListWorkspaces(const Model::ListWorkspacesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListWorkspaces that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListWorkspacesRequestT = Model::ListWorkspacesRequest>
-        Model::ListWorkspacesOutcomeCallable ListWorkspacesCallable(const ListWorkspacesRequestT& request) const
+        Model::ListWorkspacesOutcomeCallable ListWorkspacesCallable(const ListWorkspacesRequestT& request = {}) const
         {
             return SubmitCallable(&ManagedGrafanaClient::ListWorkspaces, request);
         }
@@ -408,7 +642,7 @@ namespace ManagedGrafana
          * An Async wrapper for ListWorkspaces that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListWorkspacesRequestT = Model::ListWorkspacesRequest>
-        void ListWorkspacesAsync(const ListWorkspacesRequestT& request, const ListWorkspacesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListWorkspacesAsync(const ListWorkspacesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListWorkspacesRequestT& request = {}) const
         {
             return SubmitAsync(&ManagedGrafanaClient::ListWorkspaces, request, handler, context);
         }
@@ -589,11 +823,7 @@ namespace ManagedGrafana
       std::shared_ptr<ManagedGrafanaEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<ManagedGrafanaClient>;
-      void init(const ManagedGrafanaClientConfiguration& clientConfiguration);
 
-      ManagedGrafanaClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<ManagedGrafanaEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace ManagedGrafana

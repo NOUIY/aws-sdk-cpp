@@ -24,7 +24,9 @@ StartChatContactRequest::StartChatContactRequest() :
     m_chatDurationInMinutesHasBeenSet(false),
     m_supportedMessagingContentTypesHasBeenSet(false),
     m_persistentChatHasBeenSet(false),
-    m_relatedContactIdHasBeenSet(false)
+    m_relatedContactIdHasBeenSet(false),
+    m_segmentAttributesHasBeenSet(false),
+    m_customerIdHasBeenSet(false)
 {
 }
 
@@ -99,6 +101,23 @@ Aws::String StartChatContactRequest::SerializePayload() const
   if(m_relatedContactIdHasBeenSet)
   {
    payload.WithString("RelatedContactId", m_relatedContactId);
+
+  }
+
+  if(m_segmentAttributesHasBeenSet)
+  {
+   JsonValue segmentAttributesJsonMap;
+   for(auto& segmentAttributesItem : m_segmentAttributes)
+   {
+     segmentAttributesJsonMap.WithObject(segmentAttributesItem.first, segmentAttributesItem.second.Jsonize());
+   }
+   payload.WithObject("SegmentAttributes", std::move(segmentAttributesJsonMap));
+
+  }
+
+  if(m_customerIdHasBeenSet)
+  {
+   payload.WithString("CustomerId", m_customerId);
 
   }
 

@@ -15,7 +15,8 @@ using namespace Aws::Utils;
 PutGeofenceRequest::PutGeofenceRequest() : 
     m_collectionNameHasBeenSet(false),
     m_geofenceIdHasBeenSet(false),
-    m_geometryHasBeenSet(false)
+    m_geometryHasBeenSet(false),
+    m_geofencePropertiesHasBeenSet(false)
 {
 }
 
@@ -26,6 +27,17 @@ Aws::String PutGeofenceRequest::SerializePayload() const
   if(m_geometryHasBeenSet)
   {
    payload.WithObject("Geometry", m_geometry.Jsonize());
+
+  }
+
+  if(m_geofencePropertiesHasBeenSet)
+  {
+   JsonValue geofencePropertiesJsonMap;
+   for(auto& geofencePropertiesItem : m_geofenceProperties)
+   {
+     geofencePropertiesJsonMap.WithString(geofencePropertiesItem.first, geofencePropertiesItem.second);
+   }
+   payload.WithObject("GeofenceProperties", std::move(geofencePropertiesJsonMap));
 
   }
 

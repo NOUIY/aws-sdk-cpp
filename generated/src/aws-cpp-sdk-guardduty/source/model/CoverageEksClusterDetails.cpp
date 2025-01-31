@@ -24,17 +24,14 @@ CoverageEksClusterDetails::CoverageEksClusterDetails() :
     m_coveredNodesHasBeenSet(false),
     m_compatibleNodes(0),
     m_compatibleNodesHasBeenSet(false),
-    m_addonDetailsHasBeenSet(false)
+    m_addonDetailsHasBeenSet(false),
+    m_managementType(ManagementType::NOT_SET),
+    m_managementTypeHasBeenSet(false)
 {
 }
 
-CoverageEksClusterDetails::CoverageEksClusterDetails(JsonView jsonValue) : 
-    m_clusterNameHasBeenSet(false),
-    m_coveredNodes(0),
-    m_coveredNodesHasBeenSet(false),
-    m_compatibleNodes(0),
-    m_compatibleNodesHasBeenSet(false),
-    m_addonDetailsHasBeenSet(false)
+CoverageEksClusterDetails::CoverageEksClusterDetails(JsonView jsonValue)
+  : CoverageEksClusterDetails()
 {
   *this = jsonValue;
 }
@@ -69,6 +66,13 @@ CoverageEksClusterDetails& CoverageEksClusterDetails::operator =(JsonView jsonVa
     m_addonDetailsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("managementType"))
+  {
+    m_managementType = ManagementTypeMapper::GetManagementTypeForName(jsonValue.GetString("managementType"));
+
+    m_managementTypeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -98,6 +102,11 @@ JsonValue CoverageEksClusterDetails::Jsonize() const
   {
    payload.WithObject("addonDetails", m_addonDetails.Jsonize());
 
+  }
+
+  if(m_managementTypeHasBeenSet)
+  {
+   payload.WithString("managementType", ManagementTypeMapper::GetNameForManagementType(m_managementType));
   }
 
   return payload;

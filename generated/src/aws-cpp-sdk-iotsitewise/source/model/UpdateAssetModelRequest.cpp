@@ -5,6 +5,7 @@
 
 #include <aws/iotsitewise/model/UpdateAssetModelRequest.h>
 #include <aws/core/utils/json/JsonSerializer.h>
+#include <aws/core/utils/memory/stl/AWSStringStream.h>
 
 #include <utility>
 
@@ -14,19 +15,30 @@ using namespace Aws::Utils;
 
 UpdateAssetModelRequest::UpdateAssetModelRequest() : 
     m_assetModelIdHasBeenSet(false),
+    m_assetModelExternalIdHasBeenSet(false),
     m_assetModelNameHasBeenSet(false),
     m_assetModelDescriptionHasBeenSet(false),
     m_assetModelPropertiesHasBeenSet(false),
     m_assetModelHierarchiesHasBeenSet(false),
     m_assetModelCompositeModelsHasBeenSet(false),
     m_clientToken(Aws::Utils::UUID::PseudoRandomUUID()),
-    m_clientTokenHasBeenSet(true)
+    m_clientTokenHasBeenSet(true),
+    m_ifMatchHasBeenSet(false),
+    m_ifNoneMatchHasBeenSet(false),
+    m_matchForVersionType(AssetModelVersionType::NOT_SET),
+    m_matchForVersionTypeHasBeenSet(false)
 {
 }
 
 Aws::String UpdateAssetModelRequest::SerializePayload() const
 {
   JsonValue payload;
+
+  if(m_assetModelExternalIdHasBeenSet)
+  {
+   payload.WithString("assetModelExternalId", m_assetModelExternalId);
+
+  }
 
   if(m_assetModelNameHasBeenSet)
   {
@@ -80,6 +92,33 @@ Aws::String UpdateAssetModelRequest::SerializePayload() const
   }
 
   return payload.View().WriteReadable();
+}
+
+Aws::Http::HeaderValueCollection UpdateAssetModelRequest::GetRequestSpecificHeaders() const
+{
+  Aws::Http::HeaderValueCollection headers;
+  Aws::StringStream ss;
+  if(m_ifMatchHasBeenSet)
+  {
+    ss << m_ifMatch;
+    headers.emplace("if-match",  ss.str());
+    ss.str("");
+  }
+
+  if(m_ifNoneMatchHasBeenSet)
+  {
+    ss << m_ifNoneMatch;
+    headers.emplace("if-none-match",  ss.str());
+    ss.str("");
+  }
+
+  if(m_matchForVersionTypeHasBeenSet && m_matchForVersionType != AssetModelVersionType::NOT_SET)
+  {
+    headers.emplace("match-for-version-type", AssetModelVersionTypeMapper::GetNameForAssetModelVersionType(m_matchForVersionType));
+  }
+
+  return headers;
+
 }
 
 

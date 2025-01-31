@@ -34,12 +34,14 @@ if(BUILD_ONLY)
             endforeach()
         endif()
 
-        get_dependencies_for_test(${TARGET} DEPENDENCY_LIST)
-        if(DEPENDENCY_LIST)
-            STRING(REPLACE "," ";" LIST_RESULT ${DEPENDENCY_LIST})
-            foreach(DEPENDENCY IN LISTS LIST_RESULT)
-                list(APPEND SDK_DEPENDENCY_BUILD_LIST ${DEPENDENCY})
-            endforeach()
+        if(ENABLE_TESTING)
+            get_dependencies_for_test(${TARGET} DEPENDENCY_LIST)
+            if(DEPENDENCY_LIST)
+                STRING(REPLACE "," ";" LIST_RESULT ${DEPENDENCY_LIST})
+                foreach(DEPENDENCY IN LISTS LIST_RESULT)
+                    list(APPEND SDK_DEPENDENCY_BUILD_LIST ${DEPENDENCY})
+                endforeach()
+            endif()
         endif()
     endforeach()
     LIST(REMOVE_DUPLICATES SDK_BUILD_LIST)
@@ -191,6 +193,11 @@ if(BUILD_ONLY)
     endforeach()
 endif()
 
+if (BUILD_BENCHMARKS)
+    LIST(APPEND SDK_BUILD_LIST "s3;s3-crt;monitoring;core")
+    add_subdirectory(tests/benchmark)
+endif ()
+
 LIST(REMOVE_DUPLICATES SDK_BUILD_LIST)
 LIST(REMOVE_DUPLICATES SDK_DEPENDENCY_BUILD_LIST)
 
@@ -211,23 +218,30 @@ function(add_sdks)
         unset(SDK_TARGET)
     endforeach()
 
+    if(ENABLE_SMOKE_TESTS)
+        file(GLOB subdirs LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/generated/smoke-tests/*")
+        foreach(subdir ${subdirs})
+            get_filename_component(folder_name ${subdir} NAME)
+            message(STATUS "smoke test component: ${folder_name}")
+            list(FIND SDK_BUILD_LIST ${folder_name} index)
+
+            # Check if the item was found (index >= 0)
+            if(${index} GREATER -1)
+                message(STATUS "${subdir} is in SDK_BUILD_LIST at index ${index}")
+            
+                if(EXISTS "${subdir}/CMakeLists.txt")
+                    add_subdirectory(${subdir})
+                endif()
+            else()
+                message(STATUS "${subdir} is NOT in SDK_BUILD_LIST")
+            endif()
+
+        endforeach()
+    endif()
+
     #testing
     if(ENABLE_TESTING)
         add_subdirectory(tests/testing-resources)
-
-        if(ENABLE_FUNCTIONAL_TESTING)
-            message(STATUS "Clearing existing directory for document-test to prepare for generation.")
-            file(REMOVE_RECURSE "${CMAKE_CURRENT_SOURCE_DIR}/aws-cpp-sdk-document-test")
-
-            # Generates SDK client based on aws-cpp-sdk-core-tests/resources/api-descriptions/document-test-2021-06-28.normal.json for functional testing.
-            execute_process(
-                COMMAND ${PYTHON3_CMD} tools/scripts/legacy/generate_sdks.py --pathToApiDefinitions aws-cpp-sdk-core-tests/resources/api-descriptions --serviceName document-test --apiVersion 2021-06-28 --outputLocation ./generated/ --prepareTool
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-            )
-            message(STATUS "Generated service: document-test, version: 2021-06-28")
-            add_subdirectory(aws-cpp-sdk-document-test)
-            add_definitions(-DENABLE_FUNCTIONAL_TESTING)
-        endif()
 
         # android-unified-tests includes all the tests in our code base, those tests related services may not be incldued in BUILD_ONLY,
         # means, those services will not be built, but will be tried to linked against with test targets, which will cause link time error.
@@ -278,10 +292,6 @@ function(add_sdks)
              unset(NO_HTTP_CLIENT_SKIP_INTEGRATION_TEST)
         endif()
     endif()
-
-    if (BUILD_BENCHMARKS)
-        add_subdirectory(tests/benchmark)
-    endif ()
 
     # the catch-all config needs to list all the targets in a dependency-sorted order
     include(dependencies)

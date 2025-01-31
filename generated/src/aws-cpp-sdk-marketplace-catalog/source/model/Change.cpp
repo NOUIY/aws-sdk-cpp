@@ -23,16 +23,13 @@ Change::Change() :
     m_entityHasBeenSet(false),
     m_entityTagsHasBeenSet(false),
     m_detailsHasBeenSet(false),
+    m_detailsDocumentHasBeenSet(false),
     m_changeNameHasBeenSet(false)
 {
 }
 
-Change::Change(JsonView jsonValue) : 
-    m_changeTypeHasBeenSet(false),
-    m_entityHasBeenSet(false),
-    m_entityTagsHasBeenSet(false),
-    m_detailsHasBeenSet(false),
-    m_changeNameHasBeenSet(false)
+Change::Change(JsonView jsonValue)
+  : Change()
 {
   *this = jsonValue;
 }
@@ -68,6 +65,13 @@ Change& Change::operator =(JsonView jsonValue)
     m_details = jsonValue.GetString("Details");
 
     m_detailsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("DetailsDocument"))
+  {
+    m_detailsDocument = jsonValue.GetObject("DetailsDocument");
+
+    m_detailsDocumentHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("ChangeName"))
@@ -111,6 +115,14 @@ JsonValue Change::Jsonize() const
   {
    payload.WithString("Details", m_details);
 
+  }
+
+  if(m_detailsDocumentHasBeenSet)
+  {
+    if(!m_detailsDocument.View().IsNull())
+    {
+       payload.WithObject("DetailsDocument", JsonValue(m_detailsDocument.View()));
+    }
   }
 
   if(m_changeNameHasBeenSet)

@@ -45,6 +45,7 @@
 #include <aws/auditmanager/model/GetDelegationsResult.h>
 #include <aws/auditmanager/model/GetEvidenceResult.h>
 #include <aws/auditmanager/model/GetEvidenceByEvidenceFolderResult.h>
+#include <aws/auditmanager/model/GetEvidenceFileUploadUrlResult.h>
 #include <aws/auditmanager/model/GetEvidenceFolderResult.h>
 #include <aws/auditmanager/model/GetEvidenceFoldersByAssessmentResult.h>
 #include <aws/auditmanager/model/GetEvidenceFoldersByAssessmentControlResult.h>
@@ -79,6 +80,19 @@
 #include <aws/auditmanager/model/UpdateControlResult.h>
 #include <aws/auditmanager/model/UpdateSettingsResult.h>
 #include <aws/auditmanager/model/ValidateAssessmentReportIntegrityResult.h>
+#include <aws/auditmanager/model/ListAssessmentsRequest.h>
+#include <aws/auditmanager/model/DeregisterAccountRequest.h>
+#include <aws/auditmanager/model/GetOrganizationAdminAccountRequest.h>
+#include <aws/auditmanager/model/ListControlDomainInsightsRequest.h>
+#include <aws/auditmanager/model/GetDelegationsRequest.h>
+#include <aws/auditmanager/model/UpdateSettingsRequest.h>
+#include <aws/auditmanager/model/ListNotificationsRequest.h>
+#include <aws/auditmanager/model/ListAssessmentReportsRequest.h>
+#include <aws/auditmanager/model/DeregisterOrganizationAdminAccountRequest.h>
+#include <aws/auditmanager/model/GetServicesInScopeRequest.h>
+#include <aws/auditmanager/model/GetInsightsRequest.h>
+#include <aws/auditmanager/model/RegisterAccountRequest.h>
+#include <aws/auditmanager/model/GetAccountStatusRequest.h>
 /* End of service model headers required in AuditManagerClient header */
 
 namespace Aws
@@ -112,7 +126,7 @@ namespace Aws
 
   namespace AuditManager
   {
-    using AuditManagerClientConfiguration = Aws::Client::GenericClientConfiguration<false>;
+    using AuditManagerClientConfiguration = Aws::Client::GenericClientConfiguration;
     using AuditManagerEndpointProviderBase = Aws::AuditManager::Endpoint::AuditManagerEndpointProviderBase;
     using AuditManagerEndpointProvider = Aws::AuditManager::Endpoint::AuditManagerEndpointProvider;
 
@@ -146,6 +160,7 @@ namespace Aws
       class GetDelegationsRequest;
       class GetEvidenceRequest;
       class GetEvidenceByEvidenceFolderRequest;
+      class GetEvidenceFileUploadUrlRequest;
       class GetEvidenceFolderRequest;
       class GetEvidenceFoldersByAssessmentRequest;
       class GetEvidenceFoldersByAssessmentControlRequest;
@@ -210,6 +225,7 @@ namespace Aws
       typedef Aws::Utils::Outcome<GetDelegationsResult, AuditManagerError> GetDelegationsOutcome;
       typedef Aws::Utils::Outcome<GetEvidenceResult, AuditManagerError> GetEvidenceOutcome;
       typedef Aws::Utils::Outcome<GetEvidenceByEvidenceFolderResult, AuditManagerError> GetEvidenceByEvidenceFolderOutcome;
+      typedef Aws::Utils::Outcome<GetEvidenceFileUploadUrlResult, AuditManagerError> GetEvidenceFileUploadUrlOutcome;
       typedef Aws::Utils::Outcome<GetEvidenceFolderResult, AuditManagerError> GetEvidenceFolderOutcome;
       typedef Aws::Utils::Outcome<GetEvidenceFoldersByAssessmentResult, AuditManagerError> GetEvidenceFoldersByAssessmentOutcome;
       typedef Aws::Utils::Outcome<GetEvidenceFoldersByAssessmentControlResult, AuditManagerError> GetEvidenceFoldersByAssessmentControlOutcome;
@@ -274,6 +290,7 @@ namespace Aws
       typedef std::future<GetDelegationsOutcome> GetDelegationsOutcomeCallable;
       typedef std::future<GetEvidenceOutcome> GetEvidenceOutcomeCallable;
       typedef std::future<GetEvidenceByEvidenceFolderOutcome> GetEvidenceByEvidenceFolderOutcomeCallable;
+      typedef std::future<GetEvidenceFileUploadUrlOutcome> GetEvidenceFileUploadUrlOutcomeCallable;
       typedef std::future<GetEvidenceFolderOutcome> GetEvidenceFolderOutcomeCallable;
       typedef std::future<GetEvidenceFoldersByAssessmentOutcome> GetEvidenceFoldersByAssessmentOutcomeCallable;
       typedef std::future<GetEvidenceFoldersByAssessmentControlOutcome> GetEvidenceFoldersByAssessmentControlOutcomeCallable;
@@ -341,6 +358,7 @@ namespace Aws
     typedef std::function<void(const AuditManagerClient*, const Model::GetDelegationsRequest&, const Model::GetDelegationsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetDelegationsResponseReceivedHandler;
     typedef std::function<void(const AuditManagerClient*, const Model::GetEvidenceRequest&, const Model::GetEvidenceOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetEvidenceResponseReceivedHandler;
     typedef std::function<void(const AuditManagerClient*, const Model::GetEvidenceByEvidenceFolderRequest&, const Model::GetEvidenceByEvidenceFolderOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetEvidenceByEvidenceFolderResponseReceivedHandler;
+    typedef std::function<void(const AuditManagerClient*, const Model::GetEvidenceFileUploadUrlRequest&, const Model::GetEvidenceFileUploadUrlOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetEvidenceFileUploadUrlResponseReceivedHandler;
     typedef std::function<void(const AuditManagerClient*, const Model::GetEvidenceFolderRequest&, const Model::GetEvidenceFolderOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetEvidenceFolderResponseReceivedHandler;
     typedef std::function<void(const AuditManagerClient*, const Model::GetEvidenceFoldersByAssessmentRequest&, const Model::GetEvidenceFoldersByAssessmentOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetEvidenceFoldersByAssessmentResponseReceivedHandler;
     typedef std::function<void(const AuditManagerClient*, const Model::GetEvidenceFoldersByAssessmentControlRequest&, const Model::GetEvidenceFoldersByAssessmentControlOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetEvidenceFoldersByAssessmentControlResponseReceivedHandler;

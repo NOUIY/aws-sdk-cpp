@@ -55,6 +55,7 @@ static const int DUPLICATE_REQUEST_HASH = HashingUtils::HashString("DuplicateReq
 static const int SERVICE_ALREADY_EXISTS_HASH = HashingUtils::HashString("ServiceAlreadyExists");
 static const int INVALID_INPUT_HASH = HashingUtils::HashString("InvalidInput");
 static const int INSTANCE_NOT_FOUND_HASH = HashingUtils::HashString("InstanceNotFound");
+static const int SERVICE_ATTRIBUTES_LIMIT_EXCEEDED_HASH = HashingUtils::HashString("ServiceAttributesLimitExceededException");
 static const int TOO_MANY_TAGS_HASH = HashingUtils::HashString("TooManyTagsException");
 static const int REQUEST_LIMIT_EXCEEDED_HASH = HashingUtils::HashString("RequestLimitExceeded");
 static const int SERVICE_NOT_FOUND_HASH = HashingUtils::HashString("ServiceNotFound");
@@ -68,55 +69,59 @@ AWSError<CoreErrors> GetErrorForName(const char* errorName)
 
   if (hashCode == NAMESPACE_ALREADY_EXISTS_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::NAMESPACE_ALREADY_EXISTS), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::NAMESPACE_ALREADY_EXISTS), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == NAMESPACE_NOT_FOUND_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::NAMESPACE_NOT_FOUND), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::NAMESPACE_NOT_FOUND), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == OPERATION_NOT_FOUND_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::OPERATION_NOT_FOUND), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::OPERATION_NOT_FOUND), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == RESOURCE_IN_USE_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::RESOURCE_IN_USE), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::RESOURCE_IN_USE), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == DUPLICATE_REQUEST_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::DUPLICATE_REQUEST), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::DUPLICATE_REQUEST), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == SERVICE_ALREADY_EXISTS_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::SERVICE_ALREADY_EXISTS), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::SERVICE_ALREADY_EXISTS), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == INVALID_INPUT_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::INVALID_INPUT), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::INVALID_INPUT), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == INSTANCE_NOT_FOUND_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::INSTANCE_NOT_FOUND), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::INSTANCE_NOT_FOUND), RetryableType::NOT_RETRYABLE);
+  }
+  else if (hashCode == SERVICE_ATTRIBUTES_LIMIT_EXCEEDED_HASH)
+  {
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::SERVICE_ATTRIBUTES_LIMIT_EXCEEDED), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == TOO_MANY_TAGS_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::TOO_MANY_TAGS), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::TOO_MANY_TAGS), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == REQUEST_LIMIT_EXCEEDED_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::REQUEST_LIMIT_EXCEEDED), true);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::REQUEST_LIMIT_EXCEEDED), RetryableType::RETRYABLE);
   }
   else if (hashCode == SERVICE_NOT_FOUND_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::SERVICE_NOT_FOUND), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::SERVICE_NOT_FOUND), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == RESOURCE_LIMIT_EXCEEDED_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::RESOURCE_LIMIT_EXCEEDED), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::RESOURCE_LIMIT_EXCEEDED), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == CUSTOM_HEALTH_NOT_FOUND_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::CUSTOM_HEALTH_NOT_FOUND), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(ServiceDiscoveryErrors::CUSTOM_HEALTH_NOT_FOUND), RetryableType::NOT_RETRYABLE);
   }
   return AWSError<CoreErrors>(CoreErrors::UNKNOWN, false);
 }

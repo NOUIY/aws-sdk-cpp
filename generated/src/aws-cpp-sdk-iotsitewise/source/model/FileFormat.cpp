@@ -19,12 +19,13 @@ namespace Model
 {
 
 FileFormat::FileFormat() : 
-    m_csvHasBeenSet(false)
+    m_csvHasBeenSet(false),
+    m_parquetHasBeenSet(false)
 {
 }
 
-FileFormat::FileFormat(JsonView jsonValue) : 
-    m_csvHasBeenSet(false)
+FileFormat::FileFormat(JsonView jsonValue)
+  : FileFormat()
 {
   *this = jsonValue;
 }
@@ -38,6 +39,13 @@ FileFormat& FileFormat::operator =(JsonView jsonValue)
     m_csvHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("parquet"))
+  {
+    m_parquet = jsonValue.GetObject("parquet");
+
+    m_parquetHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -48,6 +56,12 @@ JsonValue FileFormat::Jsonize() const
   if(m_csvHasBeenSet)
   {
    payload.WithObject("csv", m_csv.Jsonize());
+
+  }
+
+  if(m_parquetHasBeenSet)
+  {
+   payload.WithObject("parquet", m_parquet.Jsonize());
 
   }
 

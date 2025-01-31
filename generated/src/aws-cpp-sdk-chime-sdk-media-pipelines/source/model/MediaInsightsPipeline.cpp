@@ -28,21 +28,13 @@ MediaInsightsPipeline::MediaInsightsPipeline() :
     m_mediaInsightsRuntimeMetadataHasBeenSet(false),
     m_kinesisVideoStreamRecordingSourceRuntimeConfigurationHasBeenSet(false),
     m_s3RecordingSinkRuntimeConfigurationHasBeenSet(false),
-    m_createdTimestampHasBeenSet(false)
+    m_createdTimestampHasBeenSet(false),
+    m_elementStatusesHasBeenSet(false)
 {
 }
 
-MediaInsightsPipeline::MediaInsightsPipeline(JsonView jsonValue) : 
-    m_mediaPipelineIdHasBeenSet(false),
-    m_mediaPipelineArnHasBeenSet(false),
-    m_mediaInsightsPipelineConfigurationArnHasBeenSet(false),
-    m_status(MediaPipelineStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_kinesisVideoStreamSourceRuntimeConfigurationHasBeenSet(false),
-    m_mediaInsightsRuntimeMetadataHasBeenSet(false),
-    m_kinesisVideoStreamRecordingSourceRuntimeConfigurationHasBeenSet(false),
-    m_s3RecordingSinkRuntimeConfigurationHasBeenSet(false),
-    m_createdTimestampHasBeenSet(false)
+MediaInsightsPipeline::MediaInsightsPipeline(JsonView jsonValue)
+  : MediaInsightsPipeline()
 {
   *this = jsonValue;
 }
@@ -115,6 +107,16 @@ MediaInsightsPipeline& MediaInsightsPipeline::operator =(JsonView jsonValue)
     m_createdTimestampHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ElementStatuses"))
+  {
+    Aws::Utils::Array<JsonView> elementStatusesJsonList = jsonValue.GetArray("ElementStatuses");
+    for(unsigned elementStatusesIndex = 0; elementStatusesIndex < elementStatusesJsonList.GetLength(); ++elementStatusesIndex)
+    {
+      m_elementStatuses.push_back(elementStatusesJsonList[elementStatusesIndex].AsObject());
+    }
+    m_elementStatusesHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -177,6 +179,17 @@ JsonValue MediaInsightsPipeline::Jsonize() const
   if(m_createdTimestampHasBeenSet)
   {
    payload.WithString("CreatedTimestamp", m_createdTimestamp.ToGmtString(Aws::Utils::DateFormat::ISO_8601));
+  }
+
+  if(m_elementStatusesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> elementStatusesJsonList(m_elementStatuses.size());
+   for(unsigned elementStatusesIndex = 0; elementStatusesIndex < elementStatusesJsonList.GetLength(); ++elementStatusesIndex)
+   {
+     elementStatusesJsonList[elementStatusesIndex].AsObject(m_elementStatuses[elementStatusesIndex].Jsonize());
+   }
+   payload.WithArray("ElementStatuses", std::move(elementStatusesJsonList));
+
   }
 
   return payload;

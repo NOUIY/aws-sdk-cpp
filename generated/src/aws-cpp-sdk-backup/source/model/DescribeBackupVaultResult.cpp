@@ -18,6 +18,8 @@ using namespace Aws::Utils;
 using namespace Aws;
 
 DescribeBackupVaultResult::DescribeBackupVaultResult() : 
+    m_vaultType(VaultType::NOT_SET),
+    m_vaultState(VaultState::NOT_SET),
     m_numberOfRecoveryPoints(0),
     m_locked(false),
     m_minRetentionDays(0),
@@ -25,11 +27,8 @@ DescribeBackupVaultResult::DescribeBackupVaultResult() :
 {
 }
 
-DescribeBackupVaultResult::DescribeBackupVaultResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_numberOfRecoveryPoints(0),
-    m_locked(false),
-    m_minRetentionDays(0),
-    m_maxRetentionDays(0)
+DescribeBackupVaultResult::DescribeBackupVaultResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeBackupVaultResult()
 {
   *this = result;
 }
@@ -46,6 +45,18 @@ DescribeBackupVaultResult& DescribeBackupVaultResult::operator =(const Aws::Amaz
   if(jsonValue.ValueExists("BackupVaultArn"))
   {
     m_backupVaultArn = jsonValue.GetString("BackupVaultArn");
+
+  }
+
+  if(jsonValue.ValueExists("VaultType"))
+  {
+    m_vaultType = VaultTypeMapper::GetVaultTypeForName(jsonValue.GetString("VaultType"));
+
+  }
+
+  if(jsonValue.ValueExists("VaultState"))
+  {
+    m_vaultState = VaultStateMapper::GetVaultStateForName(jsonValue.GetString("VaultState"));
 
   }
 

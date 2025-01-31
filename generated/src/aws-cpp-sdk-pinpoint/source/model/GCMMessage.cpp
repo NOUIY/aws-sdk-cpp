@@ -27,6 +27,7 @@ GCMMessage::GCMMessage() :
     m_iconReferenceHasBeenSet(false),
     m_imageIconUrlHasBeenSet(false),
     m_imageUrlHasBeenSet(false),
+    m_preferredAuthenticationMethodHasBeenSet(false),
     m_priorityHasBeenSet(false),
     m_rawContentHasBeenSet(false),
     m_restrictedPackageNameHasBeenSet(false),
@@ -42,27 +43,8 @@ GCMMessage::GCMMessage() :
 {
 }
 
-GCMMessage::GCMMessage(JsonView jsonValue) : 
-    m_action(Action::NOT_SET),
-    m_actionHasBeenSet(false),
-    m_bodyHasBeenSet(false),
-    m_collapseKeyHasBeenSet(false),
-    m_dataHasBeenSet(false),
-    m_iconReferenceHasBeenSet(false),
-    m_imageIconUrlHasBeenSet(false),
-    m_imageUrlHasBeenSet(false),
-    m_priorityHasBeenSet(false),
-    m_rawContentHasBeenSet(false),
-    m_restrictedPackageNameHasBeenSet(false),
-    m_silentPush(false),
-    m_silentPushHasBeenSet(false),
-    m_smallImageIconUrlHasBeenSet(false),
-    m_soundHasBeenSet(false),
-    m_substitutionsHasBeenSet(false),
-    m_timeToLive(0),
-    m_timeToLiveHasBeenSet(false),
-    m_titleHasBeenSet(false),
-    m_urlHasBeenSet(false)
+GCMMessage::GCMMessage(JsonView jsonValue)
+  : GCMMessage()
 {
   *this = jsonValue;
 }
@@ -119,6 +101,13 @@ GCMMessage& GCMMessage::operator =(JsonView jsonValue)
     m_imageUrl = jsonValue.GetString("ImageUrl");
 
     m_imageUrlHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("PreferredAuthenticationMethod"))
+  {
+    m_preferredAuthenticationMethod = jsonValue.GetString("PreferredAuthenticationMethod");
+
+    m_preferredAuthenticationMethodHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("Priority"))
@@ -251,6 +240,12 @@ JsonValue GCMMessage::Jsonize() const
   if(m_imageUrlHasBeenSet)
   {
    payload.WithString("ImageUrl", m_imageUrl);
+
+  }
+
+  if(m_preferredAuthenticationMethodHasBeenSet)
+  {
+   payload.WithString("PreferredAuthenticationMethod", m_preferredAuthenticationMethod);
 
   }
 

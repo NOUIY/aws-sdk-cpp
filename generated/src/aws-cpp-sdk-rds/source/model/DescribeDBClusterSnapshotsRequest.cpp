@@ -21,7 +21,8 @@ DescribeDBClusterSnapshotsRequest::DescribeDBClusterSnapshotsRequest() :
     m_includeShared(false),
     m_includeSharedHasBeenSet(false),
     m_includePublic(false),
-    m_includePublicHasBeenSet(false)
+    m_includePublicHasBeenSet(false),
+    m_dbClusterResourceIdHasBeenSet(false)
 {
 }
 
@@ -46,11 +47,18 @@ Aws::String DescribeDBClusterSnapshotsRequest::SerializePayload() const
 
   if(m_filtersHasBeenSet)
   {
-    unsigned filtersCount = 1;
-    for(auto& item : m_filters)
+    if (m_filters.empty())
     {
-      item.OutputToStream(ss, "Filters.member.", filtersCount, "");
-      filtersCount++;
+      ss << "Filters=&";
+    }
+    else
+    {
+      unsigned filtersCount = 1;
+      for(auto& item : m_filters)
+      {
+        item.OutputToStream(ss, "Filters.Filter.", filtersCount, "");
+        filtersCount++;
+      }
     }
   }
 
@@ -72,6 +80,11 @@ Aws::String DescribeDBClusterSnapshotsRequest::SerializePayload() const
   if(m_includePublicHasBeenSet)
   {
     ss << "IncludePublic=" << std::boolalpha << m_includePublic << "&";
+  }
+
+  if(m_dbClusterResourceIdHasBeenSet)
+  {
+    ss << "DbClusterResourceId=" << StringUtils::URLEncode(m_dbClusterResourceId.c_str()) << "&";
   }
 
   ss << "Version=2014-10-31";

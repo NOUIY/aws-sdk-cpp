@@ -36,29 +36,13 @@ PhoneNumber::PhoneNumber() :
     m_createdTimestampHasBeenSet(false),
     m_updatedTimestampHasBeenSet(false),
     m_deletionTimestampHasBeenSet(false),
-    m_orderIdHasBeenSet(false)
+    m_orderIdHasBeenSet(false),
+    m_nameHasBeenSet(false)
 {
 }
 
-PhoneNumber::PhoneNumber(JsonView jsonValue) : 
-    m_phoneNumberIdHasBeenSet(false),
-    m_e164PhoneNumberHasBeenSet(false),
-    m_countryHasBeenSet(false),
-    m_type(PhoneNumberType::NOT_SET),
-    m_typeHasBeenSet(false),
-    m_productType(PhoneNumberProductType::NOT_SET),
-    m_productTypeHasBeenSet(false),
-    m_status(PhoneNumberStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_capabilitiesHasBeenSet(false),
-    m_associationsHasBeenSet(false),
-    m_callingNameHasBeenSet(false),
-    m_callingNameStatus(CallingNameStatus::NOT_SET),
-    m_callingNameStatusHasBeenSet(false),
-    m_createdTimestampHasBeenSet(false),
-    m_updatedTimestampHasBeenSet(false),
-    m_deletionTimestampHasBeenSet(false),
-    m_orderIdHasBeenSet(false)
+PhoneNumber::PhoneNumber(JsonView jsonValue)
+  : PhoneNumber()
 {
   *this = jsonValue;
 }
@@ -166,6 +150,13 @@ PhoneNumber& PhoneNumber::operator =(JsonView jsonValue)
     m_orderIdHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Name"))
+  {
+    m_name = jsonValue.GetString("Name");
+
+    m_nameHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -252,6 +243,12 @@ JsonValue PhoneNumber::Jsonize() const
   if(m_orderIdHasBeenSet)
   {
    payload.WithString("OrderId", m_orderId);
+
+  }
+
+  if(m_nameHasBeenSet)
+  {
+   payload.WithString("Name", m_name);
 
   }
 

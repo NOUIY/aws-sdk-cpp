@@ -44,37 +44,13 @@ JourneyResponse::JourneyResponse() :
     m_sendingSchedule(false),
     m_sendingScheduleHasBeenSet(false),
     m_openHoursHasBeenSet(false),
-    m_closedDaysHasBeenSet(false)
+    m_closedDaysHasBeenSet(false),
+    m_timezoneEstimationMethodsHasBeenSet(false)
 {
 }
 
-JourneyResponse::JourneyResponse(JsonView jsonValue) : 
-    m_activitiesHasBeenSet(false),
-    m_applicationIdHasBeenSet(false),
-    m_creationDateHasBeenSet(false),
-    m_idHasBeenSet(false),
-    m_lastModifiedDateHasBeenSet(false),
-    m_limitsHasBeenSet(false),
-    m_localTime(false),
-    m_localTimeHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_quietTimeHasBeenSet(false),
-    m_refreshFrequencyHasBeenSet(false),
-    m_scheduleHasBeenSet(false),
-    m_startActivityHasBeenSet(false),
-    m_startConditionHasBeenSet(false),
-    m_state(State::NOT_SET),
-    m_stateHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_waitForQuietTime(false),
-    m_waitForQuietTimeHasBeenSet(false),
-    m_refreshOnSegmentUpdate(false),
-    m_refreshOnSegmentUpdateHasBeenSet(false),
-    m_journeyChannelSettingsHasBeenSet(false),
-    m_sendingSchedule(false),
-    m_sendingScheduleHasBeenSet(false),
-    m_openHoursHasBeenSet(false),
-    m_closedDaysHasBeenSet(false)
+JourneyResponse::JourneyResponse(JsonView jsonValue)
+  : JourneyResponse()
 {
   *this = jsonValue;
 }
@@ -234,6 +210,16 @@ JourneyResponse& JourneyResponse::operator =(JsonView jsonValue)
     m_closedDaysHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("TimezoneEstimationMethods"))
+  {
+    Aws::Utils::Array<JsonView> timezoneEstimationMethodsJsonList = jsonValue.GetArray("TimezoneEstimationMethods");
+    for(unsigned timezoneEstimationMethodsIndex = 0; timezoneEstimationMethodsIndex < timezoneEstimationMethodsJsonList.GetLength(); ++timezoneEstimationMethodsIndex)
+    {
+      m_timezoneEstimationMethods.push_back(__TimezoneEstimationMethodsElementMapper::Get__TimezoneEstimationMethodsElementForName(timezoneEstimationMethodsJsonList[timezoneEstimationMethodsIndex].AsString()));
+    }
+    m_timezoneEstimationMethodsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -373,6 +359,17 @@ JsonValue JourneyResponse::Jsonize() const
   if(m_closedDaysHasBeenSet)
   {
    payload.WithObject("ClosedDays", m_closedDays.Jsonize());
+
+  }
+
+  if(m_timezoneEstimationMethodsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> timezoneEstimationMethodsJsonList(m_timezoneEstimationMethods.size());
+   for(unsigned timezoneEstimationMethodsIndex = 0; timezoneEstimationMethodsIndex < timezoneEstimationMethodsJsonList.GetLength(); ++timezoneEstimationMethodsIndex)
+   {
+     timezoneEstimationMethodsJsonList[timezoneEstimationMethodsIndex].AsString(__TimezoneEstimationMethodsElementMapper::GetNameFor__TimezoneEstimationMethodsElement(m_timezoneEstimationMethods[timezoneEstimationMethodsIndex]));
+   }
+   payload.WithArray("TimezoneEstimationMethods", std::move(timezoneEstimationMethodsJsonList));
 
   }
 

@@ -19,6 +19,8 @@ namespace Model
 {
 
 Namespace::Namespace() : 
+    m_adminPasswordSecretArnHasBeenSet(false),
+    m_adminPasswordSecretKmsKeyIdHasBeenSet(false),
     m_adminUsernameHasBeenSet(false),
     m_creationDateHasBeenSet(false),
     m_dbNameHasBeenSet(false),
@@ -34,25 +36,28 @@ Namespace::Namespace() :
 {
 }
 
-Namespace::Namespace(JsonView jsonValue) : 
-    m_adminUsernameHasBeenSet(false),
-    m_creationDateHasBeenSet(false),
-    m_dbNameHasBeenSet(false),
-    m_defaultIamRoleArnHasBeenSet(false),
-    m_iamRolesHasBeenSet(false),
-    m_kmsKeyIdHasBeenSet(false),
-    m_logExportsHasBeenSet(false),
-    m_namespaceArnHasBeenSet(false),
-    m_namespaceIdHasBeenSet(false),
-    m_namespaceNameHasBeenSet(false),
-    m_status(NamespaceStatus::NOT_SET),
-    m_statusHasBeenSet(false)
+Namespace::Namespace(JsonView jsonValue)
+  : Namespace()
 {
   *this = jsonValue;
 }
 
 Namespace& Namespace::operator =(JsonView jsonValue)
 {
+  if(jsonValue.ValueExists("adminPasswordSecretArn"))
+  {
+    m_adminPasswordSecretArn = jsonValue.GetString("adminPasswordSecretArn");
+
+    m_adminPasswordSecretArnHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("adminPasswordSecretKmsKeyId"))
+  {
+    m_adminPasswordSecretKmsKeyId = jsonValue.GetString("adminPasswordSecretKmsKeyId");
+
+    m_adminPasswordSecretKmsKeyIdHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("adminUsername"))
   {
     m_adminUsername = jsonValue.GetString("adminUsername");
@@ -142,6 +147,18 @@ Namespace& Namespace::operator =(JsonView jsonValue)
 JsonValue Namespace::Jsonize() const
 {
   JsonValue payload;
+
+  if(m_adminPasswordSecretArnHasBeenSet)
+  {
+   payload.WithString("adminPasswordSecretArn", m_adminPasswordSecretArn);
+
+  }
+
+  if(m_adminPasswordSecretKmsKeyIdHasBeenSet)
+  {
+   payload.WithString("adminPasswordSecretKmsKeyId", m_adminPasswordSecretKmsKeyId);
+
+  }
 
   if(m_adminUsernameHasBeenSet)
   {

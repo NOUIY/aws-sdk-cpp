@@ -26,19 +26,13 @@ CallAnalyticsJobSettings::CallAnalyticsJobSettings() :
     m_languageModelNameHasBeenSet(false),
     m_contentRedactionHasBeenSet(false),
     m_languageOptionsHasBeenSet(false),
-    m_languageIdSettingsHasBeenSet(false)
+    m_languageIdSettingsHasBeenSet(false),
+    m_summarizationHasBeenSet(false)
 {
 }
 
-CallAnalyticsJobSettings::CallAnalyticsJobSettings(JsonView jsonValue) : 
-    m_vocabularyNameHasBeenSet(false),
-    m_vocabularyFilterNameHasBeenSet(false),
-    m_vocabularyFilterMethod(VocabularyFilterMethod::NOT_SET),
-    m_vocabularyFilterMethodHasBeenSet(false),
-    m_languageModelNameHasBeenSet(false),
-    m_contentRedactionHasBeenSet(false),
-    m_languageOptionsHasBeenSet(false),
-    m_languageIdSettingsHasBeenSet(false)
+CallAnalyticsJobSettings::CallAnalyticsJobSettings(JsonView jsonValue)
+  : CallAnalyticsJobSettings()
 {
   *this = jsonValue;
 }
@@ -100,6 +94,13 @@ CallAnalyticsJobSettings& CallAnalyticsJobSettings::operator =(JsonView jsonValu
     m_languageIdSettingsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Summarization"))
+  {
+    m_summarization = jsonValue.GetObject("Summarization");
+
+    m_summarizationHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -155,6 +156,12 @@ JsonValue CallAnalyticsJobSettings::Jsonize() const
      languageIdSettingsJsonMap.WithObject(LanguageCodeMapper::GetNameForLanguageCode(languageIdSettingsItem.first), languageIdSettingsItem.second.Jsonize());
    }
    payload.WithObject("LanguageIdSettings", std::move(languageIdSettingsJsonMap));
+
+  }
+
+  if(m_summarizationHasBeenSet)
+  {
+   payload.WithObject("Summarization", m_summarization.Jsonize());
 
   }
 

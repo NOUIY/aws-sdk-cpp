@@ -49,7 +49,8 @@ protected:
 
 private:
     mutable CurlHandleContainer m_curlHandleContainer;
-    bool m_isUsingProxy;
+    bool m_isAllowSystemProxy = false;
+    bool m_isUsingProxy = false;
     Aws::String m_proxyUserName;
     Aws::String m_proxyPassword;
     Aws::String m_proxyScheme;
@@ -59,14 +60,25 @@ private:
     Aws::String m_proxySSLKeyPath;
     Aws::String m_proxySSLKeyType;
     Aws::String m_proxyKeyPasswd;
-    unsigned m_proxyPort;
+    unsigned m_proxyPort = 0;
     Aws::String m_nonProxyHosts;
-    bool m_verifySSL;
+    bool m_verifySSL = true;
     Aws::String m_caPath;
     Aws::String m_caFile;
-    bool m_disableExpectHeader;
-    bool m_allowRedirects;
+    Aws::String m_proxyCaPath;
+    Aws::String m_proxyCaFile;
+    bool m_disableExpectHeader = false;
+    bool m_allowRedirects = false;
+    bool m_enableHttpClientTrace = false;
+    Aws::Http::TransferLibPerformanceMode m_perfMode = TransferLibPerformanceMode::LOW_LATENCY;
     static std::atomic<bool> isInit;
+    std::shared_ptr<smithy::components::tracing::TelemetryProvider> m_telemetryProvider;
+
+#if LIBCURL_VERSION_NUM >= 0x072000 // 7.32.0
+    static int CurlProgressCallback(void *userdata, curl_off_t, curl_off_t, curl_off_t, curl_off_t);
+#else
+    static int CurlProgressCallback(void *userdata, double, double, double, double);
+#endif
 };
 
 using PlatformHttpClient = CurlHttpClient;

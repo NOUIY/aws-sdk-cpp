@@ -17,7 +17,9 @@ CreateConnectorRequest::CreateConnectorRequest() :
     m_as2ConfigHasBeenSet(false),
     m_accessRoleHasBeenSet(false),
     m_loggingRoleHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+    m_tagsHasBeenSet(false),
+    m_sftpConfigHasBeenSet(false),
+    m_securityPolicyNameHasBeenSet(false)
 {
 }
 
@@ -57,6 +59,18 @@ Aws::String CreateConnectorRequest::SerializePayload() const
      tagsJsonList[tagsIndex].AsObject(m_tags[tagsIndex].Jsonize());
    }
    payload.WithArray("Tags", std::move(tagsJsonList));
+
+  }
+
+  if(m_sftpConfigHasBeenSet)
+  {
+   payload.WithObject("SftpConfig", m_sftpConfig.Jsonize());
+
+  }
+
+  if(m_securityPolicyNameHasBeenSet)
+  {
+   payload.WithString("SecurityPolicyName", m_securityPolicyName);
 
   }
 

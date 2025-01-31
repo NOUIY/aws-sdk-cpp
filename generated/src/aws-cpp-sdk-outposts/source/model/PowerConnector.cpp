@@ -24,6 +24,7 @@ namespace Aws
         static const int IEC309_HASH = HashingUtils::HashString("IEC309");
         static const int AH530P7W_HASH = HashingUtils::HashString("AH530P7W");
         static const int AH532P6W_HASH = HashingUtils::HashString("AH532P6W");
+        static const int CS8365C_HASH = HashingUtils::HashString("CS8365C");
 
 
         PowerConnector GetPowerConnectorForName(const Aws::String& name)
@@ -45,6 +46,10 @@ namespace Aws
           {
             return PowerConnector::AH532P6W;
           }
+          else if (hashCode == CS8365C_HASH)
+          {
+            return PowerConnector::CS8365C;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -59,6 +64,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case PowerConnector::NOT_SET:
+            return {};
           case PowerConnector::L6_30P:
             return "L6_30P";
           case PowerConnector::IEC309:
@@ -67,6 +74,8 @@ namespace Aws
             return "AH530P7W";
           case PowerConnector::AH532P6W:
             return "AH532P6W";
+          case PowerConnector::CS8365C:
+            return "CS8365C";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

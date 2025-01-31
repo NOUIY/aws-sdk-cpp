@@ -19,58 +19,40 @@ namespace Model
 {
 
 Place::Place() : 
-    m_addressNumberHasBeenSet(false),
-    m_countryHasBeenSet(false),
+    m_labelHasBeenSet(false),
     m_geometryHasBeenSet(false),
+    m_addressNumberHasBeenSet(false),
+    m_streetHasBeenSet(false),
+    m_neighborhoodHasBeenSet(false),
+    m_municipalityHasBeenSet(false),
+    m_subRegionHasBeenSet(false),
+    m_regionHasBeenSet(false),
+    m_countryHasBeenSet(false),
+    m_postalCodeHasBeenSet(false),
     m_interpolated(false),
     m_interpolatedHasBeenSet(false),
-    m_labelHasBeenSet(false),
-    m_municipalityHasBeenSet(false),
-    m_neighborhoodHasBeenSet(false),
-    m_postalCodeHasBeenSet(false),
-    m_regionHasBeenSet(false),
-    m_streetHasBeenSet(false),
-    m_subRegionHasBeenSet(false),
     m_timeZoneHasBeenSet(false),
+    m_unitTypeHasBeenSet(false),
     m_unitNumberHasBeenSet(false),
-    m_unitTypeHasBeenSet(false)
+    m_categoriesHasBeenSet(false),
+    m_supplementalCategoriesHasBeenSet(false),
+    m_subMunicipalityHasBeenSet(false)
 {
 }
 
-Place::Place(JsonView jsonValue) : 
-    m_addressNumberHasBeenSet(false),
-    m_countryHasBeenSet(false),
-    m_geometryHasBeenSet(false),
-    m_interpolated(false),
-    m_interpolatedHasBeenSet(false),
-    m_labelHasBeenSet(false),
-    m_municipalityHasBeenSet(false),
-    m_neighborhoodHasBeenSet(false),
-    m_postalCodeHasBeenSet(false),
-    m_regionHasBeenSet(false),
-    m_streetHasBeenSet(false),
-    m_subRegionHasBeenSet(false),
-    m_timeZoneHasBeenSet(false),
-    m_unitNumberHasBeenSet(false),
-    m_unitTypeHasBeenSet(false)
+Place::Place(JsonView jsonValue)
+  : Place()
 {
   *this = jsonValue;
 }
 
 Place& Place::operator =(JsonView jsonValue)
 {
-  if(jsonValue.ValueExists("AddressNumber"))
+  if(jsonValue.ValueExists("Label"))
   {
-    m_addressNumber = jsonValue.GetString("AddressNumber");
+    m_label = jsonValue.GetString("Label");
 
-    m_addressNumberHasBeenSet = true;
-  }
-
-  if(jsonValue.ValueExists("Country"))
-  {
-    m_country = jsonValue.GetString("Country");
-
-    m_countryHasBeenSet = true;
+    m_labelHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("Geometry"))
@@ -80,46 +62,11 @@ Place& Place::operator =(JsonView jsonValue)
     m_geometryHasBeenSet = true;
   }
 
-  if(jsonValue.ValueExists("Interpolated"))
+  if(jsonValue.ValueExists("AddressNumber"))
   {
-    m_interpolated = jsonValue.GetBool("Interpolated");
+    m_addressNumber = jsonValue.GetString("AddressNumber");
 
-    m_interpolatedHasBeenSet = true;
-  }
-
-  if(jsonValue.ValueExists("Label"))
-  {
-    m_label = jsonValue.GetString("Label");
-
-    m_labelHasBeenSet = true;
-  }
-
-  if(jsonValue.ValueExists("Municipality"))
-  {
-    m_municipality = jsonValue.GetString("Municipality");
-
-    m_municipalityHasBeenSet = true;
-  }
-
-  if(jsonValue.ValueExists("Neighborhood"))
-  {
-    m_neighborhood = jsonValue.GetString("Neighborhood");
-
-    m_neighborhoodHasBeenSet = true;
-  }
-
-  if(jsonValue.ValueExists("PostalCode"))
-  {
-    m_postalCode = jsonValue.GetString("PostalCode");
-
-    m_postalCodeHasBeenSet = true;
-  }
-
-  if(jsonValue.ValueExists("Region"))
-  {
-    m_region = jsonValue.GetString("Region");
-
-    m_regionHasBeenSet = true;
+    m_addressNumberHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("Street"))
@@ -129,11 +76,53 @@ Place& Place::operator =(JsonView jsonValue)
     m_streetHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Neighborhood"))
+  {
+    m_neighborhood = jsonValue.GetString("Neighborhood");
+
+    m_neighborhoodHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Municipality"))
+  {
+    m_municipality = jsonValue.GetString("Municipality");
+
+    m_municipalityHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("SubRegion"))
   {
     m_subRegion = jsonValue.GetString("SubRegion");
 
     m_subRegionHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Region"))
+  {
+    m_region = jsonValue.GetString("Region");
+
+    m_regionHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Country"))
+  {
+    m_country = jsonValue.GetString("Country");
+
+    m_countryHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("PostalCode"))
+  {
+    m_postalCode = jsonValue.GetString("PostalCode");
+
+    m_postalCodeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Interpolated"))
+  {
+    m_interpolated = jsonValue.GetBool("Interpolated");
+
+    m_interpolatedHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("TimeZone"))
@@ -143,6 +132,13 @@ Place& Place::operator =(JsonView jsonValue)
     m_timeZoneHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("UnitType"))
+  {
+    m_unitType = jsonValue.GetString("UnitType");
+
+    m_unitTypeHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("UnitNumber"))
   {
     m_unitNumber = jsonValue.GetString("UnitNumber");
@@ -150,11 +146,31 @@ Place& Place::operator =(JsonView jsonValue)
     m_unitNumberHasBeenSet = true;
   }
 
-  if(jsonValue.ValueExists("UnitType"))
+  if(jsonValue.ValueExists("Categories"))
   {
-    m_unitType = jsonValue.GetString("UnitType");
+    Aws::Utils::Array<JsonView> categoriesJsonList = jsonValue.GetArray("Categories");
+    for(unsigned categoriesIndex = 0; categoriesIndex < categoriesJsonList.GetLength(); ++categoriesIndex)
+    {
+      m_categories.push_back(categoriesJsonList[categoriesIndex].AsString());
+    }
+    m_categoriesHasBeenSet = true;
+  }
 
-    m_unitTypeHasBeenSet = true;
+  if(jsonValue.ValueExists("SupplementalCategories"))
+  {
+    Aws::Utils::Array<JsonView> supplementalCategoriesJsonList = jsonValue.GetArray("SupplementalCategories");
+    for(unsigned supplementalCategoriesIndex = 0; supplementalCategoriesIndex < supplementalCategoriesJsonList.GetLength(); ++supplementalCategoriesIndex)
+    {
+      m_supplementalCategories.push_back(supplementalCategoriesJsonList[supplementalCategoriesIndex].AsString());
+    }
+    m_supplementalCategoriesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("SubMunicipality"))
+  {
+    m_subMunicipality = jsonValue.GetString("SubMunicipality");
+
+    m_subMunicipalityHasBeenSet = true;
   }
 
   return *this;
@@ -164,15 +180,9 @@ JsonValue Place::Jsonize() const
 {
   JsonValue payload;
 
-  if(m_addressNumberHasBeenSet)
+  if(m_labelHasBeenSet)
   {
-   payload.WithString("AddressNumber", m_addressNumber);
-
-  }
-
-  if(m_countryHasBeenSet)
-  {
-   payload.WithString("Country", m_country);
+   payload.WithString("Label", m_label);
 
   }
 
@@ -182,39 +192,9 @@ JsonValue Place::Jsonize() const
 
   }
 
-  if(m_interpolatedHasBeenSet)
+  if(m_addressNumberHasBeenSet)
   {
-   payload.WithBool("Interpolated", m_interpolated);
-
-  }
-
-  if(m_labelHasBeenSet)
-  {
-   payload.WithString("Label", m_label);
-
-  }
-
-  if(m_municipalityHasBeenSet)
-  {
-   payload.WithString("Municipality", m_municipality);
-
-  }
-
-  if(m_neighborhoodHasBeenSet)
-  {
-   payload.WithString("Neighborhood", m_neighborhood);
-
-  }
-
-  if(m_postalCodeHasBeenSet)
-  {
-   payload.WithString("PostalCode", m_postalCode);
-
-  }
-
-  if(m_regionHasBeenSet)
-  {
-   payload.WithString("Region", m_region);
+   payload.WithString("AddressNumber", m_addressNumber);
 
   }
 
@@ -224,9 +204,45 @@ JsonValue Place::Jsonize() const
 
   }
 
+  if(m_neighborhoodHasBeenSet)
+  {
+   payload.WithString("Neighborhood", m_neighborhood);
+
+  }
+
+  if(m_municipalityHasBeenSet)
+  {
+   payload.WithString("Municipality", m_municipality);
+
+  }
+
   if(m_subRegionHasBeenSet)
   {
    payload.WithString("SubRegion", m_subRegion);
+
+  }
+
+  if(m_regionHasBeenSet)
+  {
+   payload.WithString("Region", m_region);
+
+  }
+
+  if(m_countryHasBeenSet)
+  {
+   payload.WithString("Country", m_country);
+
+  }
+
+  if(m_postalCodeHasBeenSet)
+  {
+   payload.WithString("PostalCode", m_postalCode);
+
+  }
+
+  if(m_interpolatedHasBeenSet)
+  {
+   payload.WithBool("Interpolated", m_interpolated);
 
   }
 
@@ -236,15 +252,43 @@ JsonValue Place::Jsonize() const
 
   }
 
+  if(m_unitTypeHasBeenSet)
+  {
+   payload.WithString("UnitType", m_unitType);
+
+  }
+
   if(m_unitNumberHasBeenSet)
   {
    payload.WithString("UnitNumber", m_unitNumber);
 
   }
 
-  if(m_unitTypeHasBeenSet)
+  if(m_categoriesHasBeenSet)
   {
-   payload.WithString("UnitType", m_unitType);
+   Aws::Utils::Array<JsonValue> categoriesJsonList(m_categories.size());
+   for(unsigned categoriesIndex = 0; categoriesIndex < categoriesJsonList.GetLength(); ++categoriesIndex)
+   {
+     categoriesJsonList[categoriesIndex].AsString(m_categories[categoriesIndex]);
+   }
+   payload.WithArray("Categories", std::move(categoriesJsonList));
+
+  }
+
+  if(m_supplementalCategoriesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> supplementalCategoriesJsonList(m_supplementalCategories.size());
+   for(unsigned supplementalCategoriesIndex = 0; supplementalCategoriesIndex < supplementalCategoriesJsonList.GetLength(); ++supplementalCategoriesIndex)
+   {
+     supplementalCategoriesJsonList[supplementalCategoriesIndex].AsString(m_supplementalCategories[supplementalCategoriesIndex]);
+   }
+   payload.WithArray("SupplementalCategories", std::move(supplementalCategoriesJsonList));
+
+  }
+
+  if(m_subMunicipalityHasBeenSet)
+  {
+   payload.WithString("SubMunicipality", m_subMunicipality);
 
   }
 

@@ -9,8 +9,10 @@
 #include <aws/s3/S3Client.h>
 #include <aws/s3/model/PutObjectRequest.h>
 #include <aws/s3/model/GetObjectRequest.h>
+#include <aws/s3/model/HeadObjectRequest.h>
 #include <aws/s3/model/CreateMultipartUploadRequest.h>
 #include <aws/s3/model/UploadPartRequest.h>
+#include <aws/s3/model/CompletedPart.h>
 #include <aws/core/utils/threading/Executor.h>
 #include <aws/core/utils/memory/stl/AWSStreamFwd.h>
 #include <aws/core/utils/ResourceManager.h>
@@ -37,10 +39,14 @@ namespace Aws
          */
         struct TransferManagerConfiguration
         {
-            TransferManagerConfiguration(Aws::Utils::Threading::Executor* executor) : s3Client(nullptr), transferExecutor(executor), computeContentMD5(false), transferBufferMaxHeapSize(10 * MB5), bufferSize(MB5)
+            TransferManagerConfiguration(Aws::Utils::Threading::Executor* executor)
+              : s3Client(nullptr),
+                transferExecutor(executor),
+                computeContentMD5(false),
+                transferBufferMaxHeapSize(10 * MB5),
+                bufferSize(MB5)
             {
             }
-
             /**
              * S3 Client to use for transfers. You are responsible for setting this.
              */
@@ -50,13 +56,24 @@ namespace Aws
              * you are using for your client configuration. This executor will be used in a different context than the s3 client is used.
              * It is not a bug to use the same executor, but at least be aware that this is how the manager will be used.
              */
-            Aws::Utils::Threading::Executor* transferExecutor;
+            Aws::Utils::Threading::Executor* transferExecutor = nullptr;
+
             /**
-             * When true, TransferManager will calculate the MD5 digest of the content being uploaded.
-             * The digest is sent to S3 via an HTTP header enabling the service to perform integrity checks.
-             * This option is disabled by default.
+             * Threading Executor shared pointer.
+             * Created and owned by Transfer manager if no raw pointer `transferExecutor` is provided.
              */
-            bool computeContentMD5;
+            std::shared_ptr<Aws::Utils::Threading::Executor> spExecutor = nullptr;
+
+            /**
+             * Threading Executor factory method. Default creates a factory that creates DefaultExecutor
+             */
+            std::function<std::shared_ptr<Utils::Threading::Executor>()> executorCreateFn;
+
+            /**
+             * deprecated, will now automatically use CR64 checksums. use a different checksum by specifying the
+             * checksumAlgorithm parameter.
+             */
+            bool computeContentMD5 = false;
             /**
              * If you have special arguments you want passed to our put object calls, put them here. We will copy the template for each put object call
              * overriding the body stream, bucket, and key. If object metadata is passed through, we will override that as well.
@@ -67,6 +84,11 @@ namespace Aws
              * overriding the body stream, bucket, and key. If object metadata is passed through, we will override that as well.
              */
             Aws::S3::Model::GetObjectRequest getObjectTemplate;
+            /**
+             * If you have special arguments you want passed to our head object calls, put them here. We will copy the template for each call
+             * overriding the body stream, bucket, and key. If object metadata is passed through, we will override that as well.
+             */
+            Aws::S3::Model::HeadObjectRequest headObjectTemplate;
             /**
              * If you have special arguments you want passed to our create multipart upload calls, put them here. We will copy the template for each call
              * overriding the body stream, bucket, and key. If object metadata is passed through, we will override that as well.
@@ -82,12 +104,12 @@ namespace Aws
              * allocate for all transfer buffers. default is 50MB.
              * If you are using Aws::Utils::Threading::PooledThreadExecutor for transferExecutor, this size should be greater than bufferSize * poolSize.
              */
-            uint64_t transferBufferMaxHeapSize;
+            uint64_t transferBufferMaxHeapSize = 10 * MB5;
             /**
              * Defaults to 5MB. If you are uploading large files,  (larger than 50GB, this needs to be specified to be something larger than 5MB. Also keep in mind that you may need
              * to increase your max heap size if this is something you plan on increasing.
              */
-            uint64_t bufferSize;
+            uint64_t bufferSize = MB5;
 
             /**
              * Callback to receive progress updates for uploads.
@@ -116,6 +138,13 @@ namespace Aws
              * key/val of map entries will be key/val of query strings.
              */
             Aws::Map<Aws::String, Aws::String> customizedAccessLogTag;
+
+            /**
+             * Set the Checksum Algorithm for the transfer manager to use for multipart
+             * upload. Defaults to CRC32. Will be overwritten to use MD5 if computeContentMD5
+             * is set to true.
+             */
+            Aws::S3::Model::ChecksumAlgorithm checksumAlgorithm = S3::Model::ChecksumAlgorithm::CRC64NVME;
         };        
 
         /**
@@ -151,26 +180,28 @@ namespace Aws
             ~TransferManager();
 
             /**
-             * Uploads a file via filename, to bucketName/keyName in S3. contentType and metadata will be added to the object. If the object is larger than the configured bufferSize,
-             * then a multi-part upload will be performed.
+             * Uploads a file via filename, to bucketName/keyName in S3. contentType and metadata will be added to the object. If the object
+             * is larger than the configured bufferSize, then a multi-part upload will be performed. Keeps file to be unopened until doing
+             * actual upload, this is useful for uploading directories with many small files (avoid having too many open files, which may
+             * exceed system limit) If an optional checksum is given, the checksum will be sent as either the checksum header or the ful
+             * body checksum on the multipart upload.
              */
-            std::shared_ptr<TransferHandle> UploadFile(const Aws::String& fileName,
-                                                       const Aws::String& bucketName,
-                                                       const Aws::String& keyName,
-                                                       const Aws::String& contentType, 
+            std::shared_ptr<TransferHandle> UploadFile(const Aws::String& fileName, const Aws::String& bucketName,
+                                                       const Aws::String& keyName, const Aws::String& contentType,
                                                        const Aws::Map<Aws::String, Aws::String>& metadata,
-                                                       const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr);
+                                                       const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr,
+                                                       const Aws::String& precalculatedChecksum = {});
 
             /**
-             * Uploads the contents of stream, to bucketName/keyName in S3. contentType and metadata will be added to the object. If the object is larger than the configured bufferSize,
-             * then a multi-part upload will be performed.
+             * Uploads the contents of stream, to bucketName/keyName in S3. contentType and metadata will be added to the object. If the
+             * object is larger than the configured bufferSize, then a multi-part upload will be performed. If an optional checksum is
+             * given, the checksum will be sent as either the checksum header or the ful body checksum on the multipart upload.
              */
-            std::shared_ptr<TransferHandle> UploadFile(const std::shared_ptr<Aws::IOStream>& stream,
-                                                       const Aws::String& bucketName,
-                                                       const Aws::String& keyName,
-                                                       const Aws::String& contentType, 
+            std::shared_ptr<TransferHandle> UploadFile(const std::shared_ptr<Aws::IOStream>& stream, const Aws::String& bucketName,
+                                                       const Aws::String& keyName, const Aws::String& contentType,
                                                        const Aws::Map<Aws::String, Aws::String>& metadata,
-                                                       const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr);
+                                                       const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr,
+                                                       const Aws::String& precalculatedChecksum = {});
 
             /**
              * Downloads the contents of bucketName/keyName in S3 to the file specified by writeToFile. This will perform a GetObject operation.
@@ -240,7 +271,7 @@ namespace Aws
             * the file transfers. If an error occurs prior to the transfer being initiated (e.g. list objects fails, then an error will be passed through the errorCallback).
             *
             * directory: the absolute directory on disk to download to
-            * bucketName: the name of the S3 bucket to upload to
+            * bucketName: the name of the S3 bucket to download from
             * prefix: the prefix in the bucket to use as the root directory (e.g. download all objects at x prefix in S3 and then store them starting in directory with the prefix stripped out).
             */
             void DownloadToDirectory(const Aws::String& directory, const Aws::String& bucketName, const Aws::String& prefix = Aws::String());
@@ -255,43 +286,17 @@ namespace Aws
              * Creates TransferHandle.
              * fileName is not necessary if this handle will upload data from an IOStream
              */
-            std::shared_ptr<TransferHandle> CreateUploadFileHandle(Aws::IOStream* fileStream,
-                                                                   const Aws::String& bucketName,
-                                                                   const Aws::String& keyName,
-                                                                   const Aws::String& contentType, 
-                                                                   const Aws::Map<Aws::String,
-                                                                   Aws::String>& metadata,
+            std::shared_ptr<TransferHandle> CreateUploadFileHandle(Aws::IOStream* fileStream, const Aws::String& bucketName,
+                                                                   const Aws::String& keyName, const Aws::String& contentType,
+                                                                   const Aws::Map<Aws::String, Aws::String>& metadata,
                                                                    const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context,
-                                                                   const Aws::String& fileName = "");
+                                                                   const Aws::String& fileName = "", const Aws::String& checksum = "");
 
             /**
              * Submits the actual task to task scheduler
              */
             std::shared_ptr<TransferHandle> SubmitUpload(const std::shared_ptr<TransferHandle>& handle, const std::shared_ptr<Aws::IOStream>& fileStream = nullptr);
-
-            /**
-             * Uploads the contents of stream, to bucketName/keyName in S3. contentType and metadata will be added to the object. If the object is larger than the configured bufferSize,
-             * then a multi-part upload will be performed. 
-             */
-            std::shared_ptr<TransferHandle> DoUploadFile(const std::shared_ptr<Aws::IOStream>& fileStream,
-                                                         const Aws::String& bucketName,
-                                                         const Aws::String& keyName,
-                                                         const Aws::String& contentType,
-                                                         const Aws::Map<Aws::String, Aws::String>& metadata,
-                                                         const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context);
-
-            /**
-             * Uploads the contents of file, to bucketName/keyName in S3. contentType and metadata will be added to the object. If the object is larger than the configured bufferSize,
-             * then a multi-part upload will be performed.
-             * Keeps file to be unopened until doing actual upload, this is useful for uploading directories with many small files (avoid having too many open files, which may exceed system limit)
-             */
-            std::shared_ptr<TransferHandle> DoUploadFile(const Aws::String& fileName,
-                                                         const Aws::String& bucketName,
-                                                         const Aws::String& keyName,
-                                                         const Aws::String& contentType,
-                                                         const Aws::Map<Aws::String, Aws::String>& metadata,
-                                                         const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context);
-
+            
             bool MultipartUploadSupported(uint64_t length) const;
             bool InitializePartsForDownload(const std::shared_ptr<TransferHandle>& handle);
 
@@ -310,7 +315,6 @@ namespace Aws
                                          const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context);
 
             void WaitForCancellationAndAbortUpload(const std::shared_ptr<TransferHandle>& canceledHandle);
-
             void HandleUploadPartResponse(const Aws::S3::S3Client*, const Aws::S3::Model::UploadPartRequest&, const Aws::S3::Model::UploadPartOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&);
             void HandlePutObjectResponse(const Aws::S3::S3Client*, const Aws::S3::Model::PutObjectRequest&, const Aws::S3::Model::PutObjectOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&);
             void HandleListObjectsResponse(const Aws::S3::S3Client*, const Aws::S3::Model::ListObjectsV2Request&, const Aws::S3::Model::ListObjectsV2Outcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&);
@@ -327,6 +331,13 @@ namespace Aws
              */
             void AddTask(std::shared_ptr<TransferHandle> handle);
             void RemoveTask(const std::shared_ptr<TransferHandle>& handle);
+
+            /**
+             * Sets the checksum on a Completed Part based on the state, and the algorithm selected.
+             * @param state The state of the completed part as tracker by the transfer manager.
+             * @param part The completed part of the MPU.
+             */
+            void SetChecksumForAlgorithm(const std::shared_ptr<PartState>& state, Aws::S3::Model::CompletedPart& part);
 
             static Aws::String DetermineFilePath(const Aws::String& directory, const Aws::String& prefix, const Aws::String& keyName);
 

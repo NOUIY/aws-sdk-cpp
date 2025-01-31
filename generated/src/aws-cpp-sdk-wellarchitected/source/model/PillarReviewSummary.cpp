@@ -22,15 +22,13 @@ PillarReviewSummary::PillarReviewSummary() :
     m_pillarIdHasBeenSet(false),
     m_pillarNameHasBeenSet(false),
     m_notesHasBeenSet(false),
-    m_riskCountsHasBeenSet(false)
+    m_riskCountsHasBeenSet(false),
+    m_prioritizedRiskCountsHasBeenSet(false)
 {
 }
 
-PillarReviewSummary::PillarReviewSummary(JsonView jsonValue) : 
-    m_pillarIdHasBeenSet(false),
-    m_pillarNameHasBeenSet(false),
-    m_notesHasBeenSet(false),
-    m_riskCountsHasBeenSet(false)
+PillarReviewSummary::PillarReviewSummary(JsonView jsonValue)
+  : PillarReviewSummary()
 {
   *this = jsonValue;
 }
@@ -68,6 +66,16 @@ PillarReviewSummary& PillarReviewSummary::operator =(JsonView jsonValue)
     m_riskCountsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("PrioritizedRiskCounts"))
+  {
+    Aws::Map<Aws::String, JsonView> prioritizedRiskCountsJsonMap = jsonValue.GetObject("PrioritizedRiskCounts").GetAllObjects();
+    for(auto& prioritizedRiskCountsItem : prioritizedRiskCountsJsonMap)
+    {
+      m_prioritizedRiskCounts[RiskMapper::GetRiskForName(prioritizedRiskCountsItem.first)] = prioritizedRiskCountsItem.second.AsInteger();
+    }
+    m_prioritizedRiskCountsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -101,6 +109,17 @@ JsonValue PillarReviewSummary::Jsonize() const
      riskCountsJsonMap.WithInteger(RiskMapper::GetNameForRisk(riskCountsItem.first), riskCountsItem.second);
    }
    payload.WithObject("RiskCounts", std::move(riskCountsJsonMap));
+
+  }
+
+  if(m_prioritizedRiskCountsHasBeenSet)
+  {
+   JsonValue prioritizedRiskCountsJsonMap;
+   for(auto& prioritizedRiskCountsItem : m_prioritizedRiskCounts)
+   {
+     prioritizedRiskCountsJsonMap.WithInteger(RiskMapper::GetNameForRisk(prioritizedRiskCountsItem.first), prioritizedRiskCountsItem.second);
+   }
+   payload.WithObject("PrioritizedRiskCounts", std::move(prioritizedRiskCountsJsonMap));
 
   }
 

@@ -23,9 +23,8 @@ GetAnnotationImportJobResult::GetAnnotationImportJobResult() :
 {
 }
 
-GetAnnotationImportJobResult::GetAnnotationImportJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(JobStatus::NOT_SET),
-    m_runLeftNormalization(false)
+GetAnnotationImportJobResult::GetAnnotationImportJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetAnnotationImportJobResult()
 {
   *this = result;
 }
@@ -42,6 +41,12 @@ GetAnnotationImportJobResult& GetAnnotationImportJobResult::operator =(const Aws
   if(jsonValue.ValueExists("destinationName"))
   {
     m_destinationName = jsonValue.GetString("destinationName");
+
+  }
+
+  if(jsonValue.ValueExists("versionName"))
+  {
+    m_versionName = jsonValue.GetString("versionName");
 
   }
 

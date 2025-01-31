@@ -23,6 +23,8 @@ public class C2jOperation {
     private List<C2jError> errors;
     private String documentation;
     private Map<String, Map<String, EndpointParameterValue>> staticContextParams;
+    //operation context params
+    private Map<String, Map<String, String>> operationContextParams;
     private boolean deprecated;
     private boolean httpChecksumRequired;
     private C2jHttpChecksum httpChecksum;
@@ -32,5 +34,5 @@ public class C2jOperation {
     // For Cellular Request Routing
     private boolean endpointoperation; // endpointoperation trait
     private C2jEndpointDiscovery endpointdiscovery; //endpointdiscovery trait
-    private C2jRequestCompression requestCompression;
+    private C2jRequestCompression requestcompression;
 }

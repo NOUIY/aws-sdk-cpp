@@ -22,6 +22,7 @@ namespace Aws
 
         static const int ON_DEMAND_HASH = HashingUtils::HashString("ON_DEMAND");
         static const int SPOT_HASH = HashingUtils::HashString("SPOT");
+        static const int CAPACITY_BLOCK_HASH = HashingUtils::HashString("CAPACITY_BLOCK");
 
 
         CapacityTypes GetCapacityTypesForName(const Aws::String& name)
@@ -34,6 +35,10 @@ namespace Aws
           else if (hashCode == SPOT_HASH)
           {
             return CapacityTypes::SPOT;
+          }
+          else if (hashCode == CAPACITY_BLOCK_HASH)
+          {
+            return CapacityTypes::CAPACITY_BLOCK;
           }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
@@ -49,10 +54,14 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case CapacityTypes::NOT_SET:
+            return {};
           case CapacityTypes::ON_DEMAND:
             return "ON_DEMAND";
           case CapacityTypes::SPOT:
             return "SPOT";
+          case CapacityTypes::CAPACITY_BLOCK:
+            return "CAPACITY_BLOCK";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

@@ -35,28 +35,13 @@ WorkflowExecutionMetadata::WorkflowExecutionMetadata() :
     m_totalStepsSkipped(0),
     m_totalStepsSkippedHasBeenSet(false),
     m_startTimeHasBeenSet(false),
-    m_endTimeHasBeenSet(false)
+    m_endTimeHasBeenSet(false),
+    m_parallelGroupHasBeenSet(false)
 {
 }
 
-WorkflowExecutionMetadata::WorkflowExecutionMetadata(JsonView jsonValue) : 
-    m_workflowBuildVersionArnHasBeenSet(false),
-    m_workflowExecutionIdHasBeenSet(false),
-    m_type(WorkflowType::NOT_SET),
-    m_typeHasBeenSet(false),
-    m_status(WorkflowExecutionStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_messageHasBeenSet(false),
-    m_totalStepCount(0),
-    m_totalStepCountHasBeenSet(false),
-    m_totalStepsSucceeded(0),
-    m_totalStepsSucceededHasBeenSet(false),
-    m_totalStepsFailed(0),
-    m_totalStepsFailedHasBeenSet(false),
-    m_totalStepsSkipped(0),
-    m_totalStepsSkippedHasBeenSet(false),
-    m_startTimeHasBeenSet(false),
-    m_endTimeHasBeenSet(false)
+WorkflowExecutionMetadata::WorkflowExecutionMetadata(JsonView jsonValue)
+  : WorkflowExecutionMetadata()
 {
   *this = jsonValue;
 }
@@ -140,6 +125,13 @@ WorkflowExecutionMetadata& WorkflowExecutionMetadata::operator =(JsonView jsonVa
     m_endTimeHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("parallelGroup"))
+  {
+    m_parallelGroup = jsonValue.GetString("parallelGroup");
+
+    m_parallelGroupHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -208,6 +200,12 @@ JsonValue WorkflowExecutionMetadata::Jsonize() const
   if(m_endTimeHasBeenSet)
   {
    payload.WithString("endTime", m_endTime);
+
+  }
+
+  if(m_parallelGroupHasBeenSet)
+  {
+   payload.WithString("parallelGroup", m_parallelGroup);
 
   }
 

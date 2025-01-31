@@ -26,13 +26,8 @@ GetWorkflowExecutionResult::GetWorkflowExecutionResult() :
 {
 }
 
-GetWorkflowExecutionResult::GetWorkflowExecutionResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_type(WorkflowType::NOT_SET),
-    m_status(WorkflowExecutionStatus::NOT_SET),
-    m_totalStepCount(0),
-    m_totalStepsSucceeded(0),
-    m_totalStepsFailed(0),
-    m_totalStepsSkipped(0)
+GetWorkflowExecutionResult::GetWorkflowExecutionResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetWorkflowExecutionResult()
 {
   *this = result;
 }
@@ -115,6 +110,12 @@ GetWorkflowExecutionResult& GetWorkflowExecutionResult::operator =(const Aws::Am
   if(jsonValue.ValueExists("endTime"))
   {
     m_endTime = jsonValue.GetString("endTime");
+
+  }
+
+  if(jsonValue.ValueExists("parallelGroup"))
+  {
+    m_parallelGroup = jsonValue.GetString("parallelGroup");
 
   }
 

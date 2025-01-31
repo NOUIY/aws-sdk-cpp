@@ -22,15 +22,13 @@ ServerException::ServerException() :
     m_clusterNameHasBeenSet(false),
     m_nodegroupNameHasBeenSet(false),
     m_addonNameHasBeenSet(false),
+    m_subscriptionIdHasBeenSet(false),
     m_messageHasBeenSet(false)
 {
 }
 
-ServerException::ServerException(JsonView jsonValue) : 
-    m_clusterNameHasBeenSet(false),
-    m_nodegroupNameHasBeenSet(false),
-    m_addonNameHasBeenSet(false),
-    m_messageHasBeenSet(false)
+ServerException::ServerException(JsonView jsonValue)
+  : ServerException()
 {
   *this = jsonValue;
 }
@@ -56,6 +54,13 @@ ServerException& ServerException::operator =(JsonView jsonValue)
     m_addonName = jsonValue.GetString("addonName");
 
     m_addonNameHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("subscriptionId"))
+  {
+    m_subscriptionId = jsonValue.GetString("subscriptionId");
+
+    m_subscriptionIdHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("message"))
@@ -87,6 +92,12 @@ JsonValue ServerException::Jsonize() const
   if(m_addonNameHasBeenSet)
   {
    payload.WithString("addonName", m_addonName);
+
+  }
+
+  if(m_subscriptionIdHasBeenSet)
+  {
+   payload.WithString("subscriptionId", m_subscriptionId);
 
   }
 

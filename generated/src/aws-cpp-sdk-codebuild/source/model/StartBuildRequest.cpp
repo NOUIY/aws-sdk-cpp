@@ -54,7 +54,10 @@ StartBuildRequest::StartBuildRequest() :
     m_imagePullCredentialsTypeOverride(ImagePullCredentialsType::NOT_SET),
     m_imagePullCredentialsTypeOverrideHasBeenSet(false),
     m_debugSessionEnabled(false),
-    m_debugSessionEnabledHasBeenSet(false)
+    m_debugSessionEnabledHasBeenSet(false),
+    m_fleetOverrideHasBeenSet(false),
+    m_autoRetryLimitOverride(0),
+    m_autoRetryLimitOverrideHasBeenSet(false)
 {
 }
 
@@ -261,6 +264,18 @@ Aws::String StartBuildRequest::SerializePayload() const
   if(m_debugSessionEnabledHasBeenSet)
   {
    payload.WithBool("debugSessionEnabled", m_debugSessionEnabled);
+
+  }
+
+  if(m_fleetOverrideHasBeenSet)
+  {
+   payload.WithObject("fleetOverride", m_fleetOverride.Jsonize());
+
+  }
+
+  if(m_autoRetryLimitOverrideHasBeenSet)
+  {
+   payload.WithInteger("autoRetryLimitOverride", m_autoRetryLimitOverride);
 
   }
 

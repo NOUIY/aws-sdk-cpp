@@ -19,12 +19,13 @@ namespace Model
 {
 
 ConnectionProperties::ConnectionProperties() : 
-    m_endpointHasBeenSet(false)
+    m_endpointHasBeenSet(false),
+    m_crossClusterSearchHasBeenSet(false)
 {
 }
 
-ConnectionProperties::ConnectionProperties(JsonView jsonValue) : 
-    m_endpointHasBeenSet(false)
+ConnectionProperties::ConnectionProperties(JsonView jsonValue)
+  : ConnectionProperties()
 {
   *this = jsonValue;
 }
@@ -38,6 +39,13 @@ ConnectionProperties& ConnectionProperties::operator =(JsonView jsonValue)
     m_endpointHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("CrossClusterSearch"))
+  {
+    m_crossClusterSearch = jsonValue.GetObject("CrossClusterSearch");
+
+    m_crossClusterSearchHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -48,6 +56,12 @@ JsonValue ConnectionProperties::Jsonize() const
   if(m_endpointHasBeenSet)
   {
    payload.WithString("Endpoint", m_endpoint);
+
+  }
+
+  if(m_crossClusterSearchHasBeenSet)
+  {
+   payload.WithObject("CrossClusterSearch", m_crossClusterSearch.Jsonize());
 
   }
 

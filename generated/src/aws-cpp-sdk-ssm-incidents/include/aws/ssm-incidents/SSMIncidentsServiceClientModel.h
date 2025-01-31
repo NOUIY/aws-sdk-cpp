@@ -18,6 +18,7 @@
 /* End of generic header includes */
 
 /* Service model headers required in SSMIncidentsClient header */
+#include <aws/ssm-incidents/model/BatchGetIncidentFindingsResult.h>
 #include <aws/ssm-incidents/model/CreateReplicationSetResult.h>
 #include <aws/ssm-incidents/model/CreateResponsePlanResult.h>
 #include <aws/ssm-incidents/model/CreateTimelineEventResult.h>
@@ -31,6 +32,7 @@
 #include <aws/ssm-incidents/model/GetResourcePoliciesResult.h>
 #include <aws/ssm-incidents/model/GetResponsePlanResult.h>
 #include <aws/ssm-incidents/model/GetTimelineEventResult.h>
+#include <aws/ssm-incidents/model/ListIncidentFindingsResult.h>
 #include <aws/ssm-incidents/model/ListIncidentRecordsResult.h>
 #include <aws/ssm-incidents/model/ListRelatedItemsResult.h>
 #include <aws/ssm-incidents/model/ListReplicationSetsResult.h>
@@ -47,6 +49,9 @@
 #include <aws/ssm-incidents/model/UpdateReplicationSetResult.h>
 #include <aws/ssm-incidents/model/UpdateResponsePlanResult.h>
 #include <aws/ssm-incidents/model/UpdateTimelineEventResult.h>
+#include <aws/ssm-incidents/model/ListResponsePlansRequest.h>
+#include <aws/ssm-incidents/model/ListIncidentRecordsRequest.h>
+#include <aws/ssm-incidents/model/ListReplicationSetsRequest.h>
 /* End of service model headers required in SSMIncidentsClient header */
 
 namespace Aws
@@ -80,13 +85,14 @@ namespace Aws
 
   namespace SSMIncidents
   {
-    using SSMIncidentsClientConfiguration = Aws::Client::GenericClientConfiguration<false>;
+    using SSMIncidentsClientConfiguration = Aws::Client::GenericClientConfiguration;
     using SSMIncidentsEndpointProviderBase = Aws::SSMIncidents::Endpoint::SSMIncidentsEndpointProviderBase;
     using SSMIncidentsEndpointProvider = Aws::SSMIncidents::Endpoint::SSMIncidentsEndpointProvider;
 
     namespace Model
     {
       /* Service model forward declarations required in SSMIncidentsClient header */
+      class BatchGetIncidentFindingsRequest;
       class CreateReplicationSetRequest;
       class CreateResponsePlanRequest;
       class CreateTimelineEventRequest;
@@ -100,6 +106,7 @@ namespace Aws
       class GetResourcePoliciesRequest;
       class GetResponsePlanRequest;
       class GetTimelineEventRequest;
+      class ListIncidentFindingsRequest;
       class ListIncidentRecordsRequest;
       class ListRelatedItemsRequest;
       class ListReplicationSetsRequest;
@@ -119,6 +126,7 @@ namespace Aws
       /* End of service model forward declarations required in SSMIncidentsClient header */
 
       /* Service model Outcome class definitions */
+      typedef Aws::Utils::Outcome<BatchGetIncidentFindingsResult, SSMIncidentsError> BatchGetIncidentFindingsOutcome;
       typedef Aws::Utils::Outcome<CreateReplicationSetResult, SSMIncidentsError> CreateReplicationSetOutcome;
       typedef Aws::Utils::Outcome<CreateResponsePlanResult, SSMIncidentsError> CreateResponsePlanOutcome;
       typedef Aws::Utils::Outcome<CreateTimelineEventResult, SSMIncidentsError> CreateTimelineEventOutcome;
@@ -132,6 +140,7 @@ namespace Aws
       typedef Aws::Utils::Outcome<GetResourcePoliciesResult, SSMIncidentsError> GetResourcePoliciesOutcome;
       typedef Aws::Utils::Outcome<GetResponsePlanResult, SSMIncidentsError> GetResponsePlanOutcome;
       typedef Aws::Utils::Outcome<GetTimelineEventResult, SSMIncidentsError> GetTimelineEventOutcome;
+      typedef Aws::Utils::Outcome<ListIncidentFindingsResult, SSMIncidentsError> ListIncidentFindingsOutcome;
       typedef Aws::Utils::Outcome<ListIncidentRecordsResult, SSMIncidentsError> ListIncidentRecordsOutcome;
       typedef Aws::Utils::Outcome<ListRelatedItemsResult, SSMIncidentsError> ListRelatedItemsOutcome;
       typedef Aws::Utils::Outcome<ListReplicationSetsResult, SSMIncidentsError> ListReplicationSetsOutcome;
@@ -151,6 +160,7 @@ namespace Aws
       /* End of service model Outcome class definitions */
 
       /* Service model Outcome callable definitions */
+      typedef std::future<BatchGetIncidentFindingsOutcome> BatchGetIncidentFindingsOutcomeCallable;
       typedef std::future<CreateReplicationSetOutcome> CreateReplicationSetOutcomeCallable;
       typedef std::future<CreateResponsePlanOutcome> CreateResponsePlanOutcomeCallable;
       typedef std::future<CreateTimelineEventOutcome> CreateTimelineEventOutcomeCallable;
@@ -164,6 +174,7 @@ namespace Aws
       typedef std::future<GetResourcePoliciesOutcome> GetResourcePoliciesOutcomeCallable;
       typedef std::future<GetResponsePlanOutcome> GetResponsePlanOutcomeCallable;
       typedef std::future<GetTimelineEventOutcome> GetTimelineEventOutcomeCallable;
+      typedef std::future<ListIncidentFindingsOutcome> ListIncidentFindingsOutcomeCallable;
       typedef std::future<ListIncidentRecordsOutcome> ListIncidentRecordsOutcomeCallable;
       typedef std::future<ListRelatedItemsOutcome> ListRelatedItemsOutcomeCallable;
       typedef std::future<ListReplicationSetsOutcome> ListReplicationSetsOutcomeCallable;
@@ -186,6 +197,7 @@ namespace Aws
     class SSMIncidentsClient;
 
     /* Service model async handlers definitions */
+    typedef std::function<void(const SSMIncidentsClient*, const Model::BatchGetIncidentFindingsRequest&, const Model::BatchGetIncidentFindingsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > BatchGetIncidentFindingsResponseReceivedHandler;
     typedef std::function<void(const SSMIncidentsClient*, const Model::CreateReplicationSetRequest&, const Model::CreateReplicationSetOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CreateReplicationSetResponseReceivedHandler;
     typedef std::function<void(const SSMIncidentsClient*, const Model::CreateResponsePlanRequest&, const Model::CreateResponsePlanOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CreateResponsePlanResponseReceivedHandler;
     typedef std::function<void(const SSMIncidentsClient*, const Model::CreateTimelineEventRequest&, const Model::CreateTimelineEventOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CreateTimelineEventResponseReceivedHandler;
@@ -199,6 +211,7 @@ namespace Aws
     typedef std::function<void(const SSMIncidentsClient*, const Model::GetResourcePoliciesRequest&, const Model::GetResourcePoliciesOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetResourcePoliciesResponseReceivedHandler;
     typedef std::function<void(const SSMIncidentsClient*, const Model::GetResponsePlanRequest&, const Model::GetResponsePlanOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetResponsePlanResponseReceivedHandler;
     typedef std::function<void(const SSMIncidentsClient*, const Model::GetTimelineEventRequest&, const Model::GetTimelineEventOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetTimelineEventResponseReceivedHandler;
+    typedef std::function<void(const SSMIncidentsClient*, const Model::ListIncidentFindingsRequest&, const Model::ListIncidentFindingsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListIncidentFindingsResponseReceivedHandler;
     typedef std::function<void(const SSMIncidentsClient*, const Model::ListIncidentRecordsRequest&, const Model::ListIncidentRecordsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListIncidentRecordsResponseReceivedHandler;
     typedef std::function<void(const SSMIncidentsClient*, const Model::ListRelatedItemsRequest&, const Model::ListRelatedItemsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListRelatedItemsResponseReceivedHandler;
     typedef std::function<void(const SSMIncidentsClient*, const Model::ListReplicationSetsRequest&, const Model::ListReplicationSetsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListReplicationSetsResponseReceivedHandler;

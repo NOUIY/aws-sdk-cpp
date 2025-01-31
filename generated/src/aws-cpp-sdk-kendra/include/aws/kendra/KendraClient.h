@@ -6,24 +6,36 @@
 #pragma once
 #include <aws/kendra/Kendra_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/kendra/KendraServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/kendra/KendraErrorMarshaller.h>
 
 namespace Aws
 {
 namespace kendra
 {
+  AWS_KENDRA_API extern const char SERVICE_NAME[];
   /**
    * <p>Amazon Kendra is a service for indexing large document sets.</p>
    */
-  class AWS_KENDRA_API KendraClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<KendraClient>
+  class AWS_KENDRA_API KendraClient : smithy::client::AwsSmithyClientT<Aws::kendra::SERVICE_NAME,
+      Aws::kendra::KendraClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      KendraEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::KendraErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<KendraClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "kendra"; }
 
       typedef KendraClientConfiguration ClientConfigurationType;
       typedef KendraEndpointProvider EndpointProviderType;
@@ -33,14 +45,14 @@ namespace kendra
         * is not specified, it will be initialized to default values.
         */
         KendraClient(const Aws::kendra::KendraClientConfiguration& clientConfiguration = Aws::kendra::KendraClientConfiguration(),
-                     std::shared_ptr<KendraEndpointProviderBase> endpointProvider = Aws::MakeShared<KendraEndpointProvider>(ALLOCATION_TAG));
+                     std::shared_ptr<KendraEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         KendraClient(const Aws::Auth::AWSCredentials& credentials,
-                     std::shared_ptr<KendraEndpointProviderBase> endpointProvider = Aws::MakeShared<KendraEndpointProvider>(ALLOCATION_TAG),
+                     std::shared_ptr<KendraEndpointProviderBase> endpointProvider = nullptr,
                      const Aws::kendra::KendraClientConfiguration& clientConfiguration = Aws::kendra::KendraClientConfiguration());
 
        /**
@@ -48,7 +60,7 @@ namespace kendra
         * the default http client factory will be used
         */
         KendraClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                     std::shared_ptr<KendraEndpointProviderBase> endpointProvider = Aws::MakeShared<KendraEndpointProvider>(ALLOCATION_TAG),
+                     std::shared_ptr<KendraEndpointProviderBase> endpointProvider = nullptr,
                      const Aws::kendra::KendraClientConfiguration& clientConfiguration = Aws::kendra::KendraClientConfiguration());
 
 
@@ -141,7 +153,11 @@ namespace kendra
          * added with the <code>BatchPutDocument</code> API.</p> <p>The documents are
          * deleted asynchronously. You can see the progress of the deletion by using Amazon
          * Web Services CloudWatch. Any error messages related to the processing of the
-         * batch are sent to you CloudWatch log.</p><p><h3>See Also:</h3>   <a
+         * batch are sent to your Amazon Web Services CloudWatch log. You can also use the
+         * <code>BatchGetDocumentStatus</code> API to monitor the progress of deleting your
+         * documents.</p> <p>Deleting documents from an index using
+         * <code>BatchDeleteDocument</code> could take up to an hour or more, depending on
+         * the number of documents you want to delete.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/BatchDeleteDocument">AWS
          * API Reference</a></p>
          */
@@ -237,8 +253,10 @@ namespace kendra
          * to attach an access control list to the documents added to the index.</p> <p>The
          * documents are indexed asynchronously. You can see the progress of the batch
          * using Amazon Web Services CloudWatch. Any error messages related to processing
-         * the batch are sent to your Amazon Web Services CloudWatch log.</p> <p>For an
-         * example of ingesting inline documents using Python and Java SDKs, see <a
+         * the batch are sent to your Amazon Web Services CloudWatch log. You can also use
+         * the <code>BatchGetDocumentStatus</code> API to monitor the progress of indexing
+         * your documents.</p> <p>For an example of ingesting inline documents using Python
+         * and Java SDKs, see <a
          * href="https://docs.aws.amazon.com/kendra/latest/dg/in-adding-binary-doc.html">Adding
          * files directly to an index</a>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/BatchPutDocument">AWS
@@ -319,7 +337,12 @@ namespace kendra
          * <code>.metadata.json</code> with the <code>AccessControlConfigurationId</code>
          * and synchronize your data source. Amazon Kendra currently only supports access
          * control configuration for S3 data sources and documents indexed using the
-         * <code>BatchPutDocument</code> API.</p><p><h3>See Also:</h3>   <a
+         * <code>BatchPutDocument</code> API.</p>  <p>You can't configure access
+         * control using <code>CreateAccessControlConfiguration</code> for an Amazon Kendra
+         * Gen AI Enterprise Edition index. Amazon Kendra will return a
+         * <code>ValidationException</code> error for a
+         * <code>Gen_AI_ENTERPRISE_EDITION</code> index.</p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/CreateAccessControlConfiguration">AWS
          * API Reference</a></p>
          */
@@ -475,10 +498,11 @@ namespace kendra
          * determine if index creation has completed, check the <code>Status</code> field
          * returned from a call to <code>DescribeIndex</code>. The <code>Status</code>
          * field is set to <code>ACTIVE</code> when the index is ready to use.</p> <p>Once
-         * the index is active you can index your documents using the
-         * <code>BatchPutDocument</code> API or using one of the supported data
-         * sources.</p> <p>For an example of creating an index and data source using the
-         * Python SDK, see <a
+         * the index is active, you can index your documents using the
+         * <code>BatchPutDocument</code> API or using one of the supported <a
+         * href="https://docs.aws.amazon.com/kendra/latest/dg/data-sources.html">data
+         * sources</a>.</p> <p>For an example of creating an index and data source using
+         * the Python SDK, see <a
          * href="https://docs.aws.amazon.com/kendra/latest/dg/gs-python.html">Getting
          * started with Python SDK</a>. For an example of creating an index and data source
          * using the Java SDK, see <a
@@ -609,7 +633,10 @@ namespace kendra
          * <code>DescribeDataSource</code> API is set to <code>DELETING</code>. For more
          * information, see <a
          * href="https://docs.aws.amazon.com/kendra/latest/dg/delete-data-source.html">Deleting
-         * Data Sources</a>.</p><p><h3>See Also:</h3>   <a
+         * Data Sources</a>.</p> <p>Deleting an entire data source or re-syncing your index
+         * after deleting specific documents from a data source could take up to an hour or
+         * more, depending on the number of documents you want to delete.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/DeleteDataSource">AWS
          * API Reference</a></p>
          */
@@ -662,7 +689,7 @@ namespace kendra
         }
 
         /**
-         * <p>Removes an FAQ from an index.</p><p><h3>See Also:</h3>   <a
+         * <p>Removes a FAQ from an index.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/DeleteFaq">AWS
          * API Reference</a></p>
          */
@@ -687,10 +714,10 @@ namespace kendra
         }
 
         /**
-         * <p>Deletes an existing Amazon Kendra index. An exception is not thrown if the
-         * index is already being deleted. While the index is being deleted, the
-         * <code>Status</code> field returned by a call to the <code>DescribeIndex</code>
-         * API is set to <code>DELETING</code>.</p><p><h3>See Also:</h3>   <a
+         * <p>Deletes an Amazon Kendra index. An exception is not thrown if the index is
+         * already being deleted. While the index is being deleted, the <code>Status</code>
+         * field returned by a call to the <code>DescribeIndex</code> API is set to
+         * <code>DELETING</code>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/DeleteIndex">AWS
          * API Reference</a></p>
          */
@@ -715,11 +742,11 @@ namespace kendra
         }
 
         /**
-         * <p>Deletes a group so that all users and sub groups that belong to the group can
-         * no longer access documents only available to that group.</p> <p>For example,
-         * after deleting the group "Summer Interns", all interns who belonged to that
-         * group no longer see intern-only documents in their search results.</p> <p>If you
-         * want to delete or replace users or sub groups of a group, you need to use the
+         * <p>Deletes a group so that all users that belong to the group can no longer
+         * access documents only available to that group.</p> <p>For example, after
+         * deleting the group "Summer Interns", all interns who belonged to that group no
+         * longer see intern-only documents in their search results.</p> <p>If you want to
+         * delete or replace users or sub groups of a group, you need to use the
          * <code>PutPrincipalMapping</code> operation. For example, if a user in the group
          * "Engineering" leaves the engineering team and another user takes their place,
          * you provide an updated list of users or sub groups that belong to the
@@ -782,7 +809,7 @@ namespace kendra
         }
 
         /**
-         * <p>Deletes an existing Amazon Kendra thesaurus. </p><p><h3>See Also:</h3>   <a
+         * <p>Deletes an Amazon Kendra thesaurus. </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/DeleteThesaurus">AWS
          * API Reference</a></p>
          */
@@ -891,7 +918,7 @@ namespace kendra
         }
 
         /**
-         * <p>Gets information about an FAQ list.</p><p><h3>See Also:</h3>   <a
+         * <p>Gets information about a FAQ.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/DescribeFaq">AWS
          * API Reference</a></p>
          */
@@ -944,8 +971,7 @@ namespace kendra
         }
 
         /**
-         * <p>Gets information about an existing Amazon Kendra index.</p><p><h3>See
-         * Also:</h3>   <a
+         * <p>Gets information about an Amazon Kendra index.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/DescribeIndex">AWS
          * API Reference</a></p>
          */
@@ -1059,8 +1085,8 @@ namespace kendra
         }
 
         /**
-         * <p>Gets information about an existing Amazon Kendra thesaurus.</p><p><h3>See
-         * Also:</h3>   <a
+         * <p>Gets information about an Amazon Kendra thesaurus.</p><p><h3>See Also:</h3>  
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/DescribeThesaurus">AWS
          * API Reference</a></p>
          */
@@ -1364,9 +1390,9 @@ namespace kendra
         }
 
         /**
-         * <p>Gets a list of FAQ lists associated with an index.</p><p><h3>See Also:</h3>  
-         * <a href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/ListFaqs">AWS
-         * API Reference</a></p>
+         * <p>Gets a list of FAQs associated with an index.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/ListFaqs">AWS API
+         * Reference</a></p>
          */
         virtual Model::ListFaqsOutcome ListFaqs(const Model::ListFaqsRequest& request) const;
 
@@ -1450,13 +1476,13 @@ namespace kendra
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/ListIndices">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListIndicesOutcome ListIndices(const Model::ListIndicesRequest& request) const;
+        virtual Model::ListIndicesOutcome ListIndices(const Model::ListIndicesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListIndices that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListIndicesRequestT = Model::ListIndicesRequest>
-        Model::ListIndicesOutcomeCallable ListIndicesCallable(const ListIndicesRequestT& request) const
+        Model::ListIndicesOutcomeCallable ListIndicesCallable(const ListIndicesRequestT& request = {}) const
         {
             return SubmitCallable(&KendraClient::ListIndices, request);
         }
@@ -1465,7 +1491,7 @@ namespace kendra
          * An Async wrapper for ListIndices that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListIndicesRequestT = Model::ListIndicesRequest>
-        void ListIndicesAsync(const ListIndicesRequestT& request, const ListIndicesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListIndicesAsync(const ListIndicesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListIndicesRequestT& request = {}) const
         {
             return SubmitAsync(&KendraClient::ListIndices, request, handler, context);
         }
@@ -1501,8 +1527,9 @@ namespace kendra
         }
 
         /**
-         * <p>Gets a list of tags associated with a specified resource. Indexes, FAQs, and
-         * data sources can have tags associated with them.</p><p><h3>See Also:</h3>   <a
+         * <p>Gets a list of tags associated with a resource. Indexes, FAQs, data sources,
+         * and other resources can have tags associated with them.</p><p><h3>See Also:</h3>
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/ListTagsForResource">AWS
          * API Reference</a></p>
          */
@@ -1589,17 +1616,34 @@ namespace kendra
         }
 
         /**
-         * <p>Searches an active index. Use this API to search your documents using query.
-         * The <code>Query</code> API enables to do faceted search and to filter results
-         * based on document attributes.</p> <p>It also enables you to provide user context
-         * that Amazon Kendra uses to enforce document access control in the search
-         * results.</p> <p>Amazon Kendra searches your index for text content and question
-         * and answer (FAQ) content. By default the response contains three types of
-         * results.</p> <ul> <li> <p>Relevant passages</p> </li> <li> <p>Matching FAQs</p>
-         * </li> <li> <p>Relevant documents</p> </li> </ul> <p>You can specify that the
-         * query return only one type of result using the
-         * <code>QueryResultTypeFilter</code> parameter.</p> <p>Each query returns the 100
-         * most relevant results. </p><p><h3>See Also:</h3>   <a
+         * <p>Searches an index given an input query.</p>  <p>If you are working with
+         * large language models (LLMs) or implementing retrieval augmented generation
+         * (RAG) systems, you can use Amazon Kendra's <a
+         * href="https://docs.aws.amazon.com/kendra/latest/APIReference/API_Retrieve.html">Retrieve</a>
+         * API, which can return longer semantically relevant passages. We recommend using
+         * the <code>Retrieve</code> API instead of filing a service limit increase to
+         * increase the <code>Query</code> API document excerpt length.</p>  <p>You
+         * can configure boosting or relevance tuning at the query level to override
+         * boosting at the index level, filter based on document fields/attributes and
+         * faceted search, and filter based on the user or their group access to documents.
+         * You can also include certain fields in the response that might provide useful
+         * additional information.</p> <p>A query response contains three types of
+         * results.</p> <ul> <li> <p>Relevant suggested answers. The answers can be either
+         * a text excerpt or table excerpt. The answer can be highlighted in the
+         * excerpt.</p> </li> <li> <p>Matching FAQs or questions-answer from your FAQ
+         * file.</p> </li> <li> <p>Relevant documents. This result type includes an excerpt
+         * of the document with the document title. The searched terms can be highlighted
+         * in the excerpt.</p> </li> </ul> <p>You can specify that the query return only
+         * one type of result using the <code>QueryResultTypeFilter</code> parameter. Each
+         * query returns the 100 most relevant results. If you filter result type to only
+         * question-answers, a maximum of four results are returned. If you filter result
+         * type to only answers, a maximum of three results are returned.</p> 
+         * <p>If you're using an Amazon Kendra Gen AI Enterprise Edition index, you can
+         * only use <code>ATTRIBUTE_FILTER</code> to filter search results by user context.
+         * If you're using an Amazon Kendra Gen AI Enterprise Edition index and you try to
+         * use <code>USER_TOKEN</code> to configure user context policy, Amazon Kendra
+         * returns a <code>ValidationException</code> error.</p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/Query">AWS API
          * Reference</a></p>
          */
@@ -1624,9 +1668,68 @@ namespace kendra
         }
 
         /**
+         * <p>Retrieves relevant passages or text excerpts given an input query.</p>
+         * <p>This API is similar to the <a
+         * href="https://docs.aws.amazon.com/kendra/latest/APIReference/API_Query.html">Query</a>
+         * API. However, by default, the <code>Query</code> API only returns excerpt
+         * passages of up to 100 token words. With the <code>Retrieve</code> API, you can
+         * retrieve longer passages of up to 200 token words and up to 100 semantically
+         * relevant passages. This doesn't include question-answer or FAQ type responses
+         * from your index. The passages are text excerpts that can be semantically
+         * extracted from multiple documents and multiple parts of the same document. If in
+         * extreme cases your documents produce zero passages using the
+         * <code>Retrieve</code> API, you can alternatively use the <code>Query</code> API
+         * and its types of responses.</p> <p>You can also do the following:</p> <ul> <li>
+         * <p>Override boosting at the index level</p> </li> <li> <p>Filter based on
+         * document fields or attributes</p> </li> <li> <p>Filter based on the user or
+         * their group access to documents</p> </li> <li> <p>View the confidence score
+         * bucket for a retrieved passage result. The confidence bucket provides a relative
+         * ranking that indicates how confident Amazon Kendra is that the response is
+         * relevant to the query.</p>  <p>Confidence score buckets are currently
+         * available only for English.</p>  </li> </ul> <p>You can also include
+         * certain fields in the response that might provide useful additional
+         * information.</p> <p>The <code>Retrieve</code> API shares the number of <a
+         * href="https://docs.aws.amazon.com/kendra/latest/APIReference/API_CapacityUnitsConfiguration.html">query
+         * capacity units</a> that you set for your index. For more information on what's
+         * included in a single capacity unit and the default base capacity for an index,
+         * see <a
+         * href="https://docs.aws.amazon.com/kendra/latest/dg/adjusting-capacity.html">Adjusting
+         * capacity</a>.</p>  <p>If you're using an Amazon Kendra Gen AI
+         * Enterprise Edition index, you can only use <code>ATTRIBUTE_FILTER</code> to
+         * filter search results by user context. If you're using an Amazon Kendra Gen AI
+         * Enterprise Edition index and you try to use <code>USER_TOKEN</code> to configure
+         * user context policy, Amazon Kendra returns a <code>ValidationException</code>
+         * error.</p> <p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/Retrieve">AWS API
+         * Reference</a></p>
+         */
+        virtual Model::RetrieveOutcome Retrieve(const Model::RetrieveRequest& request) const;
+
+        /**
+         * A Callable wrapper for Retrieve that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename RetrieveRequestT = Model::RetrieveRequest>
+        Model::RetrieveOutcomeCallable RetrieveCallable(const RetrieveRequestT& request) const
+        {
+            return SubmitCallable(&KendraClient::Retrieve, request);
+        }
+
+        /**
+         * An Async wrapper for Retrieve that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename RetrieveRequestT = Model::RetrieveRequest>
+        void RetrieveAsync(const RetrieveRequestT& request, const RetrieveResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&KendraClient::Retrieve, request, handler, context);
+        }
+
+        /**
          * <p>Starts a synchronization job for a data source connector. If a
          * synchronization job is already in progress, Amazon Kendra returns a
-         * <code>ResourceInUseException</code> exception.</p><p><h3>See Also:</h3>   <a
+         * <code>ResourceInUseException</code> exception.</p> <p>Re-syncing your data
+         * source with your index after modifying, adding, or deleting documents from your
+         * data source respository could take up to an hour or more, depending on the
+         * number of documents to sync.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/StartDataSourceSyncJob">AWS
          * API Reference</a></p>
          */
@@ -1704,8 +1807,8 @@ namespace kendra
         }
 
         /**
-         * <p>Adds the specified tag to the specified index, FAQ, or data source resource.
-         * If the tag already exists, the existing value is replaced with the new
+         * <p>Adds the specified tag to the specified index, FAQ, data source, or other
+         * resource. If the tag already exists, the existing value is replaced with the new
          * value.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/TagResource">AWS
          * API Reference</a></p>
@@ -1731,8 +1834,8 @@ namespace kendra
         }
 
         /**
-         * <p>Removes a tag from an index, FAQ, or a data source.</p><p><h3>See Also:</h3> 
-         * <a
+         * <p>Removes a tag from an index, FAQ, data source, or other
+         * resource.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/UntagResource">AWS
          * API Reference</a></p>
          */
@@ -1778,7 +1881,12 @@ namespace kendra
          * source to apply the <code>AccessControlConfigurationId</code> in the
          * <code>.metadata.json</code> file. Amazon Kendra currently only supports access
          * control configuration for S3 data sources and documents indexed using the
-         * <code>BatchPutDocument</code> API.</p><p><h3>See Also:</h3>   <a
+         * <code>BatchPutDocument</code> API.</p>  <p>You can't configure access
+         * control using <code>CreateAccessControlConfiguration</code> for an Amazon Kendra
+         * Gen AI Enterprise Edition index. Amazon Kendra will return a
+         * <code>ValidationException</code> error for a
+         * <code>Gen_AI_ENTERPRISE_EDITION</code> index.</p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/UpdateAccessControlConfiguration">AWS
          * API Reference</a></p>
          */
@@ -1803,8 +1911,7 @@ namespace kendra
         }
 
         /**
-         * <p>Updates an existing Amazon Kendra data source connector.</p><p><h3>See
-         * Also:</h3>   <a
+         * <p>Updates an Amazon Kendra data source connector.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/UpdateDataSource">AWS
          * API Reference</a></p>
          */
@@ -1886,7 +1993,7 @@ namespace kendra
         }
 
         /**
-         * <p>Updates an existing Amazon Kendra index.</p><p><h3>See Also:</h3>   <a
+         * <p>Updates an Amazon Kendra index.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/kendra-2019-02-03/UpdateIndex">AWS
          * API Reference</a></p>
          */
@@ -2007,11 +2114,7 @@ namespace kendra
       std::shared_ptr<KendraEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<KendraClient>;
-      void init(const KendraClientConfiguration& clientConfiguration);
 
-      KendraClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<KendraEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace kendra

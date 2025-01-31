@@ -38,31 +38,21 @@ AmazonTranscribeProcessorConfiguration::AmazonTranscribeProcessorConfiguration()
     m_piiEntityTypesHasBeenSet(false),
     m_languageModelNameHasBeenSet(false),
     m_filterPartialResults(false),
-    m_filterPartialResultsHasBeenSet(false)
+    m_filterPartialResultsHasBeenSet(false),
+    m_identifyLanguage(false),
+    m_identifyLanguageHasBeenSet(false),
+    m_identifyMultipleLanguages(false),
+    m_identifyMultipleLanguagesHasBeenSet(false),
+    m_languageOptionsHasBeenSet(false),
+    m_preferredLanguage(CallAnalyticsLanguageCode::NOT_SET),
+    m_preferredLanguageHasBeenSet(false),
+    m_vocabularyNamesHasBeenSet(false),
+    m_vocabularyFilterNamesHasBeenSet(false)
 {
 }
 
-AmazonTranscribeProcessorConfiguration::AmazonTranscribeProcessorConfiguration(JsonView jsonValue) : 
-    m_languageCode(CallAnalyticsLanguageCode::NOT_SET),
-    m_languageCodeHasBeenSet(false),
-    m_vocabularyNameHasBeenSet(false),
-    m_vocabularyFilterNameHasBeenSet(false),
-    m_vocabularyFilterMethod(VocabularyFilterMethod::NOT_SET),
-    m_vocabularyFilterMethodHasBeenSet(false),
-    m_showSpeakerLabel(false),
-    m_showSpeakerLabelHasBeenSet(false),
-    m_enablePartialResultsStabilization(false),
-    m_enablePartialResultsStabilizationHasBeenSet(false),
-    m_partialResultsStability(PartialResultsStability::NOT_SET),
-    m_partialResultsStabilityHasBeenSet(false),
-    m_contentIdentificationType(ContentType::NOT_SET),
-    m_contentIdentificationTypeHasBeenSet(false),
-    m_contentRedactionType(ContentType::NOT_SET),
-    m_contentRedactionTypeHasBeenSet(false),
-    m_piiEntityTypesHasBeenSet(false),
-    m_languageModelNameHasBeenSet(false),
-    m_filterPartialResults(false),
-    m_filterPartialResultsHasBeenSet(false)
+AmazonTranscribeProcessorConfiguration::AmazonTranscribeProcessorConfiguration(JsonView jsonValue)
+  : AmazonTranscribeProcessorConfiguration()
 {
   *this = jsonValue;
 }
@@ -153,6 +143,48 @@ AmazonTranscribeProcessorConfiguration& AmazonTranscribeProcessorConfiguration::
     m_filterPartialResultsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("IdentifyLanguage"))
+  {
+    m_identifyLanguage = jsonValue.GetBool("IdentifyLanguage");
+
+    m_identifyLanguageHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("IdentifyMultipleLanguages"))
+  {
+    m_identifyMultipleLanguages = jsonValue.GetBool("IdentifyMultipleLanguages");
+
+    m_identifyMultipleLanguagesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("LanguageOptions"))
+  {
+    m_languageOptions = jsonValue.GetString("LanguageOptions");
+
+    m_languageOptionsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("PreferredLanguage"))
+  {
+    m_preferredLanguage = CallAnalyticsLanguageCodeMapper::GetCallAnalyticsLanguageCodeForName(jsonValue.GetString("PreferredLanguage"));
+
+    m_preferredLanguageHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("VocabularyNames"))
+  {
+    m_vocabularyNames = jsonValue.GetString("VocabularyNames");
+
+    m_vocabularyNamesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("VocabularyFilterNames"))
+  {
+    m_vocabularyFilterNames = jsonValue.GetString("VocabularyFilterNames");
+
+    m_vocabularyFilterNamesHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -224,6 +256,41 @@ JsonValue AmazonTranscribeProcessorConfiguration::Jsonize() const
   if(m_filterPartialResultsHasBeenSet)
   {
    payload.WithBool("FilterPartialResults", m_filterPartialResults);
+
+  }
+
+  if(m_identifyLanguageHasBeenSet)
+  {
+   payload.WithBool("IdentifyLanguage", m_identifyLanguage);
+
+  }
+
+  if(m_identifyMultipleLanguagesHasBeenSet)
+  {
+   payload.WithBool("IdentifyMultipleLanguages", m_identifyMultipleLanguages);
+
+  }
+
+  if(m_languageOptionsHasBeenSet)
+  {
+   payload.WithString("LanguageOptions", m_languageOptions);
+
+  }
+
+  if(m_preferredLanguageHasBeenSet)
+  {
+   payload.WithString("PreferredLanguage", CallAnalyticsLanguageCodeMapper::GetNameForCallAnalyticsLanguageCode(m_preferredLanguage));
+  }
+
+  if(m_vocabularyNamesHasBeenSet)
+  {
+   payload.WithString("VocabularyNames", m_vocabularyNames);
+
+  }
+
+  if(m_vocabularyFilterNamesHasBeenSet)
+  {
+   payload.WithString("VocabularyFilterNames", m_vocabularyFilterNames);
 
   }
 

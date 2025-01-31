@@ -23,16 +23,14 @@ SmallMultiplesOptions::SmallMultiplesOptions() :
     m_maxVisibleRowsHasBeenSet(false),
     m_maxVisibleColumns(0),
     m_maxVisibleColumnsHasBeenSet(false),
-    m_panelConfigurationHasBeenSet(false)
+    m_panelConfigurationHasBeenSet(false),
+    m_xAxisHasBeenSet(false),
+    m_yAxisHasBeenSet(false)
 {
 }
 
-SmallMultiplesOptions::SmallMultiplesOptions(JsonView jsonValue) : 
-    m_maxVisibleRows(0),
-    m_maxVisibleRowsHasBeenSet(false),
-    m_maxVisibleColumns(0),
-    m_maxVisibleColumnsHasBeenSet(false),
-    m_panelConfigurationHasBeenSet(false)
+SmallMultiplesOptions::SmallMultiplesOptions(JsonView jsonValue)
+  : SmallMultiplesOptions()
 {
   *this = jsonValue;
 }
@@ -60,6 +58,20 @@ SmallMultiplesOptions& SmallMultiplesOptions::operator =(JsonView jsonValue)
     m_panelConfigurationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("XAxis"))
+  {
+    m_xAxis = jsonValue.GetObject("XAxis");
+
+    m_xAxisHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("YAxis"))
+  {
+    m_yAxis = jsonValue.GetObject("YAxis");
+
+    m_yAxisHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -82,6 +94,18 @@ JsonValue SmallMultiplesOptions::Jsonize() const
   if(m_panelConfigurationHasBeenSet)
   {
    payload.WithObject("PanelConfiguration", m_panelConfiguration.Jsonize());
+
+  }
+
+  if(m_xAxisHasBeenSet)
+  {
+   payload.WithObject("XAxis", m_xAxis.Jsonize());
+
+  }
+
+  if(m_yAxisHasBeenSet)
+  {
+   payload.WithObject("YAxis", m_yAxis.Jsonize());
 
   }
 

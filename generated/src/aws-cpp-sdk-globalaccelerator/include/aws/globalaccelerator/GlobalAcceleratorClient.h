@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/globalaccelerator/GlobalAccelerator_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/globalaccelerator/GlobalAcceleratorServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/globalaccelerator/GlobalAcceleratorErrorMarshaller.h>
 
 namespace Aws
 {
 namespace GlobalAccelerator
 {
+  AWS_GLOBALACCELERATOR_API extern const char SERVICE_NAME[];
   /**
    * <fullname>Global Accelerator</fullname> <p>This is the <i>Global Accelerator API
    * Reference</i>. This guide is for developers who need detailed information about
@@ -34,18 +38,18 @@ namespace GlobalAccelerator
    *  <p>Global Accelerator is a global service that supports endpoints in
    * multiple Amazon Web Services Regions but you must specify the US West (Oregon)
    * Region to create, update, or otherwise work with accelerators. That is, for
-   * example, specify <code>--region us-west-2</code> on AWS CLI commands.</p>
-   *  <p>By default, Global Accelerator provides you with static IP
-   * addresses that you associate with your accelerator. The static IP addresses are
-   * anycast from the Amazon Web Services edge network. For IPv4, Global Accelerator
-   * provides two static IPv4 addresses. For dual-stack, Global Accelerator provides
-   * a total of four addresses: two static IPv4 addresses and two static IPv6
-   * addresses. With a standard accelerator for IPv4, instead of using the addresses
-   * that Global Accelerator provides, you can configure these entry points to be
-   * IPv4 addresses from your own IP address ranges that you bring toGlobal
-   * Accelerator (BYOIP). </p> <p>For a standard accelerator, they distribute
-   * incoming application traffic across multiple endpoint resources in multiple
-   * Amazon Web Services Regions , which increases the availability of your
+   * example, specify <code>--region us-west-2</code> on Amazon Web Services CLI
+   * commands.</p>  <p>By default, Global Accelerator provides you with
+   * static IP addresses that you associate with your accelerator. The static IP
+   * addresses are anycast from the Amazon Web Services edge network. For IPv4,
+   * Global Accelerator provides two static IPv4 addresses. For dual-stack, Global
+   * Accelerator provides a total of four addresses: two static IPv4 addresses and
+   * two static IPv6 addresses. With a standard accelerator for IPv4, instead of
+   * using the addresses that Global Accelerator provides, you can configure these
+   * entry points to be IPv4 addresses from your own IP address ranges that you bring
+   * to Global Accelerator (BYOIP). </p> <p>For a standard accelerator, they
+   * distribute incoming application traffic across multiple endpoint resources in
+   * multiple Amazon Web Services Regions , which increases the availability of your
    * applications. Endpoints for standard accelerators can be Network Load Balancers,
    * Application Load Balancers, Amazon EC2 instances, or Elastic IP addresses that
    * are located in one Amazon Web Services Region or multiple Amazon Web Services
@@ -69,12 +73,20 @@ namespace GlobalAccelerator
    * href="https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html">Global
    * Accelerator Developer Guide</a>.</p>
    */
-  class AWS_GLOBALACCELERATOR_API GlobalAcceleratorClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<GlobalAcceleratorClient>
+  class AWS_GLOBALACCELERATOR_API GlobalAcceleratorClient : smithy::client::AwsSmithyClientT<Aws::GlobalAccelerator::SERVICE_NAME,
+      Aws::GlobalAccelerator::GlobalAcceleratorClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      GlobalAcceleratorEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::GlobalAcceleratorErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<GlobalAcceleratorClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Global Accelerator"; }
 
       typedef GlobalAcceleratorClientConfiguration ClientConfigurationType;
       typedef GlobalAcceleratorEndpointProvider EndpointProviderType;
@@ -84,14 +96,14 @@ namespace GlobalAccelerator
         * is not specified, it will be initialized to default values.
         */
         GlobalAcceleratorClient(const Aws::GlobalAccelerator::GlobalAcceleratorClientConfiguration& clientConfiguration = Aws::GlobalAccelerator::GlobalAcceleratorClientConfiguration(),
-                                std::shared_ptr<GlobalAcceleratorEndpointProviderBase> endpointProvider = Aws::MakeShared<GlobalAcceleratorEndpointProvider>(ALLOCATION_TAG));
+                                std::shared_ptr<GlobalAcceleratorEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         GlobalAcceleratorClient(const Aws::Auth::AWSCredentials& credentials,
-                                std::shared_ptr<GlobalAcceleratorEndpointProviderBase> endpointProvider = Aws::MakeShared<GlobalAcceleratorEndpointProvider>(ALLOCATION_TAG),
+                                std::shared_ptr<GlobalAcceleratorEndpointProviderBase> endpointProvider = nullptr,
                                 const Aws::GlobalAccelerator::GlobalAcceleratorClientConfiguration& clientConfiguration = Aws::GlobalAccelerator::GlobalAcceleratorClientConfiguration());
 
        /**
@@ -99,7 +111,7 @@ namespace GlobalAccelerator
         * the default http client factory will be used
         */
         GlobalAcceleratorClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                std::shared_ptr<GlobalAcceleratorEndpointProviderBase> endpointProvider = Aws::MakeShared<GlobalAcceleratorEndpointProvider>(ALLOCATION_TAG),
+                                std::shared_ptr<GlobalAcceleratorEndpointProviderBase> endpointProvider = nullptr,
                                 const Aws::GlobalAccelerator::GlobalAcceleratorClientConfiguration& clientConfiguration = Aws::GlobalAccelerator::GlobalAcceleratorClientConfiguration());
 
 
@@ -172,11 +184,16 @@ namespace GlobalAccelerator
          * API) or when you update an endpoint group (with the <a
          * href="https://docs.aws.amazon.com/global-accelerator/latest/api/API_UpdateEndpointGroup.html">UpdateEndpointGroup</a>
          * API). </p> <p>There are two advantages to using <code>AddEndpoints</code> to add
-         * endpoints:</p> <ul> <li> <p>It's faster, because Global Accelerator only has to
-         * resolve the new endpoints that you're adding.</p> </li> <li> <p>It's more
-         * convenient, because you don't need to specify all of the current endpoints that
-         * are already in the endpoint group in addition to the new endpoints that you want
-         * to add.</p> </li> </ul><p><h3>See Also:</h3>   <a
+         * endpoints in Global Accelerator:</p> <ul> <li> <p>It's faster, because Global
+         * Accelerator only has to resolve the new endpoints that you're adding, rather
+         * than resolving new and existing endpoints.</p> </li> <li> <p>It's more
+         * convenient, because you don't need to specify the current endpoints that are
+         * already in the endpoint group, in addition to the new endpoints that you want to
+         * add.</p> </li> </ul> <p>For information about endpoint types and requirements
+         * for endpoints that you can add to Global Accelerator, see <a
+         * href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-endpoints.html">
+         * Endpoints for standard accelerators</a> in the <i>Global Accelerator Developer
+         * Guide</i>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/AddEndpoints">AWS
          * API Reference</a></p>
          */
@@ -273,8 +290,8 @@ namespace GlobalAccelerator
          *  <p>Global Accelerator is a global service that supports endpoints in
          * multiple Amazon Web Services Regions but you must specify the US West (Oregon)
          * Region to create, update, or otherwise work with accelerators. That is, for
-         * example, specify <code>--region us-west-2</code> on AWS CLI commands.</p>
-         * <p><h3>See Also:</h3>   <a
+         * example, specify <code>--region us-west-2</code> on Amazon Web Services CLI
+         * commands.</p> <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/CreateAccelerator">AWS
          * API Reference</a></p>
          */
@@ -299,6 +316,49 @@ namespace GlobalAccelerator
         }
 
         /**
+         * <p>Create a cross-account attachment in Global Accelerator. You create a
+         * cross-account attachment to specify the <i>principals</i> who have permission to
+         * work with <i>resources</i> in accelerators in their own account. You specify, in
+         * the same attachment, the resources that are shared.</p> <p>A principal can be an
+         * Amazon Web Services account number or the Amazon Resource Name (ARN) for an
+         * accelerator. For account numbers that are listed as principals, to work with a
+         * resource listed in the attachment, you must sign in to an account specified as a
+         * principal. Then, you can work with resources that are listed, with any of your
+         * accelerators. If an accelerator ARN is listed in the cross-account attachment as
+         * a principal, anyone with permission to make updates to the accelerator can work
+         * with resources that are listed in the attachment. </p> <p>Specify each principal
+         * and resource separately. To specify two CIDR address pools, list them
+         * individually under <code>Resources</code>, and so on. For a command line
+         * operation, for example, you might use a statement like the following:</p> <p>
+         * <code> "Resources": [{"Cidr": "169.254.60.0/24"},{"Cidr":
+         * "169.254.59.0/24"}]</code> </p> <p>For more information, see <a
+         * href="https://docs.aws.amazon.com/global-accelerator/latest/dg/cross-account-resources.html">
+         * Working with cross-account attachments and resources in Global Accelerator</a>
+         * in the <i> Global Accelerator Developer Guide</i>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/CreateCrossAccountAttachment">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateCrossAccountAttachmentOutcome CreateCrossAccountAttachment(const Model::CreateCrossAccountAttachmentRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateCrossAccountAttachment that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateCrossAccountAttachmentRequestT = Model::CreateCrossAccountAttachmentRequest>
+        Model::CreateCrossAccountAttachmentOutcomeCallable CreateCrossAccountAttachmentCallable(const CreateCrossAccountAttachmentRequestT& request) const
+        {
+            return SubmitCallable(&GlobalAcceleratorClient::CreateCrossAccountAttachment, request);
+        }
+
+        /**
+         * An Async wrapper for CreateCrossAccountAttachment that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateCrossAccountAttachmentRequestT = Model::CreateCrossAccountAttachmentRequest>
+        void CreateCrossAccountAttachmentAsync(const CreateCrossAccountAttachmentRequestT& request, const CreateCrossAccountAttachmentResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&GlobalAcceleratorClient::CreateCrossAccountAttachment, request, handler, context);
+        }
+
+        /**
          * <p>Create a custom routing accelerator. A custom routing accelerator directs
          * traffic to one of possibly thousands of Amazon EC2 instance destinations running
          * in a single or multiple virtual private clouds (VPC) subnet endpoints.</p> <p>Be
@@ -310,7 +370,8 @@ namespace GlobalAccelerator
          * is a global service that supports endpoints in multiple Amazon Web Services
          * Regions but you must specify the US West (Oregon) Region to create, update, or
          * otherwise work with accelerators. That is, for example, specify <code>--region
-         * us-west-2</code> on AWS CLI commands.</p> <p><h3>See Also:</h3>   <a
+         * us-west-2</code> on Amazon Web Services CLI commands.</p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/CreateCustomRoutingAccelerator">AWS
          * API Reference</a></p>
          */
@@ -391,7 +452,12 @@ namespace GlobalAccelerator
         /**
          * <p>Create an endpoint group for the specified listener. An endpoint group is a
          * collection of endpoints in one Amazon Web Services Region. A resource must be
-         * valid and active when you add it as an endpoint.</p><p><h3>See Also:</h3>   <a
+         * valid and active when you add it as an endpoint.</p> <p>For more information
+         * about endpoint types and requirements for endpoints that you can add to Global
+         * Accelerator, see <a
+         * href="https://docs.aws.amazon.com/global-accelerator/latest/dg/about-endpoints.html">
+         * Endpoints for standard accelerators</a> in the <i>Global Accelerator Developer
+         * Guide</i>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/CreateEndpointGroup">AWS
          * API Reference</a></p>
          */
@@ -482,6 +548,37 @@ namespace GlobalAccelerator
         void DeleteAcceleratorAsync(const DeleteAcceleratorRequestT& request, const DeleteAcceleratorResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&GlobalAcceleratorClient::DeleteAccelerator, request, handler, context);
+        }
+
+        /**
+         * <p>Delete a cross-account attachment. When you delete an attachment, Global
+         * Accelerator revokes the permission to use the resources in the attachment from
+         * all principals in the list of principals. Global Accelerator revokes the
+         * permission for specific resources.</p> <p>For more information, see <a
+         * href="https://docs.aws.amazon.com/global-accelerator/latest/dg/cross-account-resources.html">
+         * Working with cross-account attachments and resources in Global Accelerator</a>
+         * in the <i> Global Accelerator Developer Guide</i>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/DeleteCrossAccountAttachment">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteCrossAccountAttachmentOutcome DeleteCrossAccountAttachment(const Model::DeleteCrossAccountAttachmentRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteCrossAccountAttachment that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteCrossAccountAttachmentRequestT = Model::DeleteCrossAccountAttachmentRequest>
+        Model::DeleteCrossAccountAttachmentOutcomeCallable DeleteCrossAccountAttachmentCallable(const DeleteCrossAccountAttachmentRequestT& request) const
+        {
+            return SubmitCallable(&GlobalAcceleratorClient::DeleteCrossAccountAttachment, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteCrossAccountAttachment that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteCrossAccountAttachmentRequestT = Model::DeleteCrossAccountAttachmentRequest>
+        void DeleteCrossAccountAttachmentAsync(const DeleteCrossAccountAttachmentRequestT& request, const DeleteCrossAccountAttachmentResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&GlobalAcceleratorClient::DeleteCrossAccountAttachment, request, handler, context);
         }
 
         /**
@@ -744,6 +841,32 @@ namespace GlobalAccelerator
         }
 
         /**
+         * <p>Gets configuration information about a cross-account
+         * attachment.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/DescribeCrossAccountAttachment">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeCrossAccountAttachmentOutcome DescribeCrossAccountAttachment(const Model::DescribeCrossAccountAttachmentRequest& request) const;
+
+        /**
+         * A Callable wrapper for DescribeCrossAccountAttachment that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeCrossAccountAttachmentRequestT = Model::DescribeCrossAccountAttachmentRequest>
+        Model::DescribeCrossAccountAttachmentOutcomeCallable DescribeCrossAccountAttachmentCallable(const DescribeCrossAccountAttachmentRequestT& request) const
+        {
+            return SubmitCallable(&GlobalAcceleratorClient::DescribeCrossAccountAttachment, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeCrossAccountAttachment that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeCrossAccountAttachmentRequestT = Model::DescribeCrossAccountAttachmentRequest>
+        void DescribeCrossAccountAttachmentAsync(const DescribeCrossAccountAttachmentRequestT& request, const DescribeCrossAccountAttachmentResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&GlobalAcceleratorClient::DescribeCrossAccountAttachment, request, handler, context);
+        }
+
+        /**
          * <p>Describe a custom routing accelerator. </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/DescribeCustomRoutingAccelerator">AWS
          * API Reference</a></p>
@@ -902,13 +1025,13 @@ namespace GlobalAccelerator
          * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/ListAccelerators">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListAcceleratorsOutcome ListAccelerators(const Model::ListAcceleratorsRequest& request) const;
+        virtual Model::ListAcceleratorsOutcome ListAccelerators(const Model::ListAcceleratorsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListAccelerators that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListAcceleratorsRequestT = Model::ListAcceleratorsRequest>
-        Model::ListAcceleratorsOutcomeCallable ListAcceleratorsCallable(const ListAcceleratorsRequestT& request) const
+        Model::ListAcceleratorsOutcomeCallable ListAcceleratorsCallable(const ListAcceleratorsRequestT& request = {}) const
         {
             return SubmitCallable(&GlobalAcceleratorClient::ListAccelerators, request);
         }
@@ -917,7 +1040,7 @@ namespace GlobalAccelerator
          * An Async wrapper for ListAccelerators that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListAcceleratorsRequestT = Model::ListAcceleratorsRequest>
-        void ListAcceleratorsAsync(const ListAcceleratorsRequestT& request, const ListAcceleratorsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListAcceleratorsAsync(const ListAcceleratorsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListAcceleratorsRequestT& request = {}) const
         {
             return SubmitAsync(&GlobalAcceleratorClient::ListAccelerators, request, handler, context);
         }
@@ -930,13 +1053,13 @@ namespace GlobalAccelerator
          * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/ListByoipCidrs">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListByoipCidrsOutcome ListByoipCidrs(const Model::ListByoipCidrsRequest& request) const;
+        virtual Model::ListByoipCidrsOutcome ListByoipCidrs(const Model::ListByoipCidrsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListByoipCidrs that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListByoipCidrsRequestT = Model::ListByoipCidrsRequest>
-        Model::ListByoipCidrsOutcomeCallable ListByoipCidrsCallable(const ListByoipCidrsRequestT& request) const
+        Model::ListByoipCidrsOutcomeCallable ListByoipCidrsCallable(const ListByoipCidrsRequestT& request = {}) const
         {
             return SubmitCallable(&GlobalAcceleratorClient::ListByoipCidrs, request);
         }
@@ -945,9 +1068,90 @@ namespace GlobalAccelerator
          * An Async wrapper for ListByoipCidrs that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListByoipCidrsRequestT = Model::ListByoipCidrsRequest>
-        void ListByoipCidrsAsync(const ListByoipCidrsRequestT& request, const ListByoipCidrsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListByoipCidrsAsync(const ListByoipCidrsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListByoipCidrsRequestT& request = {}) const
         {
             return SubmitAsync(&GlobalAcceleratorClient::ListByoipCidrs, request, handler, context);
+        }
+
+        /**
+         * <p>List the cross-account attachments that have been created in Global
+         * Accelerator.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/ListCrossAccountAttachments">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListCrossAccountAttachmentsOutcome ListCrossAccountAttachments(const Model::ListCrossAccountAttachmentsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListCrossAccountAttachments that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListCrossAccountAttachmentsRequestT = Model::ListCrossAccountAttachmentsRequest>
+        Model::ListCrossAccountAttachmentsOutcomeCallable ListCrossAccountAttachmentsCallable(const ListCrossAccountAttachmentsRequestT& request = {}) const
+        {
+            return SubmitCallable(&GlobalAcceleratorClient::ListCrossAccountAttachments, request);
+        }
+
+        /**
+         * An Async wrapper for ListCrossAccountAttachments that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListCrossAccountAttachmentsRequestT = Model::ListCrossAccountAttachmentsRequest>
+        void ListCrossAccountAttachmentsAsync(const ListCrossAccountAttachmentsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListCrossAccountAttachmentsRequestT& request = {}) const
+        {
+            return SubmitAsync(&GlobalAcceleratorClient::ListCrossAccountAttachments, request, handler, context);
+        }
+
+        /**
+         * <p>List the accounts that have cross-account resources.</p> <p>For more
+         * information, see <a
+         * href="https://docs.aws.amazon.com/global-accelerator/latest/dg/cross-account-resources.html">
+         * Working with cross-account attachments and resources in Global Accelerator</a>
+         * in the <i> Global Accelerator Developer Guide</i>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/ListCrossAccountResourceAccounts">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListCrossAccountResourceAccountsOutcome ListCrossAccountResourceAccounts(const Model::ListCrossAccountResourceAccountsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListCrossAccountResourceAccounts that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListCrossAccountResourceAccountsRequestT = Model::ListCrossAccountResourceAccountsRequest>
+        Model::ListCrossAccountResourceAccountsOutcomeCallable ListCrossAccountResourceAccountsCallable(const ListCrossAccountResourceAccountsRequestT& request = {}) const
+        {
+            return SubmitCallable(&GlobalAcceleratorClient::ListCrossAccountResourceAccounts, request);
+        }
+
+        /**
+         * An Async wrapper for ListCrossAccountResourceAccounts that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListCrossAccountResourceAccountsRequestT = Model::ListCrossAccountResourceAccountsRequest>
+        void ListCrossAccountResourceAccountsAsync(const ListCrossAccountResourceAccountsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListCrossAccountResourceAccountsRequestT& request = {}) const
+        {
+            return SubmitAsync(&GlobalAcceleratorClient::ListCrossAccountResourceAccounts, request, handler, context);
+        }
+
+        /**
+         * <p>List the cross-account resources available to work with.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/ListCrossAccountResources">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListCrossAccountResourcesOutcome ListCrossAccountResources(const Model::ListCrossAccountResourcesRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListCrossAccountResources that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListCrossAccountResourcesRequestT = Model::ListCrossAccountResourcesRequest>
+        Model::ListCrossAccountResourcesOutcomeCallable ListCrossAccountResourcesCallable(const ListCrossAccountResourcesRequestT& request) const
+        {
+            return SubmitCallable(&GlobalAcceleratorClient::ListCrossAccountResources, request);
+        }
+
+        /**
+         * An Async wrapper for ListCrossAccountResources that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListCrossAccountResourcesRequestT = Model::ListCrossAccountResourcesRequest>
+        void ListCrossAccountResourcesAsync(const ListCrossAccountResourcesRequestT& request, const ListCrossAccountResourcesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&GlobalAcceleratorClient::ListCrossAccountResources, request, handler, context);
         }
 
         /**
@@ -956,13 +1160,13 @@ namespace GlobalAccelerator
          * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/ListCustomRoutingAccelerators">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListCustomRoutingAcceleratorsOutcome ListCustomRoutingAccelerators(const Model::ListCustomRoutingAcceleratorsRequest& request) const;
+        virtual Model::ListCustomRoutingAcceleratorsOutcome ListCustomRoutingAccelerators(const Model::ListCustomRoutingAcceleratorsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListCustomRoutingAccelerators that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListCustomRoutingAcceleratorsRequestT = Model::ListCustomRoutingAcceleratorsRequest>
-        Model::ListCustomRoutingAcceleratorsOutcomeCallable ListCustomRoutingAcceleratorsCallable(const ListCustomRoutingAcceleratorsRequestT& request) const
+        Model::ListCustomRoutingAcceleratorsOutcomeCallable ListCustomRoutingAcceleratorsCallable(const ListCustomRoutingAcceleratorsRequestT& request = {}) const
         {
             return SubmitCallable(&GlobalAcceleratorClient::ListCustomRoutingAccelerators, request);
         }
@@ -971,7 +1175,7 @@ namespace GlobalAccelerator
          * An Async wrapper for ListCustomRoutingAccelerators that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListCustomRoutingAcceleratorsRequestT = Model::ListCustomRoutingAcceleratorsRequest>
-        void ListCustomRoutingAcceleratorsAsync(const ListCustomRoutingAcceleratorsRequestT& request, const ListCustomRoutingAcceleratorsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListCustomRoutingAcceleratorsAsync(const ListCustomRoutingAcceleratorsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListCustomRoutingAcceleratorsRequestT& request = {}) const
         {
             return SubmitAsync(&GlobalAcceleratorClient::ListCustomRoutingAccelerators, request, handler, context);
         }
@@ -1331,11 +1535,21 @@ namespace GlobalAccelerator
         }
 
         /**
-         * <p>Update an accelerator. </p>  <p>Global Accelerator is a global
-         * service that supports endpoints in multiple Amazon Web Services Regions but you
-         * must specify the US West (Oregon) Region to create, update, or otherwise work
-         * with accelerators. That is, for example, specify <code>--region us-west-2</code>
-         * on AWS CLI commands.</p> <p><h3>See Also:</h3>   <a
+         * <p>Update an accelerator to make changes, such as the following: </p> <ul> <li>
+         * <p>Change the name of the accelerator.</p> </li> <li> <p>Disable the accelerator
+         * so that it no longer accepts or routes traffic, or so that you can delete
+         * it.</p> </li> <li> <p>Enable the accelerator, if it is disabled.</p> </li> <li>
+         * <p>Change the IP address type to dual-stack if it is IPv4, or change the IP
+         * address type to IPv4 if it's dual-stack.</p> </li> </ul> <p>Be aware that static
+         * IP addresses remain assigned to your accelerator for as long as it exists, even
+         * if you disable the accelerator and it no longer accepts or routes traffic.
+         * However, when you delete the accelerator, you lose the static IP addresses that
+         * are assigned to it, so you can no longer route traffic by using them.</p>
+         *  <p>Global Accelerator is a global service that supports endpoints in
+         * multiple Amazon Web Services Regions but you must specify the US West (Oregon)
+         * Region to create, update, or otherwise work with accelerators. That is, for
+         * example, specify <code>--region us-west-2</code> on Amazon Web Services CLI
+         * commands.</p> <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/UpdateAccelerator">AWS
          * API Reference</a></p>
          */
@@ -1382,6 +1596,37 @@ namespace GlobalAccelerator
         void UpdateAcceleratorAttributesAsync(const UpdateAcceleratorAttributesRequestT& request, const UpdateAcceleratorAttributesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&GlobalAcceleratorClient::UpdateAcceleratorAttributes, request, handler, context);
+        }
+
+        /**
+         * <p>Update a cross-account attachment to add or remove principals or resources.
+         * When you update an attachment to remove a principal (account ID or accelerator)
+         * or a resource, Global Accelerator revokes the permission for specific resources.
+         * </p> <p>For more information, see <a
+         * href="https://docs.aws.amazon.com/global-accelerator/latest/dg/cross-account-resources.html">
+         * Working with cross-account attachments and resources in Global Accelerator</a>
+         * in the <i> Global Accelerator Developer Guide</i>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/globalaccelerator-2018-08-08/UpdateCrossAccountAttachment">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateCrossAccountAttachmentOutcome UpdateCrossAccountAttachment(const Model::UpdateCrossAccountAttachmentRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateCrossAccountAttachment that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateCrossAccountAttachmentRequestT = Model::UpdateCrossAccountAttachmentRequest>
+        Model::UpdateCrossAccountAttachmentOutcomeCallable UpdateCrossAccountAttachmentCallable(const UpdateCrossAccountAttachmentRequestT& request) const
+        {
+            return SubmitCallable(&GlobalAcceleratorClient::UpdateCrossAccountAttachment, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateCrossAccountAttachment that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateCrossAccountAttachmentRequestT = Model::UpdateCrossAccountAttachmentRequest>
+        void UpdateCrossAccountAttachmentAsync(const UpdateCrossAccountAttachmentRequestT& request, const UpdateCrossAccountAttachmentResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&GlobalAcceleratorClient::UpdateCrossAccountAttachment, request, handler, context);
         }
 
         /**
@@ -1549,11 +1794,7 @@ namespace GlobalAccelerator
       std::shared_ptr<GlobalAcceleratorEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<GlobalAcceleratorClient>;
-      void init(const GlobalAcceleratorClientConfiguration& clientConfiguration);
 
-      GlobalAcceleratorClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<GlobalAcceleratorEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace GlobalAccelerator

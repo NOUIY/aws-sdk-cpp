@@ -23,9 +23,8 @@ DescribeAppResult::DescribeAppResult() :
 {
 }
 
-DescribeAppResult::DescribeAppResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_appType(AppType::NOT_SET),
-    m_status(AppStatus::NOT_SET)
+DescribeAppResult::DescribeAppResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeAppResult()
 {
   *this = result;
 }
@@ -60,6 +59,12 @@ DescribeAppResult& DescribeAppResult::operator =(const Aws::AmazonWebServiceResu
   if(jsonValue.ValueExists("UserProfileName"))
   {
     m_userProfileName = jsonValue.GetString("UserProfileName");
+
+  }
+
+  if(jsonValue.ValueExists("SpaceName"))
+  {
+    m_spaceName = jsonValue.GetString("SpaceName");
 
   }
 
@@ -99,9 +104,9 @@ DescribeAppResult& DescribeAppResult::operator =(const Aws::AmazonWebServiceResu
 
   }
 
-  if(jsonValue.ValueExists("SpaceName"))
+  if(jsonValue.ValueExists("BuiltInLifecycleConfigArn"))
   {
-    m_spaceName = jsonValue.GetString("SpaceName");
+    m_builtInLifecycleConfigArn = jsonValue.GetString("BuiltInLifecycleConfigArn");
 
   }
 

@@ -26,10 +26,12 @@ Component::Component() :
     m_deploymentStatusMessageHasBeenSet(false),
     m_descriptionHasBeenSet(false),
     m_environmentNameHasBeenSet(false),
+    m_lastAttemptedDeploymentIdHasBeenSet(false),
     m_lastClientRequestTokenHasBeenSet(false),
     m_lastDeploymentAttemptedAtHasBeenSet(false),
     m_lastDeploymentSucceededAtHasBeenSet(false),
     m_lastModifiedAtHasBeenSet(false),
+    m_lastSucceededDeploymentIdHasBeenSet(false),
     m_nameHasBeenSet(false),
     m_serviceInstanceNameHasBeenSet(false),
     m_serviceNameHasBeenSet(false),
@@ -37,22 +39,8 @@ Component::Component() :
 {
 }
 
-Component::Component(JsonView jsonValue) : 
-    m_arnHasBeenSet(false),
-    m_createdAtHasBeenSet(false),
-    m_deploymentStatus(DeploymentStatus::NOT_SET),
-    m_deploymentStatusHasBeenSet(false),
-    m_deploymentStatusMessageHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_environmentNameHasBeenSet(false),
-    m_lastClientRequestTokenHasBeenSet(false),
-    m_lastDeploymentAttemptedAtHasBeenSet(false),
-    m_lastDeploymentSucceededAtHasBeenSet(false),
-    m_lastModifiedAtHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_serviceInstanceNameHasBeenSet(false),
-    m_serviceNameHasBeenSet(false),
-    m_serviceSpecHasBeenSet(false)
+Component::Component(JsonView jsonValue)
+  : Component()
 {
   *this = jsonValue;
 }
@@ -101,6 +89,13 @@ Component& Component::operator =(JsonView jsonValue)
     m_environmentNameHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("lastAttemptedDeploymentId"))
+  {
+    m_lastAttemptedDeploymentId = jsonValue.GetString("lastAttemptedDeploymentId");
+
+    m_lastAttemptedDeploymentIdHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("lastClientRequestToken"))
   {
     m_lastClientRequestToken = jsonValue.GetString("lastClientRequestToken");
@@ -127,6 +122,13 @@ Component& Component::operator =(JsonView jsonValue)
     m_lastModifiedAt = jsonValue.GetDouble("lastModifiedAt");
 
     m_lastModifiedAtHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("lastSucceededDeploymentId"))
+  {
+    m_lastSucceededDeploymentId = jsonValue.GetString("lastSucceededDeploymentId");
+
+    m_lastSucceededDeploymentIdHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("name"))
@@ -198,6 +200,12 @@ JsonValue Component::Jsonize() const
 
   }
 
+  if(m_lastAttemptedDeploymentIdHasBeenSet)
+  {
+   payload.WithString("lastAttemptedDeploymentId", m_lastAttemptedDeploymentId);
+
+  }
+
   if(m_lastClientRequestTokenHasBeenSet)
   {
    payload.WithString("lastClientRequestToken", m_lastClientRequestToken);
@@ -217,6 +225,12 @@ JsonValue Component::Jsonize() const
   if(m_lastModifiedAtHasBeenSet)
   {
    payload.WithDouble("lastModifiedAt", m_lastModifiedAt.SecondsWithMSPrecision());
+  }
+
+  if(m_lastSucceededDeploymentIdHasBeenSet)
+  {
+   payload.WithString("lastSucceededDeploymentId", m_lastSucceededDeploymentId);
+
   }
 
   if(m_nameHasBeenSet)

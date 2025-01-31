@@ -27,13 +27,8 @@ RequestPhoneNumberResult::RequestPhoneNumberResult() :
 {
 }
 
-RequestPhoneNumberResult::RequestPhoneNumberResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(NumberStatus::NOT_SET),
-    m_messageType(MessageType::NOT_SET),
-    m_numberType(RequestableNumberType::NOT_SET),
-    m_twoWayEnabled(false),
-    m_selfManagedOptOutsEnabled(false),
-    m_deletionProtectionEnabled(false)
+RequestPhoneNumberResult::RequestPhoneNumberResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : RequestPhoneNumberResult()
 {
   *this = result;
 }
@@ -110,6 +105,12 @@ RequestPhoneNumberResult& RequestPhoneNumberResult::operator =(const Aws::Amazon
 
   }
 
+  if(jsonValue.ValueExists("TwoWayChannelRole"))
+  {
+    m_twoWayChannelRole = jsonValue.GetString("TwoWayChannelRole");
+
+  }
+
   if(jsonValue.ValueExists("SelfManagedOptOutsEnabled"))
   {
     m_selfManagedOptOutsEnabled = jsonValue.GetBool("SelfManagedOptOutsEnabled");
@@ -131,6 +132,12 @@ RequestPhoneNumberResult& RequestPhoneNumberResult::operator =(const Aws::Amazon
   if(jsonValue.ValueExists("PoolId"))
   {
     m_poolId = jsonValue.GetString("PoolId");
+
+  }
+
+  if(jsonValue.ValueExists("RegistrationId"))
+  {
+    m_registrationId = jsonValue.GetString("RegistrationId");
 
   }
 

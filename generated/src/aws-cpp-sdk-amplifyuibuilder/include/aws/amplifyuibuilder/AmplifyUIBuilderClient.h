@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/amplifyuibuilder/AmplifyUIBuilder_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/amplifyuibuilder/AmplifyUIBuilderServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/amplifyuibuilder/AmplifyUIBuilderErrorMarshaller.h>
 
 namespace Aws
 {
 namespace AmplifyUIBuilder
 {
+  AWS_AMPLIFYUIBUILDER_API extern const char SERVICE_NAME[];
   /**
    * <p>The Amplify UI Builder API provides a programmatic interface for creating and
    * configuring user interface (UI) component libraries and themes for use in your
@@ -31,12 +35,20 @@ namespace AmplifyUIBuilder
    * href="https://docs.aws.amazon.com/amplify/latest/userguide/welcome.html">Amplify
    * User Guide</a>.</p>
    */
-  class AWS_AMPLIFYUIBUILDER_API AmplifyUIBuilderClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<AmplifyUIBuilderClient>
+  class AWS_AMPLIFYUIBUILDER_API AmplifyUIBuilderClient : smithy::client::AwsSmithyClientT<Aws::AmplifyUIBuilder::SERVICE_NAME,
+      Aws::AmplifyUIBuilder::AmplifyUIBuilderClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      AmplifyUIBuilderEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::AmplifyUIBuilderErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<AmplifyUIBuilderClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "AmplifyUIBuilder"; }
 
       typedef AmplifyUIBuilderClientConfiguration ClientConfigurationType;
       typedef AmplifyUIBuilderEndpointProvider EndpointProviderType;
@@ -46,14 +58,14 @@ namespace AmplifyUIBuilder
         * is not specified, it will be initialized to default values.
         */
         AmplifyUIBuilderClient(const Aws::AmplifyUIBuilder::AmplifyUIBuilderClientConfiguration& clientConfiguration = Aws::AmplifyUIBuilder::AmplifyUIBuilderClientConfiguration(),
-                               std::shared_ptr<AmplifyUIBuilderEndpointProviderBase> endpointProvider = Aws::MakeShared<AmplifyUIBuilderEndpointProvider>(ALLOCATION_TAG));
+                               std::shared_ptr<AmplifyUIBuilderEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         AmplifyUIBuilderClient(const Aws::Auth::AWSCredentials& credentials,
-                               std::shared_ptr<AmplifyUIBuilderEndpointProviderBase> endpointProvider = Aws::MakeShared<AmplifyUIBuilderEndpointProvider>(ALLOCATION_TAG),
+                               std::shared_ptr<AmplifyUIBuilderEndpointProviderBase> endpointProvider = nullptr,
                                const Aws::AmplifyUIBuilder::AmplifyUIBuilderClientConfiguration& clientConfiguration = Aws::AmplifyUIBuilder::AmplifyUIBuilderClientConfiguration());
 
        /**
@@ -61,7 +73,7 @@ namespace AmplifyUIBuilder
         * the default http client factory will be used
         */
         AmplifyUIBuilderClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                               std::shared_ptr<AmplifyUIBuilderEndpointProviderBase> endpointProvider = Aws::MakeShared<AmplifyUIBuilderEndpointProvider>(ALLOCATION_TAG),
+                               std::shared_ptr<AmplifyUIBuilderEndpointProviderBase> endpointProvider = nullptr,
                                const Aws::AmplifyUIBuilder::AmplifyUIBuilderClientConfiguration& clientConfiguration = Aws::AmplifyUIBuilder::AmplifyUIBuilderClientConfiguration());
 
 
@@ -241,7 +253,8 @@ namespace AmplifyUIBuilder
         }
 
         /**
-         * <p>Exchanges an access code for a token.</p><p><h3>See Also:</h3>   <a
+         *  <p>This is for internal use.</p>  <p>Amplify uses this action to
+         * exchange an access code for a token.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/amplifyuibuilder-2021-08-11/ExchangeCodeForToken">AWS
          * API Reference</a></p>
          */
@@ -341,6 +354,31 @@ namespace AmplifyUIBuilder
         void ExportThemesAsync(const ExportThemesRequestT& request, const ExportThemesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&AmplifyUIBuilderClient::ExportThemes, request, handler, context);
+        }
+
+        /**
+         * <p>Returns an existing code generation job.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/amplifyuibuilder-2021-08-11/GetCodegenJob">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetCodegenJobOutcome GetCodegenJob(const Model::GetCodegenJobRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetCodegenJob that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetCodegenJobRequestT = Model::GetCodegenJobRequest>
+        Model::GetCodegenJobOutcomeCallable GetCodegenJobCallable(const GetCodegenJobRequestT& request) const
+        {
+            return SubmitCallable(&AmplifyUIBuilderClient::GetCodegenJob, request);
+        }
+
+        /**
+         * An Async wrapper for GetCodegenJob that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetCodegenJobRequestT = Model::GetCodegenJobRequest>
+        void GetCodegenJobAsync(const GetCodegenJobRequestT& request, const GetCodegenJobResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AmplifyUIBuilderClient::GetCodegenJob, request, handler, context);
         }
 
         /**
@@ -445,6 +483,32 @@ namespace AmplifyUIBuilder
         }
 
         /**
+         * <p>Retrieves a list of code generation jobs for a specified Amplify app and
+         * backend environment.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/amplifyuibuilder-2021-08-11/ListCodegenJobs">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListCodegenJobsOutcome ListCodegenJobs(const Model::ListCodegenJobsRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListCodegenJobs that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListCodegenJobsRequestT = Model::ListCodegenJobsRequest>
+        Model::ListCodegenJobsOutcomeCallable ListCodegenJobsCallable(const ListCodegenJobsRequestT& request) const
+        {
+            return SubmitCallable(&AmplifyUIBuilderClient::ListCodegenJobs, request);
+        }
+
+        /**
+         * An Async wrapper for ListCodegenJobs that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListCodegenJobsRequestT = Model::ListCodegenJobsRequest>
+        void ListCodegenJobsAsync(const ListCodegenJobsRequestT& request, const ListCodegenJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AmplifyUIBuilderClient::ListCodegenJobs, request, handler, context);
+        }
+
+        /**
          * <p>Retrieves a list of components for a specified Amplify app and backend
          * environment.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/amplifyuibuilder-2021-08-11/ListComponents">AWS
@@ -494,6 +558,32 @@ namespace AmplifyUIBuilder
         void ListFormsAsync(const ListFormsRequestT& request, const ListFormsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&AmplifyUIBuilderClient::ListForms, request, handler, context);
+        }
+
+        /**
+         * <p>Returns a list of tags for a specified Amazon Resource Name
+         * (ARN).</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/amplifyuibuilder-2021-08-11/ListTagsForResource">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListTagsForResourceOutcome ListTagsForResource(const Model::ListTagsForResourceRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListTagsForResource that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListTagsForResourceRequestT = Model::ListTagsForResourceRequest>
+        Model::ListTagsForResourceOutcomeCallable ListTagsForResourceCallable(const ListTagsForResourceRequestT& request) const
+        {
+            return SubmitCallable(&AmplifyUIBuilderClient::ListTagsForResource, request);
+        }
+
+        /**
+         * An Async wrapper for ListTagsForResource that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListTagsForResourceRequestT = Model::ListTagsForResourceRequest>
+        void ListTagsForResourceAsync(const ListTagsForResourceRequestT& request, const ListTagsForResourceResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AmplifyUIBuilderClient::ListTagsForResource, request, handler, context);
         }
 
         /**
@@ -549,8 +639,9 @@ namespace AmplifyUIBuilder
         }
 
         /**
-         * <p>Refreshes a previously issued access token that might have
-         * expired.</p><p><h3>See Also:</h3>   <a
+         *  <p>This is for internal use.</p>  <p>Amplify uses this action to
+         * refresh a previously issued access token that might have expired.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/amplifyuibuilder-2021-08-11/RefreshToken">AWS
          * API Reference</a></p>
          */
@@ -572,6 +663,83 @@ namespace AmplifyUIBuilder
         void RefreshTokenAsync(const RefreshTokenRequestT& request, const RefreshTokenResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&AmplifyUIBuilderClient::RefreshToken, request, handler, context);
+        }
+
+        /**
+         * <p>Starts a code generation job for a specified Amplify app and backend
+         * environment.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/amplifyuibuilder-2021-08-11/StartCodegenJob">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::StartCodegenJobOutcome StartCodegenJob(const Model::StartCodegenJobRequest& request) const;
+
+        /**
+         * A Callable wrapper for StartCodegenJob that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename StartCodegenJobRequestT = Model::StartCodegenJobRequest>
+        Model::StartCodegenJobOutcomeCallable StartCodegenJobCallable(const StartCodegenJobRequestT& request) const
+        {
+            return SubmitCallable(&AmplifyUIBuilderClient::StartCodegenJob, request);
+        }
+
+        /**
+         * An Async wrapper for StartCodegenJob that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename StartCodegenJobRequestT = Model::StartCodegenJobRequest>
+        void StartCodegenJobAsync(const StartCodegenJobRequestT& request, const StartCodegenJobResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AmplifyUIBuilderClient::StartCodegenJob, request, handler, context);
+        }
+
+        /**
+         * <p>Tags the resource with a tag key and value.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/amplifyuibuilder-2021-08-11/TagResource">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::TagResourceOutcome TagResource(const Model::TagResourceRequest& request) const;
+
+        /**
+         * A Callable wrapper for TagResource that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename TagResourceRequestT = Model::TagResourceRequest>
+        Model::TagResourceOutcomeCallable TagResourceCallable(const TagResourceRequestT& request) const
+        {
+            return SubmitCallable(&AmplifyUIBuilderClient::TagResource, request);
+        }
+
+        /**
+         * An Async wrapper for TagResource that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename TagResourceRequestT = Model::TagResourceRequest>
+        void TagResourceAsync(const TagResourceRequestT& request, const TagResourceResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AmplifyUIBuilderClient::TagResource, request, handler, context);
+        }
+
+        /**
+         * <p>Untags a resource with a specified Amazon Resource Name (ARN).</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/amplifyuibuilder-2021-08-11/UntagResource">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UntagResourceOutcome UntagResource(const Model::UntagResourceRequest& request) const;
+
+        /**
+         * A Callable wrapper for UntagResource that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UntagResourceRequestT = Model::UntagResourceRequest>
+        Model::UntagResourceOutcomeCallable UntagResourceCallable(const UntagResourceRequestT& request) const
+        {
+            return SubmitCallable(&AmplifyUIBuilderClient::UntagResource, request);
+        }
+
+        /**
+         * An Async wrapper for UntagResource that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UntagResourceRequestT = Model::UntagResourceRequest>
+        void UntagResourceAsync(const UntagResourceRequestT& request, const UntagResourceResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AmplifyUIBuilderClient::UntagResource, request, handler, context);
         }
 
         /**
@@ -654,11 +822,7 @@ namespace AmplifyUIBuilder
       std::shared_ptr<AmplifyUIBuilderEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<AmplifyUIBuilderClient>;
-      void init(const AmplifyUIBuilderClientConfiguration& clientConfiguration);
 
-      AmplifyUIBuilderClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<AmplifyUIBuilderEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace AmplifyUIBuilder

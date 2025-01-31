@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/frauddetector/FraudDetector_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/frauddetector/FraudDetectorServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/frauddetector/FraudDetectorErrorMarshaller.h>
 
 namespace Aws
 {
 namespace FraudDetector
 {
+  AWS_FRAUDDETECTOR_API extern const char SERVICE_NAME[];
   /**
    * <p>This is the Amazon Fraud Detector API Reference. This guide is for developers
    * who need detailed information about Amazon Fraud Detector API actions, data
@@ -30,16 +34,25 @@ namespace FraudDetector
    * libraries provide basic functions that automatically take care of tasks such as
    * cryptographically signing your requests, retrying requests, and handling error
    * responses, so that it is easier for you to get started. For more information
-   * about the AWS SDKs, see <a
-   * href="https://docs.aws.amazon.com/https:/aws.amazon.com/tools/">Tools to build
-   * on AWS</a>. </p>
+   * about the AWS SDKs, go to <a
+   * href="https://aws.amazon.com/developer/tools/">Tools to build on AWS</a> page,
+   * scroll down to the <b>SDK</b> section, and choose plus (+) sign to expand the
+   * section. </p>
    */
-  class AWS_FRAUDDETECTOR_API FraudDetectorClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<FraudDetectorClient>
+  class AWS_FRAUDDETECTOR_API FraudDetectorClient : smithy::client::AwsSmithyClientT<Aws::FraudDetector::SERVICE_NAME,
+      Aws::FraudDetector::FraudDetectorClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      FraudDetectorEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::FraudDetectorErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<FraudDetectorClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "FraudDetector"; }
 
       typedef FraudDetectorClientConfiguration ClientConfigurationType;
       typedef FraudDetectorEndpointProvider EndpointProviderType;
@@ -49,14 +62,14 @@ namespace FraudDetector
         * is not specified, it will be initialized to default values.
         */
         FraudDetectorClient(const Aws::FraudDetector::FraudDetectorClientConfiguration& clientConfiguration = Aws::FraudDetector::FraudDetectorClientConfiguration(),
-                            std::shared_ptr<FraudDetectorEndpointProviderBase> endpointProvider = Aws::MakeShared<FraudDetectorEndpointProvider>(ALLOCATION_TAG));
+                            std::shared_ptr<FraudDetectorEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         FraudDetectorClient(const Aws::Auth::AWSCredentials& credentials,
-                            std::shared_ptr<FraudDetectorEndpointProviderBase> endpointProvider = Aws::MakeShared<FraudDetectorEndpointProvider>(ALLOCATION_TAG),
+                            std::shared_ptr<FraudDetectorEndpointProviderBase> endpointProvider = nullptr,
                             const Aws::FraudDetector::FraudDetectorClientConfiguration& clientConfiguration = Aws::FraudDetector::FraudDetectorClientConfiguration());
 
        /**
@@ -64,7 +77,7 @@ namespace FraudDetector
         * the default http client factory will be used
         */
         FraudDetectorClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                            std::shared_ptr<FraudDetectorEndpointProviderBase> endpointProvider = Aws::MakeShared<FraudDetectorEndpointProvider>(ALLOCATION_TAG),
+                            std::shared_ptr<FraudDetectorEndpointProviderBase> endpointProvider = nullptr,
                             const Aws::FraudDetector::FraudDetectorClientConfiguration& clientConfiguration = Aws::FraudDetector::FraudDetectorClientConfiguration());
 
 
@@ -538,7 +551,9 @@ namespace FraudDetector
         /**
          * <p>Deletes the specified event.</p> <p>When you delete an event, Amazon Fraud
          * Detector permanently deletes that event and the event data is no longer stored
-         * in Amazon Fraud Detector.</p><p><h3>See Also:</h3>   <a
+         * in Amazon Fraud Detector. If <code>deleteAuditHistory</code> is
+         * <code>True</code>, event data is available through search for up to 30 seconds
+         * after the delete operation is completed.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/DeleteEvent">AWS
          * API Reference</a></p>
          */
@@ -876,13 +891,13 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/DescribeModelVersions">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeModelVersionsOutcome DescribeModelVersions(const Model::DescribeModelVersionsRequest& request) const;
+        virtual Model::DescribeModelVersionsOutcome DescribeModelVersions(const Model::DescribeModelVersionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeModelVersions that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeModelVersionsRequestT = Model::DescribeModelVersionsRequest>
-        Model::DescribeModelVersionsOutcomeCallable DescribeModelVersionsCallable(const DescribeModelVersionsRequestT& request) const
+        Model::DescribeModelVersionsOutcomeCallable DescribeModelVersionsCallable(const DescribeModelVersionsRequestT& request = {}) const
         {
             return SubmitCallable(&FraudDetectorClient::DescribeModelVersions, request);
         }
@@ -891,7 +906,7 @@ namespace FraudDetector
          * An Async wrapper for DescribeModelVersions that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeModelVersionsRequestT = Model::DescribeModelVersionsRequest>
-        void DescribeModelVersionsAsync(const DescribeModelVersionsRequestT& request, const DescribeModelVersionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeModelVersionsAsync(const DescribeModelVersionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeModelVersionsRequestT& request = {}) const
         {
             return SubmitAsync(&FraudDetectorClient::DescribeModelVersions, request, handler, context);
         }
@@ -908,13 +923,13 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/GetBatchImportJobs">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetBatchImportJobsOutcome GetBatchImportJobs(const Model::GetBatchImportJobsRequest& request) const;
+        virtual Model::GetBatchImportJobsOutcome GetBatchImportJobs(const Model::GetBatchImportJobsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetBatchImportJobs that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetBatchImportJobsRequestT = Model::GetBatchImportJobsRequest>
-        Model::GetBatchImportJobsOutcomeCallable GetBatchImportJobsCallable(const GetBatchImportJobsRequestT& request) const
+        Model::GetBatchImportJobsOutcomeCallable GetBatchImportJobsCallable(const GetBatchImportJobsRequestT& request = {}) const
         {
             return SubmitCallable(&FraudDetectorClient::GetBatchImportJobs, request);
         }
@@ -923,7 +938,7 @@ namespace FraudDetector
          * An Async wrapper for GetBatchImportJobs that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetBatchImportJobsRequestT = Model::GetBatchImportJobsRequest>
-        void GetBatchImportJobsAsync(const GetBatchImportJobsRequestT& request, const GetBatchImportJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetBatchImportJobsAsync(const GetBatchImportJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetBatchImportJobsRequestT& request = {}) const
         {
             return SubmitAsync(&FraudDetectorClient::GetBatchImportJobs, request, handler, context);
         }
@@ -939,13 +954,13 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/GetBatchPredictionJobs">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetBatchPredictionJobsOutcome GetBatchPredictionJobs(const Model::GetBatchPredictionJobsRequest& request) const;
+        virtual Model::GetBatchPredictionJobsOutcome GetBatchPredictionJobs(const Model::GetBatchPredictionJobsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetBatchPredictionJobs that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetBatchPredictionJobsRequestT = Model::GetBatchPredictionJobsRequest>
-        Model::GetBatchPredictionJobsOutcomeCallable GetBatchPredictionJobsCallable(const GetBatchPredictionJobsRequestT& request) const
+        Model::GetBatchPredictionJobsOutcomeCallable GetBatchPredictionJobsCallable(const GetBatchPredictionJobsRequestT& request = {}) const
         {
             return SubmitCallable(&FraudDetectorClient::GetBatchPredictionJobs, request);
         }
@@ -954,7 +969,7 @@ namespace FraudDetector
          * An Async wrapper for GetBatchPredictionJobs that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetBatchPredictionJobsRequestT = Model::GetBatchPredictionJobsRequest>
-        void GetBatchPredictionJobsAsync(const GetBatchPredictionJobsRequestT& request, const GetBatchPredictionJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetBatchPredictionJobsAsync(const GetBatchPredictionJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetBatchPredictionJobsRequestT& request = {}) const
         {
             return SubmitAsync(&FraudDetectorClient::GetBatchPredictionJobs, request, handler, context);
         }
@@ -1021,13 +1036,13 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/GetDetectors">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetDetectorsOutcome GetDetectors(const Model::GetDetectorsRequest& request) const;
+        virtual Model::GetDetectorsOutcome GetDetectors(const Model::GetDetectorsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetDetectors that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetDetectorsRequestT = Model::GetDetectorsRequest>
-        Model::GetDetectorsOutcomeCallable GetDetectorsCallable(const GetDetectorsRequestT& request) const
+        Model::GetDetectorsOutcomeCallable GetDetectorsCallable(const GetDetectorsRequestT& request = {}) const
         {
             return SubmitCallable(&FraudDetectorClient::GetDetectors, request);
         }
@@ -1036,7 +1051,7 @@ namespace FraudDetector
          * An Async wrapper for GetDetectors that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetDetectorsRequestT = Model::GetDetectorsRequest>
-        void GetDetectorsAsync(const GetDetectorsRequestT& request, const GetDetectorsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetDetectorsAsync(const GetDetectorsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetDetectorsRequestT& request = {}) const
         {
             return SubmitAsync(&FraudDetectorClient::GetDetectors, request, handler, context);
         }
@@ -1052,13 +1067,13 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/GetEntityTypes">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetEntityTypesOutcome GetEntityTypes(const Model::GetEntityTypesRequest& request) const;
+        virtual Model::GetEntityTypesOutcome GetEntityTypes(const Model::GetEntityTypesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetEntityTypes that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetEntityTypesRequestT = Model::GetEntityTypesRequest>
-        Model::GetEntityTypesOutcomeCallable GetEntityTypesCallable(const GetEntityTypesRequestT& request) const
+        Model::GetEntityTypesOutcomeCallable GetEntityTypesCallable(const GetEntityTypesRequestT& request = {}) const
         {
             return SubmitCallable(&FraudDetectorClient::GetEntityTypes, request);
         }
@@ -1067,7 +1082,7 @@ namespace FraudDetector
          * An Async wrapper for GetEntityTypes that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetEntityTypesRequestT = Model::GetEntityTypesRequest>
-        void GetEntityTypesAsync(const GetEntityTypesRequestT& request, const GetEntityTypesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetEntityTypesAsync(const GetEntityTypesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetEntityTypesRequestT& request = {}) const
         {
             return SubmitAsync(&FraudDetectorClient::GetEntityTypes, request, handler, context);
         }
@@ -1163,13 +1178,13 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/GetEventTypes">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetEventTypesOutcome GetEventTypes(const Model::GetEventTypesRequest& request) const;
+        virtual Model::GetEventTypesOutcome GetEventTypes(const Model::GetEventTypesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetEventTypes that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetEventTypesRequestT = Model::GetEventTypesRequest>
-        Model::GetEventTypesOutcomeCallable GetEventTypesCallable(const GetEventTypesRequestT& request) const
+        Model::GetEventTypesOutcomeCallable GetEventTypesCallable(const GetEventTypesRequestT& request = {}) const
         {
             return SubmitCallable(&FraudDetectorClient::GetEventTypes, request);
         }
@@ -1178,7 +1193,7 @@ namespace FraudDetector
          * An Async wrapper for GetEventTypes that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetEventTypesRequestT = Model::GetEventTypesRequest>
-        void GetEventTypesAsync(const GetEventTypesRequestT& request, const GetEventTypesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetEventTypesAsync(const GetEventTypesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetEventTypesRequestT& request = {}) const
         {
             return SubmitAsync(&FraudDetectorClient::GetEventTypes, request, handler, context);
         }
@@ -1194,13 +1209,13 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/GetExternalModels">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetExternalModelsOutcome GetExternalModels(const Model::GetExternalModelsRequest& request) const;
+        virtual Model::GetExternalModelsOutcome GetExternalModels(const Model::GetExternalModelsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetExternalModels that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetExternalModelsRequestT = Model::GetExternalModelsRequest>
-        Model::GetExternalModelsOutcomeCallable GetExternalModelsCallable(const GetExternalModelsRequestT& request) const
+        Model::GetExternalModelsOutcomeCallable GetExternalModelsCallable(const GetExternalModelsRequestT& request = {}) const
         {
             return SubmitCallable(&FraudDetectorClient::GetExternalModels, request);
         }
@@ -1209,7 +1224,7 @@ namespace FraudDetector
          * An Async wrapper for GetExternalModels that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetExternalModelsRequestT = Model::GetExternalModelsRequest>
-        void GetExternalModelsAsync(const GetExternalModelsRequestT& request, const GetExternalModelsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetExternalModelsAsync(const GetExternalModelsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetExternalModelsRequestT& request = {}) const
         {
             return SubmitAsync(&FraudDetectorClient::GetExternalModels, request, handler, context);
         }
@@ -1220,25 +1235,26 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/GetKMSEncryptionKey">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetKMSEncryptionKeyOutcome GetKMSEncryptionKey() const;
+        virtual Model::GetKMSEncryptionKeyOutcome GetKMSEncryptionKey(const Model::GetKMSEncryptionKeyRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetKMSEncryptionKey that returns a future to the operation so that it can be executed in parallel to other requests.
          */
-        template<typename = void>
-        Model::GetKMSEncryptionKeyOutcomeCallable GetKMSEncryptionKeyCallable() const
+        template<typename GetKMSEncryptionKeyRequestT = Model::GetKMSEncryptionKeyRequest>
+        Model::GetKMSEncryptionKeyOutcomeCallable GetKMSEncryptionKeyCallable(const GetKMSEncryptionKeyRequestT& request = {}) const
         {
-            return SubmitCallable(&FraudDetectorClient::GetKMSEncryptionKey);
+            return SubmitCallable(&FraudDetectorClient::GetKMSEncryptionKey, request);
         }
 
         /**
          * An Async wrapper for GetKMSEncryptionKey that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
-        template<typename = void>
-        void GetKMSEncryptionKeyAsync(const GetKMSEncryptionKeyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        template<typename GetKMSEncryptionKeyRequestT = Model::GetKMSEncryptionKeyRequest>
+        void GetKMSEncryptionKeyAsync(const GetKMSEncryptionKeyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetKMSEncryptionKeyRequestT& request = {}) const
         {
-            return SubmitAsync(&FraudDetectorClient::GetKMSEncryptionKey, handler, context);
+            return SubmitAsync(&FraudDetectorClient::GetKMSEncryptionKey, request, handler, context);
         }
+
         /**
          * <p>Gets all labels or a specific label if name is provided. This is a paginated
          * API. If you provide a null <code>maxResults</code>, this action retrieves a
@@ -1250,13 +1266,13 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/GetLabels">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetLabelsOutcome GetLabels(const Model::GetLabelsRequest& request) const;
+        virtual Model::GetLabelsOutcome GetLabels(const Model::GetLabelsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetLabels that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetLabelsRequestT = Model::GetLabelsRequest>
-        Model::GetLabelsOutcomeCallable GetLabelsCallable(const GetLabelsRequestT& request) const
+        Model::GetLabelsOutcomeCallable GetLabelsCallable(const GetLabelsRequestT& request = {}) const
         {
             return SubmitCallable(&FraudDetectorClient::GetLabels, request);
         }
@@ -1265,7 +1281,7 @@ namespace FraudDetector
          * An Async wrapper for GetLabels that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetLabelsRequestT = Model::GetLabelsRequest>
-        void GetLabelsAsync(const GetLabelsRequestT& request, const GetLabelsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetLabelsAsync(const GetLabelsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetLabelsRequestT& request = {}) const
         {
             return SubmitAsync(&FraudDetectorClient::GetLabels, request, handler, context);
         }
@@ -1301,13 +1317,13 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/GetListsMetadata">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetListsMetadataOutcome GetListsMetadata(const Model::GetListsMetadataRequest& request) const;
+        virtual Model::GetListsMetadataOutcome GetListsMetadata(const Model::GetListsMetadataRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetListsMetadata that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetListsMetadataRequestT = Model::GetListsMetadataRequest>
-        Model::GetListsMetadataOutcomeCallable GetListsMetadataCallable(const GetListsMetadataRequestT& request) const
+        Model::GetListsMetadataOutcomeCallable GetListsMetadataCallable(const GetListsMetadataRequestT& request = {}) const
         {
             return SubmitCallable(&FraudDetectorClient::GetListsMetadata, request);
         }
@@ -1316,7 +1332,7 @@ namespace FraudDetector
          * An Async wrapper for GetListsMetadata that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetListsMetadataRequestT = Model::GetListsMetadataRequest>
-        void GetListsMetadataAsync(const GetListsMetadataRequestT& request, const GetListsMetadataResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetListsMetadataAsync(const GetListsMetadataResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetListsMetadataRequestT& request = {}) const
         {
             return SubmitAsync(&FraudDetectorClient::GetListsMetadata, request, handler, context);
         }
@@ -1361,13 +1377,13 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/GetModels">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetModelsOutcome GetModels(const Model::GetModelsRequest& request) const;
+        virtual Model::GetModelsOutcome GetModels(const Model::GetModelsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetModels that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetModelsRequestT = Model::GetModelsRequest>
-        Model::GetModelsOutcomeCallable GetModelsCallable(const GetModelsRequestT& request) const
+        Model::GetModelsOutcomeCallable GetModelsCallable(const GetModelsRequestT& request = {}) const
         {
             return SubmitCallable(&FraudDetectorClient::GetModels, request);
         }
@@ -1376,7 +1392,7 @@ namespace FraudDetector
          * An Async wrapper for GetModels that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetModelsRequestT = Model::GetModelsRequest>
-        void GetModelsAsync(const GetModelsRequestT& request, const GetModelsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetModelsAsync(const GetModelsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetModelsRequestT& request = {}) const
         {
             return SubmitAsync(&FraudDetectorClient::GetModels, request, handler, context);
         }
@@ -1391,13 +1407,13 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/GetOutcomes">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetOutcomesOutcome GetOutcomes(const Model::GetOutcomesRequest& request) const;
+        virtual Model::GetOutcomesOutcome GetOutcomes(const Model::GetOutcomesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetOutcomes that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetOutcomesRequestT = Model::GetOutcomesRequest>
-        Model::GetOutcomesOutcomeCallable GetOutcomesCallable(const GetOutcomesRequestT& request) const
+        Model::GetOutcomesOutcomeCallable GetOutcomesCallable(const GetOutcomesRequestT& request = {}) const
         {
             return SubmitCallable(&FraudDetectorClient::GetOutcomes, request);
         }
@@ -1406,7 +1422,7 @@ namespace FraudDetector
          * An Async wrapper for GetOutcomes that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetOutcomesRequestT = Model::GetOutcomesRequest>
-        void GetOutcomesAsync(const GetOutcomesRequestT& request, const GetOutcomesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetOutcomesAsync(const GetOutcomesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetOutcomesRequestT& request = {}) const
         {
             return SubmitAsync(&FraudDetectorClient::GetOutcomes, request, handler, context);
         }
@@ -1454,13 +1470,13 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/GetVariables">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetVariablesOutcome GetVariables(const Model::GetVariablesRequest& request) const;
+        virtual Model::GetVariablesOutcome GetVariables(const Model::GetVariablesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetVariables that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetVariablesRequestT = Model::GetVariablesRequest>
-        Model::GetVariablesOutcomeCallable GetVariablesCallable(const GetVariablesRequestT& request) const
+        Model::GetVariablesOutcomeCallable GetVariablesCallable(const GetVariablesRequestT& request = {}) const
         {
             return SubmitCallable(&FraudDetectorClient::GetVariables, request);
         }
@@ -1469,7 +1485,7 @@ namespace FraudDetector
          * An Async wrapper for GetVariables that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetVariablesRequestT = Model::GetVariablesRequest>
-        void GetVariablesAsync(const GetVariablesRequestT& request, const GetVariablesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetVariablesAsync(const GetVariablesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetVariablesRequestT& request = {}) const
         {
             return SubmitAsync(&FraudDetectorClient::GetVariables, request, handler, context);
         }
@@ -1489,13 +1505,13 @@ namespace FraudDetector
          * href="http://docs.aws.amazon.com/goto/WebAPI/frauddetector-2019-11-15/ListEventPredictions">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListEventPredictionsOutcome ListEventPredictions(const Model::ListEventPredictionsRequest& request) const;
+        virtual Model::ListEventPredictionsOutcome ListEventPredictions(const Model::ListEventPredictionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListEventPredictions that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListEventPredictionsRequestT = Model::ListEventPredictionsRequest>
-        Model::ListEventPredictionsOutcomeCallable ListEventPredictionsCallable(const ListEventPredictionsRequestT& request) const
+        Model::ListEventPredictionsOutcomeCallable ListEventPredictionsCallable(const ListEventPredictionsRequestT& request = {}) const
         {
             return SubmitCallable(&FraudDetectorClient::ListEventPredictions, request);
         }
@@ -1504,7 +1520,7 @@ namespace FraudDetector
          * An Async wrapper for ListEventPredictions that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListEventPredictionsRequestT = Model::ListEventPredictionsRequest>
-        void ListEventPredictionsAsync(const ListEventPredictionsRequestT& request, const ListEventPredictionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListEventPredictionsAsync(const ListEventPredictionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListEventPredictionsRequestT& request = {}) const
         {
             return SubmitAsync(&FraudDetectorClient::ListEventPredictions, request, handler, context);
         }
@@ -2107,11 +2123,7 @@ namespace FraudDetector
       std::shared_ptr<FraudDetectorEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<FraudDetectorClient>;
-      void init(const FraudDetectorClientConfiguration& clientConfiguration);
 
-      FraudDetectorClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<FraudDetectorEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace FraudDetector

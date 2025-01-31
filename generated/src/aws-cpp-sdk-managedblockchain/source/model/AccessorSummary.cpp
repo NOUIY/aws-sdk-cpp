@@ -25,18 +25,14 @@ AccessorSummary::AccessorSummary() :
     m_status(AccessorStatus::NOT_SET),
     m_statusHasBeenSet(false),
     m_creationDateHasBeenSet(false),
-    m_arnHasBeenSet(false)
+    m_arnHasBeenSet(false),
+    m_networkType(AccessorNetworkType::NOT_SET),
+    m_networkTypeHasBeenSet(false)
 {
 }
 
-AccessorSummary::AccessorSummary(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_type(AccessorType::NOT_SET),
-    m_typeHasBeenSet(false),
-    m_status(AccessorStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_creationDateHasBeenSet(false),
-    m_arnHasBeenSet(false)
+AccessorSummary::AccessorSummary(JsonView jsonValue)
+  : AccessorSummary()
 {
   *this = jsonValue;
 }
@@ -78,6 +74,13 @@ AccessorSummary& AccessorSummary::operator =(JsonView jsonValue)
     m_arnHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("NetworkType"))
+  {
+    m_networkType = AccessorNetworkTypeMapper::GetAccessorNetworkTypeForName(jsonValue.GetString("NetworkType"));
+
+    m_networkTypeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -110,6 +113,11 @@ JsonValue AccessorSummary::Jsonize() const
   {
    payload.WithString("Arn", m_arn);
 
+  }
+
+  if(m_networkTypeHasBeenSet)
+  {
+   payload.WithString("NetworkType", AccessorNetworkTypeMapper::GetNameForAccessorNetworkType(m_networkType));
   }
 
   return payload;

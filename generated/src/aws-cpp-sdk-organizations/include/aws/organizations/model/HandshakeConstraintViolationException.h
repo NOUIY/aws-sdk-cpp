@@ -33,7 +33,7 @@ namespace Model
    * still count toward your limit.</p>  <p>If you get this exception
    * immediately after creating the organization, wait one hour and try again. If
    * after an hour it continues to fail with this error, contact <a
-   * href="https://docs.aws.amazon.com/support/home#/">Amazon Web Services
+   * href="https://console.aws.amazon.com/support/home#/">Amazon Web Services
    * Support</a>.</p>  </li> <li> <p>ALREADY_IN_AN_ORGANIZATION: The
    * handshake request is invalid because the invited account is already a member of
    * an organization.</p> </li> <li> <p>HANDSHAKE_RATE_LIMIT_EXCEEDED: You attempted
@@ -68,49 +68,27 @@ namespace Model
     AWS_ORGANIZATIONS_API Aws::Utils::Json::JsonValue Jsonize() const;
 
 
+    ///@{
     
     inline const Aws::String& GetMessage() const{ return m_message; }
-
-    
     inline bool MessageHasBeenSet() const { return m_messageHasBeenSet; }
-
-    
     inline void SetMessage(const Aws::String& value) { m_messageHasBeenSet = true; m_message = value; }
-
-    
     inline void SetMessage(Aws::String&& value) { m_messageHasBeenSet = true; m_message = std::move(value); }
-
-    
     inline void SetMessage(const char* value) { m_messageHasBeenSet = true; m_message.assign(value); }
-
-    
     inline HandshakeConstraintViolationException& WithMessage(const Aws::String& value) { SetMessage(value); return *this;}
-
-    
     inline HandshakeConstraintViolationException& WithMessage(Aws::String&& value) { SetMessage(std::move(value)); return *this;}
-
-    
     inline HandshakeConstraintViolationException& WithMessage(const char* value) { SetMessage(value); return *this;}
+    ///@}
 
-
+    ///@{
     
     inline const HandshakeConstraintViolationExceptionReason& GetReason() const{ return m_reason; }
-
-    
     inline bool ReasonHasBeenSet() const { return m_reasonHasBeenSet; }
-
-    
     inline void SetReason(const HandshakeConstraintViolationExceptionReason& value) { m_reasonHasBeenSet = true; m_reason = value; }
-
-    
     inline void SetReason(HandshakeConstraintViolationExceptionReason&& value) { m_reasonHasBeenSet = true; m_reason = std::move(value); }
-
-    
     inline HandshakeConstraintViolationException& WithReason(const HandshakeConstraintViolationExceptionReason& value) { SetReason(value); return *this;}
-
-    
     inline HandshakeConstraintViolationException& WithReason(HandshakeConstraintViolationExceptionReason&& value) { SetReason(std::move(value)); return *this;}
-
+    ///@}
   private:
 
     Aws::String m_message;

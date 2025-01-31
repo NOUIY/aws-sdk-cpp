@@ -8,6 +8,7 @@
 #include <aws/cleanrooms/CleanRoomsRequest.h>
 #include <aws/core/utils/memory/stl/AWSString.h>
 #include <aws/cleanrooms/model/MembershipQueryLogStatus.h>
+#include <aws/cleanrooms/model/MembershipProtectedQueryResultConfiguration.h>
 #include <utility>
 
 namespace Aws
@@ -33,83 +34,45 @@ namespace Model
     AWS_CLEANROOMS_API Aws::String SerializePayload() const override;
 
 
+    ///@{
     /**
      * <p>The unique identifier of the membership.</p>
      */
     inline const Aws::String& GetMembershipIdentifier() const{ return m_membershipIdentifier; }
-
-    /**
-     * <p>The unique identifier of the membership.</p>
-     */
     inline bool MembershipIdentifierHasBeenSet() const { return m_membershipIdentifierHasBeenSet; }
-
-    /**
-     * <p>The unique identifier of the membership.</p>
-     */
     inline void SetMembershipIdentifier(const Aws::String& value) { m_membershipIdentifierHasBeenSet = true; m_membershipIdentifier = value; }
-
-    /**
-     * <p>The unique identifier of the membership.</p>
-     */
     inline void SetMembershipIdentifier(Aws::String&& value) { m_membershipIdentifierHasBeenSet = true; m_membershipIdentifier = std::move(value); }
-
-    /**
-     * <p>The unique identifier of the membership.</p>
-     */
     inline void SetMembershipIdentifier(const char* value) { m_membershipIdentifierHasBeenSet = true; m_membershipIdentifier.assign(value); }
-
-    /**
-     * <p>The unique identifier of the membership.</p>
-     */
     inline UpdateMembershipRequest& WithMembershipIdentifier(const Aws::String& value) { SetMembershipIdentifier(value); return *this;}
-
-    /**
-     * <p>The unique identifier of the membership.</p>
-     */
     inline UpdateMembershipRequest& WithMembershipIdentifier(Aws::String&& value) { SetMembershipIdentifier(std::move(value)); return *this;}
-
-    /**
-     * <p>The unique identifier of the membership.</p>
-     */
     inline UpdateMembershipRequest& WithMembershipIdentifier(const char* value) { SetMembershipIdentifier(value); return *this;}
+    ///@}
 
-
+    ///@{
     /**
      * <p>An indicator as to whether query logging has been enabled or disabled for the
-     * collaboration.</p>
+     * membership.</p>
      */
     inline const MembershipQueryLogStatus& GetQueryLogStatus() const{ return m_queryLogStatus; }
-
-    /**
-     * <p>An indicator as to whether query logging has been enabled or disabled for the
-     * collaboration.</p>
-     */
     inline bool QueryLogStatusHasBeenSet() const { return m_queryLogStatusHasBeenSet; }
-
-    /**
-     * <p>An indicator as to whether query logging has been enabled or disabled for the
-     * collaboration.</p>
-     */
     inline void SetQueryLogStatus(const MembershipQueryLogStatus& value) { m_queryLogStatusHasBeenSet = true; m_queryLogStatus = value; }
-
-    /**
-     * <p>An indicator as to whether query logging has been enabled or disabled for the
-     * collaboration.</p>
-     */
     inline void SetQueryLogStatus(MembershipQueryLogStatus&& value) { m_queryLogStatusHasBeenSet = true; m_queryLogStatus = std::move(value); }
-
-    /**
-     * <p>An indicator as to whether query logging has been enabled or disabled for the
-     * collaboration.</p>
-     */
     inline UpdateMembershipRequest& WithQueryLogStatus(const MembershipQueryLogStatus& value) { SetQueryLogStatus(value); return *this;}
-
-    /**
-     * <p>An indicator as to whether query logging has been enabled or disabled for the
-     * collaboration.</p>
-     */
     inline UpdateMembershipRequest& WithQueryLogStatus(MembershipQueryLogStatus&& value) { SetQueryLogStatus(std::move(value)); return *this;}
+    ///@}
 
+    ///@{
+    /**
+     * <p>The default protected query result configuration as specified by the member
+     * who can receive results.</p>
+     */
+    inline const MembershipProtectedQueryResultConfiguration& GetDefaultResultConfiguration() const{ return m_defaultResultConfiguration; }
+    inline bool DefaultResultConfigurationHasBeenSet() const { return m_defaultResultConfigurationHasBeenSet; }
+    inline void SetDefaultResultConfiguration(const MembershipProtectedQueryResultConfiguration& value) { m_defaultResultConfigurationHasBeenSet = true; m_defaultResultConfiguration = value; }
+    inline void SetDefaultResultConfiguration(MembershipProtectedQueryResultConfiguration&& value) { m_defaultResultConfigurationHasBeenSet = true; m_defaultResultConfiguration = std::move(value); }
+    inline UpdateMembershipRequest& WithDefaultResultConfiguration(const MembershipProtectedQueryResultConfiguration& value) { SetDefaultResultConfiguration(value); return *this;}
+    inline UpdateMembershipRequest& WithDefaultResultConfiguration(MembershipProtectedQueryResultConfiguration&& value) { SetDefaultResultConfiguration(std::move(value)); return *this;}
+    ///@}
   private:
 
     Aws::String m_membershipIdentifier;
@@ -117,6 +80,9 @@ namespace Model
 
     MembershipQueryLogStatus m_queryLogStatus;
     bool m_queryLogStatusHasBeenSet = false;
+
+    MembershipProtectedQueryResultConfiguration m_defaultResultConfiguration;
+    bool m_defaultResultConfigurationHasBeenSet = false;
   };
 
 } // namespace Model

@@ -6,24 +6,36 @@
 #pragma once
 #include <aws/kinesis-video-media/KinesisVideoMedia_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/kinesis-video-media/KinesisVideoMediaServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/kinesis-video-media/KinesisVideoMediaErrorMarshaller.h>
 
 namespace Aws
 {
 namespace KinesisVideoMedia
 {
+  AWS_KINESISVIDEOMEDIA_API extern const char SERVICE_NAME[];
   /**
    * <p/>
    */
-  class AWS_KINESISVIDEOMEDIA_API KinesisVideoMediaClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<KinesisVideoMediaClient>
+  class AWS_KINESISVIDEOMEDIA_API KinesisVideoMediaClient : smithy::client::AwsSmithyClientT<Aws::KinesisVideoMedia::SERVICE_NAME,
+      Aws::KinesisVideoMedia::KinesisVideoMediaClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      KinesisVideoMediaEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::KinesisVideoMediaErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<KinesisVideoMediaClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Kinesis Video Media"; }
 
       typedef KinesisVideoMediaClientConfiguration ClientConfigurationType;
       typedef KinesisVideoMediaEndpointProvider EndpointProviderType;
@@ -33,14 +45,14 @@ namespace KinesisVideoMedia
         * is not specified, it will be initialized to default values.
         */
         KinesisVideoMediaClient(const Aws::KinesisVideoMedia::KinesisVideoMediaClientConfiguration& clientConfiguration = Aws::KinesisVideoMedia::KinesisVideoMediaClientConfiguration(),
-                                std::shared_ptr<KinesisVideoMediaEndpointProviderBase> endpointProvider = Aws::MakeShared<KinesisVideoMediaEndpointProvider>(ALLOCATION_TAG));
+                                std::shared_ptr<KinesisVideoMediaEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         KinesisVideoMediaClient(const Aws::Auth::AWSCredentials& credentials,
-                                std::shared_ptr<KinesisVideoMediaEndpointProviderBase> endpointProvider = Aws::MakeShared<KinesisVideoMediaEndpointProvider>(ALLOCATION_TAG),
+                                std::shared_ptr<KinesisVideoMediaEndpointProviderBase> endpointProvider = nullptr,
                                 const Aws::KinesisVideoMedia::KinesisVideoMediaClientConfiguration& clientConfiguration = Aws::KinesisVideoMedia::KinesisVideoMediaClientConfiguration());
 
        /**
@@ -48,7 +60,7 @@ namespace KinesisVideoMedia
         * the default http client factory will be used
         */
         KinesisVideoMediaClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                std::shared_ptr<KinesisVideoMediaEndpointProviderBase> endpointProvider = Aws::MakeShared<KinesisVideoMediaEndpointProvider>(ALLOCATION_TAG),
+                                std::shared_ptr<KinesisVideoMediaEndpointProviderBase> endpointProvider = nullptr,
                                 const Aws::KinesisVideoMedia::KinesisVideoMediaClientConfiguration& clientConfiguration = Aws::KinesisVideoMedia::KinesisVideoMediaClientConfiguration());
 
 
@@ -137,11 +149,7 @@ namespace KinesisVideoMedia
       std::shared_ptr<KinesisVideoMediaEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<KinesisVideoMediaClient>;
-      void init(const KinesisVideoMediaClientConfiguration& clientConfiguration);
 
-      KinesisVideoMediaClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<KinesisVideoMediaEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace KinesisVideoMedia

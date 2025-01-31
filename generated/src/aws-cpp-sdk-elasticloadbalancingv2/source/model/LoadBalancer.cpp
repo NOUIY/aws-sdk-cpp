@@ -36,27 +36,15 @@ LoadBalancer::LoadBalancer() :
     m_securityGroupsHasBeenSet(false),
     m_ipAddressType(IpAddressType::NOT_SET),
     m_ipAddressTypeHasBeenSet(false),
-    m_customerOwnedIpv4PoolHasBeenSet(false)
+    m_customerOwnedIpv4PoolHasBeenSet(false),
+    m_enforceSecurityGroupInboundRulesOnPrivateLinkTrafficHasBeenSet(false),
+    m_enablePrefixForIpv6SourceNat(EnablePrefixForIpv6SourceNatEnum::NOT_SET),
+    m_enablePrefixForIpv6SourceNatHasBeenSet(false)
 {
 }
 
-LoadBalancer::LoadBalancer(const XmlNode& xmlNode) : 
-    m_loadBalancerArnHasBeenSet(false),
-    m_dNSNameHasBeenSet(false),
-    m_canonicalHostedZoneIdHasBeenSet(false),
-    m_createdTimeHasBeenSet(false),
-    m_loadBalancerNameHasBeenSet(false),
-    m_scheme(LoadBalancerSchemeEnum::NOT_SET),
-    m_schemeHasBeenSet(false),
-    m_vpcIdHasBeenSet(false),
-    m_stateHasBeenSet(false),
-    m_type(LoadBalancerTypeEnum::NOT_SET),
-    m_typeHasBeenSet(false),
-    m_availabilityZonesHasBeenSet(false),
-    m_securityGroupsHasBeenSet(false),
-    m_ipAddressType(IpAddressType::NOT_SET),
-    m_ipAddressTypeHasBeenSet(false),
-    m_customerOwnedIpv4PoolHasBeenSet(false)
+LoadBalancer::LoadBalancer(const XmlNode& xmlNode)
+  : LoadBalancer()
 {
   *this = xmlNode;
 }
@@ -157,6 +145,18 @@ LoadBalancer& LoadBalancer::operator =(const XmlNode& xmlNode)
       m_customerOwnedIpv4Pool = Aws::Utils::Xml::DecodeEscapedXmlText(customerOwnedIpv4PoolNode.GetText());
       m_customerOwnedIpv4PoolHasBeenSet = true;
     }
+    XmlNode enforceSecurityGroupInboundRulesOnPrivateLinkTrafficNode = resultNode.FirstChild("EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic");
+    if(!enforceSecurityGroupInboundRulesOnPrivateLinkTrafficNode.IsNull())
+    {
+      m_enforceSecurityGroupInboundRulesOnPrivateLinkTraffic = Aws::Utils::Xml::DecodeEscapedXmlText(enforceSecurityGroupInboundRulesOnPrivateLinkTrafficNode.GetText());
+      m_enforceSecurityGroupInboundRulesOnPrivateLinkTrafficHasBeenSet = true;
+    }
+    XmlNode enablePrefixForIpv6SourceNatNode = resultNode.FirstChild("EnablePrefixForIpv6SourceNat");
+    if(!enablePrefixForIpv6SourceNatNode.IsNull())
+    {
+      m_enablePrefixForIpv6SourceNat = EnablePrefixForIpv6SourceNatEnumMapper::GetEnablePrefixForIpv6SourceNatEnumForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(enablePrefixForIpv6SourceNatNode.GetText()).c_str()).c_str());
+      m_enablePrefixForIpv6SourceNatHasBeenSet = true;
+    }
   }
 
   return *this;
@@ -241,6 +241,16 @@ void LoadBalancer::OutputToStream(Aws::OStream& oStream, const char* location, u
       oStream << location << index << locationValue << ".CustomerOwnedIpv4Pool=" << StringUtils::URLEncode(m_customerOwnedIpv4Pool.c_str()) << "&";
   }
 
+  if(m_enforceSecurityGroupInboundRulesOnPrivateLinkTrafficHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic=" << StringUtils::URLEncode(m_enforceSecurityGroupInboundRulesOnPrivateLinkTraffic.c_str()) << "&";
+  }
+
+  if(m_enablePrefixForIpv6SourceNatHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".EnablePrefixForIpv6SourceNat=" << EnablePrefixForIpv6SourceNatEnumMapper::GetNameForEnablePrefixForIpv6SourceNatEnum(m_enablePrefixForIpv6SourceNat) << "&";
+  }
+
 }
 
 void LoadBalancer::OutputToStream(Aws::OStream& oStream, const char* location) const
@@ -308,6 +318,14 @@ void LoadBalancer::OutputToStream(Aws::OStream& oStream, const char* location) c
   if(m_customerOwnedIpv4PoolHasBeenSet)
   {
       oStream << location << ".CustomerOwnedIpv4Pool=" << StringUtils::URLEncode(m_customerOwnedIpv4Pool.c_str()) << "&";
+  }
+  if(m_enforceSecurityGroupInboundRulesOnPrivateLinkTrafficHasBeenSet)
+  {
+      oStream << location << ".EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic=" << StringUtils::URLEncode(m_enforceSecurityGroupInboundRulesOnPrivateLinkTraffic.c_str()) << "&";
+  }
+  if(m_enablePrefixForIpv6SourceNatHasBeenSet)
+  {
+      oStream << location << ".EnablePrefixForIpv6SourceNat=" << EnablePrefixForIpv6SourceNatEnumMapper::GetNameForEnablePrefixForIpv6SourceNatEnum(m_enablePrefixForIpv6SourceNat) << "&";
   }
 }
 

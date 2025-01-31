@@ -18,14 +18,14 @@ using namespace Aws::Utils;
 using namespace Aws;
 
 DescribeAutoMLJobV2Result::DescribeAutoMLJobV2Result() : 
+    m_autoMLProblemTypeConfigName(AutoMLProblemTypeConfigName::NOT_SET),
     m_autoMLJobStatus(AutoMLJobStatus::NOT_SET),
     m_autoMLJobSecondaryStatus(AutoMLJobSecondaryStatus::NOT_SET)
 {
 }
 
-DescribeAutoMLJobV2Result::DescribeAutoMLJobV2Result(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_autoMLJobStatus(AutoMLJobStatus::NOT_SET),
-    m_autoMLJobSecondaryStatus(AutoMLJobSecondaryStatus::NOT_SET)
+DescribeAutoMLJobV2Result::DescribeAutoMLJobV2Result(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeAutoMLJobV2Result()
 {
   *this = result;
 }
@@ -75,6 +75,12 @@ DescribeAutoMLJobV2Result& DescribeAutoMLJobV2Result::operator =(const Aws::Amaz
   if(jsonValue.ValueExists("AutoMLProblemTypeConfig"))
   {
     m_autoMLProblemTypeConfig = jsonValue.GetObject("AutoMLProblemTypeConfig");
+
+  }
+
+  if(jsonValue.ValueExists("AutoMLProblemTypeConfigName"))
+  {
+    m_autoMLProblemTypeConfigName = AutoMLProblemTypeConfigNameMapper::GetAutoMLProblemTypeConfigNameForName(jsonValue.GetString("AutoMLProblemTypeConfigName"));
 
   }
 
@@ -129,6 +135,18 @@ DescribeAutoMLJobV2Result& DescribeAutoMLJobV2Result::operator =(const Aws::Amaz
 
   }
 
+  if(jsonValue.ValueExists("AutoMLJobArtifacts"))
+  {
+    m_autoMLJobArtifacts = jsonValue.GetObject("AutoMLJobArtifacts");
+
+  }
+
+  if(jsonValue.ValueExists("ResolvedAttributes"))
+  {
+    m_resolvedAttributes = jsonValue.GetObject("ResolvedAttributes");
+
+  }
+
   if(jsonValue.ValueExists("ModelDeployConfig"))
   {
     m_modelDeployConfig = jsonValue.GetObject("ModelDeployConfig");
@@ -150,6 +168,12 @@ DescribeAutoMLJobV2Result& DescribeAutoMLJobV2Result::operator =(const Aws::Amaz
   if(jsonValue.ValueExists("SecurityConfig"))
   {
     m_securityConfig = jsonValue.GetObject("SecurityConfig");
+
+  }
+
+  if(jsonValue.ValueExists("AutoMLComputeConfig"))
+  {
+    m_autoMLComputeConfig = jsonValue.GetObject("AutoMLComputeConfig");
 
   }
 

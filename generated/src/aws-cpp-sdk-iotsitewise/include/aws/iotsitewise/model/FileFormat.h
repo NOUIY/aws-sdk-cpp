@@ -6,6 +6,7 @@
 #pragma once
 #include <aws/iotsitewise/IoTSiteWise_EXPORTS.h>
 #include <aws/iotsitewise/model/Csv.h>
+#include <aws/iotsitewise/model/Parquet.h>
 #include <utility>
 
 namespace Aws
@@ -24,7 +25,7 @@ namespace Model
 {
 
   /**
-   * <p>The file format of the data.</p><p><h3>See Also:</h3>   <a
+   * <p>The file format of the data in S3.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/iotsitewise-2019-12-02/FileFormat">AWS
    * API Reference</a></p>
    */
@@ -37,40 +38,36 @@ namespace Model
     AWS_IOTSITEWISE_API Aws::Utils::Json::JsonValue Jsonize() const;
 
 
+    ///@{
     /**
-     * <p>The .csv file format.</p>
+     * <p>The file is in .CSV format.</p>
      */
     inline const Csv& GetCsv() const{ return m_csv; }
-
-    /**
-     * <p>The .csv file format.</p>
-     */
     inline bool CsvHasBeenSet() const { return m_csvHasBeenSet; }
-
-    /**
-     * <p>The .csv file format.</p>
-     */
     inline void SetCsv(const Csv& value) { m_csvHasBeenSet = true; m_csv = value; }
-
-    /**
-     * <p>The .csv file format.</p>
-     */
     inline void SetCsv(Csv&& value) { m_csvHasBeenSet = true; m_csv = std::move(value); }
-
-    /**
-     * <p>The .csv file format.</p>
-     */
     inline FileFormat& WithCsv(const Csv& value) { SetCsv(value); return *this;}
-
-    /**
-     * <p>The .csv file format.</p>
-     */
     inline FileFormat& WithCsv(Csv&& value) { SetCsv(std::move(value)); return *this;}
+    ///@}
 
+    ///@{
+    /**
+     * <p>The file is in parquet format.</p>
+     */
+    inline const Parquet& GetParquet() const{ return m_parquet; }
+    inline bool ParquetHasBeenSet() const { return m_parquetHasBeenSet; }
+    inline void SetParquet(const Parquet& value) { m_parquetHasBeenSet = true; m_parquet = value; }
+    inline void SetParquet(Parquet&& value) { m_parquetHasBeenSet = true; m_parquet = std::move(value); }
+    inline FileFormat& WithParquet(const Parquet& value) { SetParquet(value); return *this;}
+    inline FileFormat& WithParquet(Parquet&& value) { SetParquet(std::move(value)); return *this;}
+    ///@}
   private:
 
     Csv m_csv;
     bool m_csvHasBeenSet = false;
+
+    Parquet m_parquet;
+    bool m_parquetHasBeenSet = false;
   };
 
 } // namespace Model

@@ -6,60 +6,68 @@
 #pragma once
 #include <aws/codecommit/CodeCommit_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/codecommit/CodeCommitServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/codecommit/CodeCommitErrorMarshaller.h>
 
 namespace Aws
 {
 namespace CodeCommit
 {
+  AWS_CODECOMMIT_API extern const char SERVICE_NAME[];
   /**
-   * <fullname>AWS CodeCommit</fullname> <p>This is the <i>AWS CodeCommit API
-   * Reference</i>. This reference provides descriptions of the operations and data
-   * types for AWS CodeCommit API along with usage examples.</p> <p>You can use the
-   * AWS CodeCommit API to work with the following objects:</p> <p>Repositories, by
-   * calling the following:</p> <ul> <li> <p> <a>BatchGetRepositories</a>, which
-   * returns information about one or more repositories associated with your AWS
-   * account.</p> </li> <li> <p> <a>CreateRepository</a>, which creates an AWS
+   * <fullname>CodeCommit</fullname> <p>This is the <i>CodeCommit API Reference</i>.
+   * This reference provides descriptions of the operations and data types for
+   * CodeCommit API along with usage examples.</p> <p>You can use the CodeCommit API
+   * to work with the following objects:</p> <p>Repositories, by calling the
+   * following:</p> <ul> <li> <p> <a>BatchGetRepositories</a>, which returns
+   * information about one or more repositories associated with your Amazon Web
+   * Services account.</p> </li> <li> <p> <a>CreateRepository</a>, which creates an
    * CodeCommit repository.</p> </li> <li> <p> <a>DeleteRepository</a>, which deletes
-   * an AWS CodeCommit repository.</p> </li> <li> <p> <a>GetRepository</a>, which
-   * returns information about a specified repository.</p> </li> <li> <p>
-   * <a>ListRepositories</a>, which lists all AWS CodeCommit repositories associated
-   * with your AWS account.</p> </li> <li> <p> <a>UpdateRepositoryDescription</a>,
-   * which sets or updates the description of the repository.</p> </li> <li> <p>
-   * <a>UpdateRepositoryName</a>, which changes the name of the repository. If you
-   * change the name of a repository, no other users of that repository can access it
-   * until you send them the new HTTPS or SSH URL to use.</p> </li> </ul>
-   * <p>Branches, by calling the following:</p> <ul> <li> <p> <a>CreateBranch</a>,
-   * which creates a branch in a specified repository.</p> </li> <li> <p>
-   * <a>DeleteBranch</a>, which deletes the specified branch in a repository unless
-   * it is the default branch.</p> </li> <li> <p> <a>GetBranch</a>, which returns
-   * information about a specified branch.</p> </li> <li> <p> <a>ListBranches</a>,
-   * which lists all branches for a specified repository.</p> </li> <li> <p>
-   * <a>UpdateDefaultBranch</a>, which changes the default branch for a
-   * repository.</p> </li> </ul> <p>Files, by calling the following:</p> <ul> <li>
+   * an CodeCommit repository.</p> </li> <li> <p> <a>GetRepository</a>, which returns
+   * information about a specified repository.</p> </li> <li> <p>
+   * <a>ListRepositories</a>, which lists all CodeCommit repositories associated with
+   * your Amazon Web Services account.</p> </li> <li> <p>
+   * <a>UpdateRepositoryDescription</a>, which sets or updates the description of the
+   * repository.</p> </li> <li> <p> <a>UpdateRepositoryEncryptionKey</a>, which
+   * updates the Key Management Service encryption key used to encrypt and decrypt a
+   * repository.</p> </li> <li> <p> <a>UpdateRepositoryName</a>, which changes the
+   * name of the repository. If you change the name of a repository, no other users
+   * of that repository can access it until you send them the new HTTPS or SSH URL to
+   * use.</p> </li> </ul> <p>Branches, by calling the following:</p> <ul> <li> <p>
+   * <a>CreateBranch</a>, which creates a branch in a specified repository.</p> </li>
+   * <li> <p> <a>DeleteBranch</a>, which deletes the specified branch in a repository
+   * unless it is the default branch.</p> </li> <li> <p> <a>GetBranch</a>, which
+   * returns information about a specified branch.</p> </li> <li> <p>
+   * <a>ListBranches</a>, which lists all branches for a specified repository.</p>
+   * </li> <li> <p> <a>UpdateDefaultBranch</a>, which changes the default branch for
+   * a repository.</p> </li> </ul> <p>Files, by calling the following:</p> <ul> <li>
    * <p> <a>DeleteFile</a>, which deletes the content of a specified file from a
    * specified branch.</p> </li> <li> <p> <a>GetBlob</a>, which returns the base-64
    * encoded content of an individual Git blob object in a repository.</p> </li> <li>
    * <p> <a>GetFile</a>, which returns the base-64 encoded content of a specified
    * file.</p> </li> <li> <p> <a>GetFolder</a>, which returns the contents of a
-   * specified folder or directory.</p> </li> <li> <p> <a>PutFile</a>, which adds or
-   * modifies a single file in a specified repository and branch.</p> </li> </ul>
-   * <p>Commits, by calling the following:</p> <ul> <li> <p> <a>BatchGetCommits</a>,
-   * which returns information about one or more commits in a repository.</p> </li>
-   * <li> <p> <a>CreateCommit</a>, which creates a commit for changes to a
-   * repository.</p> </li> <li> <p> <a>GetCommit</a>, which returns information about
-   * a commit, including commit messages and author and committer information.</p>
-   * </li> <li> <p> <a>GetDifferences</a>, which returns information about the
-   * differences in a valid commit specifier (such as a branch, tag, HEAD, commit ID,
-   * or other fully qualified reference).</p> </li> </ul> <p>Merges, by calling the
-   * following:</p> <ul> <li> <p> <a>BatchDescribeMergeConflicts</a>, which returns
-   * information about conflicts in a merge between commits in a repository.</p>
-   * </li> <li> <p> <a>CreateUnreferencedMergeCommit</a>, which creates an
-   * unreferenced commit between two branches or commits for the purpose of comparing
-   * them and identifying any potential conflicts.</p> </li> <li> <p>
+   * specified folder or directory.</p> </li> <li> <p> <a>ListFileCommitHistory</a>,
+   * which retrieves a list of commits and changes to a specified file. </p> </li>
+   * <li> <p> <a>PutFile</a>, which adds or modifies a single file in a specified
+   * repository and branch.</p> </li> </ul> <p>Commits, by calling the following:</p>
+   * <ul> <li> <p> <a>BatchGetCommits</a>, which returns information about one or
+   * more commits in a repository.</p> </li> <li> <p> <a>CreateCommit</a>, which
+   * creates a commit for changes to a repository.</p> </li> <li> <p>
+   * <a>GetCommit</a>, which returns information about a commit, including commit
+   * messages and author and committer information.</p> </li> <li> <p>
+   * <a>GetDifferences</a>, which returns information about the differences in a
+   * valid commit specifier (such as a branch, tag, HEAD, commit ID, or other fully
+   * qualified reference).</p> </li> </ul> <p>Merges, by calling the following:</p>
+   * <ul> <li> <p> <a>BatchDescribeMergeConflicts</a>, which returns information
+   * about conflicts in a merge between commits in a repository.</p> </li> <li> <p>
+   * <a>CreateUnreferencedMergeCommit</a>, which creates an unreferenced commit
+   * between two branches or commits for the purpose of comparing them and
+   * identifying any potential conflicts.</p> </li> <li> <p>
    * <a>DescribeMergeConflicts</a>, which returns information about merge conflicts
    * between the base, source, and destination versions of a file in a potential
    * merge.</p> </li> <li> <p> <a>GetMergeCommit</a>, which returns information about
@@ -96,7 +104,7 @@ namespace CodeCommit
    * that pull request using the fast-forward merge option.</p> </li> <li> <p>
    * <a>MergePullRequestBySquash</a>, which merges the source destination branch of a
    * pull request into the specified destination branch for that pull request using
-   * the squash merge option.</p> </li> <li> <p> <a>MergePullRequestByThreeWay</a>.
+   * the squash merge option.</p> </li> <li> <p> <a>MergePullRequestByThreeWay</a>,
    * which merges the source destination branch of a pull request into the specified
    * destination branch for that pull request using the three-way merge option.</p>
    * </li> <li> <p> <a>OverridePullRequestApprovalRules</a>, which sets aside all
@@ -113,31 +121,31 @@ namespace CodeCommit
    * request.</p> </li> </ul> <p>Approval rule templates, by calling the
    * following:</p> <ul> <li> <p> <a>AssociateApprovalRuleTemplateWithRepository</a>,
    * which associates a template with a specified repository. After the template is
-   * associated with a repository, AWS CodeCommit creates approval rules that match
-   * the template conditions on every pull request created in the specified
+   * associated with a repository, CodeCommit creates approval rules that match the
+   * template conditions on every pull request created in the specified
    * repository.</p> </li> <li> <p>
    * <a>BatchAssociateApprovalRuleTemplateWithRepositories</a>, which associates a
    * template with one or more specified repositories. After the template is
-   * associated with a repository, AWS CodeCommit creates approval rules that match
-   * the template conditions on every pull request created in the specified
+   * associated with a repository, CodeCommit creates approval rules that match the
+   * template conditions on every pull request created in the specified
    * repositories.</p> </li> <li> <p>
    * <a>BatchDisassociateApprovalRuleTemplateFromRepositories</a>, which removes the
    * association between a template and specified repositories so that approval rules
    * based on the template are not automatically created when pull requests are
    * created in those repositories.</p> </li> <li> <p>
    * <a>CreateApprovalRuleTemplate</a>, which creates a template for approval rules
-   * that can then be associated with one or more repositories in your AWS
-   * account.</p> </li> <li> <p> <a>DeleteApprovalRuleTemplate</a>, which deletes the
-   * specified template. It does not remove approval rules on pull requests already
-   * created with the template.</p> </li> <li> <p>
+   * that can then be associated with one or more repositories in your Amazon Web
+   * Services account.</p> </li> <li> <p> <a>DeleteApprovalRuleTemplate</a>, which
+   * deletes the specified template. It does not remove approval rules on pull
+   * requests already created with the template.</p> </li> <li> <p>
    * <a>DisassociateApprovalRuleTemplateFromRepository</a>, which removes the
    * association between a template and a repository so that approval rules based on
    * the template are not automatically created when pull requests are created in the
    * specified repository.</p> </li> <li> <p> <a>GetApprovalRuleTemplate</a>, which
    * returns information about an approval rule template.</p> </li> <li> <p>
    * <a>ListApprovalRuleTemplates</a>, which lists all approval rule templates in the
-   * AWS Region in your AWS account.</p> </li> <li> <p>
-   * <a>ListAssociatedApprovalRuleTemplatesForRepository</a>, which lists all
+   * Amazon Web Services Region in your Amazon Web Services account.</p> </li> <li>
+   * <p> <a>ListAssociatedApprovalRuleTemplatesForRepository</a>, which lists all
    * approval rule templates that are associated with a specified repository.</p>
    * </li> <li> <p> <a>ListRepositoriesForApprovalRuleTemplate</a>, which lists all
    * repositories associated with the specified approval rule template.</p> </li>
@@ -159,28 +167,36 @@ namespace CodeCommit
    * <a>PutCommentReaction</a>, which creates or updates an emoji reaction to a
    * comment.</p> </li> <li> <p> <a>UpdateComment</a>, which updates the content of a
    * comment on a commit in a repository.</p> </li> </ul> <p>Tags used to tag
-   * resources in AWS CodeCommit (not Git tags), by calling the following:</p> <ul>
-   * <li> <p> <a>ListTagsForResource</a>, which gets information about AWS tags for a
-   * specified Amazon Resource Name (ARN) in AWS CodeCommit.</p> </li> <li> <p>
-   * <a>TagResource</a>, which adds or updates tags for a resource in AWS
+   * resources in CodeCommit (not Git tags), by calling the following:</p> <ul> <li>
+   * <p> <a>ListTagsForResource</a>, which gets information about Amazon Web
+   * Servicestags for a specified Amazon Resource Name (ARN) in CodeCommit.</p> </li>
+   * <li> <p> <a>TagResource</a>, which adds or updates tags for a resource in
    * CodeCommit.</p> </li> <li> <p> <a>UntagResource</a>, which removes tags for a
-   * resource in AWS CodeCommit.</p> </li> </ul> <p>Triggers, by calling the
+   * resource in CodeCommit.</p> </li> </ul> <p>Triggers, by calling the
    * following:</p> <ul> <li> <p> <a>GetRepositoryTriggers</a>, which returns
    * information about triggers configured for a repository.</p> </li> <li> <p>
    * <a>PutRepositoryTriggers</a>, which replaces all triggers for a repository and
    * can be used to create or delete triggers.</p> </li> <li> <p>
    * <a>TestRepositoryTriggers</a>, which tests the functionality of a repository
    * trigger by sending data to the trigger target.</p> </li> </ul> <p>For
-   * information about how to use AWS CodeCommit, see the <a
-   * href="https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html">AWS
-   * CodeCommit User Guide</a>.</p>
+   * information about how to use CodeCommit, see the <a
+   * href="https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html">CodeCommit
+   * User Guide</a>.</p>
    */
-  class AWS_CODECOMMIT_API CodeCommitClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<CodeCommitClient>
+  class AWS_CODECOMMIT_API CodeCommitClient : smithy::client::AwsSmithyClientT<Aws::CodeCommit::SERVICE_NAME,
+      Aws::CodeCommit::CodeCommitClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      CodeCommitEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::CodeCommitErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<CodeCommitClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "CodeCommit"; }
 
       typedef CodeCommitClientConfiguration ClientConfigurationType;
       typedef CodeCommitEndpointProvider EndpointProviderType;
@@ -190,14 +206,14 @@ namespace CodeCommit
         * is not specified, it will be initialized to default values.
         */
         CodeCommitClient(const Aws::CodeCommit::CodeCommitClientConfiguration& clientConfiguration = Aws::CodeCommit::CodeCommitClientConfiguration(),
-                         std::shared_ptr<CodeCommitEndpointProviderBase> endpointProvider = Aws::MakeShared<CodeCommitEndpointProvider>(ALLOCATION_TAG));
+                         std::shared_ptr<CodeCommitEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         CodeCommitClient(const Aws::Auth::AWSCredentials& credentials,
-                         std::shared_ptr<CodeCommitEndpointProviderBase> endpointProvider = Aws::MakeShared<CodeCommitEndpointProvider>(ALLOCATION_TAG),
+                         std::shared_ptr<CodeCommitEndpointProviderBase> endpointProvider = nullptr,
                          const Aws::CodeCommit::CodeCommitClientConfiguration& clientConfiguration = Aws::CodeCommit::CodeCommitClientConfiguration());
 
        /**
@@ -205,7 +221,7 @@ namespace CodeCommit
         * the default http client factory will be used
         */
         CodeCommitClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                         std::shared_ptr<CodeCommitEndpointProviderBase> endpointProvider = Aws::MakeShared<CodeCommitEndpointProvider>(ALLOCATION_TAG),
+                         std::shared_ptr<CodeCommitEndpointProviderBase> endpointProvider = nullptr,
                          const Aws::CodeCommit::CodeCommitClientConfiguration& clientConfiguration = Aws::CodeCommit::CodeCommitClientConfiguration());
 
 
@@ -403,10 +419,10 @@ namespace CodeCommit
 
         /**
          * <p>Creates a template for approval rules that can then be associated with one or
-         * more repositories in your AWS account. When you associate a template with a
-         * repository, AWS CodeCommit creates an approval rule that matches the conditions
-         * of the template for all pull requests that meet the conditions of the template.
-         * For more information, see
+         * more repositories in your Amazon Web Services account. When you associate a
+         * template with a repository, CodeCommit creates an approval rule that matches the
+         * conditions of the template for all pull requests that meet the conditions of the
+         * template. For more information, see
          * <a>AssociateApprovalRuleTemplateWithRepository</a>.</p><p><h3>See Also:</h3>  
          * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codecommit-2015-04-13/CreateApprovalRuleTemplate">AWS
@@ -926,13 +942,13 @@ namespace CodeCommit
          * href="http://docs.aws.amazon.com/goto/WebAPI/codecommit-2015-04-13/GetBranch">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetBranchOutcome GetBranch(const Model::GetBranchRequest& request) const;
+        virtual Model::GetBranchOutcome GetBranch(const Model::GetBranchRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetBranch that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetBranchRequestT = Model::GetBranchRequest>
-        Model::GetBranchOutcomeCallable GetBranchCallable(const GetBranchRequestT& request) const
+        Model::GetBranchOutcomeCallable GetBranchCallable(const GetBranchRequestT& request = {}) const
         {
             return SubmitCallable(&CodeCommitClient::GetBranch, request);
         }
@@ -941,7 +957,7 @@ namespace CodeCommit
          * An Async wrapper for GetBranch that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetBranchRequestT = Model::GetBranchRequest>
-        void GetBranchAsync(const GetBranchRequestT& request, const GetBranchResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetBranchAsync(const GetBranchResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetBranchRequestT& request = {}) const
         {
             return SubmitAsync(&CodeCommitClient::GetBranch, request, handler, context);
         }
@@ -1381,19 +1397,20 @@ namespace CodeCommit
         }
 
         /**
-         * <p>Lists all approval rule templates in the specified AWS Region in your AWS
-         * account. If an AWS Region is not specified, the AWS Region where you are signed
-         * in is used.</p><p><h3>See Also:</h3>   <a
+         * <p>Lists all approval rule templates in the specified Amazon Web Services Region
+         * in your Amazon Web Services account. If an Amazon Web Services Region is not
+         * specified, the Amazon Web Services Region where you are signed in is
+         * used.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codecommit-2015-04-13/ListApprovalRuleTemplates">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListApprovalRuleTemplatesOutcome ListApprovalRuleTemplates(const Model::ListApprovalRuleTemplatesRequest& request) const;
+        virtual Model::ListApprovalRuleTemplatesOutcome ListApprovalRuleTemplates(const Model::ListApprovalRuleTemplatesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListApprovalRuleTemplates that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListApprovalRuleTemplatesRequestT = Model::ListApprovalRuleTemplatesRequest>
-        Model::ListApprovalRuleTemplatesOutcomeCallable ListApprovalRuleTemplatesCallable(const ListApprovalRuleTemplatesRequestT& request) const
+        Model::ListApprovalRuleTemplatesOutcomeCallable ListApprovalRuleTemplatesCallable(const ListApprovalRuleTemplatesRequestT& request = {}) const
         {
             return SubmitCallable(&CodeCommitClient::ListApprovalRuleTemplates, request);
         }
@@ -1402,7 +1419,7 @@ namespace CodeCommit
          * An Async wrapper for ListApprovalRuleTemplates that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListApprovalRuleTemplatesRequestT = Model::ListApprovalRuleTemplatesRequest>
-        void ListApprovalRuleTemplatesAsync(const ListApprovalRuleTemplatesRequestT& request, const ListApprovalRuleTemplatesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListApprovalRuleTemplatesAsync(const ListApprovalRuleTemplatesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListApprovalRuleTemplatesRequestT& request = {}) const
         {
             return SubmitAsync(&CodeCommitClient::ListApprovalRuleTemplates, request, handler, context);
         }
@@ -1460,6 +1477,32 @@ namespace CodeCommit
         }
 
         /**
+         * <p>Retrieves a list of commits and changes to a specified file.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/codecommit-2015-04-13/ListFileCommitHistory">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListFileCommitHistoryOutcome ListFileCommitHistory(const Model::ListFileCommitHistoryRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListFileCommitHistory that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListFileCommitHistoryRequestT = Model::ListFileCommitHistoryRequest>
+        Model::ListFileCommitHistoryOutcomeCallable ListFileCommitHistoryCallable(const ListFileCommitHistoryRequestT& request) const
+        {
+            return SubmitCallable(&CodeCommitClient::ListFileCommitHistory, request);
+        }
+
+        /**
+         * An Async wrapper for ListFileCommitHistory that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListFileCommitHistoryRequestT = Model::ListFileCommitHistoryRequest>
+        void ListFileCommitHistoryAsync(const ListFileCommitHistoryRequestT& request, const ListFileCommitHistoryResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CodeCommitClient::ListFileCommitHistory, request, handler, context);
+        }
+
+        /**
          * <p>Returns a list of pull requests for a specified repository. The return list
          * can be refined by pull request status or pull request author ARN.</p><p><h3>See
          * Also:</h3>   <a
@@ -1492,13 +1535,13 @@ namespace CodeCommit
          * href="http://docs.aws.amazon.com/goto/WebAPI/codecommit-2015-04-13/ListRepositories">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListRepositoriesOutcome ListRepositories(const Model::ListRepositoriesRequest& request) const;
+        virtual Model::ListRepositoriesOutcome ListRepositories(const Model::ListRepositoriesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListRepositories that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListRepositoriesRequestT = Model::ListRepositoriesRequest>
-        Model::ListRepositoriesOutcomeCallable ListRepositoriesCallable(const ListRepositoriesRequestT& request) const
+        Model::ListRepositoriesOutcomeCallable ListRepositoriesCallable(const ListRepositoriesRequestT& request = {}) const
         {
             return SubmitCallable(&CodeCommitClient::ListRepositories, request);
         }
@@ -1507,7 +1550,7 @@ namespace CodeCommit
          * An Async wrapper for ListRepositories that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListRepositoriesRequestT = Model::ListRepositoriesRequest>
-        void ListRepositoriesAsync(const ListRepositoriesRequestT& request, const ListRepositoriesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListRepositoriesAsync(const ListRepositoriesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListRepositoriesRequestT& request = {}) const
         {
             return SubmitAsync(&CodeCommitClient::ListRepositories, request, handler, context);
         }
@@ -1539,11 +1582,12 @@ namespace CodeCommit
         }
 
         /**
-         * <p>Gets information about AWS tags for a specified Amazon Resource Name (ARN) in
-         * AWS CodeCommit. For a list of valid resources in AWS CodeCommit, see <a
+         * <p>Gets information about Amazon Web Servicestags for a specified Amazon
+         * Resource Name (ARN) in CodeCommit. For a list of valid resources in CodeCommit,
+         * see <a
          * href="https://docs.aws.amazon.com/codecommit/latest/userguide/auth-and-access-control-iam-access-control-identity-based.html#arn-formats">CodeCommit
-         * Resources and Operations</a> in the<i> AWS CodeCommit User
-         * Guide</i>.</p><p><h3>See Also:</h3>   <a
+         * Resources and Operations</a> in the<i> CodeCommit User Guide</i>.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codecommit-2015-04-13/ListTagsForResource">AWS
          * API Reference</a></p>
          */
@@ -1861,9 +1905,8 @@ namespace CodeCommit
         }
 
         /**
-         * <p>Adds or updates a file in a branch in an AWS CodeCommit repository, and
-         * generates a commit for the addition in the specified branch.</p><p><h3>See
-         * Also:</h3>   <a
+         * <p>Adds or updates a file in a branch in an CodeCommit repository, and generates
+         * a commit for the addition in the specified branch.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codecommit-2015-04-13/PutFile">AWS
          * API Reference</a></p>
          */
@@ -1914,11 +1957,11 @@ namespace CodeCommit
         }
 
         /**
-         * <p>Adds or updates tags for a resource in AWS CodeCommit. For a list of valid
-         * resources in AWS CodeCommit, see <a
+         * <p>Adds or updates tags for a resource in CodeCommit. For a list of valid
+         * resources in CodeCommit, see <a
          * href="https://docs.aws.amazon.com/codecommit/latest/userguide/auth-and-access-control-iam-access-control-identity-based.html#arn-formats">CodeCommit
-         * Resources and Operations</a> in the <i>AWS CodeCommit User
-         * Guide</i>.</p><p><h3>See Also:</h3>   <a
+         * Resources and Operations</a> in the <i>CodeCommit User Guide</i>.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codecommit-2015-04-13/TagResource">AWS
          * API Reference</a></p>
          */
@@ -1971,11 +2014,11 @@ namespace CodeCommit
         }
 
         /**
-         * <p>Removes tags for a resource in AWS CodeCommit. For a list of valid resources
-         * in AWS CodeCommit, see <a
+         * <p>Removes tags for a resource in CodeCommit. For a list of valid resources in
+         * CodeCommit, see <a
          * href="https://docs.aws.amazon.com/codecommit/latest/userguide/auth-and-access-control-iam-access-control-identity-based.html#arn-formats">CodeCommit
-         * Resources and Operations</a> in the <i>AWS CodeCommit User
-         * Guide</i>.</p><p><h3>See Also:</h3>   <a
+         * Resources and Operations</a> in the <i>CodeCommit User Guide</i>.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codecommit-2015-04-13/UntagResource">AWS
          * API Reference</a></p>
          */
@@ -2293,12 +2336,39 @@ namespace CodeCommit
         }
 
         /**
+         * <p>Updates the Key Management Service encryption key used to encrypt and decrypt
+         * a CodeCommit repository.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/codecommit-2015-04-13/UpdateRepositoryEncryptionKey">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateRepositoryEncryptionKeyOutcome UpdateRepositoryEncryptionKey(const Model::UpdateRepositoryEncryptionKeyRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateRepositoryEncryptionKey that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateRepositoryEncryptionKeyRequestT = Model::UpdateRepositoryEncryptionKeyRequest>
+        Model::UpdateRepositoryEncryptionKeyOutcomeCallable UpdateRepositoryEncryptionKeyCallable(const UpdateRepositoryEncryptionKeyRequestT& request) const
+        {
+            return SubmitCallable(&CodeCommitClient::UpdateRepositoryEncryptionKey, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateRepositoryEncryptionKey that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateRepositoryEncryptionKeyRequestT = Model::UpdateRepositoryEncryptionKeyRequest>
+        void UpdateRepositoryEncryptionKeyAsync(const UpdateRepositoryEncryptionKeyRequestT& request, const UpdateRepositoryEncryptionKeyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CodeCommitClient::UpdateRepositoryEncryptionKey, request, handler, context);
+        }
+
+        /**
          * <p>Renames a repository. The repository name must be unique across the calling
-         * AWS account. Repository names are limited to 100 alphanumeric, dash, and
-         * underscore characters, and cannot include certain characters. The suffix .git is
-         * prohibited. For more information about the limits on repository names, see <a
-         * href="https://docs.aws.amazon.com/codecommit/latest/userguide/limits.html">Limits</a>
-         * in the AWS CodeCommit User Guide.</p><p><h3>See Also:</h3>   <a
+         * Amazon Web Services account. Repository names are limited to 100 alphanumeric,
+         * dash, and underscore characters, and cannot include certain characters. The
+         * suffix .git is prohibited. For more information about the limits on repository
+         * names, see <a
+         * href="https://docs.aws.amazon.com/codecommit/latest/userguide/limits.html">Quotas</a>
+         * in the CodeCommit User Guide.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/codecommit-2015-04-13/UpdateRepositoryName">AWS
          * API Reference</a></p>
          */
@@ -2327,11 +2397,7 @@ namespace CodeCommit
       std::shared_ptr<CodeCommitEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<CodeCommitClient>;
-      void init(const CodeCommitClientConfiguration& clientConfiguration);
 
-      CodeCommitClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<CodeCommitEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace CodeCommit

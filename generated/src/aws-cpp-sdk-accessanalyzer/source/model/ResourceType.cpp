@@ -33,6 +33,10 @@ namespace Aws
         static const int AWS_RDS_DBSnapshot_HASH = HashingUtils::HashString("AWS::RDS::DBSnapshot");
         static const int AWS_RDS_DBClusterSnapshot_HASH = HashingUtils::HashString("AWS::RDS::DBClusterSnapshot");
         static const int AWS_SNS_Topic_HASH = HashingUtils::HashString("AWS::SNS::Topic");
+        static const int AWS_S3Express_DirectoryBucket_HASH = HashingUtils::HashString("AWS::S3Express::DirectoryBucket");
+        static const int AWS_DynamoDB_Table_HASH = HashingUtils::HashString("AWS::DynamoDB::Table");
+        static const int AWS_DynamoDB_Stream_HASH = HashingUtils::HashString("AWS::DynamoDB::Stream");
+        static const int AWS_IAM_User_HASH = HashingUtils::HashString("AWS::IAM::User");
 
 
         ResourceType GetResourceTypeForName(const Aws::String& name)
@@ -90,6 +94,22 @@ namespace Aws
           {
             return ResourceType::AWS_SNS_Topic;
           }
+          else if (hashCode == AWS_S3Express_DirectoryBucket_HASH)
+          {
+            return ResourceType::AWS_S3Express_DirectoryBucket;
+          }
+          else if (hashCode == AWS_DynamoDB_Table_HASH)
+          {
+            return ResourceType::AWS_DynamoDB_Table;
+          }
+          else if (hashCode == AWS_DynamoDB_Stream_HASH)
+          {
+            return ResourceType::AWS_DynamoDB_Stream;
+          }
+          else if (hashCode == AWS_IAM_User_HASH)
+          {
+            return ResourceType::AWS_IAM_User;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -104,6 +124,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ResourceType::NOT_SET:
+            return {};
           case ResourceType::AWS_S3_Bucket:
             return "AWS::S3::Bucket";
           case ResourceType::AWS_IAM_Role:
@@ -130,6 +152,14 @@ namespace Aws
             return "AWS::RDS::DBClusterSnapshot";
           case ResourceType::AWS_SNS_Topic:
             return "AWS::SNS::Topic";
+          case ResourceType::AWS_S3Express_DirectoryBucket:
+            return "AWS::S3Express::DirectoryBucket";
+          case ResourceType::AWS_DynamoDB_Table:
+            return "AWS::DynamoDB::Table";
+          case ResourceType::AWS_DynamoDB_Stream:
+            return "AWS::DynamoDB::Stream";
+          case ResourceType::AWS_IAM_User:
+            return "AWS::IAM::User";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

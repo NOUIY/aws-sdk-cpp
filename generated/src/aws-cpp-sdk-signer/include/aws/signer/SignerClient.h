@@ -6,40 +6,62 @@
 #pragma once
 #include <aws/signer/Signer_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/signer/SignerServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/signer/SignerErrorMarshaller.h>
 
 namespace Aws
 {
 namespace signer
 {
+  AWS_SIGNER_API extern const char SERVICE_NAME[];
   /**
-   * <p>AWS Signer is a fully managed code signing service to help you ensure the
-   * trust and integrity of your code. </p> <p>AWS Signer supports the following
-   * applications:</p> <p>With <i>code signing for AWS Lambda</i>, you can sign AWS
-   * Lambda deployment packages. Integrated support is provided for Amazon S3, Amazon
-   * CloudWatch, and AWS CloudTrail. In order to sign code, you create a signing
-   * profile and then use Signer to sign Lambda zip files in S3. </p> <p>With <i>code
-   * signing for IoT</i>, you can sign code for any IoT device that is supported by
-   * AWS. IoT code signing is available for <a
+   * <p>AWS Signer is a fully managed code-signing service to help you ensure the
+   * trust and integrity of your code. </p> <p>Signer supports the following
+   * applications:</p> <p>With code signing for AWS Lambda, you can sign <a
+   * href="http://docs.aws.amazon.com/lambda/latest/dg/">AWS Lambda</a> deployment
+   * packages. Integrated support is provided for <a
+   * href="http://docs.aws.amazon.com/AmazonS3/latest/gsg/">Amazon S3</a>, <a
+   * href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/">Amazon
+   * CloudWatch</a>, and <a
+   * href="http://docs.aws.amazon.com/awscloudtrail/latest/userguide/">AWS
+   * CloudTrail</a>. In order to sign code, you create a signing profile and then use
+   * Signer to sign Lambda zip files in S3. </p> <p>With code signing for IoT, you
+   * can sign code for any IoT device that is supported by AWS. IoT code signing is
+   * available for <a
    * href="http://docs.aws.amazon.com/freertos/latest/userguide/">Amazon FreeRTOS</a>
    * and <a href="http://docs.aws.amazon.com/iot/latest/developerguide/">AWS IoT
    * Device Management</a>, and is integrated with <a
    * href="http://docs.aws.amazon.com/acm/latest/userguide/">AWS Certificate Manager
-   * (ACM)</a>. In order to sign code, you import a third-party code signing
+   * (ACM)</a>. In order to sign code, you import a third-party code-signing
    * certificate using ACM, and use that to sign updates in Amazon FreeRTOS and AWS
-   * IoT Device Management. </p> <p>For more information about AWS Signer, see the <a
-   * href="http://docs.aws.amazon.com/signer/latest/developerguide/Welcome.html">AWS
-   * Signer Developer Guide</a>.</p> <p/>
+   * IoT Device Management. </p> <p>With Signer and the Notation CLI from the <a
+   * href="https://notaryproject.dev/">Notary&#x2028; Project</a>, you can sign
+   * container images stored in a container registry such as Amazon Elastic Container
+   * Registry (ECR). The signatures are stored in the registry alongside the images,
+   * where they are available for verifying image authenticity and integrity.</p>
+   * <p>For more information about Signer, see the <a
+   * href="https://docs.aws.amazon.com/signer/latest/developerguide/Welcome.html">AWS
+   * Signer Developer Guide</a>.</p>
    */
-  class AWS_SIGNER_API SignerClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<SignerClient>
+  class AWS_SIGNER_API SignerClient : smithy::client::AwsSmithyClientT<Aws::signer::SERVICE_NAME,
+      Aws::signer::SignerClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      SignerEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::SignerErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<SignerClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "signer"; }
 
       typedef SignerClientConfiguration ClientConfigurationType;
       typedef SignerEndpointProvider EndpointProviderType;
@@ -49,14 +71,14 @@ namespace signer
         * is not specified, it will be initialized to default values.
         */
         SignerClient(const Aws::signer::SignerClientConfiguration& clientConfiguration = Aws::signer::SignerClientConfiguration(),
-                     std::shared_ptr<SignerEndpointProviderBase> endpointProvider = Aws::MakeShared<SignerEndpointProvider>(ALLOCATION_TAG));
+                     std::shared_ptr<SignerEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         SignerClient(const Aws::Auth::AWSCredentials& credentials,
-                     std::shared_ptr<SignerEndpointProviderBase> endpointProvider = Aws::MakeShared<SignerEndpointProvider>(ALLOCATION_TAG),
+                     std::shared_ptr<SignerEndpointProviderBase> endpointProvider = nullptr,
                      const Aws::signer::SignerClientConfiguration& clientConfiguration = Aws::signer::SignerClientConfiguration());
 
        /**
@@ -64,7 +86,7 @@ namespace signer
         * the default http client factory will be used
         */
         SignerClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                     std::shared_ptr<SignerEndpointProviderBase> endpointProvider = Aws::MakeShared<SignerEndpointProvider>(ALLOCATION_TAG),
+                     std::shared_ptr<SignerEndpointProviderBase> endpointProvider = nullptr,
                      const Aws::signer::SignerClientConfiguration& clientConfiguration = Aws::signer::SignerClientConfiguration());
 
 
@@ -174,6 +196,32 @@ namespace signer
         }
 
         /**
+         * <p>Retrieves the revocation status of one or more of the signing profile,
+         * signing job, and signing certificate.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/signer-2017-08-25/GetRevocationStatus">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetRevocationStatusOutcome GetRevocationStatus(const Model::GetRevocationStatusRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetRevocationStatus that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetRevocationStatusRequestT = Model::GetRevocationStatusRequest>
+        Model::GetRevocationStatusOutcomeCallable GetRevocationStatusCallable(const GetRevocationStatusRequestT& request) const
+        {
+            return SubmitCallable(&SignerClient::GetRevocationStatus, request);
+        }
+
+        /**
+         * An Async wrapper for GetRevocationStatus that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetRevocationStatusRequestT = Model::GetRevocationStatusRequest>
+        void GetRevocationStatusAsync(const GetRevocationStatusRequestT& request, const GetRevocationStatusResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&SignerClient::GetRevocationStatus, request, handler, context);
+        }
+
+        /**
          * <p>Returns information on a specific signing platform.</p><p><h3>See Also:</h3> 
          * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/signer-2017-08-25/GetSigningPlatform">AWS
@@ -254,23 +302,23 @@ namespace signer
         /**
          * <p>Lists all your signing jobs. You can use the <code>maxResults</code>
          * parameter to limit the number of signing jobs that are returned in the response.
-         * If additional jobs remain to be listed, code signing returns a
+         * If additional jobs remain to be listed, AWS Signer returns a
          * <code>nextToken</code> value. Use this value in subsequent calls to
          * <code>ListSigningJobs</code> to fetch the remaining values. You can continue
          * calling <code>ListSigningJobs</code> with your <code>maxResults</code> parameter
-         * and with new values that code signing returns in the <code>nextToken</code>
-         * parameter until all of your signing jobs have been returned. </p><p><h3>See
-         * Also:</h3>   <a
+         * and with new values that Signer returns in the <code>nextToken</code> parameter
+         * until all of your signing jobs have been returned. </p><p><h3>See Also:</h3>  
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/signer-2017-08-25/ListSigningJobs">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListSigningJobsOutcome ListSigningJobs(const Model::ListSigningJobsRequest& request) const;
+        virtual Model::ListSigningJobsOutcome ListSigningJobs(const Model::ListSigningJobsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListSigningJobs that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListSigningJobsRequestT = Model::ListSigningJobsRequest>
-        Model::ListSigningJobsOutcomeCallable ListSigningJobsCallable(const ListSigningJobsRequestT& request) const
+        Model::ListSigningJobsOutcomeCallable ListSigningJobsCallable(const ListSigningJobsRequestT& request = {}) const
         {
             return SubmitCallable(&SignerClient::ListSigningJobs, request);
         }
@@ -279,30 +327,29 @@ namespace signer
          * An Async wrapper for ListSigningJobs that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListSigningJobsRequestT = Model::ListSigningJobsRequest>
-        void ListSigningJobsAsync(const ListSigningJobsRequestT& request, const ListSigningJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListSigningJobsAsync(const ListSigningJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListSigningJobsRequestT& request = {}) const
         {
             return SubmitAsync(&SignerClient::ListSigningJobs, request, handler, context);
         }
 
         /**
-         * <p>Lists all signing platforms available in code signing that match the request
-         * parameters. If additional jobs remain to be listed, code signing returns a
+         * <p>Lists all signing platforms available in AWS Signer that match the request
+         * parameters. If additional jobs remain to be listed, Signer returns a
          * <code>nextToken</code> value. Use this value in subsequent calls to
          * <code>ListSigningJobs</code> to fetch the remaining values. You can continue
          * calling <code>ListSigningJobs</code> with your <code>maxResults</code> parameter
-         * and with new values that code signing returns in the <code>nextToken</code>
-         * parameter until all of your signing jobs have been returned.</p><p><h3>See
-         * Also:</h3>   <a
+         * and with new values that Signer returns in the <code>nextToken</code> parameter
+         * until all of your signing jobs have been returned.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/signer-2017-08-25/ListSigningPlatforms">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListSigningPlatformsOutcome ListSigningPlatforms(const Model::ListSigningPlatformsRequest& request) const;
+        virtual Model::ListSigningPlatformsOutcome ListSigningPlatforms(const Model::ListSigningPlatformsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListSigningPlatforms that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListSigningPlatformsRequestT = Model::ListSigningPlatformsRequest>
-        Model::ListSigningPlatformsOutcomeCallable ListSigningPlatformsCallable(const ListSigningPlatformsRequestT& request) const
+        Model::ListSigningPlatformsOutcomeCallable ListSigningPlatformsCallable(const ListSigningPlatformsRequestT& request = {}) const
         {
             return SubmitCallable(&SignerClient::ListSigningPlatforms, request);
         }
@@ -311,7 +358,7 @@ namespace signer
          * An Async wrapper for ListSigningPlatforms that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListSigningPlatformsRequestT = Model::ListSigningPlatformsRequest>
-        void ListSigningPlatformsAsync(const ListSigningPlatformsRequestT& request, const ListSigningPlatformsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListSigningPlatformsAsync(const ListSigningPlatformsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListSigningPlatformsRequestT& request = {}) const
         {
             return SubmitAsync(&SignerClient::ListSigningPlatforms, request, handler, context);
         }
@@ -320,23 +367,22 @@ namespace signer
          * <p>Lists all available signing profiles in your AWS account. Returns only
          * profiles with an <code>ACTIVE</code> status unless the
          * <code>includeCanceled</code> request field is set to <code>true</code>. If
-         * additional jobs remain to be listed, code signing returns a
-         * <code>nextToken</code> value. Use this value in subsequent calls to
-         * <code>ListSigningJobs</code> to fetch the remaining values. You can continue
-         * calling <code>ListSigningJobs</code> with your <code>maxResults</code> parameter
-         * and with new values that code signing returns in the <code>nextToken</code>
-         * parameter until all of your signing jobs have been returned.</p><p><h3>See
-         * Also:</h3>   <a
+         * additional jobs remain to be listed, AWS Signer returns a <code>nextToken</code>
+         * value. Use this value in subsequent calls to <code>ListSigningJobs</code> to
+         * fetch the remaining values. You can continue calling
+         * <code>ListSigningJobs</code> with your <code>maxResults</code> parameter and
+         * with new values that Signer returns in the <code>nextToken</code> parameter
+         * until all of your signing jobs have been returned.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/signer-2017-08-25/ListSigningProfiles">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListSigningProfilesOutcome ListSigningProfiles(const Model::ListSigningProfilesRequest& request) const;
+        virtual Model::ListSigningProfilesOutcome ListSigningProfiles(const Model::ListSigningProfilesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListSigningProfiles that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListSigningProfilesRequestT = Model::ListSigningProfilesRequest>
-        Model::ListSigningProfilesOutcomeCallable ListSigningProfilesCallable(const ListSigningProfilesRequestT& request) const
+        Model::ListSigningProfilesOutcomeCallable ListSigningProfilesCallable(const ListSigningProfilesRequestT& request = {}) const
         {
             return SubmitCallable(&SignerClient::ListSigningProfiles, request);
         }
@@ -345,7 +391,7 @@ namespace signer
          * An Async wrapper for ListSigningProfiles that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListSigningProfilesRequestT = Model::ListSigningProfilesRequest>
-        void ListSigningProfilesAsync(const ListSigningProfilesRequestT& request, const ListSigningProfilesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListSigningProfilesAsync(const ListSigningProfilesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListSigningProfilesRequestT& request = {}) const
         {
             return SubmitAsync(&SignerClient::ListSigningProfiles, request, handler, context);
         }
@@ -377,10 +423,9 @@ namespace signer
         }
 
         /**
-         * <p>Creates a signing profile. A signing profile is a code signing template that
-         * can be used to carry out a pre-defined signing job. For more information, see <a
-         * href="http://docs.aws.amazon.com/signer/latest/developerguide/gs-profile.html">http://docs.aws.amazon.com/signer/latest/developerguide/gs-profile.html</a>
-         * </p><p><h3>See Also:</h3>   <a
+         * <p>Creates a signing profile. A signing profile is a code-signing template that
+         * can be used to carry out a pre-defined signing job. </p><p><h3>See Also:</h3>  
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/signer-2017-08-25/PutSigningProfile">AWS
          * API Reference</a></p>
          */
@@ -484,23 +529,50 @@ namespace signer
         }
 
         /**
+         * <p>Signs a binary payload and returns a signature envelope.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/signer-2017-08-25/SignPayload">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::SignPayloadOutcome SignPayload(const Model::SignPayloadRequest& request) const;
+
+        /**
+         * A Callable wrapper for SignPayload that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename SignPayloadRequestT = Model::SignPayloadRequest>
+        Model::SignPayloadOutcomeCallable SignPayloadCallable(const SignPayloadRequestT& request) const
+        {
+            return SubmitCallable(&SignerClient::SignPayload, request);
+        }
+
+        /**
+         * An Async wrapper for SignPayload that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename SignPayloadRequestT = Model::SignPayloadRequest>
+        void SignPayloadAsync(const SignPayloadRequestT& request, const SignPayloadResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&SignerClient::SignPayload, request, handler, context);
+        }
+
+        /**
          * <p>Initiates a signing job to be performed on the code provided. Signing jobs
          * are viewable by the <code>ListSigningJobs</code> operation for two years after
          * they are performed. Note the following requirements: </p> <ul> <li> <p> You must
          * create an Amazon S3 source bucket. For more information, see <a
-         * href="http://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html">Create
+         * href="http://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html">Creating
          * a Bucket</a> in the <i>Amazon S3 Getting Started Guide</i>. </p> </li> <li>
          * <p>Your S3 source bucket must be version enabled.</p> </li> <li> <p>You must
-         * create an S3 destination bucket. Code signing uses your S3 destination bucket to
+         * create an S3 destination bucket. AWS Signer uses your S3 destination bucket to
          * write your signed code.</p> </li> <li> <p>You specify the name of the source and
          * destination buckets when calling the <code>StartSigningJob</code> operation.</p>
-         * </li> <li> <p>You must also specify a request token that identifies your request
-         * to code signing.</p> </li> </ul> <p>You can call the <a>DescribeSigningJob</a>
-         * and the <a>ListSigningJobs</a> actions after you call
-         * <code>StartSigningJob</code>.</p> <p>For a Java example that shows how to use
-         * this action, see <a
-         * href="http://docs.aws.amazon.com/acm/latest/userguide/">http://docs.aws.amazon.com/acm/latest/userguide/</a>
-         * </p><p><h3>See Also:</h3>   <a
+         * </li> <li> <p>You must ensure the S3 buckets are from the same Region as the
+         * signing profile. Cross-Region signing isn't supported.</p> </li> <li> <p>You
+         * must also specify a request token that identifies your request to Signer.</p>
+         * </li> </ul> <p>You can call the <a>DescribeSigningJob</a> and the
+         * <a>ListSigningJobs</a> actions after you call <code>StartSigningJob</code>.</p>
+         * <p>For a Java example that shows how to use this action, see <a
+         * href="https://docs.aws.amazon.com/signer/latest/developerguide/api-startsigningjob.html">StartSigningJob</a>.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/signer-2017-08-25/StartSigningJob">AWS
          * API Reference</a></p>
          */
@@ -583,11 +655,7 @@ namespace signer
       std::shared_ptr<SignerEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<SignerClient>;
-      void init(const SignerClientConfiguration& clientConfiguration);
 
-      SignerClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<SignerEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace signer

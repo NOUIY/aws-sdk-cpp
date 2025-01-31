@@ -22,6 +22,7 @@ namespace Aws
 
         static const int CLOUD_HASH = HashingUtils::HashString("CLOUD");
         static const int OUTPOST_HASH = HashingUtils::HashString("OUTPOST");
+        static const int LOCAL_ZONE_HASH = HashingUtils::HashString("LOCAL_ZONE");
 
 
         ResourceLocationValues GetResourceLocationValuesForName(const Aws::String& name)
@@ -34,6 +35,10 @@ namespace Aws
           else if (hashCode == OUTPOST_HASH)
           {
             return ResourceLocationValues::OUTPOST;
+          }
+          else if (hashCode == LOCAL_ZONE_HASH)
+          {
+            return ResourceLocationValues::LOCAL_ZONE;
           }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
@@ -49,10 +54,14 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ResourceLocationValues::NOT_SET:
+            return {};
           case ResourceLocationValues::CLOUD:
             return "CLOUD";
           case ResourceLocationValues::OUTPOST:
             return "OUTPOST";
+          case ResourceLocationValues::LOCAL_ZONE:
+            return "LOCAL_ZONE";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

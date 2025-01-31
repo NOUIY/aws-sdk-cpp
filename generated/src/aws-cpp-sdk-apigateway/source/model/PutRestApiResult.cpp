@@ -24,10 +24,8 @@ PutRestApiResult::PutRestApiResult() :
 {
 }
 
-PutRestApiResult::PutRestApiResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_minimumCompressionSize(0),
-    m_apiKeySource(ApiKeySourceType::NOT_SET),
-    m_disableExecuteApiEndpoint(false)
+PutRestApiResult::PutRestApiResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : PutRestApiResult()
 {
   *this = result;
 }
@@ -119,6 +117,12 @@ PutRestApiResult& PutRestApiResult::operator =(const Aws::AmazonWebServiceResult
   if(jsonValue.ValueExists("disableExecuteApiEndpoint"))
   {
     m_disableExecuteApiEndpoint = jsonValue.GetBool("disableExecuteApiEndpoint");
+
+  }
+
+  if(jsonValue.ValueExists("rootResourceId"))
+  {
+    m_rootResourceId = jsonValue.GetString("rootResourceId");
 
   }
 

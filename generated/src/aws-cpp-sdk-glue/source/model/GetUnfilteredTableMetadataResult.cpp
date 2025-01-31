@@ -18,12 +18,14 @@ using namespace Aws::Utils;
 using namespace Aws;
 
 GetUnfilteredTableMetadataResult::GetUnfilteredTableMetadataResult() : 
-    m_isRegisteredWithLakeFormation(false)
+    m_isRegisteredWithLakeFormation(false),
+    m_isMultiDialectView(false),
+    m_isProtected(false)
 {
 }
 
-GetUnfilteredTableMetadataResult::GetUnfilteredTableMetadataResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_isRegisteredWithLakeFormation(false)
+GetUnfilteredTableMetadataResult::GetUnfilteredTableMetadataResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetUnfilteredTableMetadataResult()
 {
   *this = result;
 }
@@ -59,6 +61,45 @@ GetUnfilteredTableMetadataResult& GetUnfilteredTableMetadataResult::operator =(c
     {
       m_cellFilters.push_back(cellFiltersJsonList[cellFiltersIndex].AsObject());
     }
+  }
+
+  if(jsonValue.ValueExists("QueryAuthorizationId"))
+  {
+    m_queryAuthorizationId = jsonValue.GetString("QueryAuthorizationId");
+
+  }
+
+  if(jsonValue.ValueExists("IsMultiDialectView"))
+  {
+    m_isMultiDialectView = jsonValue.GetBool("IsMultiDialectView");
+
+  }
+
+  if(jsonValue.ValueExists("ResourceArn"))
+  {
+    m_resourceArn = jsonValue.GetString("ResourceArn");
+
+  }
+
+  if(jsonValue.ValueExists("IsProtected"))
+  {
+    m_isProtected = jsonValue.GetBool("IsProtected");
+
+  }
+
+  if(jsonValue.ValueExists("Permissions"))
+  {
+    Aws::Utils::Array<JsonView> permissionsJsonList = jsonValue.GetArray("Permissions");
+    for(unsigned permissionsIndex = 0; permissionsIndex < permissionsJsonList.GetLength(); ++permissionsIndex)
+    {
+      m_permissions.push_back(PermissionMapper::GetPermissionForName(permissionsJsonList[permissionsIndex].AsString()));
+    }
+  }
+
+  if(jsonValue.ValueExists("RowFilter"))
+  {
+    m_rowFilter = jsonValue.GetString("RowFilter");
+
   }
 
 

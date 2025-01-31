@@ -18,8 +18,12 @@ UpdateWorkgroupRequest::UpdateWorkgroupRequest() :
     m_configParametersHasBeenSet(false),
     m_enhancedVpcRouting(false),
     m_enhancedVpcRoutingHasBeenSet(false),
+    m_ipAddressTypeHasBeenSet(false),
+    m_maxCapacity(0),
+    m_maxCapacityHasBeenSet(false),
     m_port(0),
     m_portHasBeenSet(false),
+    m_pricePerformanceTargetHasBeenSet(false),
     m_publiclyAccessible(false),
     m_publiclyAccessibleHasBeenSet(false),
     m_securityGroupIdsHasBeenSet(false),
@@ -55,9 +59,27 @@ Aws::String UpdateWorkgroupRequest::SerializePayload() const
 
   }
 
+  if(m_ipAddressTypeHasBeenSet)
+  {
+   payload.WithString("ipAddressType", m_ipAddressType);
+
+  }
+
+  if(m_maxCapacityHasBeenSet)
+  {
+   payload.WithInteger("maxCapacity", m_maxCapacity);
+
+  }
+
   if(m_portHasBeenSet)
   {
    payload.WithInteger("port", m_port);
+
+  }
+
+  if(m_pricePerformanceTargetHasBeenSet)
+  {
+   payload.WithObject("pricePerformanceTarget", m_pricePerformanceTarget.Jsonize());
 
   }
 

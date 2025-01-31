@@ -15,13 +15,10 @@ namespace Aws
         /**
          * This mutable structure is used to configure a regular AWS client.
          */
-        template<bool HasEndpointDiscovery = false>
         struct AWS_CORE_API GenericClientConfiguration : public ClientConfiguration
         {
-            static const bool EndpointDiscoverySupported = HasEndpointDiscovery;
-
-            GenericClientConfiguration()
-              : ClientConfiguration()
+            GenericClientConfiguration(const ClientConfigurationInitValues &configuration = {})
+              : ClientConfiguration(configuration)
             {}
 
             /**
@@ -49,14 +46,17 @@ namespace Aws
             {}
         };
 
+#if 0
         /**
          * This mutable structure is used to configure a regular AWS client that supports endpoint discovery.
          */
-        template <> struct AWS_CORE_API GenericClientConfiguration<true> : public ClientConfiguration
+        template <bool EndpointDiscoveryDefaultValT = false>
+        struct AWS_CORE_API GenericClientConfiguration<EndpointDiscoveryDefaultValT, true> : public ClientConfiguration
         {
             static const bool EndpointDiscoverySupported = true;
+            static const bool EndpointDiscoveryDefaultValue = EndpointDiscoveryDefaultValT;
 
-            GenericClientConfiguration();
+            GenericClientConfiguration(const ClientConfigurationInitValues &configuration = {});
             GenericClientConfiguration(const char* profileName, bool shouldDisableIMDS = false);
             explicit GenericClientConfiguration(bool useSmartDefaults, const char* defaultMode = "legacy", bool shouldDisableIMDS = false);
             GenericClientConfiguration(const ClientConfiguration& config);
@@ -82,5 +82,6 @@ namespace Aws
              */
             Aws::Crt::Optional<bool>& enableEndpointDiscovery;
         };
+#endif
     } // namespace Client
 } // namespace Aws

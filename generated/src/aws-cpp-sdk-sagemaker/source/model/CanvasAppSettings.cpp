@@ -20,13 +20,18 @@ namespace Model
 
 CanvasAppSettings::CanvasAppSettings() : 
     m_timeSeriesForecastingSettingsHasBeenSet(false),
-    m_modelRegisterSettingsHasBeenSet(false)
+    m_modelRegisterSettingsHasBeenSet(false),
+    m_workspaceSettingsHasBeenSet(false),
+    m_identityProviderOAuthSettingsHasBeenSet(false),
+    m_directDeploySettingsHasBeenSet(false),
+    m_kendraSettingsHasBeenSet(false),
+    m_generativeAiSettingsHasBeenSet(false),
+    m_emrServerlessSettingsHasBeenSet(false)
 {
 }
 
-CanvasAppSettings::CanvasAppSettings(JsonView jsonValue) : 
-    m_timeSeriesForecastingSettingsHasBeenSet(false),
-    m_modelRegisterSettingsHasBeenSet(false)
+CanvasAppSettings::CanvasAppSettings(JsonView jsonValue)
+  : CanvasAppSettings()
 {
   *this = jsonValue;
 }
@@ -47,6 +52,51 @@ CanvasAppSettings& CanvasAppSettings::operator =(JsonView jsonValue)
     m_modelRegisterSettingsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("WorkspaceSettings"))
+  {
+    m_workspaceSettings = jsonValue.GetObject("WorkspaceSettings");
+
+    m_workspaceSettingsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("IdentityProviderOAuthSettings"))
+  {
+    Aws::Utils::Array<JsonView> identityProviderOAuthSettingsJsonList = jsonValue.GetArray("IdentityProviderOAuthSettings");
+    for(unsigned identityProviderOAuthSettingsIndex = 0; identityProviderOAuthSettingsIndex < identityProviderOAuthSettingsJsonList.GetLength(); ++identityProviderOAuthSettingsIndex)
+    {
+      m_identityProviderOAuthSettings.push_back(identityProviderOAuthSettingsJsonList[identityProviderOAuthSettingsIndex].AsObject());
+    }
+    m_identityProviderOAuthSettingsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("DirectDeploySettings"))
+  {
+    m_directDeploySettings = jsonValue.GetObject("DirectDeploySettings");
+
+    m_directDeploySettingsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("KendraSettings"))
+  {
+    m_kendraSettings = jsonValue.GetObject("KendraSettings");
+
+    m_kendraSettingsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("GenerativeAiSettings"))
+  {
+    m_generativeAiSettings = jsonValue.GetObject("GenerativeAiSettings");
+
+    m_generativeAiSettingsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("EmrServerlessSettings"))
+  {
+    m_emrServerlessSettings = jsonValue.GetObject("EmrServerlessSettings");
+
+    m_emrServerlessSettingsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +113,47 @@ JsonValue CanvasAppSettings::Jsonize() const
   if(m_modelRegisterSettingsHasBeenSet)
   {
    payload.WithObject("ModelRegisterSettings", m_modelRegisterSettings.Jsonize());
+
+  }
+
+  if(m_workspaceSettingsHasBeenSet)
+  {
+   payload.WithObject("WorkspaceSettings", m_workspaceSettings.Jsonize());
+
+  }
+
+  if(m_identityProviderOAuthSettingsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> identityProviderOAuthSettingsJsonList(m_identityProviderOAuthSettings.size());
+   for(unsigned identityProviderOAuthSettingsIndex = 0; identityProviderOAuthSettingsIndex < identityProviderOAuthSettingsJsonList.GetLength(); ++identityProviderOAuthSettingsIndex)
+   {
+     identityProviderOAuthSettingsJsonList[identityProviderOAuthSettingsIndex].AsObject(m_identityProviderOAuthSettings[identityProviderOAuthSettingsIndex].Jsonize());
+   }
+   payload.WithArray("IdentityProviderOAuthSettings", std::move(identityProviderOAuthSettingsJsonList));
+
+  }
+
+  if(m_directDeploySettingsHasBeenSet)
+  {
+   payload.WithObject("DirectDeploySettings", m_directDeploySettings.Jsonize());
+
+  }
+
+  if(m_kendraSettingsHasBeenSet)
+  {
+   payload.WithObject("KendraSettings", m_kendraSettings.Jsonize());
+
+  }
+
+  if(m_generativeAiSettingsHasBeenSet)
+  {
+   payload.WithObject("GenerativeAiSettings", m_generativeAiSettings.Jsonize());
+
+  }
+
+  if(m_emrServerlessSettingsHasBeenSet)
+  {
+   payload.WithObject("EmrServerlessSettings", m_emrServerlessSettings.Jsonize());
 
   }
 

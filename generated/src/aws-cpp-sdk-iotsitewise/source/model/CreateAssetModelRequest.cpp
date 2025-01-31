@@ -14,6 +14,10 @@ using namespace Aws::Utils;
 
 CreateAssetModelRequest::CreateAssetModelRequest() : 
     m_assetModelNameHasBeenSet(false),
+    m_assetModelType(AssetModelType::NOT_SET),
+    m_assetModelTypeHasBeenSet(false),
+    m_assetModelIdHasBeenSet(false),
+    m_assetModelExternalIdHasBeenSet(false),
     m_assetModelDescriptionHasBeenSet(false),
     m_assetModelPropertiesHasBeenSet(false),
     m_assetModelHierarchiesHasBeenSet(false),
@@ -31,6 +35,23 @@ Aws::String CreateAssetModelRequest::SerializePayload() const
   if(m_assetModelNameHasBeenSet)
   {
    payload.WithString("assetModelName", m_assetModelName);
+
+  }
+
+  if(m_assetModelTypeHasBeenSet)
+  {
+   payload.WithString("assetModelType", AssetModelTypeMapper::GetNameForAssetModelType(m_assetModelType));
+  }
+
+  if(m_assetModelIdHasBeenSet)
+  {
+   payload.WithString("assetModelId", m_assetModelId);
+
+  }
+
+  if(m_assetModelExternalIdHasBeenSet)
+  {
+   payload.WithString("assetModelExternalId", m_assetModelExternalId);
 
   }
 

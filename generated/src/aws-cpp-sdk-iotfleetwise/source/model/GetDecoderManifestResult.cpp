@@ -22,8 +22,8 @@ GetDecoderManifestResult::GetDecoderManifestResult() :
 {
 }
 
-GetDecoderManifestResult::GetDecoderManifestResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(ManifestStatus::NOT_SET)
+GetDecoderManifestResult::GetDecoderManifestResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetDecoderManifestResult()
 {
   *this = result;
 }
@@ -70,6 +70,12 @@ GetDecoderManifestResult& GetDecoderManifestResult::operator =(const Aws::Amazon
   if(jsonValue.ValueExists("lastModificationTime"))
   {
     m_lastModificationTime = jsonValue.GetDouble("lastModificationTime");
+
+  }
+
+  if(jsonValue.ValueExists("message"))
+  {
+    m_message = jsonValue.GetString("message");
 
   }
 

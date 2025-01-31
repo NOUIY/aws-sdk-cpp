@@ -27,13 +27,8 @@ UpdateFileSystemResult::UpdateFileSystemResult() :
 {
 }
 
-UpdateFileSystemResult::UpdateFileSystemResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_lifeCycleState(LifeCycleState::NOT_SET),
-    m_numberOfMountTargets(0),
-    m_performanceMode(PerformanceMode::NOT_SET),
-    m_encrypted(false),
-    m_throughputMode(ThroughputMode::NOT_SET),
-    m_provisionedThroughputInMibps(0.0)
+UpdateFileSystemResult::UpdateFileSystemResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : UpdateFileSystemResult()
 {
   *this = result;
 }
@@ -144,6 +139,12 @@ UpdateFileSystemResult& UpdateFileSystemResult::operator =(const Aws::AmazonWebS
     {
       m_tags.push_back(tagsJsonList[tagsIndex].AsObject());
     }
+  }
+
+  if(jsonValue.ValueExists("FileSystemProtection"))
+  {
+    m_fileSystemProtection = jsonValue.GetObject("FileSystemProtection");
+
   }
 
 

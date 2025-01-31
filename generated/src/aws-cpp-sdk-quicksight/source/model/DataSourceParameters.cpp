@@ -41,34 +41,15 @@ DataSourceParameters::DataSourceParameters() :
     m_twitterParametersHasBeenSet(false),
     m_amazonOpenSearchParametersHasBeenSet(false),
     m_exasolParametersHasBeenSet(false),
-    m_databricksParametersHasBeenSet(false)
+    m_databricksParametersHasBeenSet(false),
+    m_starburstParametersHasBeenSet(false),
+    m_trinoParametersHasBeenSet(false),
+    m_bigQueryParametersHasBeenSet(false)
 {
 }
 
-DataSourceParameters::DataSourceParameters(JsonView jsonValue) : 
-    m_amazonElasticsearchParametersHasBeenSet(false),
-    m_athenaParametersHasBeenSet(false),
-    m_auroraParametersHasBeenSet(false),
-    m_auroraPostgreSqlParametersHasBeenSet(false),
-    m_awsIotAnalyticsParametersHasBeenSet(false),
-    m_jiraParametersHasBeenSet(false),
-    m_mariaDbParametersHasBeenSet(false),
-    m_mySqlParametersHasBeenSet(false),
-    m_oracleParametersHasBeenSet(false),
-    m_postgreSqlParametersHasBeenSet(false),
-    m_prestoParametersHasBeenSet(false),
-    m_rdsParametersHasBeenSet(false),
-    m_redshiftParametersHasBeenSet(false),
-    m_s3ParametersHasBeenSet(false),
-    m_serviceNowParametersHasBeenSet(false),
-    m_snowflakeParametersHasBeenSet(false),
-    m_sparkParametersHasBeenSet(false),
-    m_sqlServerParametersHasBeenSet(false),
-    m_teradataParametersHasBeenSet(false),
-    m_twitterParametersHasBeenSet(false),
-    m_amazonOpenSearchParametersHasBeenSet(false),
-    m_exasolParametersHasBeenSet(false),
-    m_databricksParametersHasBeenSet(false)
+DataSourceParameters::DataSourceParameters(JsonView jsonValue)
+  : DataSourceParameters()
 {
   *this = jsonValue;
 }
@@ -236,6 +217,27 @@ DataSourceParameters& DataSourceParameters::operator =(JsonView jsonValue)
     m_databricksParametersHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("StarburstParameters"))
+  {
+    m_starburstParameters = jsonValue.GetObject("StarburstParameters");
+
+    m_starburstParametersHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("TrinoParameters"))
+  {
+    m_trinoParameters = jsonValue.GetObject("TrinoParameters");
+
+    m_trinoParametersHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("BigQueryParameters"))
+  {
+    m_bigQueryParameters = jsonValue.GetObject("BigQueryParameters");
+
+    m_bigQueryParametersHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -378,6 +380,24 @@ JsonValue DataSourceParameters::Jsonize() const
   if(m_databricksParametersHasBeenSet)
   {
    payload.WithObject("DatabricksParameters", m_databricksParameters.Jsonize());
+
+  }
+
+  if(m_starburstParametersHasBeenSet)
+  {
+   payload.WithObject("StarburstParameters", m_starburstParameters.Jsonize());
+
+  }
+
+  if(m_trinoParametersHasBeenSet)
+  {
+   payload.WithObject("TrinoParameters", m_trinoParameters.Jsonize());
+
+  }
+
+  if(m_bigQueryParametersHasBeenSet)
+  {
+   payload.WithObject("BigQueryParameters", m_bigQueryParameters.Jsonize());
 
   }
 

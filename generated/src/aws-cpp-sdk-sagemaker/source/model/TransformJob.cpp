@@ -35,6 +35,7 @@ TransformJob::TransformJob() :
     m_environmentHasBeenSet(false),
     m_transformInputHasBeenSet(false),
     m_transformOutputHasBeenSet(false),
+    m_dataCaptureConfigHasBeenSet(false),
     m_transformResourcesHasBeenSet(false),
     m_creationTimeHasBeenSet(false),
     m_transformStartTimeHasBeenSet(false),
@@ -47,32 +48,8 @@ TransformJob::TransformJob() :
 {
 }
 
-TransformJob::TransformJob(JsonView jsonValue) : 
-    m_transformJobNameHasBeenSet(false),
-    m_transformJobArnHasBeenSet(false),
-    m_transformJobStatus(TransformJobStatus::NOT_SET),
-    m_transformJobStatusHasBeenSet(false),
-    m_failureReasonHasBeenSet(false),
-    m_modelNameHasBeenSet(false),
-    m_maxConcurrentTransforms(0),
-    m_maxConcurrentTransformsHasBeenSet(false),
-    m_modelClientConfigHasBeenSet(false),
-    m_maxPayloadInMB(0),
-    m_maxPayloadInMBHasBeenSet(false),
-    m_batchStrategy(BatchStrategy::NOT_SET),
-    m_batchStrategyHasBeenSet(false),
-    m_environmentHasBeenSet(false),
-    m_transformInputHasBeenSet(false),
-    m_transformOutputHasBeenSet(false),
-    m_transformResourcesHasBeenSet(false),
-    m_creationTimeHasBeenSet(false),
-    m_transformStartTimeHasBeenSet(false),
-    m_transformEndTimeHasBeenSet(false),
-    m_labelingJobArnHasBeenSet(false),
-    m_autoMLJobArnHasBeenSet(false),
-    m_dataProcessingHasBeenSet(false),
-    m_experimentConfigHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+TransformJob::TransformJob(JsonView jsonValue)
+  : TransformJob()
 {
   *this = jsonValue;
 }
@@ -164,6 +141,13 @@ TransformJob& TransformJob::operator =(JsonView jsonValue)
     m_transformOutput = jsonValue.GetObject("TransformOutput");
 
     m_transformOutputHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("DataCaptureConfig"))
+  {
+    m_dataCaptureConfig = jsonValue.GetObject("DataCaptureConfig");
+
+    m_dataCaptureConfigHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("TransformResources"))
@@ -311,6 +295,12 @@ JsonValue TransformJob::Jsonize() const
   if(m_transformOutputHasBeenSet)
   {
    payload.WithObject("TransformOutput", m_transformOutput.Jsonize());
+
+  }
+
+  if(m_dataCaptureConfigHasBeenSet)
+  {
+   payload.WithObject("DataCaptureConfig", m_dataCaptureConfig.Jsonize());
 
   }
 

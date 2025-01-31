@@ -48,8 +48,13 @@ namespace Aws
         static const int RecommendationOptionsSavingsOpportunityPercentage_HASH = HashingUtils::HashString("RecommendationOptionsSavingsOpportunityPercentage");
         static const int RecommendationOptionsEstimatedMonthlySavingsCurrency_HASH = HashingUtils::HashString("RecommendationOptionsEstimatedMonthlySavingsCurrency");
         static const int RecommendationOptionsEstimatedMonthlySavingsValue_HASH = HashingUtils::HashString("RecommendationOptionsEstimatedMonthlySavingsValue");
-        static const int RootVolume_HASH = HashingUtils::HashString("RootVolume");
         static const int Tags_HASH = HashingUtils::HashString("Tags");
+        static const int RootVolume_HASH = HashingUtils::HashString("RootVolume");
+        static const int CurrentConfigurationRootVolume_HASH = HashingUtils::HashString("CurrentConfigurationRootVolume");
+        static const int EffectiveRecommendationPreferencesSavingsEstimationMode_HASH = HashingUtils::HashString("EffectiveRecommendationPreferencesSavingsEstimationMode");
+        static const int RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage_HASH = HashingUtils::HashString("RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage");
+        static const int RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts_HASH = HashingUtils::HashString("RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts");
+        static const int RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts_HASH = HashingUtils::HashString("RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts");
 
 
         ExportableVolumeField GetExportableVolumeFieldForName(const Aws::String& name)
@@ -167,13 +172,33 @@ namespace Aws
           {
             return ExportableVolumeField::RecommendationOptionsEstimatedMonthlySavingsValue;
           }
+          else if (hashCode == Tags_HASH)
+          {
+            return ExportableVolumeField::Tags;
+          }
           else if (hashCode == RootVolume_HASH)
           {
             return ExportableVolumeField::RootVolume;
           }
-          else if (hashCode == Tags_HASH)
+          else if (hashCode == CurrentConfigurationRootVolume_HASH)
           {
-            return ExportableVolumeField::Tags;
+            return ExportableVolumeField::CurrentConfigurationRootVolume;
+          }
+          else if (hashCode == EffectiveRecommendationPreferencesSavingsEstimationMode_HASH)
+          {
+            return ExportableVolumeField::EffectiveRecommendationPreferencesSavingsEstimationMode;
+          }
+          else if (hashCode == RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage_HASH)
+          {
+            return ExportableVolumeField::RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage;
+          }
+          else if (hashCode == RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts_HASH)
+          {
+            return ExportableVolumeField::RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts;
+          }
+          else if (hashCode == RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts_HASH)
+          {
+            return ExportableVolumeField::RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts;
           }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
@@ -189,6 +214,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ExportableVolumeField::NOT_SET:
+            return {};
           case ExportableVolumeField::AccountId:
             return "AccountId";
           case ExportableVolumeField::VolumeArn:
@@ -245,10 +272,20 @@ namespace Aws
             return "RecommendationOptionsEstimatedMonthlySavingsCurrency";
           case ExportableVolumeField::RecommendationOptionsEstimatedMonthlySavingsValue:
             return "RecommendationOptionsEstimatedMonthlySavingsValue";
-          case ExportableVolumeField::RootVolume:
-            return "RootVolume";
           case ExportableVolumeField::Tags:
             return "Tags";
+          case ExportableVolumeField::RootVolume:
+            return "RootVolume";
+          case ExportableVolumeField::CurrentConfigurationRootVolume:
+            return "CurrentConfigurationRootVolume";
+          case ExportableVolumeField::EffectiveRecommendationPreferencesSavingsEstimationMode:
+            return "EffectiveRecommendationPreferencesSavingsEstimationMode";
+          case ExportableVolumeField::RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage:
+            return "RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage";
+          case ExportableVolumeField::RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts:
+            return "RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts";
+          case ExportableVolumeField::RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts:
+            return "RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

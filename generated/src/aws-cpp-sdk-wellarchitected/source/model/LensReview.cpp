@@ -26,25 +26,18 @@ LensReview::LensReview() :
     m_lensStatus(LensStatus::NOT_SET),
     m_lensStatusHasBeenSet(false),
     m_pillarReviewSummariesHasBeenSet(false),
+    m_jiraConfigurationHasBeenSet(false),
     m_updatedAtHasBeenSet(false),
     m_notesHasBeenSet(false),
     m_riskCountsHasBeenSet(false),
-    m_nextTokenHasBeenSet(false)
+    m_nextTokenHasBeenSet(false),
+    m_profilesHasBeenSet(false),
+    m_prioritizedRiskCountsHasBeenSet(false)
 {
 }
 
-LensReview::LensReview(JsonView jsonValue) : 
-    m_lensAliasHasBeenSet(false),
-    m_lensArnHasBeenSet(false),
-    m_lensVersionHasBeenSet(false),
-    m_lensNameHasBeenSet(false),
-    m_lensStatus(LensStatus::NOT_SET),
-    m_lensStatusHasBeenSet(false),
-    m_pillarReviewSummariesHasBeenSet(false),
-    m_updatedAtHasBeenSet(false),
-    m_notesHasBeenSet(false),
-    m_riskCountsHasBeenSet(false),
-    m_nextTokenHasBeenSet(false)
+LensReview::LensReview(JsonView jsonValue)
+  : LensReview()
 {
   *this = jsonValue;
 }
@@ -96,6 +89,13 @@ LensReview& LensReview::operator =(JsonView jsonValue)
     m_pillarReviewSummariesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("JiraConfiguration"))
+  {
+    m_jiraConfiguration = jsonValue.GetObject("JiraConfiguration");
+
+    m_jiraConfigurationHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("UpdatedAt"))
   {
     m_updatedAt = jsonValue.GetDouble("UpdatedAt");
@@ -125,6 +125,26 @@ LensReview& LensReview::operator =(JsonView jsonValue)
     m_nextToken = jsonValue.GetString("NextToken");
 
     m_nextTokenHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Profiles"))
+  {
+    Aws::Utils::Array<JsonView> profilesJsonList = jsonValue.GetArray("Profiles");
+    for(unsigned profilesIndex = 0; profilesIndex < profilesJsonList.GetLength(); ++profilesIndex)
+    {
+      m_profiles.push_back(profilesJsonList[profilesIndex].AsObject());
+    }
+    m_profilesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("PrioritizedRiskCounts"))
+  {
+    Aws::Map<Aws::String, JsonView> prioritizedRiskCountsJsonMap = jsonValue.GetObject("PrioritizedRiskCounts").GetAllObjects();
+    for(auto& prioritizedRiskCountsItem : prioritizedRiskCountsJsonMap)
+    {
+      m_prioritizedRiskCounts[RiskMapper::GetRiskForName(prioritizedRiskCountsItem.first)] = prioritizedRiskCountsItem.second.AsInteger();
+    }
+    m_prioritizedRiskCountsHasBeenSet = true;
   }
 
   return *this;
@@ -174,6 +194,12 @@ JsonValue LensReview::Jsonize() const
 
   }
 
+  if(m_jiraConfigurationHasBeenSet)
+  {
+   payload.WithObject("JiraConfiguration", m_jiraConfiguration.Jsonize());
+
+  }
+
   if(m_updatedAtHasBeenSet)
   {
    payload.WithDouble("UpdatedAt", m_updatedAt.SecondsWithMSPrecision());
@@ -199,6 +225,28 @@ JsonValue LensReview::Jsonize() const
   if(m_nextTokenHasBeenSet)
   {
    payload.WithString("NextToken", m_nextToken);
+
+  }
+
+  if(m_profilesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> profilesJsonList(m_profiles.size());
+   for(unsigned profilesIndex = 0; profilesIndex < profilesJsonList.GetLength(); ++profilesIndex)
+   {
+     profilesJsonList[profilesIndex].AsObject(m_profiles[profilesIndex].Jsonize());
+   }
+   payload.WithArray("Profiles", std::move(profilesJsonList));
+
+  }
+
+  if(m_prioritizedRiskCountsHasBeenSet)
+  {
+   JsonValue prioritizedRiskCountsJsonMap;
+   for(auto& prioritizedRiskCountsItem : m_prioritizedRiskCounts)
+   {
+     prioritizedRiskCountsJsonMap.WithInteger(RiskMapper::GetNameForRisk(prioritizedRiskCountsItem.first), prioritizedRiskCountsItem.second);
+   }
+   payload.WithObject("PrioritizedRiskCounts", std::move(prioritizedRiskCountsJsonMap));
 
   }
 

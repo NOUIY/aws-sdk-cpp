@@ -22,15 +22,13 @@ TemplateConfiguration::TemplateConfiguration() :
     m_emailTemplateHasBeenSet(false),
     m_pushTemplateHasBeenSet(false),
     m_sMSTemplateHasBeenSet(false),
-    m_voiceTemplateHasBeenSet(false)
+    m_voiceTemplateHasBeenSet(false),
+    m_inAppTemplateHasBeenSet(false)
 {
 }
 
-TemplateConfiguration::TemplateConfiguration(JsonView jsonValue) : 
-    m_emailTemplateHasBeenSet(false),
-    m_pushTemplateHasBeenSet(false),
-    m_sMSTemplateHasBeenSet(false),
-    m_voiceTemplateHasBeenSet(false)
+TemplateConfiguration::TemplateConfiguration(JsonView jsonValue)
+  : TemplateConfiguration()
 {
   *this = jsonValue;
 }
@@ -65,6 +63,13 @@ TemplateConfiguration& TemplateConfiguration::operator =(JsonView jsonValue)
     m_voiceTemplateHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("InAppTemplate"))
+  {
+    m_inAppTemplate = jsonValue.GetObject("InAppTemplate");
+
+    m_inAppTemplateHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -93,6 +98,12 @@ JsonValue TemplateConfiguration::Jsonize() const
   if(m_voiceTemplateHasBeenSet)
   {
    payload.WithObject("VoiceTemplate", m_voiceTemplate.Jsonize());
+
+  }
+
+  if(m_inAppTemplateHasBeenSet)
+  {
+   payload.WithObject("InAppTemplate", m_inAppTemplate.Jsonize());
 
   }
 

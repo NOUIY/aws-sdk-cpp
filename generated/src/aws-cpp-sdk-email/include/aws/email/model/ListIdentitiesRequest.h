@@ -19,8 +19,8 @@ namespace Model
 
   /**
    * <p>Represents a request to return a list of all identities (email addresses and
-   * domains) that you have attempted to verify under your AWS account, regardless of
-   * verification status.</p><p><h3>See Also:</h3>   <a
+   * domains) that you have attempted to verify under your Amazon Web Services
+   * account, regardless of verification status.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/email-2010-12-01/ListIdentitiesRequest">AWS
    * API Reference</a></p>
    */
@@ -42,108 +42,43 @@ namespace Model
 
   public:
 
+    ///@{
     /**
      * <p>The type of the identities to list. Possible values are "EmailAddress" and
-     * "Domain". If this parameter is omitted, then all identities will be listed.</p>
+     * "Domain". If this parameter is omitted, then all identities are listed.</p>
      */
     inline const IdentityType& GetIdentityType() const{ return m_identityType; }
-
-    /**
-     * <p>The type of the identities to list. Possible values are "EmailAddress" and
-     * "Domain". If this parameter is omitted, then all identities will be listed.</p>
-     */
     inline bool IdentityTypeHasBeenSet() const { return m_identityTypeHasBeenSet; }
-
-    /**
-     * <p>The type of the identities to list. Possible values are "EmailAddress" and
-     * "Domain". If this parameter is omitted, then all identities will be listed.</p>
-     */
     inline void SetIdentityType(const IdentityType& value) { m_identityTypeHasBeenSet = true; m_identityType = value; }
-
-    /**
-     * <p>The type of the identities to list. Possible values are "EmailAddress" and
-     * "Domain". If this parameter is omitted, then all identities will be listed.</p>
-     */
     inline void SetIdentityType(IdentityType&& value) { m_identityTypeHasBeenSet = true; m_identityType = std::move(value); }
-
-    /**
-     * <p>The type of the identities to list. Possible values are "EmailAddress" and
-     * "Domain". If this parameter is omitted, then all identities will be listed.</p>
-     */
     inline ListIdentitiesRequest& WithIdentityType(const IdentityType& value) { SetIdentityType(value); return *this;}
-
-    /**
-     * <p>The type of the identities to list. Possible values are "EmailAddress" and
-     * "Domain". If this parameter is omitted, then all identities will be listed.</p>
-     */
     inline ListIdentitiesRequest& WithIdentityType(IdentityType&& value) { SetIdentityType(std::move(value)); return *this;}
+    ///@}
 
-
+    ///@{
     /**
      * <p>The token to use for pagination.</p>
      */
     inline const Aws::String& GetNextToken() const{ return m_nextToken; }
-
-    /**
-     * <p>The token to use for pagination.</p>
-     */
     inline bool NextTokenHasBeenSet() const { return m_nextTokenHasBeenSet; }
-
-    /**
-     * <p>The token to use for pagination.</p>
-     */
     inline void SetNextToken(const Aws::String& value) { m_nextTokenHasBeenSet = true; m_nextToken = value; }
-
-    /**
-     * <p>The token to use for pagination.</p>
-     */
     inline void SetNextToken(Aws::String&& value) { m_nextTokenHasBeenSet = true; m_nextToken = std::move(value); }
-
-    /**
-     * <p>The token to use for pagination.</p>
-     */
     inline void SetNextToken(const char* value) { m_nextTokenHasBeenSet = true; m_nextToken.assign(value); }
-
-    /**
-     * <p>The token to use for pagination.</p>
-     */
     inline ListIdentitiesRequest& WithNextToken(const Aws::String& value) { SetNextToken(value); return *this;}
-
-    /**
-     * <p>The token to use for pagination.</p>
-     */
     inline ListIdentitiesRequest& WithNextToken(Aws::String&& value) { SetNextToken(std::move(value)); return *this;}
-
-    /**
-     * <p>The token to use for pagination.</p>
-     */
     inline ListIdentitiesRequest& WithNextToken(const char* value) { SetNextToken(value); return *this;}
+    ///@}
 
-
+    ///@{
     /**
      * <p>The maximum number of identities per page. Possible values are 1-1000
      * inclusive.</p>
      */
     inline int GetMaxItems() const{ return m_maxItems; }
-
-    /**
-     * <p>The maximum number of identities per page. Possible values are 1-1000
-     * inclusive.</p>
-     */
     inline bool MaxItemsHasBeenSet() const { return m_maxItemsHasBeenSet; }
-
-    /**
-     * <p>The maximum number of identities per page. Possible values are 1-1000
-     * inclusive.</p>
-     */
     inline void SetMaxItems(int value) { m_maxItemsHasBeenSet = true; m_maxItems = value; }
-
-    /**
-     * <p>The maximum number of identities per page. Possible values are 1-1000
-     * inclusive.</p>
-     */
     inline ListIdentitiesRequest& WithMaxItems(int value) { SetMaxItems(value); return *this;}
-
+    ///@}
   private:
 
     IdentityType m_identityType;

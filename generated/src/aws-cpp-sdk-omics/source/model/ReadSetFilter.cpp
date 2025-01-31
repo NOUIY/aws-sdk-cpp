@@ -27,20 +27,14 @@ ReadSetFilter::ReadSetFilter() :
     m_createdBeforeHasBeenSet(false),
     m_sampleIdHasBeenSet(false),
     m_subjectIdHasBeenSet(false),
-    m_generatedFromHasBeenSet(false)
+    m_generatedFromHasBeenSet(false),
+    m_creationType(CreationType::NOT_SET),
+    m_creationTypeHasBeenSet(false)
 {
 }
 
-ReadSetFilter::ReadSetFilter(JsonView jsonValue) : 
-    m_nameHasBeenSet(false),
-    m_status(ReadSetStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_referenceArnHasBeenSet(false),
-    m_createdAfterHasBeenSet(false),
-    m_createdBeforeHasBeenSet(false),
-    m_sampleIdHasBeenSet(false),
-    m_subjectIdHasBeenSet(false),
-    m_generatedFromHasBeenSet(false)
+ReadSetFilter::ReadSetFilter(JsonView jsonValue)
+  : ReadSetFilter()
 {
   *this = jsonValue;
 }
@@ -103,6 +97,13 @@ ReadSetFilter& ReadSetFilter::operator =(JsonView jsonValue)
     m_generatedFromHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("creationType"))
+  {
+    m_creationType = CreationTypeMapper::GetCreationTypeForName(jsonValue.GetString("creationType"));
+
+    m_creationTypeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -153,6 +154,11 @@ JsonValue ReadSetFilter::Jsonize() const
   {
    payload.WithString("generatedFrom", m_generatedFrom);
 
+  }
+
+  if(m_creationTypeHasBeenSet)
+  {
+   payload.WithString("creationType", CreationTypeMapper::GetNameForCreationType(m_creationType));
   }
 
   return payload;

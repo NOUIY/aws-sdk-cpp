@@ -23,30 +23,22 @@ CoverageFilterCriteria::CoverageFilterCriteria() :
     m_ec2InstanceTagsHasBeenSet(false),
     m_ecrImageTagsHasBeenSet(false),
     m_ecrRepositoryNameHasBeenSet(false),
+    m_imagePulledAtHasBeenSet(false),
     m_lambdaFunctionNameHasBeenSet(false),
     m_lambdaFunctionRuntimeHasBeenSet(false),
     m_lambdaFunctionTagsHasBeenSet(false),
+    m_lastScannedAtHasBeenSet(false),
     m_resourceIdHasBeenSet(false),
     m_resourceTypeHasBeenSet(false),
+    m_scanModeHasBeenSet(false),
     m_scanStatusCodeHasBeenSet(false),
     m_scanStatusReasonHasBeenSet(false),
     m_scanTypeHasBeenSet(false)
 {
 }
 
-CoverageFilterCriteria::CoverageFilterCriteria(JsonView jsonValue) : 
-    m_accountIdHasBeenSet(false),
-    m_ec2InstanceTagsHasBeenSet(false),
-    m_ecrImageTagsHasBeenSet(false),
-    m_ecrRepositoryNameHasBeenSet(false),
-    m_lambdaFunctionNameHasBeenSet(false),
-    m_lambdaFunctionRuntimeHasBeenSet(false),
-    m_lambdaFunctionTagsHasBeenSet(false),
-    m_resourceIdHasBeenSet(false),
-    m_resourceTypeHasBeenSet(false),
-    m_scanStatusCodeHasBeenSet(false),
-    m_scanStatusReasonHasBeenSet(false),
-    m_scanTypeHasBeenSet(false)
+CoverageFilterCriteria::CoverageFilterCriteria(JsonView jsonValue)
+  : CoverageFilterCriteria()
 {
   *this = jsonValue;
 }
@@ -93,6 +85,16 @@ CoverageFilterCriteria& CoverageFilterCriteria::operator =(JsonView jsonValue)
     m_ecrRepositoryNameHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("imagePulledAt"))
+  {
+    Aws::Utils::Array<JsonView> imagePulledAtJsonList = jsonValue.GetArray("imagePulledAt");
+    for(unsigned imagePulledAtIndex = 0; imagePulledAtIndex < imagePulledAtJsonList.GetLength(); ++imagePulledAtIndex)
+    {
+      m_imagePulledAt.push_back(imagePulledAtJsonList[imagePulledAtIndex].AsObject());
+    }
+    m_imagePulledAtHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("lambdaFunctionName"))
   {
     Aws::Utils::Array<JsonView> lambdaFunctionNameJsonList = jsonValue.GetArray("lambdaFunctionName");
@@ -123,6 +125,16 @@ CoverageFilterCriteria& CoverageFilterCriteria::operator =(JsonView jsonValue)
     m_lambdaFunctionTagsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("lastScannedAt"))
+  {
+    Aws::Utils::Array<JsonView> lastScannedAtJsonList = jsonValue.GetArray("lastScannedAt");
+    for(unsigned lastScannedAtIndex = 0; lastScannedAtIndex < lastScannedAtJsonList.GetLength(); ++lastScannedAtIndex)
+    {
+      m_lastScannedAt.push_back(lastScannedAtJsonList[lastScannedAtIndex].AsObject());
+    }
+    m_lastScannedAtHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("resourceId"))
   {
     Aws::Utils::Array<JsonView> resourceIdJsonList = jsonValue.GetArray("resourceId");
@@ -141,6 +153,16 @@ CoverageFilterCriteria& CoverageFilterCriteria::operator =(JsonView jsonValue)
       m_resourceType.push_back(resourceTypeJsonList[resourceTypeIndex].AsObject());
     }
     m_resourceTypeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("scanMode"))
+  {
+    Aws::Utils::Array<JsonView> scanModeJsonList = jsonValue.GetArray("scanMode");
+    for(unsigned scanModeIndex = 0; scanModeIndex < scanModeJsonList.GetLength(); ++scanModeIndex)
+    {
+      m_scanMode.push_back(scanModeJsonList[scanModeIndex].AsObject());
+    }
+    m_scanModeHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("scanStatusCode"))
@@ -224,6 +246,17 @@ JsonValue CoverageFilterCriteria::Jsonize() const
 
   }
 
+  if(m_imagePulledAtHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> imagePulledAtJsonList(m_imagePulledAt.size());
+   for(unsigned imagePulledAtIndex = 0; imagePulledAtIndex < imagePulledAtJsonList.GetLength(); ++imagePulledAtIndex)
+   {
+     imagePulledAtJsonList[imagePulledAtIndex].AsObject(m_imagePulledAt[imagePulledAtIndex].Jsonize());
+   }
+   payload.WithArray("imagePulledAt", std::move(imagePulledAtJsonList));
+
+  }
+
   if(m_lambdaFunctionNameHasBeenSet)
   {
    Aws::Utils::Array<JsonValue> lambdaFunctionNameJsonList(m_lambdaFunctionName.size());
@@ -257,6 +290,17 @@ JsonValue CoverageFilterCriteria::Jsonize() const
 
   }
 
+  if(m_lastScannedAtHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> lastScannedAtJsonList(m_lastScannedAt.size());
+   for(unsigned lastScannedAtIndex = 0; lastScannedAtIndex < lastScannedAtJsonList.GetLength(); ++lastScannedAtIndex)
+   {
+     lastScannedAtJsonList[lastScannedAtIndex].AsObject(m_lastScannedAt[lastScannedAtIndex].Jsonize());
+   }
+   payload.WithArray("lastScannedAt", std::move(lastScannedAtJsonList));
+
+  }
+
   if(m_resourceIdHasBeenSet)
   {
    Aws::Utils::Array<JsonValue> resourceIdJsonList(m_resourceId.size());
@@ -276,6 +320,17 @@ JsonValue CoverageFilterCriteria::Jsonize() const
      resourceTypeJsonList[resourceTypeIndex].AsObject(m_resourceType[resourceTypeIndex].Jsonize());
    }
    payload.WithArray("resourceType", std::move(resourceTypeJsonList));
+
+  }
+
+  if(m_scanModeHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> scanModeJsonList(m_scanMode.size());
+   for(unsigned scanModeIndex = 0; scanModeIndex < scanModeJsonList.GetLength(); ++scanModeIndex)
+   {
+     scanModeJsonList[scanModeIndex].AsObject(m_scanMode[scanModeIndex].Jsonize());
+   }
+   payload.WithArray("scanMode", std::move(scanModeJsonList));
 
   }
 

@@ -6,25 +6,37 @@
 #pragma once
 #include <aws/lakeformation/LakeFormation_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/lakeformation/LakeFormationServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/lakeformation/LakeFormationErrorMarshaller.h>
 
 namespace Aws
 {
 namespace LakeFormation
 {
+  AWS_LAKEFORMATION_API extern const char SERVICE_NAME[];
   /**
    * <fullname>Lake Formation</fullname> <p>Defines the public endpoint for the Lake
    * Formation service.</p>
    */
-  class AWS_LAKEFORMATION_API LakeFormationClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<LakeFormationClient>
+  class AWS_LAKEFORMATION_API LakeFormationClient : smithy::client::AwsSmithyClientT<Aws::LakeFormation::SERVICE_NAME,
+      Aws::LakeFormation::LakeFormationClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      LakeFormationEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::LakeFormationErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<LakeFormationClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "LakeFormation"; }
 
       typedef LakeFormationClientConfiguration ClientConfigurationType;
       typedef LakeFormationEndpointProvider EndpointProviderType;
@@ -34,14 +46,14 @@ namespace LakeFormation
         * is not specified, it will be initialized to default values.
         */
         LakeFormationClient(const Aws::LakeFormation::LakeFormationClientConfiguration& clientConfiguration = Aws::LakeFormation::LakeFormationClientConfiguration(),
-                            std::shared_ptr<LakeFormationEndpointProviderBase> endpointProvider = Aws::MakeShared<LakeFormationEndpointProvider>(ALLOCATION_TAG));
+                            std::shared_ptr<LakeFormationEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         LakeFormationClient(const Aws::Auth::AWSCredentials& credentials,
-                            std::shared_ptr<LakeFormationEndpointProviderBase> endpointProvider = Aws::MakeShared<LakeFormationEndpointProvider>(ALLOCATION_TAG),
+                            std::shared_ptr<LakeFormationEndpointProviderBase> endpointProvider = nullptr,
                             const Aws::LakeFormation::LakeFormationClientConfiguration& clientConfiguration = Aws::LakeFormation::LakeFormationClientConfiguration());
 
        /**
@@ -49,7 +61,7 @@ namespace LakeFormation
         * the default http client factory will be used
         */
         LakeFormationClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                            std::shared_ptr<LakeFormationEndpointProviderBase> endpointProvider = Aws::MakeShared<LakeFormationEndpointProvider>(ALLOCATION_TAG),
+                            std::shared_ptr<LakeFormationEndpointProviderBase> endpointProvider = nullptr,
                             const Aws::LakeFormation::LakeFormationClientConfiguration& clientConfiguration = Aws::LakeFormation::LakeFormationClientConfiguration());
 
 
@@ -299,17 +311,102 @@ namespace LakeFormation
         }
 
         /**
+         * <p>Creates a new LF-Tag expression with the provided name, description, catalog
+         * ID, and expression body. This call fails if a LF-Tag expression with the same
+         * name already exists in the caller’s account or if the underlying LF-Tags don't
+         * exist. To call this API operation, caller needs the following Lake Formation
+         * permissions:</p> <p> <code>CREATE_LF_TAG_EXPRESSION</code> on the root catalog
+         * resource.</p> <p> <code>GRANT_WITH_LF_TAG_EXPRESSION</code> on all underlying
+         * LF-Tag key:value pairs included in the expression. </p><p><h3>See Also:</h3>  
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/CreateLFTagExpression">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateLFTagExpressionOutcome CreateLFTagExpression(const Model::CreateLFTagExpressionRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateLFTagExpression that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateLFTagExpressionRequestT = Model::CreateLFTagExpressionRequest>
+        Model::CreateLFTagExpressionOutcomeCallable CreateLFTagExpressionCallable(const CreateLFTagExpressionRequestT& request) const
+        {
+            return SubmitCallable(&LakeFormationClient::CreateLFTagExpression, request);
+        }
+
+        /**
+         * An Async wrapper for CreateLFTagExpression that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateLFTagExpressionRequestT = Model::CreateLFTagExpressionRequest>
+        void CreateLFTagExpressionAsync(const CreateLFTagExpressionRequestT& request, const CreateLFTagExpressionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LakeFormationClient::CreateLFTagExpression, request, handler, context);
+        }
+
+        /**
+         * <p>Creates an IAM Identity Center connection with Lake Formation to allow IAM
+         * Identity Center users and groups to access Data Catalog resources.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/CreateLakeFormationIdentityCenterConfiguration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateLakeFormationIdentityCenterConfigurationOutcome CreateLakeFormationIdentityCenterConfiguration(const Model::CreateLakeFormationIdentityCenterConfigurationRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for CreateLakeFormationIdentityCenterConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateLakeFormationIdentityCenterConfigurationRequestT = Model::CreateLakeFormationIdentityCenterConfigurationRequest>
+        Model::CreateLakeFormationIdentityCenterConfigurationOutcomeCallable CreateLakeFormationIdentityCenterConfigurationCallable(const CreateLakeFormationIdentityCenterConfigurationRequestT& request = {}) const
+        {
+            return SubmitCallable(&LakeFormationClient::CreateLakeFormationIdentityCenterConfiguration, request);
+        }
+
+        /**
+         * An Async wrapper for CreateLakeFormationIdentityCenterConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateLakeFormationIdentityCenterConfigurationRequestT = Model::CreateLakeFormationIdentityCenterConfigurationRequest>
+        void CreateLakeFormationIdentityCenterConfigurationAsync(const CreateLakeFormationIdentityCenterConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const CreateLakeFormationIdentityCenterConfigurationRequestT& request = {}) const
+        {
+            return SubmitAsync(&LakeFormationClient::CreateLakeFormationIdentityCenterConfiguration, request, handler, context);
+        }
+
+        /**
+         * <p>Enforce Lake Formation permissions for the given databases, tables, and
+         * principals.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/CreateLakeFormationOptIn">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateLakeFormationOptInOutcome CreateLakeFormationOptIn(const Model::CreateLakeFormationOptInRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateLakeFormationOptIn that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateLakeFormationOptInRequestT = Model::CreateLakeFormationOptInRequest>
+        Model::CreateLakeFormationOptInOutcomeCallable CreateLakeFormationOptInCallable(const CreateLakeFormationOptInRequestT& request) const
+        {
+            return SubmitCallable(&LakeFormationClient::CreateLakeFormationOptIn, request);
+        }
+
+        /**
+         * An Async wrapper for CreateLakeFormationOptIn that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateLakeFormationOptInRequestT = Model::CreateLakeFormationOptInRequest>
+        void CreateLakeFormationOptInAsync(const CreateLakeFormationOptInRequestT& request, const CreateLakeFormationOptInResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LakeFormationClient::CreateLakeFormationOptIn, request, handler, context);
+        }
+
+        /**
          * <p>Deletes a data cell filter.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/DeleteDataCellsFilter">AWS
          * API Reference</a></p>
          */
-        virtual Model::DeleteDataCellsFilterOutcome DeleteDataCellsFilter(const Model::DeleteDataCellsFilterRequest& request) const;
+        virtual Model::DeleteDataCellsFilterOutcome DeleteDataCellsFilter(const Model::DeleteDataCellsFilterRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DeleteDataCellsFilter that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DeleteDataCellsFilterRequestT = Model::DeleteDataCellsFilterRequest>
-        Model::DeleteDataCellsFilterOutcomeCallable DeleteDataCellsFilterCallable(const DeleteDataCellsFilterRequestT& request) const
+        Model::DeleteDataCellsFilterOutcomeCallable DeleteDataCellsFilterCallable(const DeleteDataCellsFilterRequestT& request = {}) const
         {
             return SubmitCallable(&LakeFormationClient::DeleteDataCellsFilter, request);
         }
@@ -318,7 +415,7 @@ namespace LakeFormation
          * An Async wrapper for DeleteDataCellsFilter that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DeleteDataCellsFilterRequestT = Model::DeleteDataCellsFilterRequest>
-        void DeleteDataCellsFilterAsync(const DeleteDataCellsFilterRequestT& request, const DeleteDataCellsFilterResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DeleteDataCellsFilterAsync(const DeleteDataCellsFilterResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DeleteDataCellsFilterRequestT& request = {}) const
         {
             return SubmitAsync(&LakeFormationClient::DeleteDataCellsFilter, request, handler, context);
         }
@@ -351,6 +448,86 @@ namespace LakeFormation
         void DeleteLFTagAsync(const DeleteLFTagRequestT& request, const DeleteLFTagResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&LakeFormationClient::DeleteLFTag, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes the LF-Tag expression. The caller must be a data lake admin or have
+         * <code>DROP</code> permissions on the LF-Tag expression. Deleting a LF-Tag
+         * expression will also delete all <code>LFTagPolicy</code> permissions referencing
+         * the LF-Tag expression.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/DeleteLFTagExpression">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteLFTagExpressionOutcome DeleteLFTagExpression(const Model::DeleteLFTagExpressionRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteLFTagExpression that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteLFTagExpressionRequestT = Model::DeleteLFTagExpressionRequest>
+        Model::DeleteLFTagExpressionOutcomeCallable DeleteLFTagExpressionCallable(const DeleteLFTagExpressionRequestT& request) const
+        {
+            return SubmitCallable(&LakeFormationClient::DeleteLFTagExpression, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteLFTagExpression that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteLFTagExpressionRequestT = Model::DeleteLFTagExpressionRequest>
+        void DeleteLFTagExpressionAsync(const DeleteLFTagExpressionRequestT& request, const DeleteLFTagExpressionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LakeFormationClient::DeleteLFTagExpression, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes an IAM Identity Center connection with Lake Formation.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/DeleteLakeFormationIdentityCenterConfiguration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteLakeFormationIdentityCenterConfigurationOutcome DeleteLakeFormationIdentityCenterConfiguration(const Model::DeleteLakeFormationIdentityCenterConfigurationRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for DeleteLakeFormationIdentityCenterConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteLakeFormationIdentityCenterConfigurationRequestT = Model::DeleteLakeFormationIdentityCenterConfigurationRequest>
+        Model::DeleteLakeFormationIdentityCenterConfigurationOutcomeCallable DeleteLakeFormationIdentityCenterConfigurationCallable(const DeleteLakeFormationIdentityCenterConfigurationRequestT& request = {}) const
+        {
+            return SubmitCallable(&LakeFormationClient::DeleteLakeFormationIdentityCenterConfiguration, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteLakeFormationIdentityCenterConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteLakeFormationIdentityCenterConfigurationRequestT = Model::DeleteLakeFormationIdentityCenterConfigurationRequest>
+        void DeleteLakeFormationIdentityCenterConfigurationAsync(const DeleteLakeFormationIdentityCenterConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DeleteLakeFormationIdentityCenterConfigurationRequestT& request = {}) const
+        {
+            return SubmitAsync(&LakeFormationClient::DeleteLakeFormationIdentityCenterConfiguration, request, handler, context);
+        }
+
+        /**
+         * <p>Remove the Lake Formation permissions enforcement of the given databases,
+         * tables, and principals.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/DeleteLakeFormationOptIn">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteLakeFormationOptInOutcome DeleteLakeFormationOptIn(const Model::DeleteLakeFormationOptInRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteLakeFormationOptIn that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteLakeFormationOptInRequestT = Model::DeleteLakeFormationOptInRequest>
+        Model::DeleteLakeFormationOptInOutcomeCallable DeleteLakeFormationOptInCallable(const DeleteLakeFormationOptInRequestT& request) const
+        {
+            return SubmitCallable(&LakeFormationClient::DeleteLakeFormationOptIn, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteLakeFormationOptIn that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteLakeFormationOptInRequestT = Model::DeleteLakeFormationOptInRequest>
+        void DeleteLakeFormationOptInAsync(const DeleteLakeFormationOptInRequestT& request, const DeleteLakeFormationOptInResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LakeFormationClient::DeleteLakeFormationOptIn, request, handler, context);
         }
 
         /**
@@ -414,6 +591,32 @@ namespace LakeFormation
         }
 
         /**
+         * <p>Retrieves the instance ARN and application ARN for the
+         * connection.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/DescribeLakeFormationIdentityCenterConfiguration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeLakeFormationIdentityCenterConfigurationOutcome DescribeLakeFormationIdentityCenterConfiguration(const Model::DescribeLakeFormationIdentityCenterConfigurationRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for DescribeLakeFormationIdentityCenterConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeLakeFormationIdentityCenterConfigurationRequestT = Model::DescribeLakeFormationIdentityCenterConfigurationRequest>
+        Model::DescribeLakeFormationIdentityCenterConfigurationOutcomeCallable DescribeLakeFormationIdentityCenterConfigurationCallable(const DescribeLakeFormationIdentityCenterConfigurationRequestT& request = {}) const
+        {
+            return SubmitCallable(&LakeFormationClient::DescribeLakeFormationIdentityCenterConfiguration, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeLakeFormationIdentityCenterConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeLakeFormationIdentityCenterConfigurationRequestT = Model::DescribeLakeFormationIdentityCenterConfigurationRequest>
+        void DescribeLakeFormationIdentityCenterConfigurationAsync(const DescribeLakeFormationIdentityCenterConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeLakeFormationIdentityCenterConfigurationRequestT& request = {}) const
+        {
+            return SubmitAsync(&LakeFormationClient::DescribeLakeFormationIdentityCenterConfiguration, request, handler, context);
+        }
+
+        /**
          * <p>Retrieves the current data access role for the given resource registered in
          * Lake Formation.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/DescribeResource">AWS
@@ -472,13 +675,13 @@ namespace LakeFormation
          * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/ExtendTransaction">AWS
          * API Reference</a></p>
          */
-        virtual Model::ExtendTransactionOutcome ExtendTransaction(const Model::ExtendTransactionRequest& request) const;
+        virtual Model::ExtendTransactionOutcome ExtendTransaction(const Model::ExtendTransactionRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ExtendTransaction that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ExtendTransactionRequestT = Model::ExtendTransactionRequest>
-        Model::ExtendTransactionOutcomeCallable ExtendTransactionCallable(const ExtendTransactionRequestT& request) const
+        Model::ExtendTransactionOutcomeCallable ExtendTransactionCallable(const ExtendTransactionRequestT& request = {}) const
         {
             return SubmitCallable(&LakeFormationClient::ExtendTransaction, request);
         }
@@ -487,7 +690,7 @@ namespace LakeFormation
          * An Async wrapper for ExtendTransaction that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ExtendTransactionRequestT = Model::ExtendTransactionRequest>
-        void ExtendTransactionAsync(const ExtendTransactionRequestT& request, const ExtendTransactionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ExtendTransactionAsync(const ExtendTransactionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ExtendTransactionRequestT& request = {}) const
         {
             return SubmitAsync(&LakeFormationClient::ExtendTransaction, request, handler, context);
         }
@@ -518,18 +721,43 @@ namespace LakeFormation
         }
 
         /**
+         * <p>Returns the identity of the invoking principal.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/GetDataLakePrincipal">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetDataLakePrincipalOutcome GetDataLakePrincipal(const Model::GetDataLakePrincipalRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for GetDataLakePrincipal that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetDataLakePrincipalRequestT = Model::GetDataLakePrincipalRequest>
+        Model::GetDataLakePrincipalOutcomeCallable GetDataLakePrincipalCallable(const GetDataLakePrincipalRequestT& request = {}) const
+        {
+            return SubmitCallable(&LakeFormationClient::GetDataLakePrincipal, request);
+        }
+
+        /**
+         * An Async wrapper for GetDataLakePrincipal that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetDataLakePrincipalRequestT = Model::GetDataLakePrincipalRequest>
+        void GetDataLakePrincipalAsync(const GetDataLakePrincipalResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetDataLakePrincipalRequestT& request = {}) const
+        {
+            return SubmitAsync(&LakeFormationClient::GetDataLakePrincipal, request, handler, context);
+        }
+
+        /**
          * <p>Retrieves the list of the data lake administrators of a Lake
          * Formation-managed data lake. </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/GetDataLakeSettings">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetDataLakeSettingsOutcome GetDataLakeSettings(const Model::GetDataLakeSettingsRequest& request) const;
+        virtual Model::GetDataLakeSettingsOutcome GetDataLakeSettings(const Model::GetDataLakeSettingsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetDataLakeSettings that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetDataLakeSettingsRequestT = Model::GetDataLakeSettingsRequest>
-        Model::GetDataLakeSettingsOutcomeCallable GetDataLakeSettingsCallable(const GetDataLakeSettingsRequestT& request) const
+        Model::GetDataLakeSettingsOutcomeCallable GetDataLakeSettingsCallable(const GetDataLakeSettingsRequestT& request = {}) const
         {
             return SubmitCallable(&LakeFormationClient::GetDataLakeSettings, request);
         }
@@ -538,7 +766,7 @@ namespace LakeFormation
          * An Async wrapper for GetDataLakeSettings that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetDataLakeSettingsRequestT = Model::GetDataLakeSettingsRequest>
-        void GetDataLakeSettingsAsync(const GetDataLakeSettingsRequestT& request, const GetDataLakeSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetDataLakeSettingsAsync(const GetDataLakeSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetDataLakeSettingsRequestT& request = {}) const
         {
             return SubmitAsync(&LakeFormationClient::GetDataLakeSettings, request, handler, context);
         }
@@ -594,6 +822,33 @@ namespace LakeFormation
         void GetLFTagAsync(const GetLFTagRequestT& request, const GetLFTagResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&LakeFormationClient::GetLFTag, request, handler, context);
+        }
+
+        /**
+         * <p>Returns the details about the LF-Tag expression. The caller must be a data
+         * lake admin or must have <code>DESCRIBE</code> permission on the LF-Tag
+         * expression resource. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/GetLFTagExpression">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetLFTagExpressionOutcome GetLFTagExpression(const Model::GetLFTagExpressionRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetLFTagExpression that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetLFTagExpressionRequestT = Model::GetLFTagExpressionRequest>
+        Model::GetLFTagExpressionOutcomeCallable GetLFTagExpressionCallable(const GetLFTagExpressionRequestT& request) const
+        {
+            return SubmitCallable(&LakeFormationClient::GetLFTagExpression, request);
+        }
+
+        /**
+         * An Async wrapper for GetLFTagExpression that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetLFTagExpressionRequestT = Model::GetLFTagExpressionRequest>
+        void GetLFTagExpressionAsync(const GetLFTagExpressionRequestT& request, const GetLFTagExpressionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LakeFormationClient::GetLFTagExpression, request, handler, context);
         }
 
         /**
@@ -736,8 +991,10 @@ namespace LakeFormation
          * <p>Allows a caller in a secure environment to assume a role with permission to
          * access Amazon S3. In order to vend such credentials, Lake Formation assumes the
          * role associated with a registered location, for example an Amazon S3 bucket,
-         * with a scope down policy which restricts the access to a single
-         * prefix.</p><p><h3>See Also:</h3>   <a
+         * with a scope down policy which restricts the access to a single prefix.</p>
+         * <p>To call this API, the role that the service assumes must have
+         * <code>lakeformation:GetDataAccess</code> permission on the
+         * resource.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/GetTemporaryGlueTableCredentials">AWS
          * API Reference</a></p>
          */
@@ -847,13 +1104,13 @@ namespace LakeFormation
          * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/ListDataCellsFilter">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListDataCellsFilterOutcome ListDataCellsFilter(const Model::ListDataCellsFilterRequest& request) const;
+        virtual Model::ListDataCellsFilterOutcome ListDataCellsFilter(const Model::ListDataCellsFilterRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListDataCellsFilter that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListDataCellsFilterRequestT = Model::ListDataCellsFilterRequest>
-        Model::ListDataCellsFilterOutcomeCallable ListDataCellsFilterCallable(const ListDataCellsFilterRequestT& request) const
+        Model::ListDataCellsFilterOutcomeCallable ListDataCellsFilterCallable(const ListDataCellsFilterRequestT& request = {}) const
         {
             return SubmitCallable(&LakeFormationClient::ListDataCellsFilter, request);
         }
@@ -862,9 +1119,37 @@ namespace LakeFormation
          * An Async wrapper for ListDataCellsFilter that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListDataCellsFilterRequestT = Model::ListDataCellsFilterRequest>
-        void ListDataCellsFilterAsync(const ListDataCellsFilterRequestT& request, const ListDataCellsFilterResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListDataCellsFilterAsync(const ListDataCellsFilterResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListDataCellsFilterRequestT& request = {}) const
         {
             return SubmitAsync(&LakeFormationClient::ListDataCellsFilter, request, handler, context);
+        }
+
+        /**
+         * <p>Returns the LF-Tag expressions in caller’s account filtered based on caller's
+         * permissions. Data Lake and read only admins implicitly can see all tag
+         * expressions in their account, else caller needs DESCRIBE permissions on tag
+         * expression.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/ListLFTagExpressions">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListLFTagExpressionsOutcome ListLFTagExpressions(const Model::ListLFTagExpressionsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListLFTagExpressions that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListLFTagExpressionsRequestT = Model::ListLFTagExpressionsRequest>
+        Model::ListLFTagExpressionsOutcomeCallable ListLFTagExpressionsCallable(const ListLFTagExpressionsRequestT& request = {}) const
+        {
+            return SubmitCallable(&LakeFormationClient::ListLFTagExpressions, request);
+        }
+
+        /**
+         * An Async wrapper for ListLFTagExpressions that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListLFTagExpressionsRequestT = Model::ListLFTagExpressionsRequest>
+        void ListLFTagExpressionsAsync(const ListLFTagExpressionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListLFTagExpressionsRequestT& request = {}) const
+        {
+            return SubmitAsync(&LakeFormationClient::ListLFTagExpressions, request, handler, context);
         }
 
         /**
@@ -873,13 +1158,13 @@ namespace LakeFormation
          * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/ListLFTags">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListLFTagsOutcome ListLFTags(const Model::ListLFTagsRequest& request) const;
+        virtual Model::ListLFTagsOutcome ListLFTags(const Model::ListLFTagsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListLFTags that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListLFTagsRequestT = Model::ListLFTagsRequest>
-        Model::ListLFTagsOutcomeCallable ListLFTagsCallable(const ListLFTagsRequestT& request) const
+        Model::ListLFTagsOutcomeCallable ListLFTagsCallable(const ListLFTagsRequestT& request = {}) const
         {
             return SubmitCallable(&LakeFormationClient::ListLFTags, request);
         }
@@ -888,9 +1173,35 @@ namespace LakeFormation
          * An Async wrapper for ListLFTags that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListLFTagsRequestT = Model::ListLFTagsRequest>
-        void ListLFTagsAsync(const ListLFTagsRequestT& request, const ListLFTagsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListLFTagsAsync(const ListLFTagsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListLFTagsRequestT& request = {}) const
         {
             return SubmitAsync(&LakeFormationClient::ListLFTags, request, handler, context);
+        }
+
+        /**
+         * <p>Retrieve the current list of resources and principals that are opt in to
+         * enforce Lake Formation permissions.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/ListLakeFormationOptIns">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListLakeFormationOptInsOutcome ListLakeFormationOptIns(const Model::ListLakeFormationOptInsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListLakeFormationOptIns that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListLakeFormationOptInsRequestT = Model::ListLakeFormationOptInsRequest>
+        Model::ListLakeFormationOptInsOutcomeCallable ListLakeFormationOptInsCallable(const ListLakeFormationOptInsRequestT& request = {}) const
+        {
+            return SubmitCallable(&LakeFormationClient::ListLakeFormationOptIns, request);
+        }
+
+        /**
+         * An Async wrapper for ListLakeFormationOptIns that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListLakeFormationOptInsRequestT = Model::ListLakeFormationOptInsRequest>
+        void ListLakeFormationOptInsAsync(const ListLakeFormationOptInsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListLakeFormationOptInsRequestT& request = {}) const
+        {
+            return SubmitAsync(&LakeFormationClient::ListLakeFormationOptIns, request, handler, context);
         }
 
         /**
@@ -899,18 +1210,18 @@ namespace LakeFormation
          * you are able to see only the principal permissions for ALTER.</p> <p>This
          * operation returns only those permissions that have been explicitly granted.</p>
          * <p>For information about permissions, see <a
-         * href="https://docs-aws.amazon.com/lake-formation/latest/dg/security-data-access.html">Security
+         * href="https://docs.aws.amazon.com/lake-formation/latest/dg/security-data-access.html">Security
          * and Access Control to Metadata and Data</a>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/ListPermissions">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListPermissionsOutcome ListPermissions(const Model::ListPermissionsRequest& request) const;
+        virtual Model::ListPermissionsOutcome ListPermissions(const Model::ListPermissionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListPermissions that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListPermissionsRequestT = Model::ListPermissionsRequest>
-        Model::ListPermissionsOutcomeCallable ListPermissionsCallable(const ListPermissionsRequestT& request) const
+        Model::ListPermissionsOutcomeCallable ListPermissionsCallable(const ListPermissionsRequestT& request = {}) const
         {
             return SubmitCallable(&LakeFormationClient::ListPermissions, request);
         }
@@ -919,7 +1230,7 @@ namespace LakeFormation
          * An Async wrapper for ListPermissions that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListPermissionsRequestT = Model::ListPermissionsRequest>
-        void ListPermissionsAsync(const ListPermissionsRequestT& request, const ListPermissionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListPermissionsAsync(const ListPermissionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListPermissionsRequestT& request = {}) const
         {
             return SubmitAsync(&LakeFormationClient::ListPermissions, request, handler, context);
         }
@@ -930,13 +1241,13 @@ namespace LakeFormation
          * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/ListResources">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListResourcesOutcome ListResources(const Model::ListResourcesRequest& request) const;
+        virtual Model::ListResourcesOutcome ListResources(const Model::ListResourcesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListResources that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListResourcesRequestT = Model::ListResourcesRequest>
-        Model::ListResourcesOutcomeCallable ListResourcesCallable(const ListResourcesRequestT& request) const
+        Model::ListResourcesOutcomeCallable ListResourcesCallable(const ListResourcesRequestT& request = {}) const
         {
             return SubmitCallable(&LakeFormationClient::ListResources, request);
         }
@@ -945,7 +1256,7 @@ namespace LakeFormation
          * An Async wrapper for ListResources that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListResourcesRequestT = Model::ListResourcesRequest>
-        void ListResourcesAsync(const ListResourcesRequestT& request, const ListResourcesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListResourcesAsync(const ListResourcesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListResourcesRequestT& request = {}) const
         {
             return SubmitAsync(&LakeFormationClient::ListResources, request, handler, context);
         }
@@ -985,13 +1296,13 @@ namespace LakeFormation
          * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/ListTransactions">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListTransactionsOutcome ListTransactions(const Model::ListTransactionsRequest& request) const;
+        virtual Model::ListTransactionsOutcome ListTransactions(const Model::ListTransactionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListTransactions that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListTransactionsRequestT = Model::ListTransactionsRequest>
-        Model::ListTransactionsOutcomeCallable ListTransactionsCallable(const ListTransactionsRequestT& request) const
+        Model::ListTransactionsOutcomeCallable ListTransactionsCallable(const ListTransactionsRequestT& request = {}) const
         {
             return SubmitCallable(&LakeFormationClient::ListTransactions, request);
         }
@@ -1000,7 +1311,7 @@ namespace LakeFormation
          * An Async wrapper for ListTransactions that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListTransactionsRequestT = Model::ListTransactionsRequest>
-        void ListTransactionsAsync(const ListTransactionsRequestT& request, const ListTransactionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListTransactionsAsync(const ListTransactionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListTransactionsRequestT& request = {}) const
         {
             return SubmitAsync(&LakeFormationClient::ListTransactions, request, handler, context);
         }
@@ -1048,7 +1359,7 @@ namespace LakeFormation
          * Lake Formation adds the path to the existing policy.</p> <p>The following
          * request registers a new location and gives Lake Formation permission to use the
          * service-linked role to access that location.</p> <p> <code>ResourceArn =
-         * arn:aws:s3:::my-bucket UseServiceLinkedRole = true</code> </p> <p>If
+         * arn:aws:s3:::my-bucket/ UseServiceLinkedRole = true</code> </p> <p>If
          * <code>UseServiceLinkedRole</code> is not set to true, you must provide or set
          * the <code>RoleArn</code>:</p> <p>
          * <code>arn:aws:iam::12345:role/my-data-access-role</code> </p><p><h3>See
@@ -1226,13 +1537,13 @@ namespace LakeFormation
          * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/StartTransaction">AWS
          * API Reference</a></p>
          */
-        virtual Model::StartTransactionOutcome StartTransaction(const Model::StartTransactionRequest& request) const;
+        virtual Model::StartTransactionOutcome StartTransaction(const Model::StartTransactionRequest& request = {}) const;
 
         /**
          * A Callable wrapper for StartTransaction that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename StartTransactionRequestT = Model::StartTransactionRequest>
-        Model::StartTransactionOutcomeCallable StartTransactionCallable(const StartTransactionRequestT& request) const
+        Model::StartTransactionOutcomeCallable StartTransactionCallable(const StartTransactionRequestT& request = {}) const
         {
             return SubmitCallable(&LakeFormationClient::StartTransaction, request);
         }
@@ -1241,7 +1552,7 @@ namespace LakeFormation
          * An Async wrapper for StartTransaction that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename StartTransactionRequestT = Model::StartTransactionRequest>
-        void StartTransactionAsync(const StartTransactionRequestT& request, const StartTransactionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void StartTransactionAsync(const StartTransactionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const StartTransactionRequestT& request = {}) const
         {
             return SubmitAsync(&LakeFormationClient::StartTransaction, request, handler, context);
         }
@@ -1299,6 +1610,60 @@ namespace LakeFormation
         void UpdateLFTagAsync(const UpdateLFTagRequestT& request, const UpdateLFTagResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&LakeFormationClient::UpdateLFTag, request, handler, context);
+        }
+
+        /**
+         * <p>Updates the name of the LF-Tag expression to the new description and
+         * expression body provided. Updating a LF-Tag expression immediately changes the
+         * permission boundaries of all existing <code>LFTagPolicy</code> permission grants
+         * that reference the given LF-Tag expression.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/UpdateLFTagExpression">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateLFTagExpressionOutcome UpdateLFTagExpression(const Model::UpdateLFTagExpressionRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateLFTagExpression that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateLFTagExpressionRequestT = Model::UpdateLFTagExpressionRequest>
+        Model::UpdateLFTagExpressionOutcomeCallable UpdateLFTagExpressionCallable(const UpdateLFTagExpressionRequestT& request) const
+        {
+            return SubmitCallable(&LakeFormationClient::UpdateLFTagExpression, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateLFTagExpression that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateLFTagExpressionRequestT = Model::UpdateLFTagExpressionRequest>
+        void UpdateLFTagExpressionAsync(const UpdateLFTagExpressionRequestT& request, const UpdateLFTagExpressionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LakeFormationClient::UpdateLFTagExpression, request, handler, context);
+        }
+
+        /**
+         * <p>Updates the IAM Identity Center connection parameters.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lakeformation-2017-03-31/UpdateLakeFormationIdentityCenterConfiguration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateLakeFormationIdentityCenterConfigurationOutcome UpdateLakeFormationIdentityCenterConfiguration(const Model::UpdateLakeFormationIdentityCenterConfigurationRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for UpdateLakeFormationIdentityCenterConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateLakeFormationIdentityCenterConfigurationRequestT = Model::UpdateLakeFormationIdentityCenterConfigurationRequest>
+        Model::UpdateLakeFormationIdentityCenterConfigurationOutcomeCallable UpdateLakeFormationIdentityCenterConfigurationCallable(const UpdateLakeFormationIdentityCenterConfigurationRequestT& request = {}) const
+        {
+            return SubmitCallable(&LakeFormationClient::UpdateLakeFormationIdentityCenterConfiguration, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateLakeFormationIdentityCenterConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateLakeFormationIdentityCenterConfigurationRequestT = Model::UpdateLakeFormationIdentityCenterConfigurationRequest>
+        void UpdateLakeFormationIdentityCenterConfigurationAsync(const UpdateLakeFormationIdentityCenterConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const UpdateLakeFormationIdentityCenterConfigurationRequestT& request = {}) const
+        {
+            return SubmitAsync(&LakeFormationClient::UpdateLakeFormationIdentityCenterConfiguration, request, handler, context);
         }
 
         /**
@@ -1384,11 +1749,7 @@ namespace LakeFormation
       std::shared_ptr<LakeFormationEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<LakeFormationClient>;
-      void init(const LakeFormationClientConfiguration& clientConfiguration);
 
-      LakeFormationClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<LakeFormationEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace LakeFormation

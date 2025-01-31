@@ -6,27 +6,39 @@
 #pragma once
 #include <aws/imagebuilder/Imagebuilder_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/imagebuilder/ImagebuilderServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/imagebuilder/ImagebuilderErrorMarshaller.h>
 
 namespace Aws
 {
 namespace imagebuilder
 {
+  AWS_IMAGEBUILDER_API extern const char SERVICE_NAME[];
   /**
    * <p>EC2 Image Builder is a fully managed Amazon Web Services service that makes
    * it easier to automate the creation, management, and deployment of customized,
    * secure, and up-to-date "golden" server images that are pre-installed and
    * pre-configured with software and settings to meet specific IT standards.</p>
    */
-  class AWS_IMAGEBUILDER_API ImagebuilderClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<ImagebuilderClient>
+  class AWS_IMAGEBUILDER_API ImagebuilderClient : smithy::client::AwsSmithyClientT<Aws::imagebuilder::SERVICE_NAME,
+      Aws::imagebuilder::ImagebuilderClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      ImagebuilderEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::ImagebuilderErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<ImagebuilderClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "imagebuilder"; }
 
       typedef ImagebuilderClientConfiguration ClientConfigurationType;
       typedef ImagebuilderEndpointProvider EndpointProviderType;
@@ -36,14 +48,14 @@ namespace imagebuilder
         * is not specified, it will be initialized to default values.
         */
         ImagebuilderClient(const Aws::imagebuilder::ImagebuilderClientConfiguration& clientConfiguration = Aws::imagebuilder::ImagebuilderClientConfiguration(),
-                           std::shared_ptr<ImagebuilderEndpointProviderBase> endpointProvider = Aws::MakeShared<ImagebuilderEndpointProvider>(ALLOCATION_TAG));
+                           std::shared_ptr<ImagebuilderEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         ImagebuilderClient(const Aws::Auth::AWSCredentials& credentials,
-                           std::shared_ptr<ImagebuilderEndpointProviderBase> endpointProvider = Aws::MakeShared<ImagebuilderEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<ImagebuilderEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::imagebuilder::ImagebuilderClientConfiguration& clientConfiguration = Aws::imagebuilder::ImagebuilderClientConfiguration());
 
        /**
@@ -51,7 +63,7 @@ namespace imagebuilder
         * the default http client factory will be used
         */
         ImagebuilderClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                           std::shared_ptr<ImagebuilderEndpointProviderBase> endpointProvider = Aws::MakeShared<ImagebuilderEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<ImagebuilderEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::imagebuilder::ImagebuilderClientConfiguration& clientConfiguration = Aws::imagebuilder::ImagebuilderClientConfiguration());
 
 
@@ -103,6 +115,32 @@ namespace imagebuilder
         void CancelImageCreationAsync(const CancelImageCreationRequestT& request, const CancelImageCreationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ImagebuilderClient::CancelImageCreation, request, handler, context);
+        }
+
+        /**
+         * <p>Cancel a specific image lifecycle policy runtime instance.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/CancelLifecycleExecution">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CancelLifecycleExecutionOutcome CancelLifecycleExecution(const Model::CancelLifecycleExecutionRequest& request) const;
+
+        /**
+         * A Callable wrapper for CancelLifecycleExecution that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CancelLifecycleExecutionRequestT = Model::CancelLifecycleExecutionRequest>
+        Model::CancelLifecycleExecutionOutcomeCallable CancelLifecycleExecutionCallable(const CancelLifecycleExecutionRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::CancelLifecycleExecution, request);
+        }
+
+        /**
+         * An Async wrapper for CancelLifecycleExecution that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CancelLifecycleExecutionRequestT = Model::CancelLifecycleExecutionRequest>
+        void CancelLifecycleExecutionAsync(const CancelLifecycleExecutionRequestT& request, const CancelLifecycleExecutionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::CancelLifecycleExecution, request, handler, context);
         }
 
         /**
@@ -295,6 +333,57 @@ namespace imagebuilder
         }
 
         /**
+         * <p>Create a lifecycle policy resource.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/CreateLifecyclePolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateLifecyclePolicyOutcome CreateLifecyclePolicy(const Model::CreateLifecyclePolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateLifecyclePolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateLifecyclePolicyRequestT = Model::CreateLifecyclePolicyRequest>
+        Model::CreateLifecyclePolicyOutcomeCallable CreateLifecyclePolicyCallable(const CreateLifecyclePolicyRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::CreateLifecyclePolicy, request);
+        }
+
+        /**
+         * An Async wrapper for CreateLifecyclePolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateLifecyclePolicyRequestT = Model::CreateLifecyclePolicyRequest>
+        void CreateLifecyclePolicyAsync(const CreateLifecyclePolicyRequestT& request, const CreateLifecyclePolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::CreateLifecyclePolicy, request, handler, context);
+        }
+
+        /**
+         * <p>Create a new workflow or a new version of an existing workflow.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/CreateWorkflow">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateWorkflowOutcome CreateWorkflow(const Model::CreateWorkflowRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateWorkflow that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateWorkflowRequestT = Model::CreateWorkflowRequest>
+        Model::CreateWorkflowOutcomeCallable CreateWorkflowCallable(const CreateWorkflowRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::CreateWorkflow, request);
+        }
+
+        /**
+         * An Async wrapper for CreateWorkflow that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateWorkflowRequestT = Model::CreateWorkflowRequest>
+        void CreateWorkflowAsync(const CreateWorkflowRequestT& request, const CreateWorkflowResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::CreateWorkflow, request, handler, context);
+        }
+
+        /**
          * <p>Deletes a component build version.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/DeleteComponent">AWS
          * API Reference</a></p>
@@ -480,6 +569,56 @@ namespace imagebuilder
         void DeleteInfrastructureConfigurationAsync(const DeleteInfrastructureConfigurationRequestT& request, const DeleteInfrastructureConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ImagebuilderClient::DeleteInfrastructureConfiguration, request, handler, context);
+        }
+
+        /**
+         * <p>Delete the specified lifecycle policy resource.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/DeleteLifecyclePolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteLifecyclePolicyOutcome DeleteLifecyclePolicy(const Model::DeleteLifecyclePolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteLifecyclePolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteLifecyclePolicyRequestT = Model::DeleteLifecyclePolicyRequest>
+        Model::DeleteLifecyclePolicyOutcomeCallable DeleteLifecyclePolicyCallable(const DeleteLifecyclePolicyRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::DeleteLifecyclePolicy, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteLifecyclePolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteLifecyclePolicyRequestT = Model::DeleteLifecyclePolicyRequest>
+        void DeleteLifecyclePolicyAsync(const DeleteLifecyclePolicyRequestT& request, const DeleteLifecyclePolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::DeleteLifecyclePolicy, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes a specific workflow resource.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/DeleteWorkflow">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteWorkflowOutcome DeleteWorkflow(const Model::DeleteWorkflowRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteWorkflow that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteWorkflowRequestT = Model::DeleteWorkflowRequest>
+        Model::DeleteWorkflowOutcomeCallable DeleteWorkflowCallable(const DeleteWorkflowRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::DeleteWorkflow, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteWorkflow that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteWorkflowRequestT = Model::DeleteWorkflowRequest>
+        void DeleteWorkflowAsync(const DeleteWorkflowRequestT& request, const DeleteWorkflowResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::DeleteWorkflow, request, handler, context);
         }
 
         /**
@@ -759,6 +898,111 @@ namespace imagebuilder
 
         /**
          * <p>Get the runtime information that was logged for a specific runtime instance
+         * of the lifecycle policy.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/GetLifecycleExecution">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetLifecycleExecutionOutcome GetLifecycleExecution(const Model::GetLifecycleExecutionRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetLifecycleExecution that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetLifecycleExecutionRequestT = Model::GetLifecycleExecutionRequest>
+        Model::GetLifecycleExecutionOutcomeCallable GetLifecycleExecutionCallable(const GetLifecycleExecutionRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::GetLifecycleExecution, request);
+        }
+
+        /**
+         * An Async wrapper for GetLifecycleExecution that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetLifecycleExecutionRequestT = Model::GetLifecycleExecutionRequest>
+        void GetLifecycleExecutionAsync(const GetLifecycleExecutionRequestT& request, const GetLifecycleExecutionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::GetLifecycleExecution, request, handler, context);
+        }
+
+        /**
+         * <p>Get details for the specified image lifecycle policy.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/GetLifecyclePolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetLifecyclePolicyOutcome GetLifecyclePolicy(const Model::GetLifecyclePolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetLifecyclePolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetLifecyclePolicyRequestT = Model::GetLifecyclePolicyRequest>
+        Model::GetLifecyclePolicyOutcomeCallable GetLifecyclePolicyCallable(const GetLifecyclePolicyRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::GetLifecyclePolicy, request);
+        }
+
+        /**
+         * An Async wrapper for GetLifecyclePolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetLifecyclePolicyRequestT = Model::GetLifecyclePolicyRequest>
+        void GetLifecyclePolicyAsync(const GetLifecyclePolicyRequestT& request, const GetLifecyclePolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::GetLifecyclePolicy, request, handler, context);
+        }
+
+        /**
+         * <p>Verify the subscription and perform resource dependency checks on the
+         * requested Amazon Web Services Marketplace resource. For Amazon Web Services
+         * Marketplace components, the response contains fields to download the components
+         * and their artifacts.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/GetMarketplaceResource">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetMarketplaceResourceOutcome GetMarketplaceResource(const Model::GetMarketplaceResourceRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetMarketplaceResource that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetMarketplaceResourceRequestT = Model::GetMarketplaceResourceRequest>
+        Model::GetMarketplaceResourceOutcomeCallable GetMarketplaceResourceCallable(const GetMarketplaceResourceRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::GetMarketplaceResource, request);
+        }
+
+        /**
+         * An Async wrapper for GetMarketplaceResource that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetMarketplaceResourceRequestT = Model::GetMarketplaceResourceRequest>
+        void GetMarketplaceResourceAsync(const GetMarketplaceResourceRequestT& request, const GetMarketplaceResourceResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::GetMarketplaceResource, request, handler, context);
+        }
+
+        /**
+         * <p>Get a workflow resource object.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/GetWorkflow">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetWorkflowOutcome GetWorkflow(const Model::GetWorkflowRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetWorkflow that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetWorkflowRequestT = Model::GetWorkflowRequest>
+        Model::GetWorkflowOutcomeCallable GetWorkflowCallable(const GetWorkflowRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::GetWorkflow, request);
+        }
+
+        /**
+         * An Async wrapper for GetWorkflow that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetWorkflowRequestT = Model::GetWorkflowRequest>
+        void GetWorkflowAsync(const GetWorkflowRequestT& request, const GetWorkflowResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::GetWorkflow, request, handler, context);
+        }
+
+        /**
+         * <p>Get the runtime information that was logged for a specific runtime instance
          * of the workflow.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/GetWorkflowExecution">AWS
          * API Reference</a></p>
@@ -836,6 +1080,33 @@ namespace imagebuilder
         }
 
         /**
+         * <p>Import a Windows operating system image from a verified Microsoft ISO disk
+         * file. The following disk images are supported:</p> <ul> <li> <p>Windows 11
+         * Enterprise</p> </li> </ul><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ImportDiskImage">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ImportDiskImageOutcome ImportDiskImage(const Model::ImportDiskImageRequest& request) const;
+
+        /**
+         * A Callable wrapper for ImportDiskImage that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ImportDiskImageRequestT = Model::ImportDiskImageRequest>
+        Model::ImportDiskImageOutcomeCallable ImportDiskImageCallable(const ImportDiskImageRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::ImportDiskImage, request);
+        }
+
+        /**
+         * An Async wrapper for ImportDiskImage that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ImportDiskImageRequestT = Model::ImportDiskImageRequest>
+        void ImportDiskImageAsync(const ImportDiskImageRequestT& request, const ImportDiskImageResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::ImportDiskImage, request, handler, context);
+        }
+
+        /**
          * <p>When you export your virtual machine (VM) from its virtualization
          * environment, that process creates a set of one or more disk container files that
          * act as snapshots of your VM’s environment, settings, and data. The Amazon EC2
@@ -871,15 +1142,8 @@ namespace imagebuilder
         }
 
         /**
-         * <p>Returns the list of component build versions for the specified semantic
-         * version.</p>  <p>The semantic version has four nodes:
-         * &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;/&lt;build&gt;. You can assign values
-         * for the first three, and can filter on all of them.</p> <p> <b>Filtering:</b>
-         * With semantic versioning, you have the flexibility to use wildcards (x) to
-         * specify the most recent versions or nodes when selecting the base image or
-         * components for your recipe. When you use a wildcard in any node, all nodes to
-         * the right of the first wildcard must also be wildcards.</p> <p><h3>See
-         * Also:</h3>   <a
+         * <p>Returns the list of component build versions for the specified component
+         * version Amazon Resource Name (ARN).</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListComponentBuildVersions">AWS
          * API Reference</a></p>
          */
@@ -918,13 +1182,13 @@ namespace imagebuilder
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListComponents">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListComponentsOutcome ListComponents(const Model::ListComponentsRequest& request) const;
+        virtual Model::ListComponentsOutcome ListComponents(const Model::ListComponentsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListComponents that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListComponentsRequestT = Model::ListComponentsRequest>
-        Model::ListComponentsOutcomeCallable ListComponentsCallable(const ListComponentsRequestT& request) const
+        Model::ListComponentsOutcomeCallable ListComponentsCallable(const ListComponentsRequestT& request = {}) const
         {
             return SubmitCallable(&ImagebuilderClient::ListComponents, request);
         }
@@ -933,7 +1197,7 @@ namespace imagebuilder
          * An Async wrapper for ListComponents that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListComponentsRequestT = Model::ListComponentsRequest>
-        void ListComponentsAsync(const ListComponentsRequestT& request, const ListComponentsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListComponentsAsync(const ListComponentsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListComponentsRequestT& request = {}) const
         {
             return SubmitAsync(&ImagebuilderClient::ListComponents, request, handler, context);
         }
@@ -943,13 +1207,13 @@ namespace imagebuilder
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListContainerRecipes">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListContainerRecipesOutcome ListContainerRecipes(const Model::ListContainerRecipesRequest& request) const;
+        virtual Model::ListContainerRecipesOutcome ListContainerRecipes(const Model::ListContainerRecipesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListContainerRecipes that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListContainerRecipesRequestT = Model::ListContainerRecipesRequest>
-        Model::ListContainerRecipesOutcomeCallable ListContainerRecipesCallable(const ListContainerRecipesRequestT& request) const
+        Model::ListContainerRecipesOutcomeCallable ListContainerRecipesCallable(const ListContainerRecipesRequestT& request = {}) const
         {
             return SubmitCallable(&ImagebuilderClient::ListContainerRecipes, request);
         }
@@ -958,7 +1222,7 @@ namespace imagebuilder
          * An Async wrapper for ListContainerRecipes that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListContainerRecipesRequestT = Model::ListContainerRecipesRequest>
-        void ListContainerRecipesAsync(const ListContainerRecipesRequestT& request, const ListContainerRecipesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListContainerRecipesAsync(const ListContainerRecipesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListContainerRecipesRequestT& request = {}) const
         {
             return SubmitAsync(&ImagebuilderClient::ListContainerRecipes, request, handler, context);
         }
@@ -968,13 +1232,13 @@ namespace imagebuilder
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListDistributionConfigurations">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListDistributionConfigurationsOutcome ListDistributionConfigurations(const Model::ListDistributionConfigurationsRequest& request) const;
+        virtual Model::ListDistributionConfigurationsOutcome ListDistributionConfigurations(const Model::ListDistributionConfigurationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListDistributionConfigurations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListDistributionConfigurationsRequestT = Model::ListDistributionConfigurationsRequest>
-        Model::ListDistributionConfigurationsOutcomeCallable ListDistributionConfigurationsCallable(const ListDistributionConfigurationsRequestT& request) const
+        Model::ListDistributionConfigurationsOutcomeCallable ListDistributionConfigurationsCallable(const ListDistributionConfigurationsRequestT& request = {}) const
         {
             return SubmitCallable(&ImagebuilderClient::ListDistributionConfigurations, request);
         }
@@ -983,7 +1247,7 @@ namespace imagebuilder
          * An Async wrapper for ListDistributionConfigurations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListDistributionConfigurationsRequestT = Model::ListDistributionConfigurationsRequest>
-        void ListDistributionConfigurationsAsync(const ListDistributionConfigurationsRequestT& request, const ListDistributionConfigurationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListDistributionConfigurationsAsync(const ListDistributionConfigurationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListDistributionConfigurationsRequestT& request = {}) const
         {
             return SubmitAsync(&ImagebuilderClient::ListDistributionConfigurations, request, handler, context);
         }
@@ -1071,13 +1335,13 @@ namespace imagebuilder
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListImagePipelines">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListImagePipelinesOutcome ListImagePipelines(const Model::ListImagePipelinesRequest& request) const;
+        virtual Model::ListImagePipelinesOutcome ListImagePipelines(const Model::ListImagePipelinesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListImagePipelines that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListImagePipelinesRequestT = Model::ListImagePipelinesRequest>
-        Model::ListImagePipelinesOutcomeCallable ListImagePipelinesCallable(const ListImagePipelinesRequestT& request) const
+        Model::ListImagePipelinesOutcomeCallable ListImagePipelinesCallable(const ListImagePipelinesRequestT& request = {}) const
         {
             return SubmitCallable(&ImagebuilderClient::ListImagePipelines, request);
         }
@@ -1086,7 +1350,7 @@ namespace imagebuilder
          * An Async wrapper for ListImagePipelines that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListImagePipelinesRequestT = Model::ListImagePipelinesRequest>
-        void ListImagePipelinesAsync(const ListImagePipelinesRequestT& request, const ListImagePipelinesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListImagePipelinesAsync(const ListImagePipelinesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListImagePipelinesRequestT& request = {}) const
         {
             return SubmitAsync(&ImagebuilderClient::ListImagePipelines, request, handler, context);
         }
@@ -1096,13 +1360,13 @@ namespace imagebuilder
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListImageRecipes">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListImageRecipesOutcome ListImageRecipes(const Model::ListImageRecipesRequest& request) const;
+        virtual Model::ListImageRecipesOutcome ListImageRecipes(const Model::ListImageRecipesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListImageRecipes that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListImageRecipesRequestT = Model::ListImageRecipesRequest>
-        Model::ListImageRecipesOutcomeCallable ListImageRecipesCallable(const ListImageRecipesRequestT& request) const
+        Model::ListImageRecipesOutcomeCallable ListImageRecipesCallable(const ListImageRecipesRequestT& request = {}) const
         {
             return SubmitCallable(&ImagebuilderClient::ListImageRecipes, request);
         }
@@ -1111,7 +1375,7 @@ namespace imagebuilder
          * An Async wrapper for ListImageRecipes that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListImageRecipesRequestT = Model::ListImageRecipesRequest>
-        void ListImageRecipesAsync(const ListImageRecipesRequestT& request, const ListImageRecipesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListImageRecipesAsync(const ListImageRecipesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListImageRecipesRequestT& request = {}) const
         {
             return SubmitAsync(&ImagebuilderClient::ListImageRecipes, request, handler, context);
         }
@@ -1130,13 +1394,13 @@ namespace imagebuilder
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListImageScanFindingAggregations">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListImageScanFindingAggregationsOutcome ListImageScanFindingAggregations(const Model::ListImageScanFindingAggregationsRequest& request) const;
+        virtual Model::ListImageScanFindingAggregationsOutcome ListImageScanFindingAggregations(const Model::ListImageScanFindingAggregationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListImageScanFindingAggregations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListImageScanFindingAggregationsRequestT = Model::ListImageScanFindingAggregationsRequest>
-        Model::ListImageScanFindingAggregationsOutcomeCallable ListImageScanFindingAggregationsCallable(const ListImageScanFindingAggregationsRequestT& request) const
+        Model::ListImageScanFindingAggregationsOutcomeCallable ListImageScanFindingAggregationsCallable(const ListImageScanFindingAggregationsRequestT& request = {}) const
         {
             return SubmitCallable(&ImagebuilderClient::ListImageScanFindingAggregations, request);
         }
@@ -1145,7 +1409,7 @@ namespace imagebuilder
          * An Async wrapper for ListImageScanFindingAggregations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListImageScanFindingAggregationsRequestT = Model::ListImageScanFindingAggregationsRequest>
-        void ListImageScanFindingAggregationsAsync(const ListImageScanFindingAggregationsRequestT& request, const ListImageScanFindingAggregationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListImageScanFindingAggregationsAsync(const ListImageScanFindingAggregationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListImageScanFindingAggregationsRequestT& request = {}) const
         {
             return SubmitAsync(&ImagebuilderClient::ListImageScanFindingAggregations, request, handler, context);
         }
@@ -1156,13 +1420,13 @@ namespace imagebuilder
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListImageScanFindings">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListImageScanFindingsOutcome ListImageScanFindings(const Model::ListImageScanFindingsRequest& request) const;
+        virtual Model::ListImageScanFindingsOutcome ListImageScanFindings(const Model::ListImageScanFindingsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListImageScanFindings that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListImageScanFindingsRequestT = Model::ListImageScanFindingsRequest>
-        Model::ListImageScanFindingsOutcomeCallable ListImageScanFindingsCallable(const ListImageScanFindingsRequestT& request) const
+        Model::ListImageScanFindingsOutcomeCallable ListImageScanFindingsCallable(const ListImageScanFindingsRequestT& request = {}) const
         {
             return SubmitCallable(&ImagebuilderClient::ListImageScanFindings, request);
         }
@@ -1171,7 +1435,7 @@ namespace imagebuilder
          * An Async wrapper for ListImageScanFindings that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListImageScanFindingsRequestT = Model::ListImageScanFindingsRequest>
-        void ListImageScanFindingsAsync(const ListImageScanFindingsRequestT& request, const ListImageScanFindingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListImageScanFindingsAsync(const ListImageScanFindingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListImageScanFindingsRequestT& request = {}) const
         {
             return SubmitAsync(&ImagebuilderClient::ListImageScanFindings, request, handler, context);
         }
@@ -1183,13 +1447,13 @@ namespace imagebuilder
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListImages">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListImagesOutcome ListImages(const Model::ListImagesRequest& request) const;
+        virtual Model::ListImagesOutcome ListImages(const Model::ListImagesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListImages that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListImagesRequestT = Model::ListImagesRequest>
-        Model::ListImagesOutcomeCallable ListImagesCallable(const ListImagesRequestT& request) const
+        Model::ListImagesOutcomeCallable ListImagesCallable(const ListImagesRequestT& request = {}) const
         {
             return SubmitCallable(&ImagebuilderClient::ListImages, request);
         }
@@ -1198,7 +1462,7 @@ namespace imagebuilder
          * An Async wrapper for ListImages that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListImagesRequestT = Model::ListImagesRequest>
-        void ListImagesAsync(const ListImagesRequestT& request, const ListImagesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListImagesAsync(const ListImagesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListImagesRequestT& request = {}) const
         {
             return SubmitAsync(&ImagebuilderClient::ListImages, request, handler, context);
         }
@@ -1209,13 +1473,13 @@ namespace imagebuilder
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListInfrastructureConfigurations">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListInfrastructureConfigurationsOutcome ListInfrastructureConfigurations(const Model::ListInfrastructureConfigurationsRequest& request) const;
+        virtual Model::ListInfrastructureConfigurationsOutcome ListInfrastructureConfigurations(const Model::ListInfrastructureConfigurationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListInfrastructureConfigurations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListInfrastructureConfigurationsRequestT = Model::ListInfrastructureConfigurationsRequest>
-        Model::ListInfrastructureConfigurationsOutcomeCallable ListInfrastructureConfigurationsCallable(const ListInfrastructureConfigurationsRequestT& request) const
+        Model::ListInfrastructureConfigurationsOutcomeCallable ListInfrastructureConfigurationsCallable(const ListInfrastructureConfigurationsRequestT& request = {}) const
         {
             return SubmitCallable(&ImagebuilderClient::ListInfrastructureConfigurations, request);
         }
@@ -1224,9 +1488,87 @@ namespace imagebuilder
          * An Async wrapper for ListInfrastructureConfigurations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListInfrastructureConfigurationsRequestT = Model::ListInfrastructureConfigurationsRequest>
-        void ListInfrastructureConfigurationsAsync(const ListInfrastructureConfigurationsRequestT& request, const ListInfrastructureConfigurationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListInfrastructureConfigurationsAsync(const ListInfrastructureConfigurationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListInfrastructureConfigurationsRequestT& request = {}) const
         {
             return SubmitAsync(&ImagebuilderClient::ListInfrastructureConfigurations, request, handler, context);
+        }
+
+        /**
+         * <p>List resources that the runtime instance of the image lifecycle identified
+         * for lifecycle actions.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListLifecycleExecutionResources">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListLifecycleExecutionResourcesOutcome ListLifecycleExecutionResources(const Model::ListLifecycleExecutionResourcesRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListLifecycleExecutionResources that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListLifecycleExecutionResourcesRequestT = Model::ListLifecycleExecutionResourcesRequest>
+        Model::ListLifecycleExecutionResourcesOutcomeCallable ListLifecycleExecutionResourcesCallable(const ListLifecycleExecutionResourcesRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::ListLifecycleExecutionResources, request);
+        }
+
+        /**
+         * An Async wrapper for ListLifecycleExecutionResources that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListLifecycleExecutionResourcesRequestT = Model::ListLifecycleExecutionResourcesRequest>
+        void ListLifecycleExecutionResourcesAsync(const ListLifecycleExecutionResourcesRequestT& request, const ListLifecycleExecutionResourcesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::ListLifecycleExecutionResources, request, handler, context);
+        }
+
+        /**
+         * <p>Get the lifecycle runtime history for the specified resource.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListLifecycleExecutions">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListLifecycleExecutionsOutcome ListLifecycleExecutions(const Model::ListLifecycleExecutionsRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListLifecycleExecutions that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListLifecycleExecutionsRequestT = Model::ListLifecycleExecutionsRequest>
+        Model::ListLifecycleExecutionsOutcomeCallable ListLifecycleExecutionsCallable(const ListLifecycleExecutionsRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::ListLifecycleExecutions, request);
+        }
+
+        /**
+         * An Async wrapper for ListLifecycleExecutions that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListLifecycleExecutionsRequestT = Model::ListLifecycleExecutionsRequest>
+        void ListLifecycleExecutionsAsync(const ListLifecycleExecutionsRequestT& request, const ListLifecycleExecutionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::ListLifecycleExecutions, request, handler, context);
+        }
+
+        /**
+         * <p>Get a list of lifecycle policies in your Amazon Web Services
+         * account.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListLifecyclePolicies">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListLifecyclePoliciesOutcome ListLifecyclePolicies(const Model::ListLifecyclePoliciesRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListLifecyclePolicies that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListLifecyclePoliciesRequestT = Model::ListLifecyclePoliciesRequest>
+        Model::ListLifecyclePoliciesOutcomeCallable ListLifecyclePoliciesCallable(const ListLifecyclePoliciesRequestT& request = {}) const
+        {
+            return SubmitCallable(&ImagebuilderClient::ListLifecyclePolicies, request);
+        }
+
+        /**
+         * An Async wrapper for ListLifecyclePolicies that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListLifecyclePoliciesRequestT = Model::ListLifecyclePoliciesRequest>
+        void ListLifecyclePoliciesAsync(const ListLifecyclePoliciesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListLifecyclePoliciesRequestT& request = {}) const
+        {
+            return SubmitAsync(&ImagebuilderClient::ListLifecyclePolicies, request, handler, context);
         }
 
         /**
@@ -1256,6 +1598,58 @@ namespace imagebuilder
         }
 
         /**
+         * <p>Get a list of workflow steps that are waiting for action for workflows in
+         * your Amazon Web Services account.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListWaitingWorkflowSteps">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListWaitingWorkflowStepsOutcome ListWaitingWorkflowSteps(const Model::ListWaitingWorkflowStepsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListWaitingWorkflowSteps that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListWaitingWorkflowStepsRequestT = Model::ListWaitingWorkflowStepsRequest>
+        Model::ListWaitingWorkflowStepsOutcomeCallable ListWaitingWorkflowStepsCallable(const ListWaitingWorkflowStepsRequestT& request = {}) const
+        {
+            return SubmitCallable(&ImagebuilderClient::ListWaitingWorkflowSteps, request);
+        }
+
+        /**
+         * An Async wrapper for ListWaitingWorkflowSteps that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListWaitingWorkflowStepsRequestT = Model::ListWaitingWorkflowStepsRequest>
+        void ListWaitingWorkflowStepsAsync(const ListWaitingWorkflowStepsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListWaitingWorkflowStepsRequestT& request = {}) const
+        {
+            return SubmitAsync(&ImagebuilderClient::ListWaitingWorkflowSteps, request, handler, context);
+        }
+
+        /**
+         * <p>Returns a list of build versions for a specific workflow
+         * resource.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListWorkflowBuildVersions">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListWorkflowBuildVersionsOutcome ListWorkflowBuildVersions(const Model::ListWorkflowBuildVersionsRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListWorkflowBuildVersions that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListWorkflowBuildVersionsRequestT = Model::ListWorkflowBuildVersionsRequest>
+        Model::ListWorkflowBuildVersionsOutcomeCallable ListWorkflowBuildVersionsCallable(const ListWorkflowBuildVersionsRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::ListWorkflowBuildVersions, request);
+        }
+
+        /**
+         * An Async wrapper for ListWorkflowBuildVersions that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListWorkflowBuildVersionsRequestT = Model::ListWorkflowBuildVersionsRequest>
+        void ListWorkflowBuildVersionsAsync(const ListWorkflowBuildVersionsRequestT& request, const ListWorkflowBuildVersionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::ListWorkflowBuildVersions, request, handler, context);
+        }
+
+        /**
          * <p>Returns a list of workflow runtime instance metadata objects for a specific
          * image build version.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListWorkflowExecutions">AWS
@@ -1282,7 +1676,7 @@ namespace imagebuilder
         }
 
         /**
-         * <p>Shows runtime data for each step in a runtime instance of the workflow that
+         * <p>Returns runtime data for each step in a runtime instance of the workflow that
          * you specify in the request.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListWorkflowStepExecutions">AWS
          * API Reference</a></p>
@@ -1305,6 +1699,32 @@ namespace imagebuilder
         void ListWorkflowStepExecutionsAsync(const ListWorkflowStepExecutionsRequestT& request, const ListWorkflowStepExecutionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ImagebuilderClient::ListWorkflowStepExecutions, request, handler, context);
+        }
+
+        /**
+         * <p>Lists workflow build versions based on filtering parameters.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/ListWorkflows">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListWorkflowsOutcome ListWorkflows(const Model::ListWorkflowsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListWorkflows that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListWorkflowsRequestT = Model::ListWorkflowsRequest>
+        Model::ListWorkflowsOutcomeCallable ListWorkflowsCallable(const ListWorkflowsRequestT& request = {}) const
+        {
+            return SubmitCallable(&ImagebuilderClient::ListWorkflows, request);
+        }
+
+        /**
+         * An Async wrapper for ListWorkflows that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListWorkflowsRequestT = Model::ListWorkflowsRequest>
+        void ListWorkflowsAsync(const ListWorkflowsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListWorkflowsRequestT& request = {}) const
+        {
+            return SubmitAsync(&ImagebuilderClient::ListWorkflows, request, handler, context);
         }
 
         /**
@@ -1435,6 +1855,32 @@ namespace imagebuilder
         }
 
         /**
+         * <p>Pauses or resumes image creation when the associated workflow runs a
+         * <code>WaitForAction</code> step.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/SendWorkflowStepAction">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::SendWorkflowStepActionOutcome SendWorkflowStepAction(const Model::SendWorkflowStepActionRequest& request) const;
+
+        /**
+         * A Callable wrapper for SendWorkflowStepAction that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename SendWorkflowStepActionRequestT = Model::SendWorkflowStepActionRequest>
+        Model::SendWorkflowStepActionOutcomeCallable SendWorkflowStepActionCallable(const SendWorkflowStepActionRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::SendWorkflowStepAction, request);
+        }
+
+        /**
+         * An Async wrapper for SendWorkflowStepAction that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename SendWorkflowStepActionRequestT = Model::SendWorkflowStepActionRequest>
+        void SendWorkflowStepActionAsync(const SendWorkflowStepActionRequestT& request, const SendWorkflowStepActionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::SendWorkflowStepAction, request, handler, context);
+        }
+
+        /**
          * <p>Manually triggers a pipeline to create an image.</p><p><h3>See Also:</h3>  
          * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/StartImagePipelineExecution">AWS
@@ -1458,6 +1904,32 @@ namespace imagebuilder
         void StartImagePipelineExecutionAsync(const StartImagePipelineExecutionRequestT& request, const StartImagePipelineExecutionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ImagebuilderClient::StartImagePipelineExecution, request, handler, context);
+        }
+
+        /**
+         * <p>Begin asynchronous resource state update for lifecycle changes to the
+         * specified image resources.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/StartResourceStateUpdate">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::StartResourceStateUpdateOutcome StartResourceStateUpdate(const Model::StartResourceStateUpdateRequest& request) const;
+
+        /**
+         * A Callable wrapper for StartResourceStateUpdate that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename StartResourceStateUpdateRequestT = Model::StartResourceStateUpdateRequest>
+        Model::StartResourceStateUpdateOutcomeCallable StartResourceStateUpdateCallable(const StartResourceStateUpdateRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::StartResourceStateUpdate, request);
+        }
+
+        /**
+         * An Async wrapper for StartResourceStateUpdate that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename StartResourceStateUpdateRequestT = Model::StartResourceStateUpdateRequest>
+        void StartResourceStateUpdateAsync(const StartResourceStateUpdateRequestT& request, const StartResourceStateUpdateResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::StartResourceStateUpdate, request, handler, context);
         }
 
         /**
@@ -1538,8 +2010,10 @@ namespace imagebuilder
 
         /**
          * <p>Updates an image pipeline. Image pipelines enable you to automate the
-         * creation and distribution of images.</p>  <p>UpdateImagePipeline does not
-         * support selective updates for the pipeline. You must specify all of the required
+         * creation and distribution of images. You must specify exactly one recipe for
+         * your image, using either a <code>containerRecipeArn</code> or an
+         * <code>imageRecipeArn</code>.</p>  <p>UpdateImagePipeline does not support
+         * selective updates for the pipeline. You must specify all of the required
          * properties in the update request, not just the properties that have changed.</p>
          * <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/UpdateImagePipeline">AWS
@@ -1592,16 +2066,37 @@ namespace imagebuilder
             return SubmitAsync(&ImagebuilderClient::UpdateInfrastructureConfiguration, request, handler, context);
         }
 
+        /**
+         * <p>Update the specified lifecycle policy.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/imagebuilder-2019-12-02/UpdateLifecyclePolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateLifecyclePolicyOutcome UpdateLifecyclePolicy(const Model::UpdateLifecyclePolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateLifecyclePolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateLifecyclePolicyRequestT = Model::UpdateLifecyclePolicyRequest>
+        Model::UpdateLifecyclePolicyOutcomeCallable UpdateLifecyclePolicyCallable(const UpdateLifecyclePolicyRequestT& request) const
+        {
+            return SubmitCallable(&ImagebuilderClient::UpdateLifecyclePolicy, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateLifecyclePolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateLifecyclePolicyRequestT = Model::UpdateLifecyclePolicyRequest>
+        void UpdateLifecyclePolicyAsync(const UpdateLifecyclePolicyRequestT& request, const UpdateLifecyclePolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ImagebuilderClient::UpdateLifecyclePolicy, request, handler, context);
+        }
+
 
       void OverrideEndpoint(const Aws::String& endpoint);
       std::shared_ptr<ImagebuilderEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<ImagebuilderClient>;
-      void init(const ImagebuilderClientConfiguration& clientConfiguration);
 
-      ImagebuilderClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<ImagebuilderEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace imagebuilder

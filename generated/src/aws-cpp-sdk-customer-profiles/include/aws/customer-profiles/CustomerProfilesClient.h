@@ -6,32 +6,48 @@
 #pragma once
 #include <aws/customer-profiles/CustomerProfiles_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/customer-profiles/CustomerProfilesServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/customer-profiles/CustomerProfilesErrorMarshaller.h>
 
 namespace Aws
 {
 namespace CustomerProfiles
 {
+  AWS_CUSTOMERPROFILES_API extern const char SERVICE_NAME[];
   /**
-   * <fullname>Amazon Connect Customer Profiles</fullname> <p>Amazon Connect Customer
-   * Profiles is a unified customer profile for your contact center that has
-   * pre-built connectors powered by AppFlow that make it easy to combine customer
-   * information from third party applications, such as Salesforce (CRM), ServiceNow
-   * (ITSM), and your enterprise resource planning (ERP), with contact history from
-   * your Amazon Connect contact center. If you're new to Amazon Connect, you might
-   * find it helpful to review the <a
-   * href="https://docs.aws.amazon.com/connect/latest/adminguide/">Amazon Connect
-   * Administrator Guide</a>.</p>
+   * <fullname>Amazon Connect Customer Profiles</fullname> <ul> <li> <p> <a
+   * href="https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Customer_Profiles.html">Customer
+   * Profiles actions</a> </p> </li> <li> <p> <a
+   * href="https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Customer_Profiles.html">Customer
+   * Profiles data types</a> </p> </li> </ul> <p>Amazon Connect Customer Profiles is
+   * a unified customer profile for your contact center that has pre-built connectors
+   * powered by AppFlow that make it easy to combine customer information from third
+   * party applications, such as Salesforce (CRM), ServiceNow (ITSM), and your
+   * enterprise resource planning (ERP), with contact history from your Amazon
+   * Connect contact center. </p> <p>For more information about the Amazon Connect
+   * Customer Profiles feature, see <a
+   * href="https://docs.aws.amazon.com/connect/latest/adminguide/customer-profiles.html">Use
+   * Customer Profiles</a> in the <i>Amazon Connect Administrator's Guide</i>. </p>
    */
-  class AWS_CUSTOMERPROFILES_API CustomerProfilesClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<CustomerProfilesClient>
+  class AWS_CUSTOMERPROFILES_API CustomerProfilesClient : smithy::client::AwsSmithyClientT<Aws::CustomerProfiles::SERVICE_NAME,
+      Aws::CustomerProfiles::CustomerProfilesClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      CustomerProfilesEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::CustomerProfilesErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<CustomerProfilesClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Customer Profiles"; }
 
       typedef CustomerProfilesClientConfiguration ClientConfigurationType;
       typedef CustomerProfilesEndpointProvider EndpointProviderType;
@@ -41,14 +57,14 @@ namespace CustomerProfiles
         * is not specified, it will be initialized to default values.
         */
         CustomerProfilesClient(const Aws::CustomerProfiles::CustomerProfilesClientConfiguration& clientConfiguration = Aws::CustomerProfiles::CustomerProfilesClientConfiguration(),
-                               std::shared_ptr<CustomerProfilesEndpointProviderBase> endpointProvider = Aws::MakeShared<CustomerProfilesEndpointProvider>(ALLOCATION_TAG));
+                               std::shared_ptr<CustomerProfilesEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         CustomerProfilesClient(const Aws::Auth::AWSCredentials& credentials,
-                               std::shared_ptr<CustomerProfilesEndpointProviderBase> endpointProvider = Aws::MakeShared<CustomerProfilesEndpointProvider>(ALLOCATION_TAG),
+                               std::shared_ptr<CustomerProfilesEndpointProviderBase> endpointProvider = nullptr,
                                const Aws::CustomerProfiles::CustomerProfilesClientConfiguration& clientConfiguration = Aws::CustomerProfiles::CustomerProfilesClientConfiguration());
 
        /**
@@ -56,7 +72,7 @@ namespace CustomerProfiles
         * the default http client factory will be used
         */
         CustomerProfilesClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                               std::shared_ptr<CustomerProfilesEndpointProviderBase> endpointProvider = Aws::MakeShared<CustomerProfilesEndpointProvider>(ALLOCATION_TAG),
+                               std::shared_ptr<CustomerProfilesEndpointProviderBase> endpointProvider = nullptr,
                                const Aws::CustomerProfiles::CustomerProfilesClientConfiguration& clientConfiguration = Aws::CustomerProfiles::CustomerProfilesClientConfiguration());
 
 
@@ -113,6 +129,89 @@ namespace CustomerProfiles
         }
 
         /**
+         * <p>Fetch the possible attribute values given the attribute name.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/BatchGetCalculatedAttributeForProfile">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::BatchGetCalculatedAttributeForProfileOutcome BatchGetCalculatedAttributeForProfile(const Model::BatchGetCalculatedAttributeForProfileRequest& request) const;
+
+        /**
+         * A Callable wrapper for BatchGetCalculatedAttributeForProfile that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename BatchGetCalculatedAttributeForProfileRequestT = Model::BatchGetCalculatedAttributeForProfileRequest>
+        Model::BatchGetCalculatedAttributeForProfileOutcomeCallable BatchGetCalculatedAttributeForProfileCallable(const BatchGetCalculatedAttributeForProfileRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::BatchGetCalculatedAttributeForProfile, request);
+        }
+
+        /**
+         * An Async wrapper for BatchGetCalculatedAttributeForProfile that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename BatchGetCalculatedAttributeForProfileRequestT = Model::BatchGetCalculatedAttributeForProfileRequest>
+        void BatchGetCalculatedAttributeForProfileAsync(const BatchGetCalculatedAttributeForProfileRequestT& request, const BatchGetCalculatedAttributeForProfileResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::BatchGetCalculatedAttributeForProfile, request, handler, context);
+        }
+
+        /**
+         * <p>Get a batch of profiles.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/BatchGetProfile">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::BatchGetProfileOutcome BatchGetProfile(const Model::BatchGetProfileRequest& request) const;
+
+        /**
+         * A Callable wrapper for BatchGetProfile that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename BatchGetProfileRequestT = Model::BatchGetProfileRequest>
+        Model::BatchGetProfileOutcomeCallable BatchGetProfileCallable(const BatchGetProfileRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::BatchGetProfile, request);
+        }
+
+        /**
+         * An Async wrapper for BatchGetProfile that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename BatchGetProfileRequestT = Model::BatchGetProfileRequest>
+        void BatchGetProfileAsync(const BatchGetProfileRequestT& request, const BatchGetProfileResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::BatchGetProfile, request, handler, context);
+        }
+
+        /**
+         * <p>Creates a new calculated attribute definition. After creation, new object
+         * data ingested into Customer Profiles will be included in the calculated
+         * attribute, which can be retrieved for a profile using the <a
+         * href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetCalculatedAttributeForProfile.html">GetCalculatedAttributeForProfile</a>
+         * API. Defining a calculated attribute makes it available for all profiles within
+         * a domain. Each calculated attribute can only reference one
+         * <code>ObjectType</code> and at most, two fields from that
+         * <code>ObjectType</code>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/CreateCalculatedAttributeDefinition">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateCalculatedAttributeDefinitionOutcome CreateCalculatedAttributeDefinition(const Model::CreateCalculatedAttributeDefinitionRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateCalculatedAttributeDefinition that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateCalculatedAttributeDefinitionRequestT = Model::CreateCalculatedAttributeDefinitionRequest>
+        Model::CreateCalculatedAttributeDefinitionOutcomeCallable CreateCalculatedAttributeDefinitionCallable(const CreateCalculatedAttributeDefinitionRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::CreateCalculatedAttributeDefinition, request);
+        }
+
+        /**
+         * An Async wrapper for CreateCalculatedAttributeDefinition that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateCalculatedAttributeDefinitionRequestT = Model::CreateCalculatedAttributeDefinitionRequest>
+        void CreateCalculatedAttributeDefinitionAsync(const CreateCalculatedAttributeDefinitionRequestT& request, const CreateCalculatedAttributeDefinitionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::CreateCalculatedAttributeDefinition, request, handler, context);
+        }
+
+        /**
          * <p>Creates a domain, which is a container for all customer data, such as
          * customer profile attributes, object types, profile keys, and encryption keys.
          * You can create multiple domains, and each domain can have multiple third-party
@@ -122,11 +221,18 @@ namespace CustomerProfiles
          * href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html">UpdateDomain</a>
          * to enable <a
          * href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html">identity
-         * resolution</a>: set <code>Matching</code> to true. </p> <p>To prevent
+         * resolution</a>: set <code>Matching</code> to true.</p> <p>To prevent
          * cross-service impersonation when you call this API, see <a
          * href="https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html">Cross-service
-         * confused deputy prevention</a> for sample policies that you should apply.
-         * </p><p><h3>See Also:</h3>   <a
+         * confused deputy prevention</a> for sample policies that you should apply. </p>
+         *  <p>It is not possible to associate a Customer Profiles domain with an
+         * Amazon Connect Instance directly from the API. If you would like to create a
+         * domain and associate a Customer Profiles domain, use the Amazon Connect admin
+         * website. For more information, see <a
+         * href="https://docs.aws.amazon.com/connect/latest/adminguide/enable-customer-profiles.html#enable-customer-profiles-step1">Enable
+         * Customer Profiles</a>.</p> <p>Each Amazon Connect instance can be associated
+         * with only one domain. Multiple Amazon Connect instances can be associated with
+         * one domain.</p> <p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/CreateDomain">AWS
          * API Reference</a></p>
          */
@@ -148,6 +254,63 @@ namespace CustomerProfiles
         void CreateDomainAsync(const CreateDomainRequestT& request, const CreateDomainResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&CustomerProfilesClient::CreateDomain, request, handler, context);
+        }
+
+        /**
+         * <p>Creates an event stream, which is a subscription to real-time events, such as
+         * when profiles are created and updated through Amazon Connect Customer
+         * Profiles.</p> <p>Each event stream can be associated with only one Kinesis Data
+         * Stream destination in the same region and Amazon Web Services account as the
+         * customer profiles domain</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/CreateEventStream">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateEventStreamOutcome CreateEventStream(const Model::CreateEventStreamRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateEventStream that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateEventStreamRequestT = Model::CreateEventStreamRequest>
+        Model::CreateEventStreamOutcomeCallable CreateEventStreamCallable(const CreateEventStreamRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::CreateEventStream, request);
+        }
+
+        /**
+         * An Async wrapper for CreateEventStream that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateEventStreamRequestT = Model::CreateEventStreamRequest>
+        void CreateEventStreamAsync(const CreateEventStreamRequestT& request, const CreateEventStreamResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::CreateEventStream, request, handler, context);
+        }
+
+        /**
+         * <p>Creates an event trigger, which specifies the rules when to perform action
+         * based on customer's ingested data.</p> <p>Each event stream can be associated
+         * with only one integration in the same region and AWS account as the event
+         * stream. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/CreateEventTrigger">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateEventTriggerOutcome CreateEventTrigger(const Model::CreateEventTriggerRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateEventTrigger that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateEventTriggerRequestT = Model::CreateEventTriggerRequest>
+        Model::CreateEventTriggerOutcomeCallable CreateEventTriggerCallable(const CreateEventTriggerRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::CreateEventTrigger, request);
+        }
+
+        /**
+         * An Async wrapper for CreateEventTrigger that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateEventTriggerRequestT = Model::CreateEventTriggerRequest>
+        void CreateEventTriggerAsync(const CreateEventTriggerRequestT& request, const CreateEventTriggerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::CreateEventTrigger, request, handler, context);
         }
 
         /**
@@ -206,6 +369,112 @@ namespace CustomerProfiles
         }
 
         /**
+         * <p>Creates a segment definition associated to the given domain.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/CreateSegmentDefinition">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateSegmentDefinitionOutcome CreateSegmentDefinition(const Model::CreateSegmentDefinitionRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateSegmentDefinition that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateSegmentDefinitionRequestT = Model::CreateSegmentDefinitionRequest>
+        Model::CreateSegmentDefinitionOutcomeCallable CreateSegmentDefinitionCallable(const CreateSegmentDefinitionRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::CreateSegmentDefinition, request);
+        }
+
+        /**
+         * An Async wrapper for CreateSegmentDefinition that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateSegmentDefinitionRequestT = Model::CreateSegmentDefinitionRequest>
+        void CreateSegmentDefinitionAsync(const CreateSegmentDefinitionRequestT& request, const CreateSegmentDefinitionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::CreateSegmentDefinition, request, handler, context);
+        }
+
+        /**
+         * <p>Creates a segment estimate query.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/CreateSegmentEstimate">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateSegmentEstimateOutcome CreateSegmentEstimate(const Model::CreateSegmentEstimateRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateSegmentEstimate that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateSegmentEstimateRequestT = Model::CreateSegmentEstimateRequest>
+        Model::CreateSegmentEstimateOutcomeCallable CreateSegmentEstimateCallable(const CreateSegmentEstimateRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::CreateSegmentEstimate, request);
+        }
+
+        /**
+         * An Async wrapper for CreateSegmentEstimate that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateSegmentEstimateRequestT = Model::CreateSegmentEstimateRequest>
+        void CreateSegmentEstimateAsync(const CreateSegmentEstimateRequestT& request, const CreateSegmentEstimateResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::CreateSegmentEstimate, request, handler, context);
+        }
+
+        /**
+         * <p>Triggers a job to export a segment to a specified destination.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/CreateSegmentSnapshot">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateSegmentSnapshotOutcome CreateSegmentSnapshot(const Model::CreateSegmentSnapshotRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateSegmentSnapshot that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateSegmentSnapshotRequestT = Model::CreateSegmentSnapshotRequest>
+        Model::CreateSegmentSnapshotOutcomeCallable CreateSegmentSnapshotCallable(const CreateSegmentSnapshotRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::CreateSegmentSnapshot, request);
+        }
+
+        /**
+         * An Async wrapper for CreateSegmentSnapshot that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateSegmentSnapshotRequestT = Model::CreateSegmentSnapshotRequest>
+        void CreateSegmentSnapshotAsync(const CreateSegmentSnapshotRequestT& request, const CreateSegmentSnapshotResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::CreateSegmentSnapshot, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes an existing calculated attribute definition. Note that deleting a
+         * default calculated attribute is possible, however once deleted, you will be
+         * unable to undo that action and will need to recreate it on your own using the
+         * CreateCalculatedAttributeDefinition API if you want it back.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/DeleteCalculatedAttributeDefinition">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteCalculatedAttributeDefinitionOutcome DeleteCalculatedAttributeDefinition(const Model::DeleteCalculatedAttributeDefinitionRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteCalculatedAttributeDefinition that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteCalculatedAttributeDefinitionRequestT = Model::DeleteCalculatedAttributeDefinitionRequest>
+        Model::DeleteCalculatedAttributeDefinitionOutcomeCallable DeleteCalculatedAttributeDefinitionCallable(const DeleteCalculatedAttributeDefinitionRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::DeleteCalculatedAttributeDefinition, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteCalculatedAttributeDefinition that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteCalculatedAttributeDefinitionRequestT = Model::DeleteCalculatedAttributeDefinitionRequest>
+        void DeleteCalculatedAttributeDefinitionAsync(const DeleteCalculatedAttributeDefinitionRequestT& request, const DeleteCalculatedAttributeDefinitionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::DeleteCalculatedAttributeDefinition, request, handler, context);
+        }
+
+        /**
          * <p>Deletes a specific domain and all of its customer data, such as customer
          * profile attributes and their related objects.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/DeleteDomain">AWS
@@ -229,6 +498,59 @@ namespace CustomerProfiles
         void DeleteDomainAsync(const DeleteDomainRequestT& request, const DeleteDomainResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&CustomerProfilesClient::DeleteDomain, request, handler, context);
+        }
+
+        /**
+         * <p>Disables and deletes the specified event stream.</p><p><h3>See Also:</h3>  
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/DeleteEventStream">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteEventStreamOutcome DeleteEventStream(const Model::DeleteEventStreamRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteEventStream that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteEventStreamRequestT = Model::DeleteEventStreamRequest>
+        Model::DeleteEventStreamOutcomeCallable DeleteEventStreamCallable(const DeleteEventStreamRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::DeleteEventStream, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteEventStream that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteEventStreamRequestT = Model::DeleteEventStreamRequest>
+        void DeleteEventStreamAsync(const DeleteEventStreamRequestT& request, const DeleteEventStreamResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::DeleteEventStream, request, handler, context);
+        }
+
+        /**
+         * <p>Disable and deletes the Event Trigger.</p>  <p>You cannot delete an
+         * Event Trigger with an active Integration associated.</p> <p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/DeleteEventTrigger">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteEventTriggerOutcome DeleteEventTrigger(const Model::DeleteEventTriggerRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteEventTrigger that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteEventTriggerRequestT = Model::DeleteEventTriggerRequest>
+        Model::DeleteEventTriggerOutcomeCallable DeleteEventTriggerCallable(const DeleteEventTriggerRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::DeleteEventTrigger, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteEventTrigger that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteEventTriggerRequestT = Model::DeleteEventTriggerRequest>
+        void DeleteEventTriggerAsync(const DeleteEventTriggerRequestT& request, const DeleteEventTriggerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::DeleteEventTrigger, request, handler, context);
         }
 
         /**
@@ -364,6 +686,31 @@ namespace CustomerProfiles
         }
 
         /**
+         * <p>Deletes a segment definition from the domain.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/DeleteSegmentDefinition">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteSegmentDefinitionOutcome DeleteSegmentDefinition(const Model::DeleteSegmentDefinitionRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteSegmentDefinition that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteSegmentDefinitionRequestT = Model::DeleteSegmentDefinitionRequest>
+        Model::DeleteSegmentDefinitionOutcomeCallable DeleteSegmentDefinitionCallable(const DeleteSegmentDefinitionRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::DeleteSegmentDefinition, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteSegmentDefinition that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteSegmentDefinitionRequestT = Model::DeleteSegmentDefinitionRequest>
+        void DeleteSegmentDefinitionAsync(const DeleteSegmentDefinitionRequestT& request, const DeleteSegmentDefinitionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::DeleteSegmentDefinition, request, handler, context);
+        }
+
+        /**
          * <p>Deletes the specified workflow and all its corresponding resources. This is
          * an async process.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/DeleteWorkflow">AWS
@@ -387,6 +734,32 @@ namespace CustomerProfiles
         void DeleteWorkflowAsync(const DeleteWorkflowRequestT& request, const DeleteWorkflowResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&CustomerProfilesClient::DeleteWorkflow, request, handler, context);
+        }
+
+        /**
+         * <p>The process of detecting profile object type mapping by using given
+         * objects.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/DetectProfileObjectType">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DetectProfileObjectTypeOutcome DetectProfileObjectType(const Model::DetectProfileObjectTypeRequest& request) const;
+
+        /**
+         * A Callable wrapper for DetectProfileObjectType that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DetectProfileObjectTypeRequestT = Model::DetectProfileObjectTypeRequest>
+        Model::DetectProfileObjectTypeOutcomeCallable DetectProfileObjectTypeCallable(const DetectProfileObjectTypeRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::DetectProfileObjectType, request);
+        }
+
+        /**
+         * An Async wrapper for DetectProfileObjectType that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DetectProfileObjectTypeRequestT = Model::DetectProfileObjectTypeRequest>
+        void DetectProfileObjectTypeAsync(const DetectProfileObjectTypeRequestT& request, const DetectProfileObjectTypeResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::DetectProfileObjectType, request, handler, context);
         }
 
         /**
@@ -427,6 +800,58 @@ namespace CustomerProfiles
         }
 
         /**
+         * <p>Provides more information on a calculated attribute definition for Customer
+         * Profiles.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/GetCalculatedAttributeDefinition">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetCalculatedAttributeDefinitionOutcome GetCalculatedAttributeDefinition(const Model::GetCalculatedAttributeDefinitionRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetCalculatedAttributeDefinition that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetCalculatedAttributeDefinitionRequestT = Model::GetCalculatedAttributeDefinitionRequest>
+        Model::GetCalculatedAttributeDefinitionOutcomeCallable GetCalculatedAttributeDefinitionCallable(const GetCalculatedAttributeDefinitionRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::GetCalculatedAttributeDefinition, request);
+        }
+
+        /**
+         * An Async wrapper for GetCalculatedAttributeDefinition that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetCalculatedAttributeDefinitionRequestT = Model::GetCalculatedAttributeDefinitionRequest>
+        void GetCalculatedAttributeDefinitionAsync(const GetCalculatedAttributeDefinitionRequestT& request, const GetCalculatedAttributeDefinitionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::GetCalculatedAttributeDefinition, request, handler, context);
+        }
+
+        /**
+         * <p>Retrieve a calculated attribute for a customer profile.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/GetCalculatedAttributeForProfile">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetCalculatedAttributeForProfileOutcome GetCalculatedAttributeForProfile(const Model::GetCalculatedAttributeForProfileRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetCalculatedAttributeForProfile that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetCalculatedAttributeForProfileRequestT = Model::GetCalculatedAttributeForProfileRequest>
+        Model::GetCalculatedAttributeForProfileOutcomeCallable GetCalculatedAttributeForProfileCallable(const GetCalculatedAttributeForProfileRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::GetCalculatedAttributeForProfile, request);
+        }
+
+        /**
+         * An Async wrapper for GetCalculatedAttributeForProfile that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetCalculatedAttributeForProfileRequestT = Model::GetCalculatedAttributeForProfileRequest>
+        void GetCalculatedAttributeForProfileAsync(const GetCalculatedAttributeForProfileRequestT& request, const GetCalculatedAttributeForProfileResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::GetCalculatedAttributeForProfile, request, handler, context);
+        }
+
+        /**
          * <p>Returns information about a specific domain.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/GetDomain">AWS
          * API Reference</a></p>
@@ -449,6 +874,57 @@ namespace CustomerProfiles
         void GetDomainAsync(const GetDomainRequestT& request, const GetDomainResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&CustomerProfilesClient::GetDomain, request, handler, context);
+        }
+
+        /**
+         * <p>Returns information about the specified event stream in a specific
+         * domain.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/GetEventStream">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetEventStreamOutcome GetEventStream(const Model::GetEventStreamRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetEventStream that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetEventStreamRequestT = Model::GetEventStreamRequest>
+        Model::GetEventStreamOutcomeCallable GetEventStreamCallable(const GetEventStreamRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::GetEventStream, request);
+        }
+
+        /**
+         * An Async wrapper for GetEventStream that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetEventStreamRequestT = Model::GetEventStreamRequest>
+        void GetEventStreamAsync(const GetEventStreamRequestT& request, const GetEventStreamResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::GetEventStream, request, handler, context);
+        }
+
+        /**
+         * <p>Get a specific Event Trigger from the domain.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/GetEventTrigger">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetEventTriggerOutcome GetEventTrigger(const Model::GetEventTriggerRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetEventTrigger that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetEventTriggerRequestT = Model::GetEventTriggerRequest>
+        Model::GetEventTriggerOutcomeCallable GetEventTriggerCallable(const GetEventTriggerRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::GetEventTrigger, request);
+        }
+
+        /**
+         * An Async wrapper for GetEventTrigger that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetEventTriggerRequestT = Model::GetEventTriggerRequest>
+        void GetEventTriggerAsync(const GetEventTriggerRequestT& request, const GetEventTriggerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::GetEventTrigger, request, handler, context);
         }
 
         /**
@@ -614,6 +1090,137 @@ namespace CustomerProfiles
         }
 
         /**
+         * <p>Gets a segment definition from the domain.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/GetSegmentDefinition">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetSegmentDefinitionOutcome GetSegmentDefinition(const Model::GetSegmentDefinitionRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetSegmentDefinition that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetSegmentDefinitionRequestT = Model::GetSegmentDefinitionRequest>
+        Model::GetSegmentDefinitionOutcomeCallable GetSegmentDefinitionCallable(const GetSegmentDefinitionRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::GetSegmentDefinition, request);
+        }
+
+        /**
+         * An Async wrapper for GetSegmentDefinition that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetSegmentDefinitionRequestT = Model::GetSegmentDefinitionRequest>
+        void GetSegmentDefinitionAsync(const GetSegmentDefinitionRequestT& request, const GetSegmentDefinitionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::GetSegmentDefinition, request, handler, context);
+        }
+
+        /**
+         * <p>Gets the result of a segment estimate query.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/GetSegmentEstimate">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetSegmentEstimateOutcome GetSegmentEstimate(const Model::GetSegmentEstimateRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetSegmentEstimate that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetSegmentEstimateRequestT = Model::GetSegmentEstimateRequest>
+        Model::GetSegmentEstimateOutcomeCallable GetSegmentEstimateCallable(const GetSegmentEstimateRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::GetSegmentEstimate, request);
+        }
+
+        /**
+         * An Async wrapper for GetSegmentEstimate that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetSegmentEstimateRequestT = Model::GetSegmentEstimateRequest>
+        void GetSegmentEstimateAsync(const GetSegmentEstimateRequestT& request, const GetSegmentEstimateResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::GetSegmentEstimate, request, handler, context);
+        }
+
+        /**
+         * <p>Determines if the given profiles are within a segment.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/GetSegmentMembership">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetSegmentMembershipOutcome GetSegmentMembership(const Model::GetSegmentMembershipRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetSegmentMembership that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetSegmentMembershipRequestT = Model::GetSegmentMembershipRequest>
+        Model::GetSegmentMembershipOutcomeCallable GetSegmentMembershipCallable(const GetSegmentMembershipRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::GetSegmentMembership, request);
+        }
+
+        /**
+         * An Async wrapper for GetSegmentMembership that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetSegmentMembershipRequestT = Model::GetSegmentMembershipRequest>
+        void GetSegmentMembershipAsync(const GetSegmentMembershipRequestT& request, const GetSegmentMembershipResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::GetSegmentMembership, request, handler, context);
+        }
+
+        /**
+         * <p>Retrieve the latest status of a segment snapshot.</p><p><h3>See Also:</h3>  
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/GetSegmentSnapshot">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetSegmentSnapshotOutcome GetSegmentSnapshot(const Model::GetSegmentSnapshotRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetSegmentSnapshot that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetSegmentSnapshotRequestT = Model::GetSegmentSnapshotRequest>
+        Model::GetSegmentSnapshotOutcomeCallable GetSegmentSnapshotCallable(const GetSegmentSnapshotRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::GetSegmentSnapshot, request);
+        }
+
+        /**
+         * An Async wrapper for GetSegmentSnapshot that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetSegmentSnapshotRequestT = Model::GetSegmentSnapshotRequest>
+        void GetSegmentSnapshotAsync(const GetSegmentSnapshotRequestT& request, const GetSegmentSnapshotResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::GetSegmentSnapshot, request, handler, context);
+        }
+
+        /**
+         * <p>Returns a set of profiles that belong to the same matching group using the
+         * <code>matchId</code> or <code>profileId</code>. You can also specify the type of
+         * matching that you want for finding similar profiles using either
+         * <code>RULE_BASED_MATCHING</code> or
+         * <code>ML_BASED_MATCHING</code>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/GetSimilarProfiles">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetSimilarProfilesOutcome GetSimilarProfiles(const Model::GetSimilarProfilesRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetSimilarProfiles that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetSimilarProfilesRequestT = Model::GetSimilarProfilesRequest>
+        Model::GetSimilarProfilesOutcomeCallable GetSimilarProfilesCallable(const GetSimilarProfilesRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::GetSimilarProfiles, request);
+        }
+
+        /**
+         * An Async wrapper for GetSimilarProfiles that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetSimilarProfilesRequestT = Model::GetSimilarProfilesRequest>
+        void GetSimilarProfilesAsync(const GetSimilarProfilesRequestT& request, const GetSimilarProfilesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::GetSimilarProfiles, request, handler, context);
+        }
+
+        /**
          * <p>Get details of specified workflow.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/GetWorkflow">AWS
          * API Reference</a></p>
@@ -690,18 +1297,70 @@ namespace CustomerProfiles
         }
 
         /**
+         * <p>Lists calculated attribute definitions for Customer Profiles</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/ListCalculatedAttributeDefinitions">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListCalculatedAttributeDefinitionsOutcome ListCalculatedAttributeDefinitions(const Model::ListCalculatedAttributeDefinitionsRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListCalculatedAttributeDefinitions that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListCalculatedAttributeDefinitionsRequestT = Model::ListCalculatedAttributeDefinitionsRequest>
+        Model::ListCalculatedAttributeDefinitionsOutcomeCallable ListCalculatedAttributeDefinitionsCallable(const ListCalculatedAttributeDefinitionsRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::ListCalculatedAttributeDefinitions, request);
+        }
+
+        /**
+         * An Async wrapper for ListCalculatedAttributeDefinitions that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListCalculatedAttributeDefinitionsRequestT = Model::ListCalculatedAttributeDefinitionsRequest>
+        void ListCalculatedAttributeDefinitionsAsync(const ListCalculatedAttributeDefinitionsRequestT& request, const ListCalculatedAttributeDefinitionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::ListCalculatedAttributeDefinitions, request, handler, context);
+        }
+
+        /**
+         * <p>Retrieve a list of calculated attributes for a customer
+         * profile.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/ListCalculatedAttributesForProfile">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListCalculatedAttributesForProfileOutcome ListCalculatedAttributesForProfile(const Model::ListCalculatedAttributesForProfileRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListCalculatedAttributesForProfile that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListCalculatedAttributesForProfileRequestT = Model::ListCalculatedAttributesForProfileRequest>
+        Model::ListCalculatedAttributesForProfileOutcomeCallable ListCalculatedAttributesForProfileCallable(const ListCalculatedAttributesForProfileRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::ListCalculatedAttributesForProfile, request);
+        }
+
+        /**
+         * An Async wrapper for ListCalculatedAttributesForProfile that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListCalculatedAttributesForProfileRequestT = Model::ListCalculatedAttributesForProfileRequest>
+        void ListCalculatedAttributesForProfileAsync(const ListCalculatedAttributesForProfileRequestT& request, const ListCalculatedAttributesForProfileResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::ListCalculatedAttributesForProfile, request, handler, context);
+        }
+
+        /**
          * <p>Returns a list of all the domains for an AWS account that have been
          * created.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/ListDomains">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListDomainsOutcome ListDomains(const Model::ListDomainsRequest& request) const;
+        virtual Model::ListDomainsOutcome ListDomains(const Model::ListDomainsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListDomains that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListDomainsRequestT = Model::ListDomainsRequest>
-        Model::ListDomainsOutcomeCallable ListDomainsCallable(const ListDomainsRequestT& request) const
+        Model::ListDomainsOutcomeCallable ListDomainsCallable(const ListDomainsRequestT& request = {}) const
         {
             return SubmitCallable(&CustomerProfilesClient::ListDomains, request);
         }
@@ -710,9 +1369,60 @@ namespace CustomerProfiles
          * An Async wrapper for ListDomains that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListDomainsRequestT = Model::ListDomainsRequest>
-        void ListDomainsAsync(const ListDomainsRequestT& request, const ListDomainsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListDomainsAsync(const ListDomainsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListDomainsRequestT& request = {}) const
         {
             return SubmitAsync(&CustomerProfilesClient::ListDomains, request, handler, context);
+        }
+
+        /**
+         * <p>Returns a list of all the event streams in a specific domain.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/ListEventStreams">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListEventStreamsOutcome ListEventStreams(const Model::ListEventStreamsRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListEventStreams that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListEventStreamsRequestT = Model::ListEventStreamsRequest>
+        Model::ListEventStreamsOutcomeCallable ListEventStreamsCallable(const ListEventStreamsRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::ListEventStreams, request);
+        }
+
+        /**
+         * An Async wrapper for ListEventStreams that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListEventStreamsRequestT = Model::ListEventStreamsRequest>
+        void ListEventStreamsAsync(const ListEventStreamsRequestT& request, const ListEventStreamsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::ListEventStreams, request, handler, context);
+        }
+
+        /**
+         * <p>List all Event Triggers under a domain.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/ListEventTriggers">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListEventTriggersOutcome ListEventTriggers(const Model::ListEventTriggersRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListEventTriggers that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListEventTriggersRequestT = Model::ListEventTriggersRequest>
+        Model::ListEventTriggersOutcomeCallable ListEventTriggersCallable(const ListEventTriggersRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::ListEventTriggers, request);
+        }
+
+        /**
+         * An Async wrapper for ListEventTriggers that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListEventTriggersRequestT = Model::ListEventTriggersRequest>
+        void ListEventTriggersAsync(const ListEventTriggersRequestT& request, const ListEventTriggersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::ListEventTriggers, request, handler, context);
         }
 
         /**
@@ -767,18 +1477,70 @@ namespace CustomerProfiles
         }
 
         /**
+         * <p>Fetch the possible attribute values given the attribute name.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/ListObjectTypeAttributes">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListObjectTypeAttributesOutcome ListObjectTypeAttributes(const Model::ListObjectTypeAttributesRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListObjectTypeAttributes that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListObjectTypeAttributesRequestT = Model::ListObjectTypeAttributesRequest>
+        Model::ListObjectTypeAttributesOutcomeCallable ListObjectTypeAttributesCallable(const ListObjectTypeAttributesRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::ListObjectTypeAttributes, request);
+        }
+
+        /**
+         * An Async wrapper for ListObjectTypeAttributes that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListObjectTypeAttributesRequestT = Model::ListObjectTypeAttributesRequest>
+        void ListObjectTypeAttributesAsync(const ListObjectTypeAttributesRequestT& request, const ListObjectTypeAttributesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::ListObjectTypeAttributes, request, handler, context);
+        }
+
+        /**
+         * <p>Fetch the possible attribute values given the attribute name.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/ListProfileAttributeValues">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListProfileAttributeValuesOutcome ListProfileAttributeValues(const Model::ListProfileAttributeValuesRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListProfileAttributeValues that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListProfileAttributeValuesRequestT = Model::ListProfileAttributeValuesRequest>
+        Model::ListProfileAttributeValuesOutcomeCallable ListProfileAttributeValuesCallable(const ListProfileAttributeValuesRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::ListProfileAttributeValues, request);
+        }
+
+        /**
+         * An Async wrapper for ListProfileAttributeValues that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListProfileAttributeValuesRequestT = Model::ListProfileAttributeValuesRequest>
+        void ListProfileAttributeValuesAsync(const ListProfileAttributeValuesRequestT& request, const ListProfileAttributeValuesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::ListProfileAttributeValues, request, handler, context);
+        }
+
+        /**
          * <p>Lists all of the template information for object types.</p><p><h3>See
          * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/ListProfileObjectTypeTemplates">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListProfileObjectTypeTemplatesOutcome ListProfileObjectTypeTemplates(const Model::ListProfileObjectTypeTemplatesRequest& request) const;
+        virtual Model::ListProfileObjectTypeTemplatesOutcome ListProfileObjectTypeTemplates(const Model::ListProfileObjectTypeTemplatesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListProfileObjectTypeTemplates that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListProfileObjectTypeTemplatesRequestT = Model::ListProfileObjectTypeTemplatesRequest>
-        Model::ListProfileObjectTypeTemplatesOutcomeCallable ListProfileObjectTypeTemplatesCallable(const ListProfileObjectTypeTemplatesRequestT& request) const
+        Model::ListProfileObjectTypeTemplatesOutcomeCallable ListProfileObjectTypeTemplatesCallable(const ListProfileObjectTypeTemplatesRequestT& request = {}) const
         {
             return SubmitCallable(&CustomerProfilesClient::ListProfileObjectTypeTemplates, request);
         }
@@ -787,7 +1549,7 @@ namespace CustomerProfiles
          * An Async wrapper for ListProfileObjectTypeTemplates that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListProfileObjectTypeTemplatesRequestT = Model::ListProfileObjectTypeTemplatesRequest>
-        void ListProfileObjectTypeTemplatesAsync(const ListProfileObjectTypeTemplatesRequestT& request, const ListProfileObjectTypeTemplatesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListProfileObjectTypeTemplatesAsync(const ListProfileObjectTypeTemplatesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListProfileObjectTypeTemplatesRequestT& request = {}) const
         {
             return SubmitAsync(&CustomerProfilesClient::ListProfileObjectTypeTemplates, request, handler, context);
         }
@@ -842,6 +1604,57 @@ namespace CustomerProfiles
         void ListProfileObjectsAsync(const ListProfileObjectsRequestT& request, const ListProfileObjectsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&CustomerProfilesClient::ListProfileObjects, request, handler, context);
+        }
+
+        /**
+         * <p>Returns a set of <code>MatchIds</code> that belong to the given
+         * domain.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/ListRuleBasedMatches">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListRuleBasedMatchesOutcome ListRuleBasedMatches(const Model::ListRuleBasedMatchesRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListRuleBasedMatches that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListRuleBasedMatchesRequestT = Model::ListRuleBasedMatchesRequest>
+        Model::ListRuleBasedMatchesOutcomeCallable ListRuleBasedMatchesCallable(const ListRuleBasedMatchesRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::ListRuleBasedMatches, request);
+        }
+
+        /**
+         * An Async wrapper for ListRuleBasedMatches that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListRuleBasedMatchesRequestT = Model::ListRuleBasedMatchesRequest>
+        void ListRuleBasedMatchesAsync(const ListRuleBasedMatchesRequestT& request, const ListRuleBasedMatchesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::ListRuleBasedMatches, request, handler, context);
+        }
+
+        /**
+         * <p>Lists all segment definitions under a domain.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/ListSegmentDefinitions">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListSegmentDefinitionsOutcome ListSegmentDefinitions(const Model::ListSegmentDefinitionsRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListSegmentDefinitions that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListSegmentDefinitionsRequestT = Model::ListSegmentDefinitionsRequest>
+        Model::ListSegmentDefinitionsOutcomeCallable ListSegmentDefinitionsCallable(const ListSegmentDefinitionsRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::ListSegmentDefinitions, request);
+        }
+
+        /**
+         * An Async wrapper for ListSegmentDefinitions that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListSegmentDefinitionsRequestT = Model::ListSegmentDefinitionsRequest>
+        void ListSegmentDefinitionsAsync(const ListSegmentDefinitionsRequestT& request, const ListSegmentDefinitionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::ListSegmentDefinitions, request, handler, context);
         }
 
         /**
@@ -1128,13 +1941,41 @@ namespace CustomerProfiles
         }
 
         /**
+         * <p>Updates an existing calculated attribute definition. When updating the
+         * Conditions, note that increasing the date range of a calculated attribute will
+         * not trigger inclusion of historical data greater than the current date
+         * range.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/UpdateCalculatedAttributeDefinition">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateCalculatedAttributeDefinitionOutcome UpdateCalculatedAttributeDefinition(const Model::UpdateCalculatedAttributeDefinitionRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateCalculatedAttributeDefinition that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateCalculatedAttributeDefinitionRequestT = Model::UpdateCalculatedAttributeDefinitionRequest>
+        Model::UpdateCalculatedAttributeDefinitionOutcomeCallable UpdateCalculatedAttributeDefinitionCallable(const UpdateCalculatedAttributeDefinitionRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::UpdateCalculatedAttributeDefinition, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateCalculatedAttributeDefinition that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateCalculatedAttributeDefinitionRequestT = Model::UpdateCalculatedAttributeDefinitionRequest>
+        void UpdateCalculatedAttributeDefinitionAsync(const UpdateCalculatedAttributeDefinitionRequestT& request, const UpdateCalculatedAttributeDefinitionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::UpdateCalculatedAttributeDefinition, request, handler, context);
+        }
+
+        /**
          * <p>Updates the properties of a domain, including creating or selecting a dead
          * letter queue or an encryption key.</p> <p>After a domain is created, the name
          * can’t be changed.</p> <p>Use this API or <a
          * href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_CreateDomain.html">CreateDomain</a>
          * to enable <a
          * href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html">identity
-         * resolution</a>: set <code>Matching</code> to true. </p> <p>To prevent
+         * resolution</a>: set <code>Matching</code> to true.</p> <p>To prevent
          * cross-service impersonation when you call this API, see <a
          * href="https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html">Cross-service
          * confused deputy prevention</a> for sample policies that you should apply. </p>
@@ -1163,6 +2004,31 @@ namespace CustomerProfiles
         void UpdateDomainAsync(const UpdateDomainRequestT& request, const UpdateDomainResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&CustomerProfilesClient::UpdateDomain, request, handler, context);
+        }
+
+        /**
+         * <p>Update the properties of an Event Trigger.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/customer-profiles-2020-08-15/UpdateEventTrigger">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateEventTriggerOutcome UpdateEventTrigger(const Model::UpdateEventTriggerRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateEventTrigger that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateEventTriggerRequestT = Model::UpdateEventTriggerRequest>
+        Model::UpdateEventTriggerOutcomeCallable UpdateEventTriggerCallable(const UpdateEventTriggerRequestT& request) const
+        {
+            return SubmitCallable(&CustomerProfilesClient::UpdateEventTrigger, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateEventTrigger that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateEventTriggerRequestT = Model::UpdateEventTriggerRequest>
+        void UpdateEventTriggerAsync(const UpdateEventTriggerRequestT& request, const UpdateEventTriggerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CustomerProfilesClient::UpdateEventTrigger, request, handler, context);
         }
 
         /**
@@ -1199,11 +2065,7 @@ namespace CustomerProfiles
       std::shared_ptr<CustomerProfilesEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<CustomerProfilesClient>;
-      void init(const CustomerProfilesClientConfiguration& clientConfiguration);
 
-      CustomerProfilesClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<CustomerProfilesEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace CustomerProfiles

@@ -33,26 +33,13 @@ ModelCard::ModelCard() :
     m_lastModifiedByHasBeenSet(false),
     m_tagsHasBeenSet(false),
     m_modelIdHasBeenSet(false),
-    m_riskRatingHasBeenSet(false)
+    m_riskRatingHasBeenSet(false),
+    m_modelPackageGroupNameHasBeenSet(false)
 {
 }
 
-ModelCard::ModelCard(JsonView jsonValue) : 
-    m_modelCardArnHasBeenSet(false),
-    m_modelCardNameHasBeenSet(false),
-    m_modelCardVersion(0),
-    m_modelCardVersionHasBeenSet(false),
-    m_contentHasBeenSet(false),
-    m_modelCardStatus(ModelCardStatus::NOT_SET),
-    m_modelCardStatusHasBeenSet(false),
-    m_securityConfigHasBeenSet(false),
-    m_creationTimeHasBeenSet(false),
-    m_createdByHasBeenSet(false),
-    m_lastModifiedTimeHasBeenSet(false),
-    m_lastModifiedByHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_modelIdHasBeenSet(false),
-    m_riskRatingHasBeenSet(false)
+ModelCard::ModelCard(JsonView jsonValue)
+  : ModelCard()
 {
   *this = jsonValue;
 }
@@ -153,6 +140,13 @@ ModelCard& ModelCard::operator =(JsonView jsonValue)
     m_riskRatingHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ModelPackageGroupName"))
+  {
+    m_modelPackageGroupName = jsonValue.GetString("ModelPackageGroupName");
+
+    m_modelPackageGroupNameHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -237,6 +231,12 @@ JsonValue ModelCard::Jsonize() const
   if(m_riskRatingHasBeenSet)
   {
    payload.WithString("RiskRating", m_riskRating);
+
+  }
+
+  if(m_modelPackageGroupNameHasBeenSet)
+  {
+   payload.WithString("ModelPackageGroupName", m_modelPackageGroupName);
 
   }
 

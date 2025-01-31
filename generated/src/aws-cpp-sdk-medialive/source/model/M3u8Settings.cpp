@@ -45,38 +45,15 @@ M3u8Settings::M3u8Settings() :
     m_timedMetadataPidHasBeenSet(false),
     m_transportStreamId(0),
     m_transportStreamIdHasBeenSet(false),
-    m_videoPidHasBeenSet(false)
+    m_videoPidHasBeenSet(false),
+    m_klvBehavior(M3u8KlvBehavior::NOT_SET),
+    m_klvBehaviorHasBeenSet(false),
+    m_klvDataPidsHasBeenSet(false)
 {
 }
 
-M3u8Settings::M3u8Settings(JsonView jsonValue) : 
-    m_audioFramesPerPes(0),
-    m_audioFramesPerPesHasBeenSet(false),
-    m_audioPidsHasBeenSet(false),
-    m_ecmPidHasBeenSet(false),
-    m_nielsenId3Behavior(M3u8NielsenId3Behavior::NOT_SET),
-    m_nielsenId3BehaviorHasBeenSet(false),
-    m_patInterval(0),
-    m_patIntervalHasBeenSet(false),
-    m_pcrControl(M3u8PcrControl::NOT_SET),
-    m_pcrControlHasBeenSet(false),
-    m_pcrPeriod(0),
-    m_pcrPeriodHasBeenSet(false),
-    m_pcrPidHasBeenSet(false),
-    m_pmtInterval(0),
-    m_pmtIntervalHasBeenSet(false),
-    m_pmtPidHasBeenSet(false),
-    m_programNum(0),
-    m_programNumHasBeenSet(false),
-    m_scte35Behavior(M3u8Scte35Behavior::NOT_SET),
-    m_scte35BehaviorHasBeenSet(false),
-    m_scte35PidHasBeenSet(false),
-    m_timedMetadataBehavior(M3u8TimedMetadataBehavior::NOT_SET),
-    m_timedMetadataBehaviorHasBeenSet(false),
-    m_timedMetadataPidHasBeenSet(false),
-    m_transportStreamId(0),
-    m_transportStreamIdHasBeenSet(false),
-    m_videoPidHasBeenSet(false)
+M3u8Settings::M3u8Settings(JsonView jsonValue)
+  : M3u8Settings()
 {
   *this = jsonValue;
 }
@@ -202,6 +179,20 @@ M3u8Settings& M3u8Settings::operator =(JsonView jsonValue)
     m_videoPidHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("klvBehavior"))
+  {
+    m_klvBehavior = M3u8KlvBehaviorMapper::GetM3u8KlvBehaviorForName(jsonValue.GetString("klvBehavior"));
+
+    m_klvBehaviorHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("klvDataPids"))
+  {
+    m_klvDataPids = jsonValue.GetString("klvDataPids");
+
+    m_klvDataPidsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -304,6 +295,17 @@ JsonValue M3u8Settings::Jsonize() const
   if(m_videoPidHasBeenSet)
   {
    payload.WithString("videoPid", m_videoPid);
+
+  }
+
+  if(m_klvBehaviorHasBeenSet)
+  {
+   payload.WithString("klvBehavior", M3u8KlvBehaviorMapper::GetNameForM3u8KlvBehavior(m_klvBehavior));
+  }
+
+  if(m_klvDataPidsHasBeenSet)
+  {
+   payload.WithString("klvDataPids", m_klvDataPids);
 
   }
 

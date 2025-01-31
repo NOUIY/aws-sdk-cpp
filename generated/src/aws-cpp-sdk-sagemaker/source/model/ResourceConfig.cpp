@@ -26,23 +26,15 @@ ResourceConfig::ResourceConfig() :
     m_volumeSizeInGB(0),
     m_volumeSizeInGBHasBeenSet(false),
     m_volumeKmsKeyIdHasBeenSet(false),
-    m_instanceGroupsHasBeenSet(false),
     m_keepAlivePeriodInSeconds(0),
-    m_keepAlivePeriodInSecondsHasBeenSet(false)
+    m_keepAlivePeriodInSecondsHasBeenSet(false),
+    m_instanceGroupsHasBeenSet(false),
+    m_trainingPlanArnHasBeenSet(false)
 {
 }
 
-ResourceConfig::ResourceConfig(JsonView jsonValue) : 
-    m_instanceType(TrainingInstanceType::NOT_SET),
-    m_instanceTypeHasBeenSet(false),
-    m_instanceCount(0),
-    m_instanceCountHasBeenSet(false),
-    m_volumeSizeInGB(0),
-    m_volumeSizeInGBHasBeenSet(false),
-    m_volumeKmsKeyIdHasBeenSet(false),
-    m_instanceGroupsHasBeenSet(false),
-    m_keepAlivePeriodInSeconds(0),
-    m_keepAlivePeriodInSecondsHasBeenSet(false)
+ResourceConfig::ResourceConfig(JsonView jsonValue)
+  : ResourceConfig()
 {
   *this = jsonValue;
 }
@@ -77,6 +69,13 @@ ResourceConfig& ResourceConfig::operator =(JsonView jsonValue)
     m_volumeKmsKeyIdHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("KeepAlivePeriodInSeconds"))
+  {
+    m_keepAlivePeriodInSeconds = jsonValue.GetInteger("KeepAlivePeriodInSeconds");
+
+    m_keepAlivePeriodInSecondsHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("InstanceGroups"))
   {
     Aws::Utils::Array<JsonView> instanceGroupsJsonList = jsonValue.GetArray("InstanceGroups");
@@ -87,11 +86,11 @@ ResourceConfig& ResourceConfig::operator =(JsonView jsonValue)
     m_instanceGroupsHasBeenSet = true;
   }
 
-  if(jsonValue.ValueExists("KeepAlivePeriodInSeconds"))
+  if(jsonValue.ValueExists("TrainingPlanArn"))
   {
-    m_keepAlivePeriodInSeconds = jsonValue.GetInteger("KeepAlivePeriodInSeconds");
+    m_trainingPlanArn = jsonValue.GetString("TrainingPlanArn");
 
-    m_keepAlivePeriodInSecondsHasBeenSet = true;
+    m_trainingPlanArnHasBeenSet = true;
   }
 
   return *this;
@@ -124,6 +123,12 @@ JsonValue ResourceConfig::Jsonize() const
 
   }
 
+  if(m_keepAlivePeriodInSecondsHasBeenSet)
+  {
+   payload.WithInteger("KeepAlivePeriodInSeconds", m_keepAlivePeriodInSeconds);
+
+  }
+
   if(m_instanceGroupsHasBeenSet)
   {
    Aws::Utils::Array<JsonValue> instanceGroupsJsonList(m_instanceGroups.size());
@@ -135,9 +140,9 @@ JsonValue ResourceConfig::Jsonize() const
 
   }
 
-  if(m_keepAlivePeriodInSecondsHasBeenSet)
+  if(m_trainingPlanArnHasBeenSet)
   {
-   payload.WithInteger("KeepAlivePeriodInSeconds", m_keepAlivePeriodInSeconds);
+   payload.WithString("TrainingPlanArn", m_trainingPlanArn);
 
   }
 

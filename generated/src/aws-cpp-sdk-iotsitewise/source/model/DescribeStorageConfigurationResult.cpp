@@ -19,13 +19,14 @@ using namespace Aws;
 
 DescribeStorageConfigurationResult::DescribeStorageConfigurationResult() : 
     m_storageType(StorageType::NOT_SET),
-    m_disassociatedDataStorage(DisassociatedDataStorageState::NOT_SET)
+    m_disassociatedDataStorage(DisassociatedDataStorageState::NOT_SET),
+    m_warmTier(WarmTierState::NOT_SET),
+    m_disallowIngestNullNaN(false)
 {
 }
 
-DescribeStorageConfigurationResult::DescribeStorageConfigurationResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_storageType(StorageType::NOT_SET),
-    m_disassociatedDataStorage(DisassociatedDataStorageState::NOT_SET)
+DescribeStorageConfigurationResult::DescribeStorageConfigurationResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeStorageConfigurationResult()
 {
   *this = result;
 }
@@ -66,6 +67,24 @@ DescribeStorageConfigurationResult& DescribeStorageConfigurationResult::operator
   if(jsonValue.ValueExists("lastUpdateDate"))
   {
     m_lastUpdateDate = jsonValue.GetDouble("lastUpdateDate");
+
+  }
+
+  if(jsonValue.ValueExists("warmTier"))
+  {
+    m_warmTier = WarmTierStateMapper::GetWarmTierStateForName(jsonValue.GetString("warmTier"));
+
+  }
+
+  if(jsonValue.ValueExists("warmTierRetentionPeriod"))
+  {
+    m_warmTierRetentionPeriod = jsonValue.GetObject("warmTierRetentionPeriod");
+
+  }
+
+  if(jsonValue.ValueExists("disallowIngestNullNaN"))
+  {
+    m_disallowIngestNullNaN = jsonValue.GetBool("disallowIngestNullNaN");
 
   }
 

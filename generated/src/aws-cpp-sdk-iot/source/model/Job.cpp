@@ -46,39 +46,13 @@ Job::Job() :
     m_isConcurrent(false),
     m_isConcurrentHasBeenSet(false),
     m_schedulingConfigHasBeenSet(false),
-    m_scheduledJobRolloutsHasBeenSet(false)
+    m_scheduledJobRolloutsHasBeenSet(false),
+    m_destinationPackageVersionsHasBeenSet(false)
 {
 }
 
-Job::Job(JsonView jsonValue) : 
-    m_jobArnHasBeenSet(false),
-    m_jobIdHasBeenSet(false),
-    m_targetSelection(TargetSelection::NOT_SET),
-    m_targetSelectionHasBeenSet(false),
-    m_status(JobStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_forceCanceled(false),
-    m_forceCanceledHasBeenSet(false),
-    m_reasonCodeHasBeenSet(false),
-    m_commentHasBeenSet(false),
-    m_targetsHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_presignedUrlConfigHasBeenSet(false),
-    m_jobExecutionsRolloutConfigHasBeenSet(false),
-    m_abortConfigHasBeenSet(false),
-    m_createdAtHasBeenSet(false),
-    m_lastUpdatedAtHasBeenSet(false),
-    m_completedAtHasBeenSet(false),
-    m_jobProcessDetailsHasBeenSet(false),
-    m_timeoutConfigHasBeenSet(false),
-    m_namespaceIdHasBeenSet(false),
-    m_jobTemplateArnHasBeenSet(false),
-    m_jobExecutionsRetryConfigHasBeenSet(false),
-    m_documentParametersHasBeenSet(false),
-    m_isConcurrent(false),
-    m_isConcurrentHasBeenSet(false),
-    m_schedulingConfigHasBeenSet(false),
-    m_scheduledJobRolloutsHasBeenSet(false)
+Job::Job(JsonView jsonValue)
+  : Job()
 {
   *this = jsonValue;
 }
@@ -262,6 +236,16 @@ Job& Job::operator =(JsonView jsonValue)
     m_scheduledJobRolloutsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("destinationPackageVersions"))
+  {
+    Aws::Utils::Array<JsonView> destinationPackageVersionsJsonList = jsonValue.GetArray("destinationPackageVersions");
+    for(unsigned destinationPackageVersionsIndex = 0; destinationPackageVersionsIndex < destinationPackageVersionsJsonList.GetLength(); ++destinationPackageVersionsIndex)
+    {
+      m_destinationPackageVersions.push_back(destinationPackageVersionsJsonList[destinationPackageVersionsIndex].AsString());
+    }
+    m_destinationPackageVersionsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -420,6 +404,17 @@ JsonValue Job::Jsonize() const
      scheduledJobRolloutsJsonList[scheduledJobRolloutsIndex].AsObject(m_scheduledJobRollouts[scheduledJobRolloutsIndex].Jsonize());
    }
    payload.WithArray("scheduledJobRollouts", std::move(scheduledJobRolloutsJsonList));
+
+  }
+
+  if(m_destinationPackageVersionsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> destinationPackageVersionsJsonList(m_destinationPackageVersions.size());
+   for(unsigned destinationPackageVersionsIndex = 0; destinationPackageVersionsIndex < destinationPackageVersionsJsonList.GetLength(); ++destinationPackageVersionsIndex)
+   {
+     destinationPackageVersionsJsonList[destinationPackageVersionsIndex].AsString(m_destinationPackageVersions[destinationPackageVersionsIndex]);
+   }
+   payload.WithArray("destinationPackageVersions", std::move(destinationPackageVersionsJsonList));
 
   }
 

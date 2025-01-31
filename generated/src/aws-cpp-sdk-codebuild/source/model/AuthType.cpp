@@ -23,6 +23,8 @@ namespace Aws
         static const int OAUTH_HASH = HashingUtils::HashString("OAUTH");
         static const int BASIC_AUTH_HASH = HashingUtils::HashString("BASIC_AUTH");
         static const int PERSONAL_ACCESS_TOKEN_HASH = HashingUtils::HashString("PERSONAL_ACCESS_TOKEN");
+        static const int CODECONNECTIONS_HASH = HashingUtils::HashString("CODECONNECTIONS");
+        static const int SECRETS_MANAGER_HASH = HashingUtils::HashString("SECRETS_MANAGER");
 
 
         AuthType GetAuthTypeForName(const Aws::String& name)
@@ -40,6 +42,14 @@ namespace Aws
           {
             return AuthType::PERSONAL_ACCESS_TOKEN;
           }
+          else if (hashCode == CODECONNECTIONS_HASH)
+          {
+            return AuthType::CODECONNECTIONS;
+          }
+          else if (hashCode == SECRETS_MANAGER_HASH)
+          {
+            return AuthType::SECRETS_MANAGER;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -54,12 +64,18 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case AuthType::NOT_SET:
+            return {};
           case AuthType::OAUTH:
             return "OAUTH";
           case AuthType::BASIC_AUTH:
             return "BASIC_AUTH";
           case AuthType::PERSONAL_ACCESS_TOKEN:
             return "PERSONAL_ACCESS_TOKEN";
+          case AuthType::CODECONNECTIONS:
+            return "CODECONNECTIONS";
+          case AuthType::SECRETS_MANAGER:
+            return "SECRETS_MANAGER";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

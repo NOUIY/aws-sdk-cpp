@@ -20,13 +20,14 @@ namespace Model
 
 AnalysisRulePolicyV1::AnalysisRulePolicyV1() : 
     m_listHasBeenSet(false),
-    m_aggregationHasBeenSet(false)
+    m_aggregationHasBeenSet(false),
+    m_customHasBeenSet(false),
+    m_idMappingTableHasBeenSet(false)
 {
 }
 
-AnalysisRulePolicyV1::AnalysisRulePolicyV1(JsonView jsonValue) : 
-    m_listHasBeenSet(false),
-    m_aggregationHasBeenSet(false)
+AnalysisRulePolicyV1::AnalysisRulePolicyV1(JsonView jsonValue)
+  : AnalysisRulePolicyV1()
 {
   *this = jsonValue;
 }
@@ -47,6 +48,20 @@ AnalysisRulePolicyV1& AnalysisRulePolicyV1::operator =(JsonView jsonValue)
     m_aggregationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("custom"))
+  {
+    m_custom = jsonValue.GetObject("custom");
+
+    m_customHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("idMappingTable"))
+  {
+    m_idMappingTable = jsonValue.GetObject("idMappingTable");
+
+    m_idMappingTableHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +78,18 @@ JsonValue AnalysisRulePolicyV1::Jsonize() const
   if(m_aggregationHasBeenSet)
   {
    payload.WithObject("aggregation", m_aggregation.Jsonize());
+
+  }
+
+  if(m_customHasBeenSet)
+  {
+   payload.WithObject("custom", m_custom.Jsonize());
+
+  }
+
+  if(m_idMappingTableHasBeenSet)
+  {
+   payload.WithObject("idMappingTable", m_idMappingTable.Jsonize());
 
   }
 

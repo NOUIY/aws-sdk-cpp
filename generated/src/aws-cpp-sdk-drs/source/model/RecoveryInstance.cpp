@@ -19,6 +19,7 @@ namespace Model
 {
 
 RecoveryInstance::RecoveryInstance() : 
+    m_agentVersionHasBeenSet(false),
     m_arnHasBeenSet(false),
     m_dataReplicationInfoHasBeenSet(false),
     m_ec2InstanceIDHasBeenSet(false),
@@ -34,35 +35,27 @@ RecoveryInstance::RecoveryInstance() :
     m_pointInTimeSnapshotDateTimeHasBeenSet(false),
     m_recoveryInstanceIDHasBeenSet(false),
     m_recoveryInstancePropertiesHasBeenSet(false),
+    m_sourceOutpostArnHasBeenSet(false),
     m_sourceServerIDHasBeenSet(false),
     m_tagsHasBeenSet(false)
 {
 }
 
-RecoveryInstance::RecoveryInstance(JsonView jsonValue) : 
-    m_arnHasBeenSet(false),
-    m_dataReplicationInfoHasBeenSet(false),
-    m_ec2InstanceIDHasBeenSet(false),
-    m_ec2InstanceState(EC2InstanceState::NOT_SET),
-    m_ec2InstanceStateHasBeenSet(false),
-    m_failbackHasBeenSet(false),
-    m_isDrill(false),
-    m_isDrillHasBeenSet(false),
-    m_jobIDHasBeenSet(false),
-    m_originAvailabilityZoneHasBeenSet(false),
-    m_originEnvironment(OriginEnvironment::NOT_SET),
-    m_originEnvironmentHasBeenSet(false),
-    m_pointInTimeSnapshotDateTimeHasBeenSet(false),
-    m_recoveryInstanceIDHasBeenSet(false),
-    m_recoveryInstancePropertiesHasBeenSet(false),
-    m_sourceServerIDHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+RecoveryInstance::RecoveryInstance(JsonView jsonValue)
+  : RecoveryInstance()
 {
   *this = jsonValue;
 }
 
 RecoveryInstance& RecoveryInstance::operator =(JsonView jsonValue)
 {
+  if(jsonValue.ValueExists("agentVersion"))
+  {
+    m_agentVersion = jsonValue.GetString("agentVersion");
+
+    m_agentVersionHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("arn"))
   {
     m_arn = jsonValue.GetString("arn");
@@ -147,6 +140,13 @@ RecoveryInstance& RecoveryInstance::operator =(JsonView jsonValue)
     m_recoveryInstancePropertiesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("sourceOutpostArn"))
+  {
+    m_sourceOutpostArn = jsonValue.GetString("sourceOutpostArn");
+
+    m_sourceOutpostArnHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("sourceServerID"))
   {
     m_sourceServerID = jsonValue.GetString("sourceServerID");
@@ -170,6 +170,12 @@ RecoveryInstance& RecoveryInstance::operator =(JsonView jsonValue)
 JsonValue RecoveryInstance::Jsonize() const
 {
   JsonValue payload;
+
+  if(m_agentVersionHasBeenSet)
+  {
+   payload.WithString("agentVersion", m_agentVersion);
+
+  }
 
   if(m_arnHasBeenSet)
   {
@@ -238,6 +244,12 @@ JsonValue RecoveryInstance::Jsonize() const
   if(m_recoveryInstancePropertiesHasBeenSet)
   {
    payload.WithObject("recoveryInstanceProperties", m_recoveryInstanceProperties.Jsonize());
+
+  }
+
+  if(m_sourceOutpostArnHasBeenSet)
+  {
+   payload.WithString("sourceOutpostArn", m_sourceOutpostArn);
 
   }
 

@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0.
  */
 
-#include <gtest/gtest.h>
+#include <aws/testing/AwsCppSdkGTestSuite.h>
 
 #include <aws/core/utils/HashingUtils.h>
-#include <aws/core/utils/crypto/Sha256.h>
-#include <aws/core/utils/crypto/Sha1.h>
-#include <aws/core/utils/crypto/MD5.h>
-#include <aws/core/utils/crypto/CRC32.h>
 #include <aws/core/utils/Outcome.h>
+#include <aws/core/utils/crypto/CRC32.h>
+#include <aws/core/utils/crypto/CRC64.h>
+#include <aws/core/utils/crypto/MD5.h>
+#include <aws/core/utils/crypto/Sha1.h>
+#include <aws/core/utils/crypto/Sha256.h>
 
 #include <algorithm>
 
@@ -29,7 +30,11 @@ static void CalculateHash(Crypto::Hash& hash, const char* buffer)
     }
 }
 
-TEST(HashUpdateTest, TestSHA256Update)
+class HashUpdateTest : public Aws::Testing::AwsCppSdkGTestSuite
+{
+};
+
+TEST_F(HashUpdateTest, TestSHA256Update)
 {
     Crypto::Sha256 hash;
     const char* buffer = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
@@ -43,7 +48,7 @@ TEST(HashUpdateTest, TestSHA256Update)
     ASSERT_STREQ("cf5b16a778af8380036ce59e7b0492370b249b11e8f07a51afac45037afee9d1", hexHash.c_str());
 }
 
-TEST(HashUpdateTest, TestSHA1Update)
+TEST_F(HashUpdateTest, TestSHA1Update)
 {
     Crypto::Sha1 hash;
     const char* buffer = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
@@ -57,7 +62,7 @@ TEST(HashUpdateTest, TestSHA1Update)
     ASSERT_STREQ("a49b2446a02c645bf419f995b67091253a04a259", hexHash.c_str());
 }
 
-TEST(HashUpdateTest, TestMD5Update)
+TEST_F(HashUpdateTest, TestMD5Update)
 {
     Crypto::MD5 hash;
     const char* buffer = "12345678901234567890123456789012345678901234567890123456789012345678901234567890";
@@ -71,7 +76,7 @@ TEST(HashUpdateTest, TestMD5Update)
     ASSERT_STREQ("V+30oivjyVWsSdouIQe2eg==", base64Hash.c_str());
 }
 
-TEST(HashUpdateTest, TestCRC32Update)
+TEST_F(HashUpdateTest, TestCRC32Update)
 {
     Crypto::CRC32 hash;
 
@@ -93,7 +98,7 @@ TEST(HashUpdateTest, TestCRC32Update)
     ASSERT_STREQ("72103906", hexHash.c_str());
 }
 
-TEST(HashUpdateTest, TestCRC32CUpdate)
+TEST_F(HashUpdateTest, TestCRC32CUpdate)
 {
     Crypto::CRC32C hash;
 
@@ -113,4 +118,25 @@ TEST(HashUpdateTest, TestCRC32CUpdate)
 
     Aws::String hexHash = HashingUtils::HexEncode(digest);
     ASSERT_STREQ("fb5b991d", hexHash.c_str());
+}
+
+TEST_F(HashUpdateTest, TestCRC64Update) {
+  Crypto::CRC64 hash;
+
+  unsigned char buffer[Crypto::Hash::INTERNAL_HASH_STREAM_BUFFER_SIZE] = {};
+  memset(buffer, 0, Crypto::Hash::INTERNAL_HASH_STREAM_BUFFER_SIZE);
+
+  for (long int remainingBufferSize = 26214400; remainingBufferSize > 0;) {
+    size_t bufferSize = (std::min)(
+        remainingBufferSize,
+        static_cast<long>(Crypto::Hash::INTERNAL_HASH_STREAM_BUFFER_SIZE));
+    hash.Update(buffer, bufferSize);
+    remainingBufferSize -= static_cast<long>(bufferSize);
+  }
+
+  ByteBuffer digest = hash.GetHash().GetResult();
+  ASSERT_EQ(8uL, digest.GetLength());
+
+  Aws::String hexHash = HashingUtils::HexEncode(digest);
+  ASSERT_STREQ("5b6f5045463ca45e", hexHash.c_str());
 }

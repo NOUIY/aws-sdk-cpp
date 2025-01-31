@@ -48,41 +48,21 @@ PostgreSQLSettings::PostgreSQLSettings() :
     m_trimSpaceInChar(false),
     m_trimSpaceInCharHasBeenSet(false),
     m_mapBooleanAsBoolean(false),
-    m_mapBooleanAsBooleanHasBeenSet(false)
+    m_mapBooleanAsBooleanHasBeenSet(false),
+    m_mapJsonbAsClob(false),
+    m_mapJsonbAsClobHasBeenSet(false),
+    m_mapLongVarcharAs(LongVarcharMappingType::NOT_SET),
+    m_mapLongVarcharAsHasBeenSet(false),
+    m_databaseMode(DatabaseMode::NOT_SET),
+    m_databaseModeHasBeenSet(false),
+    m_babelfishDatabaseNameHasBeenSet(false),
+    m_disableUnicodeSourceFilter(false),
+    m_disableUnicodeSourceFilterHasBeenSet(false)
 {
 }
 
-PostgreSQLSettings::PostgreSQLSettings(JsonView jsonValue) : 
-    m_afterConnectScriptHasBeenSet(false),
-    m_captureDdls(false),
-    m_captureDdlsHasBeenSet(false),
-    m_maxFileSize(0),
-    m_maxFileSizeHasBeenSet(false),
-    m_databaseNameHasBeenSet(false),
-    m_ddlArtifactsSchemaHasBeenSet(false),
-    m_executeTimeout(0),
-    m_executeTimeoutHasBeenSet(false),
-    m_failTasksOnLobTruncation(false),
-    m_failTasksOnLobTruncationHasBeenSet(false),
-    m_heartbeatEnable(false),
-    m_heartbeatEnableHasBeenSet(false),
-    m_heartbeatSchemaHasBeenSet(false),
-    m_heartbeatFrequency(0),
-    m_heartbeatFrequencyHasBeenSet(false),
-    m_passwordHasBeenSet(false),
-    m_port(0),
-    m_portHasBeenSet(false),
-    m_serverNameHasBeenSet(false),
-    m_usernameHasBeenSet(false),
-    m_slotNameHasBeenSet(false),
-    m_pluginName(PluginNameValue::NOT_SET),
-    m_pluginNameHasBeenSet(false),
-    m_secretsManagerAccessRoleArnHasBeenSet(false),
-    m_secretsManagerSecretIdHasBeenSet(false),
-    m_trimSpaceInChar(false),
-    m_trimSpaceInCharHasBeenSet(false),
-    m_mapBooleanAsBoolean(false),
-    m_mapBooleanAsBooleanHasBeenSet(false)
+PostgreSQLSettings::PostgreSQLSettings(JsonView jsonValue)
+  : PostgreSQLSettings()
 {
   *this = jsonValue;
 }
@@ -229,6 +209,41 @@ PostgreSQLSettings& PostgreSQLSettings::operator =(JsonView jsonValue)
     m_mapBooleanAsBooleanHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("MapJsonbAsClob"))
+  {
+    m_mapJsonbAsClob = jsonValue.GetBool("MapJsonbAsClob");
+
+    m_mapJsonbAsClobHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("MapLongVarcharAs"))
+  {
+    m_mapLongVarcharAs = LongVarcharMappingTypeMapper::GetLongVarcharMappingTypeForName(jsonValue.GetString("MapLongVarcharAs"));
+
+    m_mapLongVarcharAsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("DatabaseMode"))
+  {
+    m_databaseMode = DatabaseModeMapper::GetDatabaseModeForName(jsonValue.GetString("DatabaseMode"));
+
+    m_databaseModeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("BabelfishDatabaseName"))
+  {
+    m_babelfishDatabaseName = jsonValue.GetString("BabelfishDatabaseName");
+
+    m_babelfishDatabaseNameHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("DisableUnicodeSourceFilter"))
+  {
+    m_disableUnicodeSourceFilter = jsonValue.GetBool("DisableUnicodeSourceFilter");
+
+    m_disableUnicodeSourceFilterHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -352,6 +367,34 @@ JsonValue PostgreSQLSettings::Jsonize() const
   if(m_mapBooleanAsBooleanHasBeenSet)
   {
    payload.WithBool("MapBooleanAsBoolean", m_mapBooleanAsBoolean);
+
+  }
+
+  if(m_mapJsonbAsClobHasBeenSet)
+  {
+   payload.WithBool("MapJsonbAsClob", m_mapJsonbAsClob);
+
+  }
+
+  if(m_mapLongVarcharAsHasBeenSet)
+  {
+   payload.WithString("MapLongVarcharAs", LongVarcharMappingTypeMapper::GetNameForLongVarcharMappingType(m_mapLongVarcharAs));
+  }
+
+  if(m_databaseModeHasBeenSet)
+  {
+   payload.WithString("DatabaseMode", DatabaseModeMapper::GetNameForDatabaseMode(m_databaseMode));
+  }
+
+  if(m_babelfishDatabaseNameHasBeenSet)
+  {
+   payload.WithString("BabelfishDatabaseName", m_babelfishDatabaseName);
+
+  }
+
+  if(m_disableUnicodeSourceFilterHasBeenSet)
+  {
+   payload.WithBool("DisableUnicodeSourceFilter", m_disableUnicodeSourceFilter);
 
   }
 

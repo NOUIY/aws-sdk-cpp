@@ -50,43 +50,14 @@ ContainerDetail::ContainerDetail() :
     m_secretsHasBeenSet(false),
     m_networkConfigurationHasBeenSet(false),
     m_fargatePlatformConfigurationHasBeenSet(false),
-    m_ephemeralStorageHasBeenSet(false)
+    m_ephemeralStorageHasBeenSet(false),
+    m_runtimePlatformHasBeenSet(false),
+    m_repositoryCredentialsHasBeenSet(false)
 {
 }
 
-ContainerDetail::ContainerDetail(JsonView jsonValue) : 
-    m_imageHasBeenSet(false),
-    m_vcpus(0),
-    m_vcpusHasBeenSet(false),
-    m_memory(0),
-    m_memoryHasBeenSet(false),
-    m_commandHasBeenSet(false),
-    m_jobRoleArnHasBeenSet(false),
-    m_executionRoleArnHasBeenSet(false),
-    m_volumesHasBeenSet(false),
-    m_environmentHasBeenSet(false),
-    m_mountPointsHasBeenSet(false),
-    m_readonlyRootFilesystem(false),
-    m_readonlyRootFilesystemHasBeenSet(false),
-    m_ulimitsHasBeenSet(false),
-    m_privileged(false),
-    m_privilegedHasBeenSet(false),
-    m_userHasBeenSet(false),
-    m_exitCode(0),
-    m_exitCodeHasBeenSet(false),
-    m_reasonHasBeenSet(false),
-    m_containerInstanceArnHasBeenSet(false),
-    m_taskArnHasBeenSet(false),
-    m_logStreamNameHasBeenSet(false),
-    m_instanceTypeHasBeenSet(false),
-    m_networkInterfacesHasBeenSet(false),
-    m_resourceRequirementsHasBeenSet(false),
-    m_linuxParametersHasBeenSet(false),
-    m_logConfigurationHasBeenSet(false),
-    m_secretsHasBeenSet(false),
-    m_networkConfigurationHasBeenSet(false),
-    m_fargatePlatformConfigurationHasBeenSet(false),
-    m_ephemeralStorageHasBeenSet(false)
+ContainerDetail::ContainerDetail(JsonView jsonValue)
+  : ContainerDetail()
 {
   *this = jsonValue;
 }
@@ -306,6 +277,20 @@ ContainerDetail& ContainerDetail::operator =(JsonView jsonValue)
     m_ephemeralStorageHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("runtimePlatform"))
+  {
+    m_runtimePlatform = jsonValue.GetObject("runtimePlatform");
+
+    m_runtimePlatformHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("repositoryCredentials"))
+  {
+    m_repositoryCredentials = jsonValue.GetObject("repositoryCredentials");
+
+    m_repositoryCredentialsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -512,6 +497,18 @@ JsonValue ContainerDetail::Jsonize() const
   if(m_ephemeralStorageHasBeenSet)
   {
    payload.WithObject("ephemeralStorage", m_ephemeralStorage.Jsonize());
+
+  }
+
+  if(m_runtimePlatformHasBeenSet)
+  {
+   payload.WithObject("runtimePlatform", m_runtimePlatform.Jsonize());
+
+  }
+
+  if(m_repositoryCredentialsHasBeenSet)
+  {
+   payload.WithObject("repositoryCredentials", m_repositoryCredentials.Jsonize());
 
   }
 

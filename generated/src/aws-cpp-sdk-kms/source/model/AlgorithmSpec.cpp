@@ -23,6 +23,9 @@ namespace Aws
         static const int RSAES_PKCS1_V1_5_HASH = HashingUtils::HashString("RSAES_PKCS1_V1_5");
         static const int RSAES_OAEP_SHA_1_HASH = HashingUtils::HashString("RSAES_OAEP_SHA_1");
         static const int RSAES_OAEP_SHA_256_HASH = HashingUtils::HashString("RSAES_OAEP_SHA_256");
+        static const int RSA_AES_KEY_WRAP_SHA_1_HASH = HashingUtils::HashString("RSA_AES_KEY_WRAP_SHA_1");
+        static const int RSA_AES_KEY_WRAP_SHA_256_HASH = HashingUtils::HashString("RSA_AES_KEY_WRAP_SHA_256");
+        static const int SM2PKE_HASH = HashingUtils::HashString("SM2PKE");
 
 
         AlgorithmSpec GetAlgorithmSpecForName(const Aws::String& name)
@@ -40,6 +43,18 @@ namespace Aws
           {
             return AlgorithmSpec::RSAES_OAEP_SHA_256;
           }
+          else if (hashCode == RSA_AES_KEY_WRAP_SHA_1_HASH)
+          {
+            return AlgorithmSpec::RSA_AES_KEY_WRAP_SHA_1;
+          }
+          else if (hashCode == RSA_AES_KEY_WRAP_SHA_256_HASH)
+          {
+            return AlgorithmSpec::RSA_AES_KEY_WRAP_SHA_256;
+          }
+          else if (hashCode == SM2PKE_HASH)
+          {
+            return AlgorithmSpec::SM2PKE;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -54,12 +69,20 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case AlgorithmSpec::NOT_SET:
+            return {};
           case AlgorithmSpec::RSAES_PKCS1_V1_5:
             return "RSAES_PKCS1_V1_5";
           case AlgorithmSpec::RSAES_OAEP_SHA_1:
             return "RSAES_OAEP_SHA_1";
           case AlgorithmSpec::RSAES_OAEP_SHA_256:
             return "RSAES_OAEP_SHA_256";
+          case AlgorithmSpec::RSA_AES_KEY_WRAP_SHA_1:
+            return "RSA_AES_KEY_WRAP_SHA_1";
+          case AlgorithmSpec::RSA_AES_KEY_WRAP_SHA_256:
+            return "RSA_AES_KEY_WRAP_SHA_256";
+          case AlgorithmSpec::SM2PKE:
+            return "SM2PKE";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

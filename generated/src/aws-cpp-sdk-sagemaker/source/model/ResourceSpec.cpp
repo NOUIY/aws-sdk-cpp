@@ -21,18 +21,15 @@ namespace Model
 ResourceSpec::ResourceSpec() : 
     m_sageMakerImageArnHasBeenSet(false),
     m_sageMakerImageVersionArnHasBeenSet(false),
+    m_sageMakerImageVersionAliasHasBeenSet(false),
     m_instanceType(AppInstanceType::NOT_SET),
     m_instanceTypeHasBeenSet(false),
     m_lifecycleConfigArnHasBeenSet(false)
 {
 }
 
-ResourceSpec::ResourceSpec(JsonView jsonValue) : 
-    m_sageMakerImageArnHasBeenSet(false),
-    m_sageMakerImageVersionArnHasBeenSet(false),
-    m_instanceType(AppInstanceType::NOT_SET),
-    m_instanceTypeHasBeenSet(false),
-    m_lifecycleConfigArnHasBeenSet(false)
+ResourceSpec::ResourceSpec(JsonView jsonValue)
+  : ResourceSpec()
 {
   *this = jsonValue;
 }
@@ -51,6 +48,13 @@ ResourceSpec& ResourceSpec::operator =(JsonView jsonValue)
     m_sageMakerImageVersionArn = jsonValue.GetString("SageMakerImageVersionArn");
 
     m_sageMakerImageVersionArnHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("SageMakerImageVersionAlias"))
+  {
+    m_sageMakerImageVersionAlias = jsonValue.GetString("SageMakerImageVersionAlias");
+
+    m_sageMakerImageVersionAliasHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("InstanceType"))
@@ -83,6 +87,12 @@ JsonValue ResourceSpec::Jsonize() const
   if(m_sageMakerImageVersionArnHasBeenSet)
   {
    payload.WithString("SageMakerImageVersionArn", m_sageMakerImageVersionArn);
+
+  }
+
+  if(m_sageMakerImageVersionAliasHasBeenSet)
+  {
+   payload.WithString("SageMakerImageVersionAlias", m_sageMakerImageVersionAlias);
 
   }
 

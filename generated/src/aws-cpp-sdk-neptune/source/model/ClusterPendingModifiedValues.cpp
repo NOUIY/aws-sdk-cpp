@@ -28,6 +28,7 @@ ClusterPendingModifiedValues::ClusterPendingModifiedValues() :
     m_engineVersionHasBeenSet(false),
     m_backupRetentionPeriod(0),
     m_backupRetentionPeriodHasBeenSet(false),
+    m_storageTypeHasBeenSet(false),
     m_allocatedStorage(0),
     m_allocatedStorageHasBeenSet(false),
     m_iops(0),
@@ -35,18 +36,8 @@ ClusterPendingModifiedValues::ClusterPendingModifiedValues() :
 {
 }
 
-ClusterPendingModifiedValues::ClusterPendingModifiedValues(const XmlNode& xmlNode) : 
-    m_pendingCloudwatchLogsExportsHasBeenSet(false),
-    m_dBClusterIdentifierHasBeenSet(false),
-    m_iAMDatabaseAuthenticationEnabled(false),
-    m_iAMDatabaseAuthenticationEnabledHasBeenSet(false),
-    m_engineVersionHasBeenSet(false),
-    m_backupRetentionPeriod(0),
-    m_backupRetentionPeriodHasBeenSet(false),
-    m_allocatedStorage(0),
-    m_allocatedStorageHasBeenSet(false),
-    m_iops(0),
-    m_iopsHasBeenSet(false)
+ClusterPendingModifiedValues::ClusterPendingModifiedValues(const XmlNode& xmlNode)
+  : ClusterPendingModifiedValues()
 {
   *this = xmlNode;
 }
@@ -86,6 +77,12 @@ ClusterPendingModifiedValues& ClusterPendingModifiedValues::operator =(const Xml
     {
       m_backupRetentionPeriod = StringUtils::ConvertToInt32(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(backupRetentionPeriodNode.GetText()).c_str()).c_str());
       m_backupRetentionPeriodHasBeenSet = true;
+    }
+    XmlNode storageTypeNode = resultNode.FirstChild("StorageType");
+    if(!storageTypeNode.IsNull())
+    {
+      m_storageType = Aws::Utils::Xml::DecodeEscapedXmlText(storageTypeNode.GetText());
+      m_storageTypeHasBeenSet = true;
     }
     XmlNode allocatedStorageNode = resultNode.FirstChild("AllocatedStorage");
     if(!allocatedStorageNode.IsNull())
@@ -133,6 +130,11 @@ void ClusterPendingModifiedValues::OutputToStream(Aws::OStream& oStream, const c
       oStream << location << index << locationValue << ".BackupRetentionPeriod=" << m_backupRetentionPeriod << "&";
   }
 
+  if(m_storageTypeHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".StorageType=" << StringUtils::URLEncode(m_storageType.c_str()) << "&";
+  }
+
   if(m_allocatedStorageHasBeenSet)
   {
       oStream << location << index << locationValue << ".AllocatedStorage=" << m_allocatedStorage << "&";
@@ -168,6 +170,10 @@ void ClusterPendingModifiedValues::OutputToStream(Aws::OStream& oStream, const c
   if(m_backupRetentionPeriodHasBeenSet)
   {
       oStream << location << ".BackupRetentionPeriod=" << m_backupRetentionPeriod << "&";
+  }
+  if(m_storageTypeHasBeenSet)
+  {
+      oStream << location << ".StorageType=" << StringUtils::URLEncode(m_storageType.c_str()) << "&";
   }
   if(m_allocatedStorageHasBeenSet)
   {

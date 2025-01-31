@@ -23,9 +23,8 @@ DescribeDataIngestionJobResult::DescribeDataIngestionJobResult() :
 {
 }
 
-DescribeDataIngestionJobResult::DescribeDataIngestionJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(IngestionJobStatus::NOT_SET),
-    m_ingestedDataSize(0)
+DescribeDataIngestionJobResult::DescribeDataIngestionJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeDataIngestionJobResult()
 {
   *this = result;
 }
@@ -108,6 +107,12 @@ DescribeDataIngestionJobResult& DescribeDataIngestionJobResult::operator =(const
   if(jsonValue.ValueExists("DataEndTime"))
   {
     m_dataEndTime = jsonValue.GetDouble("DataEndTime");
+
+  }
+
+  if(jsonValue.ValueExists("SourceDatasetArn"))
+  {
+    m_sourceDatasetArn = jsonValue.GetString("SourceDatasetArn");
 
   }
 

@@ -19,12 +19,13 @@ namespace Model
 {
 
 UpdateSvmActiveDirectoryConfiguration::UpdateSvmActiveDirectoryConfiguration() : 
-    m_selfManagedActiveDirectoryConfigurationHasBeenSet(false)
+    m_selfManagedActiveDirectoryConfigurationHasBeenSet(false),
+    m_netBiosNameHasBeenSet(false)
 {
 }
 
-UpdateSvmActiveDirectoryConfiguration::UpdateSvmActiveDirectoryConfiguration(JsonView jsonValue) : 
-    m_selfManagedActiveDirectoryConfigurationHasBeenSet(false)
+UpdateSvmActiveDirectoryConfiguration::UpdateSvmActiveDirectoryConfiguration(JsonView jsonValue)
+  : UpdateSvmActiveDirectoryConfiguration()
 {
   *this = jsonValue;
 }
@@ -38,6 +39,13 @@ UpdateSvmActiveDirectoryConfiguration& UpdateSvmActiveDirectoryConfiguration::op
     m_selfManagedActiveDirectoryConfigurationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("NetBiosName"))
+  {
+    m_netBiosName = jsonValue.GetString("NetBiosName");
+
+    m_netBiosNameHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -48,6 +56,12 @@ JsonValue UpdateSvmActiveDirectoryConfiguration::Jsonize() const
   if(m_selfManagedActiveDirectoryConfigurationHasBeenSet)
   {
    payload.WithObject("SelfManagedActiveDirectoryConfiguration", m_selfManagedActiveDirectoryConfiguration.Jsonize());
+
+  }
+
+  if(m_netBiosNameHasBeenSet)
+  {
+   payload.WithString("NetBiosName", m_netBiosName);
 
   }
 

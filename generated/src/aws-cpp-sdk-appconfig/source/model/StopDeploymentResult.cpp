@@ -28,14 +28,8 @@ StopDeploymentResult::StopDeploymentResult() :
 {
 }
 
-StopDeploymentResult::StopDeploymentResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_deploymentNumber(0),
-    m_deploymentDurationInMinutes(0),
-    m_growthType(GrowthType::NOT_SET),
-    m_growthFactor(0.0),
-    m_finalBakeTimeInMinutes(0),
-    m_state(DeploymentState::NOT_SET),
-    m_percentageComplete(0.0)
+StopDeploymentResult::StopDeploymentResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : StopDeploymentResult()
 {
   *this = result;
 }
@@ -172,6 +166,12 @@ StopDeploymentResult& StopDeploymentResult::operator =(const Aws::AmazonWebServi
   if(jsonValue.ValueExists("KmsKeyIdentifier"))
   {
     m_kmsKeyIdentifier = jsonValue.GetString("KmsKeyIdentifier");
+
+  }
+
+  if(jsonValue.ValueExists("VersionLabel"))
+  {
+    m_versionLabel = jsonValue.GetString("VersionLabel");
 
   }
 

@@ -32,63 +32,29 @@ namespace Model
     AWS_SAGEMAKER_API UpdateAppImageConfigResult& operator=(const Aws::AmazonWebServiceResult<Aws::Utils::Json::JsonValue>& result);
 
 
+    ///@{
     /**
-     * <p>The Amazon Resource Name (ARN) for the AppImageConfig.</p>
+     * <p>The ARN for the AppImageConfig.</p>
      */
     inline const Aws::String& GetAppImageConfigArn() const{ return m_appImageConfigArn; }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) for the AppImageConfig.</p>
-     */
     inline void SetAppImageConfigArn(const Aws::String& value) { m_appImageConfigArn = value; }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) for the AppImageConfig.</p>
-     */
     inline void SetAppImageConfigArn(Aws::String&& value) { m_appImageConfigArn = std::move(value); }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) for the AppImageConfig.</p>
-     */
     inline void SetAppImageConfigArn(const char* value) { m_appImageConfigArn.assign(value); }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) for the AppImageConfig.</p>
-     */
     inline UpdateAppImageConfigResult& WithAppImageConfigArn(const Aws::String& value) { SetAppImageConfigArn(value); return *this;}
-
-    /**
-     * <p>The Amazon Resource Name (ARN) for the AppImageConfig.</p>
-     */
     inline UpdateAppImageConfigResult& WithAppImageConfigArn(Aws::String&& value) { SetAppImageConfigArn(std::move(value)); return *this;}
-
-    /**
-     * <p>The Amazon Resource Name (ARN) for the AppImageConfig.</p>
-     */
     inline UpdateAppImageConfigResult& WithAppImageConfigArn(const char* value) { SetAppImageConfigArn(value); return *this;}
+    ///@}
 
-
+    ///@{
     
     inline const Aws::String& GetRequestId() const{ return m_requestId; }
-
-    
     inline void SetRequestId(const Aws::String& value) { m_requestId = value; }
-
-    
     inline void SetRequestId(Aws::String&& value) { m_requestId = std::move(value); }
-
-    
     inline void SetRequestId(const char* value) { m_requestId.assign(value); }
-
-    
     inline UpdateAppImageConfigResult& WithRequestId(const Aws::String& value) { SetRequestId(value); return *this;}
-
-    
     inline UpdateAppImageConfigResult& WithRequestId(Aws::String&& value) { SetRequestId(std::move(value)); return *this;}
-
-    
     inline UpdateAppImageConfigResult& WithRequestId(const char* value) { SetRequestId(value); return *this;}
-
+    ///@}
   private:
 
     Aws::String m_appImageConfigArn;

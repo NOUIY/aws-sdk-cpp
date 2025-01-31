@@ -44,7 +44,11 @@ namespace Model
    * Guide</i>.</p>  <p>For tasks that use the Fargate launch type, the task or
    * service requires the following platforms:</p> <ul> <li> <p>Linux platform
    * version <code>1.3.0</code> or later.</p> </li> <li> <p>Windows platform version
-   * <code>1.0.0</code> or later.</p> </li> </ul> <p><h3>See Also:</h3>   <a
+   * <code>1.0.0</code> or later.</p> </li> </ul>  <p>For more information
+   * about how to create a container dependency, see <a
+   * href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/example_task_definitions.html#example_task_definition-containerdependency">Container
+   * dependency</a> in the <i>Amazon Elastic Container Service Developer
+   * Guide</i>.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/ecs-2014-11-13/ContainerDependency">AWS
    * API Reference</a></p>
    */
@@ -57,47 +61,21 @@ namespace Model
     AWS_ECS_API Aws::Utils::Json::JsonValue Jsonize() const;
 
 
+    ///@{
     /**
      * <p>The name of a container.</p>
      */
     inline const Aws::String& GetContainerName() const{ return m_containerName; }
-
-    /**
-     * <p>The name of a container.</p>
-     */
     inline bool ContainerNameHasBeenSet() const { return m_containerNameHasBeenSet; }
-
-    /**
-     * <p>The name of a container.</p>
-     */
     inline void SetContainerName(const Aws::String& value) { m_containerNameHasBeenSet = true; m_containerName = value; }
-
-    /**
-     * <p>The name of a container.</p>
-     */
     inline void SetContainerName(Aws::String&& value) { m_containerNameHasBeenSet = true; m_containerName = std::move(value); }
-
-    /**
-     * <p>The name of a container.</p>
-     */
     inline void SetContainerName(const char* value) { m_containerNameHasBeenSet = true; m_containerName.assign(value); }
-
-    /**
-     * <p>The name of a container.</p>
-     */
     inline ContainerDependency& WithContainerName(const Aws::String& value) { SetContainerName(value); return *this;}
-
-    /**
-     * <p>The name of a container.</p>
-     */
     inline ContainerDependency& WithContainerName(Aws::String&& value) { SetContainerName(std::move(value)); return *this;}
-
-    /**
-     * <p>The name of a container.</p>
-     */
     inline ContainerDependency& WithContainerName(const char* value) { SetContainerName(value); return *this;}
+    ///@}
 
-
+    ///@{
     /**
      * <p>The dependency condition of the container. The following are the available
      * conditions and their behavior:</p> <ul> <li> <p> <code>START</code> - This
@@ -116,102 +94,12 @@ namespace Model
      * condition is confirmed only at task startup.</p> </li> </ul>
      */
     inline const ContainerCondition& GetCondition() const{ return m_condition; }
-
-    /**
-     * <p>The dependency condition of the container. The following are the available
-     * conditions and their behavior:</p> <ul> <li> <p> <code>START</code> - This
-     * condition emulates the behavior of links and volumes today. It validates that a
-     * dependent container is started before permitting other containers to start.</p>
-     * </li> <li> <p> <code>COMPLETE</code> - This condition validates that a dependent
-     * container runs to completion (exits) before permitting other containers to
-     * start. This can be useful for nonessential containers that run a script and then
-     * exit. This condition can't be set on an essential container.</p> </li> <li> <p>
-     * <code>SUCCESS</code> - This condition is the same as <code>COMPLETE</code>, but
-     * it also requires that the container exits with a <code>zero</code> status. This
-     * condition can't be set on an essential container.</p> </li> <li> <p>
-     * <code>HEALTHY</code> - This condition validates that the dependent container
-     * passes its Docker health check before permitting other containers to start. This
-     * requires that the dependent container has health checks configured. This
-     * condition is confirmed only at task startup.</p> </li> </ul>
-     */
     inline bool ConditionHasBeenSet() const { return m_conditionHasBeenSet; }
-
-    /**
-     * <p>The dependency condition of the container. The following are the available
-     * conditions and their behavior:</p> <ul> <li> <p> <code>START</code> - This
-     * condition emulates the behavior of links and volumes today. It validates that a
-     * dependent container is started before permitting other containers to start.</p>
-     * </li> <li> <p> <code>COMPLETE</code> - This condition validates that a dependent
-     * container runs to completion (exits) before permitting other containers to
-     * start. This can be useful for nonessential containers that run a script and then
-     * exit. This condition can't be set on an essential container.</p> </li> <li> <p>
-     * <code>SUCCESS</code> - This condition is the same as <code>COMPLETE</code>, but
-     * it also requires that the container exits with a <code>zero</code> status. This
-     * condition can't be set on an essential container.</p> </li> <li> <p>
-     * <code>HEALTHY</code> - This condition validates that the dependent container
-     * passes its Docker health check before permitting other containers to start. This
-     * requires that the dependent container has health checks configured. This
-     * condition is confirmed only at task startup.</p> </li> </ul>
-     */
     inline void SetCondition(const ContainerCondition& value) { m_conditionHasBeenSet = true; m_condition = value; }
-
-    /**
-     * <p>The dependency condition of the container. The following are the available
-     * conditions and their behavior:</p> <ul> <li> <p> <code>START</code> - This
-     * condition emulates the behavior of links and volumes today. It validates that a
-     * dependent container is started before permitting other containers to start.</p>
-     * </li> <li> <p> <code>COMPLETE</code> - This condition validates that a dependent
-     * container runs to completion (exits) before permitting other containers to
-     * start. This can be useful for nonessential containers that run a script and then
-     * exit. This condition can't be set on an essential container.</p> </li> <li> <p>
-     * <code>SUCCESS</code> - This condition is the same as <code>COMPLETE</code>, but
-     * it also requires that the container exits with a <code>zero</code> status. This
-     * condition can't be set on an essential container.</p> </li> <li> <p>
-     * <code>HEALTHY</code> - This condition validates that the dependent container
-     * passes its Docker health check before permitting other containers to start. This
-     * requires that the dependent container has health checks configured. This
-     * condition is confirmed only at task startup.</p> </li> </ul>
-     */
     inline void SetCondition(ContainerCondition&& value) { m_conditionHasBeenSet = true; m_condition = std::move(value); }
-
-    /**
-     * <p>The dependency condition of the container. The following are the available
-     * conditions and their behavior:</p> <ul> <li> <p> <code>START</code> - This
-     * condition emulates the behavior of links and volumes today. It validates that a
-     * dependent container is started before permitting other containers to start.</p>
-     * </li> <li> <p> <code>COMPLETE</code> - This condition validates that a dependent
-     * container runs to completion (exits) before permitting other containers to
-     * start. This can be useful for nonessential containers that run a script and then
-     * exit. This condition can't be set on an essential container.</p> </li> <li> <p>
-     * <code>SUCCESS</code> - This condition is the same as <code>COMPLETE</code>, but
-     * it also requires that the container exits with a <code>zero</code> status. This
-     * condition can't be set on an essential container.</p> </li> <li> <p>
-     * <code>HEALTHY</code> - This condition validates that the dependent container
-     * passes its Docker health check before permitting other containers to start. This
-     * requires that the dependent container has health checks configured. This
-     * condition is confirmed only at task startup.</p> </li> </ul>
-     */
     inline ContainerDependency& WithCondition(const ContainerCondition& value) { SetCondition(value); return *this;}
-
-    /**
-     * <p>The dependency condition of the container. The following are the available
-     * conditions and their behavior:</p> <ul> <li> <p> <code>START</code> - This
-     * condition emulates the behavior of links and volumes today. It validates that a
-     * dependent container is started before permitting other containers to start.</p>
-     * </li> <li> <p> <code>COMPLETE</code> - This condition validates that a dependent
-     * container runs to completion (exits) before permitting other containers to
-     * start. This can be useful for nonessential containers that run a script and then
-     * exit. This condition can't be set on an essential container.</p> </li> <li> <p>
-     * <code>SUCCESS</code> - This condition is the same as <code>COMPLETE</code>, but
-     * it also requires that the container exits with a <code>zero</code> status. This
-     * condition can't be set on an essential container.</p> </li> <li> <p>
-     * <code>HEALTHY</code> - This condition validates that the dependent container
-     * passes its Docker health check before permitting other containers to start. This
-     * requires that the dependent container has health checks configured. This
-     * condition is confirmed only at task startup.</p> </li> </ul>
-     */
     inline ContainerDependency& WithCondition(ContainerCondition&& value) { SetCondition(std::move(value)); return *this;}
-
+    ///@}
   private:
 
     Aws::String m_containerName;

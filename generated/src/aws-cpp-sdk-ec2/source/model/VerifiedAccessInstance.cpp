@@ -26,17 +26,15 @@ VerifiedAccessInstance::VerifiedAccessInstance() :
     m_verifiedAccessTrustProvidersHasBeenSet(false),
     m_creationTimeHasBeenSet(false),
     m_lastUpdatedTimeHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+    m_tagsHasBeenSet(false),
+    m_fipsEnabled(false),
+    m_fipsEnabledHasBeenSet(false),
+    m_cidrEndpointsCustomSubDomainHasBeenSet(false)
 {
 }
 
-VerifiedAccessInstance::VerifiedAccessInstance(const XmlNode& xmlNode) : 
-    m_verifiedAccessInstanceIdHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_verifiedAccessTrustProvidersHasBeenSet(false),
-    m_creationTimeHasBeenSet(false),
-    m_lastUpdatedTimeHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+VerifiedAccessInstance::VerifiedAccessInstance(const XmlNode& xmlNode)
+  : VerifiedAccessInstance()
 {
   *this = xmlNode;
 }
@@ -95,6 +93,18 @@ VerifiedAccessInstance& VerifiedAccessInstance::operator =(const XmlNode& xmlNod
 
       m_tagsHasBeenSet = true;
     }
+    XmlNode fipsEnabledNode = resultNode.FirstChild("fipsEnabled");
+    if(!fipsEnabledNode.IsNull())
+    {
+      m_fipsEnabled = StringUtils::ConvertToBool(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(fipsEnabledNode.GetText()).c_str()).c_str());
+      m_fipsEnabledHasBeenSet = true;
+    }
+    XmlNode cidrEndpointsCustomSubDomainNode = resultNode.FirstChild("cidrEndpointsCustomSubDomain");
+    if(!cidrEndpointsCustomSubDomainNode.IsNull())
+    {
+      m_cidrEndpointsCustomSubDomain = cidrEndpointsCustomSubDomainNode;
+      m_cidrEndpointsCustomSubDomainHasBeenSet = true;
+    }
   }
 
   return *this;
@@ -144,6 +154,18 @@ void VerifiedAccessInstance::OutputToStream(Aws::OStream& oStream, const char* l
       }
   }
 
+  if(m_fipsEnabledHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".FipsEnabled=" << std::boolalpha << m_fipsEnabled << "&";
+  }
+
+  if(m_cidrEndpointsCustomSubDomainHasBeenSet)
+  {
+      Aws::StringStream cidrEndpointsCustomSubDomainLocationAndMemberSs;
+      cidrEndpointsCustomSubDomainLocationAndMemberSs << location << index << locationValue << ".CidrEndpointsCustomSubDomain";
+      m_cidrEndpointsCustomSubDomain.OutputToStream(oStream, cidrEndpointsCustomSubDomainLocationAndMemberSs.str().c_str());
+  }
+
 }
 
 void VerifiedAccessInstance::OutputToStream(Aws::OStream& oStream, const char* location) const
@@ -183,6 +205,16 @@ void VerifiedAccessInstance::OutputToStream(Aws::OStream& oStream, const char* l
         tagsSs << location <<  ".TagSet." << tagsIdx++;
         item.OutputToStream(oStream, tagsSs.str().c_str());
       }
+  }
+  if(m_fipsEnabledHasBeenSet)
+  {
+      oStream << location << ".FipsEnabled=" << std::boolalpha << m_fipsEnabled << "&";
+  }
+  if(m_cidrEndpointsCustomSubDomainHasBeenSet)
+  {
+      Aws::String cidrEndpointsCustomSubDomainLocationAndMember(location);
+      cidrEndpointsCustomSubDomainLocationAndMember += ".CidrEndpointsCustomSubDomain";
+      m_cidrEndpointsCustomSubDomain.OutputToStream(oStream, cidrEndpointsCustomSubDomainLocationAndMember.c_str());
   }
 }
 

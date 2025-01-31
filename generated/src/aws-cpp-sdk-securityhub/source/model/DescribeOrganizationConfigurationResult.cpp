@@ -24,10 +24,8 @@ DescribeOrganizationConfigurationResult::DescribeOrganizationConfigurationResult
 {
 }
 
-DescribeOrganizationConfigurationResult::DescribeOrganizationConfigurationResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_autoEnable(false),
-    m_memberAccountLimitReached(false),
-    m_autoEnableStandards(AutoEnableStandards::NOT_SET)
+DescribeOrganizationConfigurationResult::DescribeOrganizationConfigurationResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeOrganizationConfigurationResult()
 {
   *this = result;
 }
@@ -50,6 +48,12 @@ DescribeOrganizationConfigurationResult& DescribeOrganizationConfigurationResult
   if(jsonValue.ValueExists("AutoEnableStandards"))
   {
     m_autoEnableStandards = AutoEnableStandardsMapper::GetAutoEnableStandardsForName(jsonValue.GetString("AutoEnableStandards"));
+
+  }
+
+  if(jsonValue.ValueExists("OrganizationConfiguration"))
+  {
+    m_organizationConfiguration = jsonValue.GetObject("OrganizationConfiguration");
 
   }
 
