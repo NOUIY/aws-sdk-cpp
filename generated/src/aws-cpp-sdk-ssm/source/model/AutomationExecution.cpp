@@ -49,54 +49,20 @@ AutomationExecution::AutomationExecution() :
     m_progressCountersHasBeenSet(false),
     m_alarmConfigurationHasBeenSet(false),
     m_triggeredAlarmsHasBeenSet(false),
+    m_targetLocationsURLHasBeenSet(false),
     m_automationSubtype(AutomationSubtype::NOT_SET),
     m_automationSubtypeHasBeenSet(false),
     m_scheduledTimeHasBeenSet(false),
     m_runbooksHasBeenSet(false),
     m_opsItemIdHasBeenSet(false),
     m_associationIdHasBeenSet(false),
-    m_changeRequestNameHasBeenSet(false)
+    m_changeRequestNameHasBeenSet(false),
+    m_variablesHasBeenSet(false)
 {
 }
 
-AutomationExecution::AutomationExecution(JsonView jsonValue) : 
-    m_automationExecutionIdHasBeenSet(false),
-    m_documentNameHasBeenSet(false),
-    m_documentVersionHasBeenSet(false),
-    m_executionStartTimeHasBeenSet(false),
-    m_executionEndTimeHasBeenSet(false),
-    m_automationExecutionStatus(AutomationExecutionStatus::NOT_SET),
-    m_automationExecutionStatusHasBeenSet(false),
-    m_stepExecutionsHasBeenSet(false),
-    m_stepExecutionsTruncated(false),
-    m_stepExecutionsTruncatedHasBeenSet(false),
-    m_parametersHasBeenSet(false),
-    m_outputsHasBeenSet(false),
-    m_failureMessageHasBeenSet(false),
-    m_mode(ExecutionMode::NOT_SET),
-    m_modeHasBeenSet(false),
-    m_parentAutomationExecutionIdHasBeenSet(false),
-    m_executedByHasBeenSet(false),
-    m_currentStepNameHasBeenSet(false),
-    m_currentActionHasBeenSet(false),
-    m_targetParameterNameHasBeenSet(false),
-    m_targetsHasBeenSet(false),
-    m_targetMapsHasBeenSet(false),
-    m_resolvedTargetsHasBeenSet(false),
-    m_maxConcurrencyHasBeenSet(false),
-    m_maxErrorsHasBeenSet(false),
-    m_targetHasBeenSet(false),
-    m_targetLocationsHasBeenSet(false),
-    m_progressCountersHasBeenSet(false),
-    m_alarmConfigurationHasBeenSet(false),
-    m_triggeredAlarmsHasBeenSet(false),
-    m_automationSubtype(AutomationSubtype::NOT_SET),
-    m_automationSubtypeHasBeenSet(false),
-    m_scheduledTimeHasBeenSet(false),
-    m_runbooksHasBeenSet(false),
-    m_opsItemIdHasBeenSet(false),
-    m_associationIdHasBeenSet(false),
-    m_changeRequestNameHasBeenSet(false)
+AutomationExecution::AutomationExecution(JsonView jsonValue)
+  : AutomationExecution()
 {
   *this = jsonValue;
 }
@@ -340,6 +306,13 @@ AutomationExecution& AutomationExecution::operator =(JsonView jsonValue)
     m_triggeredAlarmsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("TargetLocationsURL"))
+  {
+    m_targetLocationsURL = jsonValue.GetString("TargetLocationsURL");
+
+    m_targetLocationsURLHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("AutomationSubtype"))
   {
     m_automationSubtype = AutomationSubtypeMapper::GetAutomationSubtypeForName(jsonValue.GetString("AutomationSubtype"));
@@ -383,6 +356,23 @@ AutomationExecution& AutomationExecution::operator =(JsonView jsonValue)
     m_changeRequestName = jsonValue.GetString("ChangeRequestName");
 
     m_changeRequestNameHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Variables"))
+  {
+    Aws::Map<Aws::String, JsonView> variablesJsonMap = jsonValue.GetObject("Variables").GetAllObjects();
+    for(auto& variablesItem : variablesJsonMap)
+    {
+      Aws::Utils::Array<JsonView> automationParameterValueListJsonList = variablesItem.second.AsArray();
+      Aws::Vector<Aws::String> automationParameterValueListList;
+      automationParameterValueListList.reserve((size_t)automationParameterValueListJsonList.GetLength());
+      for(unsigned automationParameterValueListIndex = 0; automationParameterValueListIndex < automationParameterValueListJsonList.GetLength(); ++automationParameterValueListIndex)
+      {
+        automationParameterValueListList.push_back(automationParameterValueListJsonList[automationParameterValueListIndex].AsString());
+      }
+      m_variables[variablesItem.first] = std::move(automationParameterValueListList);
+    }
+    m_variablesHasBeenSet = true;
   }
 
   return *this;
@@ -605,6 +595,12 @@ JsonValue AutomationExecution::Jsonize() const
 
   }
 
+  if(m_targetLocationsURLHasBeenSet)
+  {
+   payload.WithString("TargetLocationsURL", m_targetLocationsURL);
+
+  }
+
   if(m_automationSubtypeHasBeenSet)
   {
    payload.WithString("AutomationSubtype", AutomationSubtypeMapper::GetNameForAutomationSubtype(m_automationSubtype));
@@ -641,6 +637,22 @@ JsonValue AutomationExecution::Jsonize() const
   if(m_changeRequestNameHasBeenSet)
   {
    payload.WithString("ChangeRequestName", m_changeRequestName);
+
+  }
+
+  if(m_variablesHasBeenSet)
+  {
+   JsonValue variablesJsonMap;
+   for(auto& variablesItem : m_variables)
+   {
+     Aws::Utils::Array<JsonValue> automationParameterValueListJsonList(variablesItem.second.size());
+     for(unsigned automationParameterValueListIndex = 0; automationParameterValueListIndex < automationParameterValueListJsonList.GetLength(); ++automationParameterValueListIndex)
+     {
+       automationParameterValueListJsonList[automationParameterValueListIndex].AsString(variablesItem.second[automationParameterValueListIndex]);
+     }
+     variablesJsonMap.WithArray(variablesItem.first, std::move(automationParameterValueListJsonList));
+   }
+   payload.WithObject("Variables", std::move(variablesJsonMap));
 
   }
 

@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/budgets/Budgets_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/budgets/BudgetsServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/budgets/BudgetsErrorMarshaller.h>
 
 namespace Aws
 {
 namespace Budgets
 {
+  AWS_BUDGETS_API extern const char SERVICE_NAME[];
   /**
    * <p>Use the Amazon Web Services Budgets API to plan your service usage, service
    * costs, and instance reservations. This API reference provides descriptions,
@@ -43,12 +47,20 @@ namespace Budgets
    * API, see <a href="https://aws.amazon.com/aws-cost-management/pricing/">Amazon
    * Web Services Cost Management Pricing</a>.</p>
    */
-  class AWS_BUDGETS_API BudgetsClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<BudgetsClient>
+  class AWS_BUDGETS_API BudgetsClient : smithy::client::AwsSmithyClientT<Aws::Budgets::SERVICE_NAME,
+      Aws::Budgets::BudgetsClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      BudgetsEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::BudgetsErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<BudgetsClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Budgets"; }
 
       typedef BudgetsClientConfiguration ClientConfigurationType;
       typedef BudgetsEndpointProvider EndpointProviderType;
@@ -58,14 +70,14 @@ namespace Budgets
         * is not specified, it will be initialized to default values.
         */
         BudgetsClient(const Aws::Budgets::BudgetsClientConfiguration& clientConfiguration = Aws::Budgets::BudgetsClientConfiguration(),
-                      std::shared_ptr<BudgetsEndpointProviderBase> endpointProvider = Aws::MakeShared<BudgetsEndpointProvider>(ALLOCATION_TAG));
+                      std::shared_ptr<BudgetsEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         BudgetsClient(const Aws::Auth::AWSCredentials& credentials,
-                      std::shared_ptr<BudgetsEndpointProviderBase> endpointProvider = Aws::MakeShared<BudgetsEndpointProvider>(ALLOCATION_TAG),
+                      std::shared_ptr<BudgetsEndpointProviderBase> endpointProvider = nullptr,
                       const Aws::Budgets::BudgetsClientConfiguration& clientConfiguration = Aws::Budgets::BudgetsClientConfiguration());
 
        /**
@@ -73,7 +85,7 @@ namespace Budgets
         * the default http client factory will be used
         */
         BudgetsClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                      std::shared_ptr<BudgetsEndpointProviderBase> endpointProvider = Aws::MakeShared<BudgetsEndpointProvider>(ALLOCATION_TAG),
+                      std::shared_ptr<BudgetsEndpointProviderBase> endpointProvider = nullptr,
                       const Aws::Budgets::BudgetsClientConfiguration& clientConfiguration = Aws::Budgets::BudgetsClientConfiguration());
 
 
@@ -607,6 +619,84 @@ namespace Budgets
         }
 
         /**
+         * <p>Lists tags associated with a budget or budget action resource.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/budgets-2016-10-20/ListTagsForResource">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListTagsForResourceOutcome ListTagsForResource(const Model::ListTagsForResourceRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListTagsForResource that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListTagsForResourceRequestT = Model::ListTagsForResourceRequest>
+        Model::ListTagsForResourceOutcomeCallable ListTagsForResourceCallable(const ListTagsForResourceRequestT& request) const
+        {
+            return SubmitCallable(&BudgetsClient::ListTagsForResource, request);
+        }
+
+        /**
+         * An Async wrapper for ListTagsForResource that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListTagsForResourceRequestT = Model::ListTagsForResourceRequest>
+        void ListTagsForResourceAsync(const ListTagsForResourceRequestT& request, const ListTagsForResourceResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BudgetsClient::ListTagsForResource, request, handler, context);
+        }
+
+        /**
+         * <p>Creates tags for a budget or budget action resource.</p><p><h3>See Also:</h3>
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/budgets-2016-10-20/TagResource">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::TagResourceOutcome TagResource(const Model::TagResourceRequest& request) const;
+
+        /**
+         * A Callable wrapper for TagResource that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename TagResourceRequestT = Model::TagResourceRequest>
+        Model::TagResourceOutcomeCallable TagResourceCallable(const TagResourceRequestT& request) const
+        {
+            return SubmitCallable(&BudgetsClient::TagResource, request);
+        }
+
+        /**
+         * An Async wrapper for TagResource that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename TagResourceRequestT = Model::TagResourceRequest>
+        void TagResourceAsync(const TagResourceRequestT& request, const TagResourceResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BudgetsClient::TagResource, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes tags associated with a budget or budget action
+         * resource.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/budgets-2016-10-20/UntagResource">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UntagResourceOutcome UntagResource(const Model::UntagResourceRequest& request) const;
+
+        /**
+         * A Callable wrapper for UntagResource that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UntagResourceRequestT = Model::UntagResourceRequest>
+        Model::UntagResourceOutcomeCallable UntagResourceCallable(const UntagResourceRequestT& request) const
+        {
+            return SubmitCallable(&BudgetsClient::UntagResource, request);
+        }
+
+        /**
+         * An Async wrapper for UntagResource that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UntagResourceRequestT = Model::UntagResourceRequest>
+        void UntagResourceAsync(const UntagResourceRequestT& request, const UntagResourceResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BudgetsClient::UntagResource, request, handler, context);
+        }
+
+        /**
          * <p>Updates a budget. You can change every part of a budget except for the
          * <code>budgetName</code> and the <code>calculatedSpend</code>. When you modify a
          * budget, the <code>calculatedSpend</code> drops to zero until Amazon Web Services
@@ -720,11 +810,7 @@ namespace Budgets
       std::shared_ptr<BudgetsEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<BudgetsClient>;
-      void init(const BudgetsClientConfiguration& clientConfiguration);
 
-      BudgetsClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<BudgetsEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace Budgets

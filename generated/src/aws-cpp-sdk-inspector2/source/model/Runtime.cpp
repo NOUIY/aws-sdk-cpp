@@ -33,6 +33,14 @@ namespace Aws
         static const int UNSUPPORTED_HASH = HashingUtils::HashString("UNSUPPORTED");
         static const int NODEJS_18_X_HASH = HashingUtils::HashString("NODEJS_18_X");
         static const int GO_1_X_HASH = HashingUtils::HashString("GO_1_X");
+        static const int JAVA_17_HASH = HashingUtils::HashString("JAVA_17");
+        static const int PYTHON_3_10_HASH = HashingUtils::HashString("PYTHON_3_10");
+        static const int PYTHON_3_11_HASH = HashingUtils::HashString("PYTHON_3_11");
+        static const int DOTNETCORE_3_1_HASH = HashingUtils::HashString("DOTNETCORE_3_1");
+        static const int DOTNET_6_HASH = HashingUtils::HashString("DOTNET_6");
+        static const int DOTNET_7_HASH = HashingUtils::HashString("DOTNET_7");
+        static const int RUBY_2_7_HASH = HashingUtils::HashString("RUBY_2_7");
+        static const int RUBY_3_2_HASH = HashingUtils::HashString("RUBY_3_2");
 
 
         Runtime GetRuntimeForName(const Aws::String& name)
@@ -90,6 +98,38 @@ namespace Aws
           {
             return Runtime::GO_1_X;
           }
+          else if (hashCode == JAVA_17_HASH)
+          {
+            return Runtime::JAVA_17;
+          }
+          else if (hashCode == PYTHON_3_10_HASH)
+          {
+            return Runtime::PYTHON_3_10;
+          }
+          else if (hashCode == PYTHON_3_11_HASH)
+          {
+            return Runtime::PYTHON_3_11;
+          }
+          else if (hashCode == DOTNETCORE_3_1_HASH)
+          {
+            return Runtime::DOTNETCORE_3_1;
+          }
+          else if (hashCode == DOTNET_6_HASH)
+          {
+            return Runtime::DOTNET_6;
+          }
+          else if (hashCode == DOTNET_7_HASH)
+          {
+            return Runtime::DOTNET_7;
+          }
+          else if (hashCode == RUBY_2_7_HASH)
+          {
+            return Runtime::RUBY_2_7;
+          }
+          else if (hashCode == RUBY_3_2_HASH)
+          {
+            return Runtime::RUBY_3_2;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -104,6 +144,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case Runtime::NOT_SET:
+            return {};
           case Runtime::NODEJS:
             return "NODEJS";
           case Runtime::NODEJS_12_X:
@@ -130,6 +172,22 @@ namespace Aws
             return "NODEJS_18_X";
           case Runtime::GO_1_X:
             return "GO_1_X";
+          case Runtime::JAVA_17:
+            return "JAVA_17";
+          case Runtime::PYTHON_3_10:
+            return "PYTHON_3_10";
+          case Runtime::PYTHON_3_11:
+            return "PYTHON_3_11";
+          case Runtime::DOTNETCORE_3_1:
+            return "DOTNETCORE_3_1";
+          case Runtime::DOTNET_6:
+            return "DOTNET_6";
+          case Runtime::DOTNET_7:
+            return "DOTNET_7";
+          case Runtime::RUBY_2_7:
+            return "RUBY_2_7";
+          case Runtime::RUBY_3_2:
+            return "RUBY_3_2";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

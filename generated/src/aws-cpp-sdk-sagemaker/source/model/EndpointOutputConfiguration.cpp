@@ -24,17 +24,13 @@ EndpointOutputConfiguration::EndpointOutputConfiguration() :
     m_instanceType(ProductionVariantInstanceType::NOT_SET),
     m_instanceTypeHasBeenSet(false),
     m_initialInstanceCount(0),
-    m_initialInstanceCountHasBeenSet(false)
+    m_initialInstanceCountHasBeenSet(false),
+    m_serverlessConfigHasBeenSet(false)
 {
 }
 
-EndpointOutputConfiguration::EndpointOutputConfiguration(JsonView jsonValue) : 
-    m_endpointNameHasBeenSet(false),
-    m_variantNameHasBeenSet(false),
-    m_instanceType(ProductionVariantInstanceType::NOT_SET),
-    m_instanceTypeHasBeenSet(false),
-    m_initialInstanceCount(0),
-    m_initialInstanceCountHasBeenSet(false)
+EndpointOutputConfiguration::EndpointOutputConfiguration(JsonView jsonValue)
+  : EndpointOutputConfiguration()
 {
   *this = jsonValue;
 }
@@ -69,6 +65,13 @@ EndpointOutputConfiguration& EndpointOutputConfiguration::operator =(JsonView js
     m_initialInstanceCountHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ServerlessConfig"))
+  {
+    m_serverlessConfig = jsonValue.GetObject("ServerlessConfig");
+
+    m_serverlessConfigHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -96,6 +99,12 @@ JsonValue EndpointOutputConfiguration::Jsonize() const
   if(m_initialInstanceCountHasBeenSet)
   {
    payload.WithInteger("InitialInstanceCount", m_initialInstanceCount);
+
+  }
+
+  if(m_serverlessConfigHasBeenSet)
+  {
+   payload.WithObject("ServerlessConfig", m_serverlessConfig.Jsonize());
 
   }
 

@@ -2,7 +2,7 @@
 * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 * SPDX-License-Identifier: Apache-2.0.
 */
-#include <gtest/gtest.h>
+#include <aws/testing/AwsCppSdkGTestSuite.h>
 #include <aws/core/utils/HashingUtils.h>
 #include <aws/core/utils/Outcome.h>
 #include <aws/testing/mocks/http/MockHttpClient.h>
@@ -16,7 +16,7 @@
 #include <aws/core/utils/logging/LogMacros.h>
 
 
-class AWSConfigTestSuite : public ::testing::Test
+class AWSConfigTestSuite : public Aws::Testing::AwsCppSdkGTestSuite
 {
 protected:
   void SetUp()
@@ -27,7 +27,7 @@ protected:
     SaveEnvironmentVariable("AWS_DEFAULT_REGION");
     SaveEnvironmentVariable("AWS_REGION");
     SaveEnvironmentVariable("AWS_EC2_METADATA_SERVICE_ENDPOINT");
-    SaveEnvironmentVariable("USE_REQUEST_COMPRESSION");
+    SaveEnvironmentVariable("DISABLE_REQUEST_COMPRESSION");
 
     Aws::StringStream ss;
     ss << Aws::Auth::GetConfigProfileFilename() + "_blah" << std::this_thread::get_id();
@@ -38,7 +38,7 @@ protected:
     Aws::Environment::UnSetEnv("AWS_DEFAULT_REGION");
     Aws::Environment::UnSetEnv("AWS_REGION");
     Aws::Environment::UnSetEnv("AWS_EC2_METADATA_SERVICE_ENDPOINT");
-    Aws::Environment::UnSetEnv("USE_REQUEST_COMPRESSION");
+    Aws::Environment::UnSetEnv("DISABLE_REQUEST_COMPRESSION");
 
     auto profileDirectory = Aws::Auth::ProfileConfigFileAWSCredentialsProvider::GetProfileDirectory();
     Aws::FileSystem::CreateDirectoryIfNotExists(profileDirectory.c_str());
@@ -139,7 +139,7 @@ TEST_F(AWSConfigTestSuite, TestNoEnvNoConfigSetsUseRequestCompressionToTrue){
 
 TEST_F(AWSConfigTestSuite, TestEnvToFalseAndNoConfigSetsUseRequestCompressionToFalse){
   //Set Env variable
-  Aws::Environment::SetEnv("USE_REQUEST_COMPRESSION", "DISABLE", 1/*overwrite*/);
+  Aws::Environment::SetEnv("DISABLE_REQUEST_COMPRESSION", "true", 1/*overwrite*/);
   // create an empty config file
   Aws::OFStream configFileNew(m_configFileName.c_str(), Aws::OFStream::out | Aws::OFStream::trunc);
 
@@ -157,11 +157,11 @@ TEST_F(AWSConfigTestSuite, TestEnvToFalseAndNoConfigSetsUseRequestCompressionToF
 
 TEST_F(AWSConfigTestSuite, TestEnvToTrueAndConfigSetToFalseSetsUseRequestCompressionToTrue){
   //Set Env variable
-  Aws::Environment::SetEnv("USE_REQUEST_COMPRESSION", "ENABLE", 1/*overwrite*/);
+  Aws::Environment::SetEnv("DISABLE_REQUEST_COMPRESSION", "false", 1/*overwrite*/);
   // create an empty config file
   Aws::OFStream configFileNew(m_configFileName.c_str(), Aws::OFStream::out | Aws::OFStream::trunc);
   configFileNew << "[profile Dijkstra]" << std::endl;  // profile keyword is mandatory per specification
-  configFileNew << "use_request_compression = enable" << std::endl;
+  configFileNew << "disable_request_compression = false" << std::endl;
 
   configFileNew.flush();
   configFileNew.close();
@@ -179,7 +179,7 @@ TEST_F(AWSConfigTestSuite, TestNoEnvAndConfigSetToFalseSetsUseRequestCompression
   // create an empty config file
   Aws::OFStream configFileNew(m_configFileName.c_str(), Aws::OFStream::out | Aws::OFStream::trunc);
   configFileNew << "[profile default]" << std::endl;  // profile keyword is mandatory per specification
-  configFileNew << "use_request_compression = disable" << std::endl;
+  configFileNew << "disable_request_compression = true" << std::endl;
 
   configFileNew.flush();
   configFileNew.close();
@@ -191,4 +191,33 @@ TEST_F(AWSConfigTestSuite, TestNoEnvAndConfigSetToFalseSetsUseRequestCompression
 
   // cleanup
   Aws::FileSystem::RemoveFileIfExists(m_configFileName.c_str());
+}
+
+TEST_F(AWSConfigTestSuite, TestDefaultProfileLoadingWithCLRFStyleLineEndings) {
+    // Create a config file with CLRF line endings
+    Aws::OFStream configFileNew(m_configFileName.c_str(), Aws::OFStream::out | Aws::OFStream::trunc);
+    configFileNew << "[profile default]\r\n";  // profile keyword is mandatory per specification
+
+    configFileNew.flush();
+    configFileNew.close();
+    Aws::Config::ReloadCachedConfigFile();
+
+    Aws::Client::ClientConfiguration config("default"); // Test if default profile could be loaded
+
+    EXPECT_STREQ("default", config.profileName.c_str()); // Check if loaded profile name is 'default'
+
+    // Test with mixed line endings
+    Aws::OFStream configFileMixed(m_configFileName.c_str(), Aws::OFStream::out | Aws::OFStream::trunc);
+    configFileMixed << "[profile default]\n";
+
+    configFileMixed.flush();
+    configFileMixed.close();
+    Aws::Config::ReloadCachedConfigFile();
+
+    Aws::Client::ClientConfiguration configMixed("default"); // Test if default profile could be loaded with mixed line endings
+
+    EXPECT_STREQ("default", configMixed.profileName.c_str()); // Check if loaded profile name is 'default'
+
+    // Cleanup
+    Aws::FileSystem::RemoveFileIfExists(m_configFileName.c_str());
 }

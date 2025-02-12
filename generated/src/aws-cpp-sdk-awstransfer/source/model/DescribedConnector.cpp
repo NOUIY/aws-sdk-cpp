@@ -25,18 +25,15 @@ DescribedConnector::DescribedConnector() :
     m_as2ConfigHasBeenSet(false),
     m_accessRoleHasBeenSet(false),
     m_loggingRoleHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+    m_tagsHasBeenSet(false),
+    m_sftpConfigHasBeenSet(false),
+    m_serviceManagedEgressIpAddressesHasBeenSet(false),
+    m_securityPolicyNameHasBeenSet(false)
 {
 }
 
-DescribedConnector::DescribedConnector(JsonView jsonValue) : 
-    m_arnHasBeenSet(false),
-    m_connectorIdHasBeenSet(false),
-    m_urlHasBeenSet(false),
-    m_as2ConfigHasBeenSet(false),
-    m_accessRoleHasBeenSet(false),
-    m_loggingRoleHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+DescribedConnector::DescribedConnector(JsonView jsonValue)
+  : DescribedConnector()
 {
   *this = jsonValue;
 }
@@ -95,6 +92,30 @@ DescribedConnector& DescribedConnector::operator =(JsonView jsonValue)
     m_tagsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("SftpConfig"))
+  {
+    m_sftpConfig = jsonValue.GetObject("SftpConfig");
+
+    m_sftpConfigHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("ServiceManagedEgressIpAddresses"))
+  {
+    Aws::Utils::Array<JsonView> serviceManagedEgressIpAddressesJsonList = jsonValue.GetArray("ServiceManagedEgressIpAddresses");
+    for(unsigned serviceManagedEgressIpAddressesIndex = 0; serviceManagedEgressIpAddressesIndex < serviceManagedEgressIpAddressesJsonList.GetLength(); ++serviceManagedEgressIpAddressesIndex)
+    {
+      m_serviceManagedEgressIpAddresses.push_back(serviceManagedEgressIpAddressesJsonList[serviceManagedEgressIpAddressesIndex].AsString());
+    }
+    m_serviceManagedEgressIpAddressesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("SecurityPolicyName"))
+  {
+    m_securityPolicyName = jsonValue.GetString("SecurityPolicyName");
+
+    m_securityPolicyNameHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -146,6 +167,29 @@ JsonValue DescribedConnector::Jsonize() const
      tagsJsonList[tagsIndex].AsObject(m_tags[tagsIndex].Jsonize());
    }
    payload.WithArray("Tags", std::move(tagsJsonList));
+
+  }
+
+  if(m_sftpConfigHasBeenSet)
+  {
+   payload.WithObject("SftpConfig", m_sftpConfig.Jsonize());
+
+  }
+
+  if(m_serviceManagedEgressIpAddressesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> serviceManagedEgressIpAddressesJsonList(m_serviceManagedEgressIpAddresses.size());
+   for(unsigned serviceManagedEgressIpAddressesIndex = 0; serviceManagedEgressIpAddressesIndex < serviceManagedEgressIpAddressesJsonList.GetLength(); ++serviceManagedEgressIpAddressesIndex)
+   {
+     serviceManagedEgressIpAddressesJsonList[serviceManagedEgressIpAddressesIndex].AsString(m_serviceManagedEgressIpAddresses[serviceManagedEgressIpAddressesIndex]);
+   }
+   payload.WithArray("ServiceManagedEgressIpAddresses", std::move(serviceManagedEgressIpAddressesJsonList));
+
+  }
+
+  if(m_securityPolicyNameHasBeenSet)
+  {
+   payload.WithString("SecurityPolicyName", m_securityPolicyName);
 
   }
 

@@ -40,33 +40,14 @@ TopicCalculatedField::TopicCalculatedField() :
     m_notAllowedAggregationsHasBeenSet(false),
     m_neverAggregateInFilter(false),
     m_neverAggregateInFilterHasBeenSet(false),
-    m_cellValueSynonymsHasBeenSet(false)
+    m_cellValueSynonymsHasBeenSet(false),
+    m_nonAdditive(false),
+    m_nonAdditiveHasBeenSet(false)
 {
 }
 
-TopicCalculatedField::TopicCalculatedField(JsonView jsonValue) : 
-    m_calculatedFieldNameHasBeenSet(false),
-    m_calculatedFieldDescriptionHasBeenSet(false),
-    m_expressionHasBeenSet(false),
-    m_calculatedFieldSynonymsHasBeenSet(false),
-    m_isIncludedInTopic(false),
-    m_isIncludedInTopicHasBeenSet(false),
-    m_disableIndexing(false),
-    m_disableIndexingHasBeenSet(false),
-    m_columnDataRole(ColumnDataRole::NOT_SET),
-    m_columnDataRoleHasBeenSet(false),
-    m_timeGranularity(TopicTimeGranularity::NOT_SET),
-    m_timeGranularityHasBeenSet(false),
-    m_defaultFormattingHasBeenSet(false),
-    m_aggregation(DefaultAggregation::NOT_SET),
-    m_aggregationHasBeenSet(false),
-    m_comparativeOrderHasBeenSet(false),
-    m_semanticTypeHasBeenSet(false),
-    m_allowedAggregationsHasBeenSet(false),
-    m_notAllowedAggregationsHasBeenSet(false),
-    m_neverAggregateInFilter(false),
-    m_neverAggregateInFilterHasBeenSet(false),
-    m_cellValueSynonymsHasBeenSet(false)
+TopicCalculatedField::TopicCalculatedField(JsonView jsonValue)
+  : TopicCalculatedField()
 {
   *this = jsonValue;
 }
@@ -197,6 +178,13 @@ TopicCalculatedField& TopicCalculatedField::operator =(JsonView jsonValue)
     m_cellValueSynonymsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("NonAdditive"))
+  {
+    m_nonAdditive = jsonValue.GetBool("NonAdditive");
+
+    m_nonAdditiveHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -314,6 +302,12 @@ JsonValue TopicCalculatedField::Jsonize() const
      cellValueSynonymsJsonList[cellValueSynonymsIndex].AsObject(m_cellValueSynonyms[cellValueSynonymsIndex].Jsonize());
    }
    payload.WithArray("CellValueSynonyms", std::move(cellValueSynonymsJsonList));
+
+  }
+
+  if(m_nonAdditiveHasBeenSet)
+  {
+   payload.WithBool("NonAdditive", m_nonAdditive);
 
   }
 

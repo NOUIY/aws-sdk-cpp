@@ -20,13 +20,13 @@ namespace Model
 
 AutoScalingGroup::AutoScalingGroup() : 
     m_nameHasBeenSet(false),
-    m_hookHasBeenSet(false)
+    m_hookHasBeenSet(false),
+    m_terminationHookHasBeenSet(false)
 {
 }
 
-AutoScalingGroup::AutoScalingGroup(JsonView jsonValue) : 
-    m_nameHasBeenSet(false),
-    m_hookHasBeenSet(false)
+AutoScalingGroup::AutoScalingGroup(JsonView jsonValue)
+  : AutoScalingGroup()
 {
   *this = jsonValue;
 }
@@ -47,6 +47,13 @@ AutoScalingGroup& AutoScalingGroup::operator =(JsonView jsonValue)
     m_hookHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("terminationHook"))
+  {
+    m_terminationHook = jsonValue.GetString("terminationHook");
+
+    m_terminationHookHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +70,12 @@ JsonValue AutoScalingGroup::Jsonize() const
   if(m_hookHasBeenSet)
   {
    payload.WithString("hook", m_hook);
+
+  }
+
+  if(m_terminationHookHasBeenSet)
+  {
+   payload.WithString("terminationHook", m_terminationHook);
 
   }
 

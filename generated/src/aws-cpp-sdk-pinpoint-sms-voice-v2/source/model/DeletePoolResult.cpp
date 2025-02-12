@@ -26,12 +26,8 @@ DeletePoolResult::DeletePoolResult() :
 {
 }
 
-DeletePoolResult::DeletePoolResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(PoolStatus::NOT_SET),
-    m_messageType(MessageType::NOT_SET),
-    m_twoWayEnabled(false),
-    m_selfManagedOptOutsEnabled(false),
-    m_sharedRoutesEnabled(false)
+DeletePoolResult::DeletePoolResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DeletePoolResult()
 {
   *this = result;
 }
@@ -72,6 +68,12 @@ DeletePoolResult& DeletePoolResult::operator =(const Aws::AmazonWebServiceResult
   if(jsonValue.ValueExists("TwoWayChannelArn"))
   {
     m_twoWayChannelArn = jsonValue.GetString("TwoWayChannelArn");
+
+  }
+
+  if(jsonValue.ValueExists("TwoWayChannelRole"))
+  {
+    m_twoWayChannelRole = jsonValue.GetString("TwoWayChannelRole");
 
   }
 

@@ -18,8 +18,8 @@ namespace Model
 
   /**
    * <p>Represents a request to delete an email address from the list of email
-   * addresses you have attempted to verify under your AWS account.</p><p><h3>See
-   * Also:</h3>   <a
+   * addresses you have attempted to verify under your Amazon Web Services
+   * account.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/email-2010-12-01/DeleteVerifiedEmailAddressRequest">AWS
    * API Reference</a></p>
    */
@@ -41,46 +41,19 @@ namespace Model
 
   public:
 
+    ///@{
     /**
      * <p>An email address to be removed from the list of verified addresses.</p>
      */
     inline const Aws::String& GetEmailAddress() const{ return m_emailAddress; }
-
-    /**
-     * <p>An email address to be removed from the list of verified addresses.</p>
-     */
     inline bool EmailAddressHasBeenSet() const { return m_emailAddressHasBeenSet; }
-
-    /**
-     * <p>An email address to be removed from the list of verified addresses.</p>
-     */
     inline void SetEmailAddress(const Aws::String& value) { m_emailAddressHasBeenSet = true; m_emailAddress = value; }
-
-    /**
-     * <p>An email address to be removed from the list of verified addresses.</p>
-     */
     inline void SetEmailAddress(Aws::String&& value) { m_emailAddressHasBeenSet = true; m_emailAddress = std::move(value); }
-
-    /**
-     * <p>An email address to be removed from the list of verified addresses.</p>
-     */
     inline void SetEmailAddress(const char* value) { m_emailAddressHasBeenSet = true; m_emailAddress.assign(value); }
-
-    /**
-     * <p>An email address to be removed from the list of verified addresses.</p>
-     */
     inline DeleteVerifiedEmailAddressRequest& WithEmailAddress(const Aws::String& value) { SetEmailAddress(value); return *this;}
-
-    /**
-     * <p>An email address to be removed from the list of verified addresses.</p>
-     */
     inline DeleteVerifiedEmailAddressRequest& WithEmailAddress(Aws::String&& value) { SetEmailAddress(std::move(value)); return *this;}
-
-    /**
-     * <p>An email address to be removed from the list of verified addresses.</p>
-     */
     inline DeleteVerifiedEmailAddressRequest& WithEmailAddress(const char* value) { SetEmailAddress(value); return *this;}
-
+    ///@}
   private:
 
     Aws::String m_emailAddress;

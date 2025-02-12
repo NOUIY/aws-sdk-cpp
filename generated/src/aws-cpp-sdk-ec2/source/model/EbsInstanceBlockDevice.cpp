@@ -26,17 +26,15 @@ EbsInstanceBlockDevice::EbsInstanceBlockDevice() :
     m_deleteOnTerminationHasBeenSet(false),
     m_status(AttachmentStatus::NOT_SET),
     m_statusHasBeenSet(false),
-    m_volumeIdHasBeenSet(false)
+    m_volumeIdHasBeenSet(false),
+    m_associatedResourceHasBeenSet(false),
+    m_volumeOwnerIdHasBeenSet(false),
+    m_operatorHasBeenSet(false)
 {
 }
 
-EbsInstanceBlockDevice::EbsInstanceBlockDevice(const XmlNode& xmlNode) : 
-    m_attachTimeHasBeenSet(false),
-    m_deleteOnTermination(false),
-    m_deleteOnTerminationHasBeenSet(false),
-    m_status(AttachmentStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_volumeIdHasBeenSet(false)
+EbsInstanceBlockDevice::EbsInstanceBlockDevice(const XmlNode& xmlNode)
+  : EbsInstanceBlockDevice()
 {
   *this = xmlNode;
 }
@@ -71,6 +69,24 @@ EbsInstanceBlockDevice& EbsInstanceBlockDevice::operator =(const XmlNode& xmlNod
       m_volumeId = Aws::Utils::Xml::DecodeEscapedXmlText(volumeIdNode.GetText());
       m_volumeIdHasBeenSet = true;
     }
+    XmlNode associatedResourceNode = resultNode.FirstChild("associatedResource");
+    if(!associatedResourceNode.IsNull())
+    {
+      m_associatedResource = Aws::Utils::Xml::DecodeEscapedXmlText(associatedResourceNode.GetText());
+      m_associatedResourceHasBeenSet = true;
+    }
+    XmlNode volumeOwnerIdNode = resultNode.FirstChild("volumeOwnerId");
+    if(!volumeOwnerIdNode.IsNull())
+    {
+      m_volumeOwnerId = Aws::Utils::Xml::DecodeEscapedXmlText(volumeOwnerIdNode.GetText());
+      m_volumeOwnerIdHasBeenSet = true;
+    }
+    XmlNode operatorNode = resultNode.FirstChild("operator");
+    if(!operatorNode.IsNull())
+    {
+      m_operator = operatorNode;
+      m_operatorHasBeenSet = true;
+    }
   }
 
   return *this;
@@ -98,6 +114,23 @@ void EbsInstanceBlockDevice::OutputToStream(Aws::OStream& oStream, const char* l
       oStream << location << index << locationValue << ".VolumeId=" << StringUtils::URLEncode(m_volumeId.c_str()) << "&";
   }
 
+  if(m_associatedResourceHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".AssociatedResource=" << StringUtils::URLEncode(m_associatedResource.c_str()) << "&";
+  }
+
+  if(m_volumeOwnerIdHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".VolumeOwnerId=" << StringUtils::URLEncode(m_volumeOwnerId.c_str()) << "&";
+  }
+
+  if(m_operatorHasBeenSet)
+  {
+      Aws::StringStream operatorLocationAndMemberSs;
+      operatorLocationAndMemberSs << location << index << locationValue << ".Operator";
+      m_operator.OutputToStream(oStream, operatorLocationAndMemberSs.str().c_str());
+  }
+
 }
 
 void EbsInstanceBlockDevice::OutputToStream(Aws::OStream& oStream, const char* location) const
@@ -117,6 +150,20 @@ void EbsInstanceBlockDevice::OutputToStream(Aws::OStream& oStream, const char* l
   if(m_volumeIdHasBeenSet)
   {
       oStream << location << ".VolumeId=" << StringUtils::URLEncode(m_volumeId.c_str()) << "&";
+  }
+  if(m_associatedResourceHasBeenSet)
+  {
+      oStream << location << ".AssociatedResource=" << StringUtils::URLEncode(m_associatedResource.c_str()) << "&";
+  }
+  if(m_volumeOwnerIdHasBeenSet)
+  {
+      oStream << location << ".VolumeOwnerId=" << StringUtils::URLEncode(m_volumeOwnerId.c_str()) << "&";
+  }
+  if(m_operatorHasBeenSet)
+  {
+      Aws::String operatorLocationAndMember(location);
+      operatorLocationAndMember += ".Operator";
+      m_operator.OutputToStream(oStream, operatorLocationAndMember.c_str());
   }
 }
 

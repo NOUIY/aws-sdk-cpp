@@ -27,20 +27,13 @@ Resource::Resource() :
     m_state(EntityState::NOT_SET),
     m_stateHasBeenSet(false),
     m_enabledDateHasBeenSet(false),
-    m_disabledDateHasBeenSet(false)
+    m_disabledDateHasBeenSet(false),
+    m_descriptionHasBeenSet(false)
 {
 }
 
-Resource::Resource(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_emailHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_type(ResourceType::NOT_SET),
-    m_typeHasBeenSet(false),
-    m_state(EntityState::NOT_SET),
-    m_stateHasBeenSet(false),
-    m_enabledDateHasBeenSet(false),
-    m_disabledDateHasBeenSet(false)
+Resource::Resource(JsonView jsonValue)
+  : Resource()
 {
   *this = jsonValue;
 }
@@ -96,6 +89,13 @@ Resource& Resource::operator =(JsonView jsonValue)
     m_disabledDateHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Description"))
+  {
+    m_description = jsonValue.GetString("Description");
+
+    m_descriptionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -139,6 +139,12 @@ JsonValue Resource::Jsonize() const
   if(m_disabledDateHasBeenSet)
   {
    payload.WithDouble("DisabledDate", m_disabledDate.SecondsWithMSPrecision());
+  }
+
+  if(m_descriptionHasBeenSet)
+  {
+   payload.WithString("Description", m_description);
+
   }
 
   return payload;

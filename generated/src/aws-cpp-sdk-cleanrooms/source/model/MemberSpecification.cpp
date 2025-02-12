@@ -21,14 +21,14 @@ namespace Model
 MemberSpecification::MemberSpecification() : 
     m_accountIdHasBeenSet(false),
     m_memberAbilitiesHasBeenSet(false),
-    m_displayNameHasBeenSet(false)
+    m_mlMemberAbilitiesHasBeenSet(false),
+    m_displayNameHasBeenSet(false),
+    m_paymentConfigurationHasBeenSet(false)
 {
 }
 
-MemberSpecification::MemberSpecification(JsonView jsonValue) : 
-    m_accountIdHasBeenSet(false),
-    m_memberAbilitiesHasBeenSet(false),
-    m_displayNameHasBeenSet(false)
+MemberSpecification::MemberSpecification(JsonView jsonValue)
+  : MemberSpecification()
 {
   *this = jsonValue;
 }
@@ -52,11 +52,25 @@ MemberSpecification& MemberSpecification::operator =(JsonView jsonValue)
     m_memberAbilitiesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("mlMemberAbilities"))
+  {
+    m_mlMemberAbilities = jsonValue.GetObject("mlMemberAbilities");
+
+    m_mlMemberAbilitiesHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("displayName"))
   {
     m_displayName = jsonValue.GetString("displayName");
 
     m_displayNameHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("paymentConfiguration"))
+  {
+    m_paymentConfiguration = jsonValue.GetObject("paymentConfiguration");
+
+    m_paymentConfigurationHasBeenSet = true;
   }
 
   return *this;
@@ -83,9 +97,21 @@ JsonValue MemberSpecification::Jsonize() const
 
   }
 
+  if(m_mlMemberAbilitiesHasBeenSet)
+  {
+   payload.WithObject("mlMemberAbilities", m_mlMemberAbilities.Jsonize());
+
+  }
+
   if(m_displayNameHasBeenSet)
   {
    payload.WithString("displayName", m_displayName);
+
+  }
+
+  if(m_paymentConfigurationHasBeenSet)
+  {
+   payload.WithObject("paymentConfiguration", m_paymentConfiguration.Jsonize());
 
   }
 

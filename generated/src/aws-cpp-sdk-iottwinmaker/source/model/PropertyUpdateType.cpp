@@ -23,6 +23,7 @@ namespace Aws
         static const int UPDATE_HASH = HashingUtils::HashString("UPDATE");
         static const int DELETE__HASH = HashingUtils::HashString("DELETE");
         static const int CREATE_HASH = HashingUtils::HashString("CREATE");
+        static const int RESET_VALUE_HASH = HashingUtils::HashString("RESET_VALUE");
 
 
         PropertyUpdateType GetPropertyUpdateTypeForName(const Aws::String& name)
@@ -40,6 +41,10 @@ namespace Aws
           {
             return PropertyUpdateType::CREATE;
           }
+          else if (hashCode == RESET_VALUE_HASH)
+          {
+            return PropertyUpdateType::RESET_VALUE;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -54,12 +59,16 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case PropertyUpdateType::NOT_SET:
+            return {};
           case PropertyUpdateType::UPDATE:
             return "UPDATE";
           case PropertyUpdateType::DELETE_:
             return "DELETE";
           case PropertyUpdateType::CREATE:
             return "CREATE";
+          case PropertyUpdateType::RESET_VALUE:
+            return "RESET_VALUE";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

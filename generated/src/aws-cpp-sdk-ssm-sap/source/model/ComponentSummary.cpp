@@ -23,16 +23,13 @@ ComponentSummary::ComponentSummary() :
     m_componentIdHasBeenSet(false),
     m_componentType(ComponentType::NOT_SET),
     m_componentTypeHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+    m_tagsHasBeenSet(false),
+    m_arnHasBeenSet(false)
 {
 }
 
-ComponentSummary::ComponentSummary(JsonView jsonValue) : 
-    m_applicationIdHasBeenSet(false),
-    m_componentIdHasBeenSet(false),
-    m_componentType(ComponentType::NOT_SET),
-    m_componentTypeHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+ComponentSummary::ComponentSummary(JsonView jsonValue)
+  : ComponentSummary()
 {
   *this = jsonValue;
 }
@@ -70,6 +67,13 @@ ComponentSummary& ComponentSummary::operator =(JsonView jsonValue)
     m_tagsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Arn"))
+  {
+    m_arn = jsonValue.GetString("Arn");
+
+    m_arnHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -102,6 +106,12 @@ JsonValue ComponentSummary::Jsonize() const
      tagsJsonMap.WithString(tagsItem.first, tagsItem.second);
    }
    payload.WithObject("Tags", std::move(tagsJsonMap));
+
+  }
+
+  if(m_arnHasBeenSet)
+  {
+   payload.WithString("Arn", m_arn);
 
   }
 

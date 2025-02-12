@@ -17,7 +17,11 @@ CreateIpamRequest::CreateIpamRequest() :
     m_operatingRegionsHasBeenSet(false),
     m_tagSpecificationsHasBeenSet(false),
     m_clientToken(Aws::Utils::UUID::PseudoRandomUUID()),
-    m_clientTokenHasBeenSet(true)
+    m_clientTokenHasBeenSet(true),
+    m_tier(IpamTier::NOT_SET),
+    m_tierHasBeenSet(false),
+    m_enablePrivateGua(false),
+    m_enablePrivateGuaHasBeenSet(false)
 {
 }
 
@@ -58,6 +62,16 @@ Aws::String CreateIpamRequest::SerializePayload() const
   if(m_clientTokenHasBeenSet)
   {
     ss << "ClientToken=" << StringUtils::URLEncode(m_clientToken.c_str()) << "&";
+  }
+
+  if(m_tierHasBeenSet)
+  {
+    ss << "Tier=" << IpamTierMapper::GetNameForIpamTier(m_tier) << "&";
+  }
+
+  if(m_enablePrivateGuaHasBeenSet)
+  {
+    ss << "EnablePrivateGua=" << std::boolalpha << m_enablePrivateGua << "&";
   }
 
   ss << "Version=2016-11-15";

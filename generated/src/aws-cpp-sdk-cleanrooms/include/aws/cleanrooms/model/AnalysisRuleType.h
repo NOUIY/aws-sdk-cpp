@@ -17,7 +17,9 @@ namespace Model
   {
     NOT_SET,
     AGGREGATION,
-    LIST
+    LIST,
+    CUSTOM,
+    ID_MAPPING_TABLE
   };
 
 namespace AnalysisRuleTypeMapper

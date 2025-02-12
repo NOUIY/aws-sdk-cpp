@@ -23,16 +23,14 @@ RecordingGroup::RecordingGroup() :
     m_allSupportedHasBeenSet(false),
     m_includeGlobalResourceTypes(false),
     m_includeGlobalResourceTypesHasBeenSet(false),
-    m_resourceTypesHasBeenSet(false)
+    m_resourceTypesHasBeenSet(false),
+    m_exclusionByResourceTypesHasBeenSet(false),
+    m_recordingStrategyHasBeenSet(false)
 {
 }
 
-RecordingGroup::RecordingGroup(JsonView jsonValue) : 
-    m_allSupported(false),
-    m_allSupportedHasBeenSet(false),
-    m_includeGlobalResourceTypes(false),
-    m_includeGlobalResourceTypesHasBeenSet(false),
-    m_resourceTypesHasBeenSet(false)
+RecordingGroup::RecordingGroup(JsonView jsonValue)
+  : RecordingGroup()
 {
   *this = jsonValue;
 }
@@ -63,6 +61,20 @@ RecordingGroup& RecordingGroup::operator =(JsonView jsonValue)
     m_resourceTypesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("exclusionByResourceTypes"))
+  {
+    m_exclusionByResourceTypes = jsonValue.GetObject("exclusionByResourceTypes");
+
+    m_exclusionByResourceTypesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("recordingStrategy"))
+  {
+    m_recordingStrategy = jsonValue.GetObject("recordingStrategy");
+
+    m_recordingStrategyHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -90,6 +102,18 @@ JsonValue RecordingGroup::Jsonize() const
      resourceTypesJsonList[resourceTypesIndex].AsString(ResourceTypeMapper::GetNameForResourceType(m_resourceTypes[resourceTypesIndex]));
    }
    payload.WithArray("resourceTypes", std::move(resourceTypesJsonList));
+
+  }
+
+  if(m_exclusionByResourceTypesHasBeenSet)
+  {
+   payload.WithObject("exclusionByResourceTypes", m_exclusionByResourceTypes.Jsonize());
+
+  }
+
+  if(m_recordingStrategyHasBeenSet)
+  {
+   payload.WithObject("recordingStrategy", m_recordingStrategy.Jsonize());
 
   }
 

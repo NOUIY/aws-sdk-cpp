@@ -26,19 +26,14 @@ Property::Property() :
     m_dataType(PropertyDataType::NOT_SET),
     m_dataTypeHasBeenSet(false),
     m_unitHasBeenSet(false),
-    m_typeHasBeenSet(false)
+    m_typeHasBeenSet(false),
+    m_pathHasBeenSet(false),
+    m_externalIdHasBeenSet(false)
 {
 }
 
-Property::Property(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_aliasHasBeenSet(false),
-    m_notificationHasBeenSet(false),
-    m_dataType(PropertyDataType::NOT_SET),
-    m_dataTypeHasBeenSet(false),
-    m_unitHasBeenSet(false),
-    m_typeHasBeenSet(false)
+Property::Property(JsonView jsonValue)
+  : Property()
 {
   *this = jsonValue;
 }
@@ -94,6 +89,23 @@ Property& Property::operator =(JsonView jsonValue)
     m_typeHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("path"))
+  {
+    Aws::Utils::Array<JsonView> pathJsonList = jsonValue.GetArray("path");
+    for(unsigned pathIndex = 0; pathIndex < pathJsonList.GetLength(); ++pathIndex)
+    {
+      m_path.push_back(pathJsonList[pathIndex].AsObject());
+    }
+    m_pathHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("externalId"))
+  {
+    m_externalId = jsonValue.GetString("externalId");
+
+    m_externalIdHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -139,6 +151,23 @@ JsonValue Property::Jsonize() const
   if(m_typeHasBeenSet)
   {
    payload.WithObject("type", m_type.Jsonize());
+
+  }
+
+  if(m_pathHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> pathJsonList(m_path.size());
+   for(unsigned pathIndex = 0; pathIndex < pathJsonList.GetLength(); ++pathIndex)
+   {
+     pathJsonList[pathIndex].AsObject(m_path[pathIndex].Jsonize());
+   }
+   payload.WithArray("path", std::move(pathJsonList));
+
+  }
+
+  if(m_externalIdHasBeenSet)
+  {
+   payload.WithString("externalId", m_externalId);
 
   }
 

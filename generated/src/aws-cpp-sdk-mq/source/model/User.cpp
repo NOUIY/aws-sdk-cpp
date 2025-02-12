@@ -23,16 +23,14 @@ User::User() :
     m_consoleAccessHasBeenSet(false),
     m_groupsHasBeenSet(false),
     m_passwordHasBeenSet(false),
-    m_usernameHasBeenSet(false)
+    m_usernameHasBeenSet(false),
+    m_replicationUser(false),
+    m_replicationUserHasBeenSet(false)
 {
 }
 
-User::User(JsonView jsonValue) : 
-    m_consoleAccess(false),
-    m_consoleAccessHasBeenSet(false),
-    m_groupsHasBeenSet(false),
-    m_passwordHasBeenSet(false),
-    m_usernameHasBeenSet(false)
+User::User(JsonView jsonValue)
+  : User()
 {
   *this = jsonValue;
 }
@@ -70,6 +68,13 @@ User& User::operator =(JsonView jsonValue)
     m_usernameHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("replicationUser"))
+  {
+    m_replicationUser = jsonValue.GetBool("replicationUser");
+
+    m_replicationUserHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -103,6 +108,12 @@ JsonValue User::Jsonize() const
   if(m_usernameHasBeenSet)
   {
    payload.WithString("username", m_username);
+
+  }
+
+  if(m_replicationUserHasBeenSet)
+  {
+   payload.WithBool("replicationUser", m_replicationUser);
 
   }
 

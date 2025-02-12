@@ -25,18 +25,13 @@ Application::Application() :
     m_descriptionHasBeenSet(false),
     m_creationTimeHasBeenSet(false),
     m_lastUpdateTimeHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+    m_tagsHasBeenSet(false),
+    m_applicationTagHasBeenSet(false)
 {
 }
 
-Application::Application(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_creationTimeHasBeenSet(false),
-    m_lastUpdateTimeHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+Application::Application(JsonView jsonValue)
+  : Application()
 {
   *this = jsonValue;
 }
@@ -95,6 +90,16 @@ Application& Application::operator =(JsonView jsonValue)
     m_tagsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("applicationTag"))
+  {
+    Aws::Map<Aws::String, JsonView> applicationTagJsonMap = jsonValue.GetObject("applicationTag").GetAllObjects();
+    for(auto& applicationTagItem : applicationTagJsonMap)
+    {
+      m_applicationTag[applicationTagItem.first] = applicationTagItem.second.AsString();
+    }
+    m_applicationTagHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -144,6 +149,17 @@ JsonValue Application::Jsonize() const
      tagsJsonMap.WithString(tagsItem.first, tagsItem.second);
    }
    payload.WithObject("tags", std::move(tagsJsonMap));
+
+  }
+
+  if(m_applicationTagHasBeenSet)
+  {
+   JsonValue applicationTagJsonMap;
+   for(auto& applicationTagItem : m_applicationTag)
+   {
+     applicationTagJsonMap.WithString(applicationTagItem.first, applicationTagItem.second);
+   }
+   payload.WithObject("applicationTag", std::move(applicationTagJsonMap));
 
   }
 

@@ -102,95 +102,27 @@ ResourceDetails::ResourceDetails() :
     m_awsSageMakerNotebookInstanceHasBeenSet(false),
     m_awsWafv2WebAclHasBeenSet(false),
     m_awsWafv2RuleGroupHasBeenSet(false),
-    m_awsEc2RouteTableHasBeenSet(false)
+    m_awsEc2RouteTableHasBeenSet(false),
+    m_awsAmazonMqBrokerHasBeenSet(false),
+    m_awsAppSyncGraphQlApiHasBeenSet(false),
+    m_awsEventSchemasRegistryHasBeenSet(false),
+    m_awsGuardDutyDetectorHasBeenSet(false),
+    m_awsStepFunctionStateMachineHasBeenSet(false),
+    m_awsAthenaWorkGroupHasBeenSet(false),
+    m_awsEventsEventbusHasBeenSet(false),
+    m_awsDmsEndpointHasBeenSet(false),
+    m_awsEventsEndpointHasBeenSet(false),
+    m_awsDmsReplicationTaskHasBeenSet(false),
+    m_awsDmsReplicationInstanceHasBeenSet(false),
+    m_awsRoute53HostedZoneHasBeenSet(false),
+    m_awsMskClusterHasBeenSet(false),
+    m_awsS3AccessPointHasBeenSet(false),
+    m_awsEc2ClientVpnEndpointHasBeenSet(false)
 {
 }
 
-ResourceDetails::ResourceDetails(JsonView jsonValue) : 
-    m_awsAutoScalingAutoScalingGroupHasBeenSet(false),
-    m_awsCodeBuildProjectHasBeenSet(false),
-    m_awsCloudFrontDistributionHasBeenSet(false),
-    m_awsEc2InstanceHasBeenSet(false),
-    m_awsEc2NetworkInterfaceHasBeenSet(false),
-    m_awsEc2SecurityGroupHasBeenSet(false),
-    m_awsEc2VolumeHasBeenSet(false),
-    m_awsEc2VpcHasBeenSet(false),
-    m_awsEc2EipHasBeenSet(false),
-    m_awsEc2SubnetHasBeenSet(false),
-    m_awsEc2NetworkAclHasBeenSet(false),
-    m_awsElbv2LoadBalancerHasBeenSet(false),
-    m_awsElasticBeanstalkEnvironmentHasBeenSet(false),
-    m_awsElasticsearchDomainHasBeenSet(false),
-    m_awsS3BucketHasBeenSet(false),
-    m_awsS3AccountPublicAccessBlockHasBeenSet(false),
-    m_awsS3ObjectHasBeenSet(false),
-    m_awsSecretsManagerSecretHasBeenSet(false),
-    m_awsIamAccessKeyHasBeenSet(false),
-    m_awsIamUserHasBeenSet(false),
-    m_awsIamPolicyHasBeenSet(false),
-    m_awsApiGatewayV2StageHasBeenSet(false),
-    m_awsApiGatewayV2ApiHasBeenSet(false),
-    m_awsDynamoDbTableHasBeenSet(false),
-    m_awsApiGatewayStageHasBeenSet(false),
-    m_awsApiGatewayRestApiHasBeenSet(false),
-    m_awsCloudTrailTrailHasBeenSet(false),
-    m_awsSsmPatchComplianceHasBeenSet(false),
-    m_awsCertificateManagerCertificateHasBeenSet(false),
-    m_awsRedshiftClusterHasBeenSet(false),
-    m_awsElbLoadBalancerHasBeenSet(false),
-    m_awsIamGroupHasBeenSet(false),
-    m_awsIamRoleHasBeenSet(false),
-    m_awsKmsKeyHasBeenSet(false),
-    m_awsLambdaFunctionHasBeenSet(false),
-    m_awsLambdaLayerVersionHasBeenSet(false),
-    m_awsRdsDbInstanceHasBeenSet(false),
-    m_awsSnsTopicHasBeenSet(false),
-    m_awsSqsQueueHasBeenSet(false),
-    m_awsWafWebAclHasBeenSet(false),
-    m_awsRdsDbSnapshotHasBeenSet(false),
-    m_awsRdsDbClusterSnapshotHasBeenSet(false),
-    m_awsRdsDbClusterHasBeenSet(false),
-    m_awsEcsClusterHasBeenSet(false),
-    m_awsEcsContainerHasBeenSet(false),
-    m_awsEcsTaskDefinitionHasBeenSet(false),
-    m_containerHasBeenSet(false),
-    m_otherHasBeenSet(false),
-    m_awsRdsEventSubscriptionHasBeenSet(false),
-    m_awsEcsServiceHasBeenSet(false),
-    m_awsAutoScalingLaunchConfigurationHasBeenSet(false),
-    m_awsEc2VpnConnectionHasBeenSet(false),
-    m_awsEcrContainerImageHasBeenSet(false),
-    m_awsOpenSearchServiceDomainHasBeenSet(false),
-    m_awsEc2VpcEndpointServiceHasBeenSet(false),
-    m_awsXrayEncryptionConfigHasBeenSet(false),
-    m_awsWafRateBasedRuleHasBeenSet(false),
-    m_awsWafRegionalRateBasedRuleHasBeenSet(false),
-    m_awsEcrRepositoryHasBeenSet(false),
-    m_awsEksClusterHasBeenSet(false),
-    m_awsNetworkFirewallFirewallPolicyHasBeenSet(false),
-    m_awsNetworkFirewallFirewallHasBeenSet(false),
-    m_awsNetworkFirewallRuleGroupHasBeenSet(false),
-    m_awsRdsDbSecurityGroupHasBeenSet(false),
-    m_awsKinesisStreamHasBeenSet(false),
-    m_awsEc2TransitGatewayHasBeenSet(false),
-    m_awsEfsAccessPointHasBeenSet(false),
-    m_awsCloudFormationStackHasBeenSet(false),
-    m_awsCloudWatchAlarmHasBeenSet(false),
-    m_awsEc2VpcPeeringConnectionHasBeenSet(false),
-    m_awsWafRegionalRuleGroupHasBeenSet(false),
-    m_awsWafRegionalRuleHasBeenSet(false),
-    m_awsWafRegionalWebAclHasBeenSet(false),
-    m_awsWafRuleHasBeenSet(false),
-    m_awsWafRuleGroupHasBeenSet(false),
-    m_awsEcsTaskHasBeenSet(false),
-    m_awsBackupBackupVaultHasBeenSet(false),
-    m_awsBackupBackupPlanHasBeenSet(false),
-    m_awsBackupRecoveryPointHasBeenSet(false),
-    m_awsEc2LaunchTemplateHasBeenSet(false),
-    m_awsSageMakerNotebookInstanceHasBeenSet(false),
-    m_awsWafv2WebAclHasBeenSet(false),
-    m_awsWafv2RuleGroupHasBeenSet(false),
-    m_awsEc2RouteTableHasBeenSet(false)
+ResourceDetails::ResourceDetails(JsonView jsonValue)
+  : ResourceDetails()
 {
   *this = jsonValue;
 }
@@ -788,6 +720,111 @@ ResourceDetails& ResourceDetails::operator =(JsonView jsonValue)
     m_awsEc2RouteTableHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("AwsAmazonMqBroker"))
+  {
+    m_awsAmazonMqBroker = jsonValue.GetObject("AwsAmazonMqBroker");
+
+    m_awsAmazonMqBrokerHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsAppSyncGraphQlApi"))
+  {
+    m_awsAppSyncGraphQlApi = jsonValue.GetObject("AwsAppSyncGraphQlApi");
+
+    m_awsAppSyncGraphQlApiHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsEventSchemasRegistry"))
+  {
+    m_awsEventSchemasRegistry = jsonValue.GetObject("AwsEventSchemasRegistry");
+
+    m_awsEventSchemasRegistryHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsGuardDutyDetector"))
+  {
+    m_awsGuardDutyDetector = jsonValue.GetObject("AwsGuardDutyDetector");
+
+    m_awsGuardDutyDetectorHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsStepFunctionStateMachine"))
+  {
+    m_awsStepFunctionStateMachine = jsonValue.GetObject("AwsStepFunctionStateMachine");
+
+    m_awsStepFunctionStateMachineHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsAthenaWorkGroup"))
+  {
+    m_awsAthenaWorkGroup = jsonValue.GetObject("AwsAthenaWorkGroup");
+
+    m_awsAthenaWorkGroupHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsEventsEventbus"))
+  {
+    m_awsEventsEventbus = jsonValue.GetObject("AwsEventsEventbus");
+
+    m_awsEventsEventbusHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsDmsEndpoint"))
+  {
+    m_awsDmsEndpoint = jsonValue.GetObject("AwsDmsEndpoint");
+
+    m_awsDmsEndpointHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsEventsEndpoint"))
+  {
+    m_awsEventsEndpoint = jsonValue.GetObject("AwsEventsEndpoint");
+
+    m_awsEventsEndpointHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsDmsReplicationTask"))
+  {
+    m_awsDmsReplicationTask = jsonValue.GetObject("AwsDmsReplicationTask");
+
+    m_awsDmsReplicationTaskHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsDmsReplicationInstance"))
+  {
+    m_awsDmsReplicationInstance = jsonValue.GetObject("AwsDmsReplicationInstance");
+
+    m_awsDmsReplicationInstanceHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsRoute53HostedZone"))
+  {
+    m_awsRoute53HostedZone = jsonValue.GetObject("AwsRoute53HostedZone");
+
+    m_awsRoute53HostedZoneHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsMskCluster"))
+  {
+    m_awsMskCluster = jsonValue.GetObject("AwsMskCluster");
+
+    m_awsMskClusterHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsS3AccessPoint"))
+  {
+    m_awsS3AccessPoint = jsonValue.GetObject("AwsS3AccessPoint");
+
+    m_awsS3AccessPointHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsEc2ClientVpnEndpoint"))
+  {
+    m_awsEc2ClientVpnEndpoint = jsonValue.GetObject("AwsEc2ClientVpnEndpoint");
+
+    m_awsEc2ClientVpnEndpointHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -1301,6 +1338,96 @@ JsonValue ResourceDetails::Jsonize() const
   if(m_awsEc2RouteTableHasBeenSet)
   {
    payload.WithObject("AwsEc2RouteTable", m_awsEc2RouteTable.Jsonize());
+
+  }
+
+  if(m_awsAmazonMqBrokerHasBeenSet)
+  {
+   payload.WithObject("AwsAmazonMqBroker", m_awsAmazonMqBroker.Jsonize());
+
+  }
+
+  if(m_awsAppSyncGraphQlApiHasBeenSet)
+  {
+   payload.WithObject("AwsAppSyncGraphQlApi", m_awsAppSyncGraphQlApi.Jsonize());
+
+  }
+
+  if(m_awsEventSchemasRegistryHasBeenSet)
+  {
+   payload.WithObject("AwsEventSchemasRegistry", m_awsEventSchemasRegistry.Jsonize());
+
+  }
+
+  if(m_awsGuardDutyDetectorHasBeenSet)
+  {
+   payload.WithObject("AwsGuardDutyDetector", m_awsGuardDutyDetector.Jsonize());
+
+  }
+
+  if(m_awsStepFunctionStateMachineHasBeenSet)
+  {
+   payload.WithObject("AwsStepFunctionStateMachine", m_awsStepFunctionStateMachine.Jsonize());
+
+  }
+
+  if(m_awsAthenaWorkGroupHasBeenSet)
+  {
+   payload.WithObject("AwsAthenaWorkGroup", m_awsAthenaWorkGroup.Jsonize());
+
+  }
+
+  if(m_awsEventsEventbusHasBeenSet)
+  {
+   payload.WithObject("AwsEventsEventbus", m_awsEventsEventbus.Jsonize());
+
+  }
+
+  if(m_awsDmsEndpointHasBeenSet)
+  {
+   payload.WithObject("AwsDmsEndpoint", m_awsDmsEndpoint.Jsonize());
+
+  }
+
+  if(m_awsEventsEndpointHasBeenSet)
+  {
+   payload.WithObject("AwsEventsEndpoint", m_awsEventsEndpoint.Jsonize());
+
+  }
+
+  if(m_awsDmsReplicationTaskHasBeenSet)
+  {
+   payload.WithObject("AwsDmsReplicationTask", m_awsDmsReplicationTask.Jsonize());
+
+  }
+
+  if(m_awsDmsReplicationInstanceHasBeenSet)
+  {
+   payload.WithObject("AwsDmsReplicationInstance", m_awsDmsReplicationInstance.Jsonize());
+
+  }
+
+  if(m_awsRoute53HostedZoneHasBeenSet)
+  {
+   payload.WithObject("AwsRoute53HostedZone", m_awsRoute53HostedZone.Jsonize());
+
+  }
+
+  if(m_awsMskClusterHasBeenSet)
+  {
+   payload.WithObject("AwsMskCluster", m_awsMskCluster.Jsonize());
+
+  }
+
+  if(m_awsS3AccessPointHasBeenSet)
+  {
+   payload.WithObject("AwsS3AccessPoint", m_awsS3AccessPoint.Jsonize());
+
+  }
+
+  if(m_awsEc2ClientVpnEndpointHasBeenSet)
+  {
+   payload.WithObject("AwsEc2ClientVpnEndpoint", m_awsEc2ClientVpnEndpoint.Jsonize());
 
   }
 

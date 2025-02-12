@@ -18,7 +18,7 @@
 #include <aws/core/utils/memory/stl/AWSStringStream.h>
 #include <aws/core/utils/ratelimiter/DefaultRateLimiter.h>
 #include <aws/core/utils/StringUtils.h>
-#include <aws/core/utils/threading/Executor.h>
+#include <aws/core/utils/threading/PooledThreadExecutor.h>
 #include <aws/core/utils/UUID.h>
 #include <aws/core/utils/Outcome.h>
 #include <aws/core/platform/Environment.h>
@@ -51,6 +51,8 @@
 #endif //_WIN32
 
 #include <aws/core/http/standard/StandardHttpRequest.h>
+#include <aws/core/monitoring/DefaultMonitoring.h>
+#include <aws/core/monitoring/CoreMetrics.h>
 
 using namespace Aws;
 using namespace Aws::Http::Standard;
@@ -63,19 +65,20 @@ using namespace Aws::Utils;
 
 namespace
 {
-    static Aws::String BASE_CREATE_BUCKET_TEST_NAME = "createbuckettest";
-    static Aws::String BASE_DNS_UNFRIENDLY_TEST_NAME = "dns.unfriendly";
-    static Aws::String BASE_LOCATION_BUCKET_TEST_NAME = "locbuckettest";
-    static Aws::String BASE_OBJECTS_BUCKET_NAME = "objecttest";
-    static Aws::String BASE_OBJECTS_DEFAULT_CTOR_BUCKET_NAME = "ctortest";
-    static Aws::String BASE_PUT_OBJECTS_BUCKET_NAME = "putobjecttest";
-    static Aws::String BASE_PUT_WEIRD_CHARSETS_OBJECTS_BUCKET_NAME = "charsetstest";
-    static Aws::String BASE_PUT_OBJECTS_PRESIGNED_URLS_BUCKET_NAME = "presignedtest";
-    static Aws::String BASE_PUT_MULTIPART_BUCKET_NAME = "multiparttest";
-    static Aws::String BASE_ERRORS_TESTING_BUCKET = "errorstest";
-    static Aws::String BASE_EVENT_STREAM_TEST_BUCKET_NAME = "eventstream";
-    static Aws::String BASE_EVENT_STREAM_LARGE_FILE_TEST_BUCKET_NAME = "largeeventstream";
-    static Aws::String BASE_EVENT_STREAM_ERRORS_IN_EVENT_TEST_BUCKET_NAME = "errorsinevent";
+    static std::string BASE_CREATE_BUCKET_TEST_NAME = "createbuckettest";
+    static std::string BASE_DNS_UNFRIENDLY_TEST_NAME = "dns.unfriendly";
+    static std::string BASE_LOCATION_BUCKET_TEST_NAME = "locbuckettest";
+    static std::string BASE_OBJECTS_BUCKET_NAME = "objecttest";
+    static std::string BASE_OBJECTS_DEFAULT_CTOR_BUCKET_NAME = "ctortest";
+    static std::string BASE_PUT_OBJECTS_BUCKET_NAME = "putobjecttest";
+    static std::string BASE_PUT_WEIRD_CHARSETS_OBJECTS_BUCKET_NAME = "charsetstest";
+    static std::string BASE_PUT_OBJECTS_PRESIGNED_URLS_BUCKET_NAME = "presignedtest";
+    static std::string BASE_PUT_MULTIPART_BUCKET_NAME = "multiparttest";
+    static std::string BASE_ERRORS_TESTING_BUCKET = "errorstest";
+    static std::string BASE_EVENT_STREAM_TEST_BUCKET_NAME = "eventstream";
+    static std::string BASE_EVENT_STREAM_LARGE_FILE_TEST_BUCKET_NAME = "largeeventstream";
+    static std::string BASE_EVENT_STREAM_ERRORS_IN_EVENT_TEST_BUCKET_NAME = "errorsinevent";
+    static std::string BASE_CHECKSUMS_BUCKET_NAME = "checksums-crt";
     static const char* ALLOCATION_TAG = "BucketAndObjectOperationTest";
     static const char* TEST_OBJ_KEY = "TestObjectKey";
     static const char* TEST_NOT_MODIFIED_OBJ_KEY = "TestNotModifiedObjectKey";
@@ -84,12 +87,12 @@ namespace
     //windows won't let you hard code unicode strings in a source file and assign them to a char*. Every other compiler does and I need to test this.
     //to get around this, this string is url encoded version of "TestUnicode中国Key". At test time, we'll convert it to the unicode string
     static const char* URLENCODED_UNICODE_KEY = "TestUnicode%E4%B8%AD%E5%9B%BDKey";
-    static const char* URIESCAPE_KEY = "Esc ape+Me$";
+    static const char* URIESCAPE_KEY = "Esc a=pe+Me$";
     static const char* TEST_BUCKET_TAG = "IntegrationTestResource";
 
     static const int TIMEOUT_MAX = 20;
 
-    void AppendUUID(Aws::String& bucketName)
+    void AppendUUID(std::string& bucketName)
     {
         using Aws::Utils::UUID;
         Aws::StringStream s;
@@ -99,19 +102,29 @@ namespace
 
     void EnsureUniqueBucketNames()
     {
-        AppendUUID(BASE_CREATE_BUCKET_TEST_NAME);
-        AppendUUID(BASE_DNS_UNFRIENDLY_TEST_NAME);
-        AppendUUID(BASE_LOCATION_BUCKET_TEST_NAME);
-        AppendUUID(BASE_OBJECTS_BUCKET_NAME);
-        AppendUUID(BASE_OBJECTS_DEFAULT_CTOR_BUCKET_NAME);
-        AppendUUID(BASE_PUT_OBJECTS_BUCKET_NAME);
-        AppendUUID(BASE_PUT_WEIRD_CHARSETS_OBJECTS_BUCKET_NAME);
-        AppendUUID(BASE_PUT_OBJECTS_PRESIGNED_URLS_BUCKET_NAME);
-        AppendUUID(BASE_PUT_MULTIPART_BUCKET_NAME);
-        AppendUUID(BASE_ERRORS_TESTING_BUCKET);
-        AppendUUID(BASE_EVENT_STREAM_TEST_BUCKET_NAME);
-        AppendUUID(BASE_EVENT_STREAM_LARGE_FILE_TEST_BUCKET_NAME);
-        AppendUUID(BASE_EVENT_STREAM_ERRORS_IN_EVENT_TEST_BUCKET_NAME);
+        Aws::Vector<std::reference_wrapper<std::string>> TEST_BUCKETS =
+            {
+              std::ref(BASE_CREATE_BUCKET_TEST_NAME),
+              std::ref(BASE_DNS_UNFRIENDLY_TEST_NAME),
+              std::ref(BASE_LOCATION_BUCKET_TEST_NAME),
+              std::ref(BASE_OBJECTS_BUCKET_NAME),
+              std::ref(BASE_OBJECTS_DEFAULT_CTOR_BUCKET_NAME),
+              std::ref(BASE_PUT_OBJECTS_BUCKET_NAME),
+              std::ref(BASE_PUT_WEIRD_CHARSETS_OBJECTS_BUCKET_NAME),
+              std::ref(BASE_PUT_OBJECTS_PRESIGNED_URLS_BUCKET_NAME),
+              std::ref(BASE_PUT_MULTIPART_BUCKET_NAME),
+              std::ref(BASE_ERRORS_TESTING_BUCKET),
+              std::ref(BASE_EVENT_STREAM_TEST_BUCKET_NAME),
+              std::ref(BASE_EVENT_STREAM_LARGE_FILE_TEST_BUCKET_NAME),
+              std::ref(BASE_EVENT_STREAM_ERRORS_IN_EVENT_TEST_BUCKET_NAME),
+              std::ref(BASE_CHECKSUMS_BUCKET_NAME)
+            };
+
+        for (auto& testBucketName : TEST_BUCKETS)
+        {
+            AppendUUID(testBucketName);
+            SCOPED_TRACE(Aws::String("EnsureUniqueBucketNames: ") + testBucketName.get().c_str());
+        }
     }
 
     class RetryFiveTimesRetryStrategy: public Aws::Client::RetryStrategy
@@ -150,6 +163,7 @@ namespace
             DeleteBucket(CalculateBucketName(BASE_EVENT_STREAM_TEST_BUCKET_NAME.c_str()));
             DeleteBucket(CalculateBucketName(BASE_EVENT_STREAM_LARGE_FILE_TEST_BUCKET_NAME.c_str()));
             DeleteBucket(CalculateBucketName(BASE_EVENT_STREAM_ERRORS_IN_EVENT_TEST_BUCKET_NAME.c_str()));
+            DeleteBucket(CalculateBucketName(BASE_CHECKSUMS_BUCKET_NAME.c_str()));
 
             Client = nullptr;
             oregonClient = nullptr;
@@ -357,6 +371,7 @@ namespace
         static Aws::String PreparePresignedUrlTest()
         {
             Aws::String fullBucketName = CalculateBucketName(BASE_PUT_OBJECTS_PRESIGNED_URLS_BUCKET_NAME.c_str());
+            SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
             CreateBucketRequest createBucketRequest;
             createBucketRequest.SetBucket(fullBucketName);
             createBucketRequest.SetACL(BucketCannedACL::private_);
@@ -409,6 +424,7 @@ namespace
         static void CleanUpPresignedUrlTest()
         {
             Aws::String fullBucketName = CalculateBucketName(BASE_PUT_OBJECTS_PRESIGNED_URLS_BUCKET_NAME.c_str());
+            SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
             Aws::String presignedUrlDelete = Client->GeneratePresignedUrl(fullBucketName, TEST_OBJ_KEY, HttpMethod::HTTP_DELETE);
             std::shared_ptr<HttpRequest> deleteRequest = CreateHttpRequest(presignedUrlDelete, HttpMethod::HTTP_DELETE, Aws::Utils::Stream::DefaultResponseStreamFactoryMethod);
             std::shared_ptr<HttpResponse> deleteResponse = m_HttpClient->MakeRequest(deleteRequest);
@@ -425,6 +441,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestBucketOperationsErrorWithMissingRequiredFields)
     {
         Aws::String fullBucketName = CalculateBucketName(BASE_CREATE_BUCKET_TEST_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         HeadBucketRequest headBucketRequest;
         HeadBucketOutcome headBucketOutcome = Client->HeadBucket(headBucketRequest);
         ASSERT_FALSE(headBucketOutcome.IsSuccess());
@@ -438,8 +455,8 @@ namespace
 
     TEST_F(BucketAndObjectOperationTest, TestBucketCreationAndListing)
     {
-        Aws::String fullBucketName = CalculateBucketName(BASE_CREATE_BUCKET_TEST_NAME.c_str());
-
+        const Aws::String fullBucketName = CalculateBucketName(BASE_CREATE_BUCKET_TEST_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
         createBucketRequest.SetACL(BucketCannedACL::private_);
@@ -477,6 +494,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestBucketLocation)
     {
         Aws::String fullBucketName = CalculateBucketName(BASE_LOCATION_BUCKET_TEST_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
         CreateBucketConfiguration bucketConfiguration;
@@ -505,8 +523,8 @@ namespace
     // S3 CRT Client could not handle these special characters in key name right now.
     TEST_F(BucketAndObjectOperationTest, TestPutWithSpecialCharactersInKeyName)
     {
-        Aws::String fullBucketName = CalculateBucketName(BASE_PUT_OBJECTS_BUCKET_NAME.c_str());
-
+        const Aws::String fullBucketName = CalculateBucketName(BASE_PUT_OBJECTS_BUCKET_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
         createBucketRequest.SetACL(BucketCannedACL::private_);
@@ -531,19 +549,10 @@ namespace
 
     TEST_F(BucketAndObjectOperationTest, TestObjectOperations)
     {
-        Aws::String fullBucketName = CalculateBucketName(BASE_OBJECTS_BUCKET_NAME.c_str());
-
+        const Aws::String fullBucketName = CalculateBucketName(BASE_OBJECTS_BUCKET_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
-        createBucketRequest.SetACL(BucketCannedACL::private_);
-        {
-            CreateBucketConfiguration bucketConfiguration;
-            Aws::S3Crt::ClientConfiguration dummyClientConfig;
-            bucketConfiguration.SetLocationConstraint(
-                    BucketLocationConstraintMapper::GetBucketLocationConstraintForName(dummyClientConfig.region));
-            createBucketRequest.SetCreateBucketConfiguration(bucketConfiguration);
-        }
-
         CreateBucketOutcome createBucketOutcome = Client->CreateBucket(createBucketRequest);
         AWS_ASSERT_SUCCESS(createBucketOutcome);
         const CreateBucketResult& createBucketResult = createBucketOutcome.GetResult();
@@ -574,6 +583,7 @@ namespace
         GetObjectOutcome getObjectOutcome = Client->GetObject(getObjectRequest);
         AWS_ASSERT_SUCCESS(getObjectOutcome);
         ASSERT_EQ(contentLength, getObjectOutcome.GetResult().GetContentLength());
+        EXPECT_TRUE(getObjectOutcome.GetResult().GetCacheControl().empty());
 
         // GET with range
         getObjectRequest.SetRange("bytes=128-1024");
@@ -605,8 +615,8 @@ namespace
         //Create Client with default constructor
         Client = Aws::MakeShared<S3CrtClient>(ALLOCATION_TAG);
 
-        Aws::String fullBucketName = CalculateBucketName(BASE_OBJECTS_DEFAULT_CTOR_BUCKET_NAME);
-
+        const Aws::String fullBucketName = CalculateBucketName(BASE_OBJECTS_DEFAULT_CTOR_BUCKET_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
         createBucketRequest.SetACL(BucketCannedACL::private_);
@@ -675,8 +685,8 @@ namespace
 
     TEST_F(BucketAndObjectOperationTest, TestKeysWithCrazyCharacterSets)
     {
-        Aws::String fullBucketName = CalculateBucketName(BASE_PUT_WEIRD_CHARSETS_OBJECTS_BUCKET_NAME.c_str());
-
+        const Aws::String fullBucketName = CalculateBucketName(BASE_PUT_WEIRD_CHARSETS_OBJECTS_BUCKET_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
         createBucketRequest.SetACL(BucketCannedACL::private_);
@@ -742,6 +752,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestObjectOperationsWithPresignedUrls)
     {
         Aws::String fullBucketName = PreparePresignedUrlTest();
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         Aws::String presignedUrlPut = Client->GeneratePresignedUrl(fullBucketName, TEST_OBJ_KEY, HttpMethod::HTTP_PUT);
         std::shared_ptr<HttpRequest> putRequest = CreateHttpRequest(presignedUrlPut, HttpMethod::HTTP_PUT, Aws::Utils::Stream::DefaultResponseStreamFactoryMethod);
         DoPresignedUrlTest(fullBucketName, putRequest);
@@ -751,6 +762,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestObjectOperationsWithPresignedUrlsAndCustomizedHeaders)
     {
         Aws::String fullBucketName = PreparePresignedUrlTest();
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         Aws::Http::HeaderValueCollection collections;
         collections.emplace("TestKey1", "TestVal1");
         collections.emplace("TestKey2", "TestVal2");
@@ -768,6 +780,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestObjectOperationsWithPresignedUrlsWithSSES3)
     {
         Aws::String fullBucketName = PreparePresignedUrlTest();
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         Aws::String presignedUrlPut = Client->GeneratePresignedUrlWithSSES3(fullBucketName, TEST_OBJ_KEY, HttpMethod::HTTP_PUT);
         std::shared_ptr<HttpRequest> putRequest = CreateHttpRequest(presignedUrlPut, HttpMethod::HTTP_PUT, Aws::Utils::Stream::DefaultResponseStreamFactoryMethod);
         putRequest->SetHeaderValue(Aws::S3Crt::SSEHeaders::SERVER_SIDE_ENCRYPTION,
@@ -779,6 +792,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestObjectOperationsWithPresignedUrlsWithSSES3AndCustomizedHeaders)
     {
         Aws::String fullBucketName = PreparePresignedUrlTest();
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         Aws::Http::HeaderValueCollection collections;
         collections.emplace("TestKey1", "TestVal1");
         collections.emplace("TestKey2", "TestVal2");
@@ -798,6 +812,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestObjectOperationsWithPresignedUrlsWithSSEKMS)
     {
         Aws::String fullBucketName = PreparePresignedUrlTest();
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         Aws::String presignedUrlPut = Client->GeneratePresignedUrlWithSSEKMS(fullBucketName, TEST_OBJ_KEY, HttpMethod::HTTP_PUT); //Using default KMS key in this AWS account
         std::shared_ptr<HttpRequest> putRequest = CreateHttpRequest(presignedUrlPut, HttpMethod::HTTP_PUT, Aws::Utils::Stream::DefaultResponseStreamFactoryMethod);
         putRequest->SetHeaderValue(Aws::S3Crt::SSEHeaders::SERVER_SIDE_ENCRYPTION,
@@ -810,6 +825,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestObjectOperationsWithPresignedUrlsWithSSEKMSAndCustomizedHeaders)
     {
         Aws::String fullBucketName = PreparePresignedUrlTest();
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         Aws::Http::HeaderValueCollection collections;
         collections.emplace("TestKey1", "TestVal1");
         collections.emplace("TestKey2", "TestVal2");
@@ -828,8 +844,8 @@ namespace
 
     TEST_F(BucketAndObjectOperationTest, TestThatErrorsParse)
     {
-        Aws::String fullBucketName = CalculateBucketName(BASE_ERRORS_TESTING_BUCKET.c_str());
-
+        const Aws::String fullBucketName = CalculateBucketName(BASE_ERRORS_TESTING_BUCKET.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         ListObjectsRequest listObjectsRequest;
         listObjectsRequest.SetBucket("abcdedoikengi");
 
@@ -860,6 +876,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestNotModifiedIsSuccess)
     {
         Aws::String fullBucketName = CalculateBucketName(BASE_PUT_OBJECTS_BUCKET_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
         createBucketRequest.SetACL(BucketCannedACL::private_);
@@ -895,6 +912,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestVirtualAddressingWithUnfriendlyBucketName)
     {
         Aws::String fullBucketName = CalculateBucketName(BASE_DNS_UNFRIENDLY_TEST_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
         createBucketRequest.SetACL(BucketCannedACL::private_);
@@ -928,6 +946,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestCopyingFromKeysWithUnicodeCharacters)
     {
         Aws::String fullBucketName = CalculateBucketName(BASE_CREATE_BUCKET_TEST_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
         createBucketRequest.SetACL(BucketCannedACL::private_);
@@ -962,6 +981,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestObjectOperationWithEventStream)
     {
         Aws::String fullBucketName = CalculateBucketName(BASE_EVENT_STREAM_TEST_BUCKET_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
         createBucketRequest.SetACL(BucketCannedACL::private_);
@@ -1041,6 +1061,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestSelectObjectOperationWithEventStreamFailWithRetry)
     {
         Aws::String fullBucketName = CalculateBucketName(BASE_EVENT_STREAM_TEST_BUCKET_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
         createBucketRequest.SetACL(BucketCannedACL::private_);
@@ -1116,6 +1137,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestEventStreamWithLargeFile)
     {
         Aws::String fullBucketName = CalculateBucketName(BASE_EVENT_STREAM_LARGE_FILE_TEST_BUCKET_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
         createBucketRequest.SetACL(BucketCannedACL::private_);
@@ -1221,6 +1243,7 @@ namespace
     TEST_F(BucketAndObjectOperationTest, TestErrorsInEventStream)
     {
         Aws::String fullBucketName = CalculateBucketName(BASE_EVENT_STREAM_ERRORS_IN_EVENT_TEST_BUCKET_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
         createBucketRequest.SetACL(BucketCannedACL::private_);
@@ -1288,10 +1311,10 @@ namespace
         ASSERT_TRUE(isErrorEventReceived);
     }
 
-    TEST_F(BucketAndObjectOperationTest, TestEmptyBody)
+    TEST_F(BucketAndObjectOperationTest, TestNullBody)
     {
-        Aws::String fullBucketName = CalculateBucketName(BASE_PUT_OBJECTS_BUCKET_NAME.c_str());
-
+        const Aws::String fullBucketName = CalculateBucketName(BASE_PUT_OBJECTS_BUCKET_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
         CreateBucketRequest createBucketRequest;
         createBucketRequest.SetBucket(fullBucketName);
         createBucketRequest.SetACL(BucketCannedACL::private_);
@@ -1305,7 +1328,30 @@ namespace
 
         PutObjectRequest putObjectRequest;
         putObjectRequest.SetBucket(fullBucketName);
-        putObjectRequest.SetKey("sbiscigl_was_here");
+        putObjectRequest.SetKey("sbiscigl_was_here_null");
+        PutObjectOutcome putObjectOutcome = Client->PutObject(putObjectRequest);
+        AWS_ASSERT_SUCCESS(putObjectOutcome);
+    }
+
+    TEST_F(BucketAndObjectOperationTest, TestEmptyBody)
+    {
+        const Aws::String fullBucketName = CalculateBucketName(BASE_PUT_OBJECTS_BUCKET_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
+        CreateBucketRequest createBucketRequest;
+        createBucketRequest.SetBucket(fullBucketName);
+        createBucketRequest.SetACL(BucketCannedACL::private_);
+
+        CreateBucketOutcome createBucketOutcome = Client->CreateBucket(createBucketRequest);
+        AWS_ASSERT_SUCCESS(createBucketOutcome);
+        const CreateBucketResult& createBucketResult = createBucketOutcome.GetResult();
+        ASSERT_TRUE(!createBucketResult.GetLocation().empty());
+        ASSERT_TRUE(WaitForBucketToPropagate(fullBucketName));
+        TagTestBucket(fullBucketName, Client);
+
+        PutObjectRequest putObjectRequest;
+        putObjectRequest.SetBucket(fullBucketName);
+        putObjectRequest.SetKey("sbiscigl_was_here_empty");
+        putObjectRequest.SetBody(Aws::MakeShared<StringStream>(ALLOCATION_TAG, ""));
         PutObjectOutcome putObjectOutcome = Client->PutObject(putObjectRequest);
         AWS_ASSERT_SUCCESS(putObjectOutcome);
     }
@@ -1329,5 +1375,290 @@ namespace
         getObjectRequest.SetKey("cpp/api/LATEST/index.html");
 
         AWS_ASSERT_SUCCESS(Client->GetObject(getObjectRequest));
+    }
+
+    TEST_F(BucketAndObjectOperationTest, LocalHostCrtError) {
+        Aws::S3Crt::ClientConfiguration s3ClientConfig;
+        s3ClientConfig.region = Aws::Region::US_EAST_1;
+        s3ClientConfig.scheme = Scheme::HTTPS;
+        s3ClientConfig.executor = Aws::MakeShared<Aws::Utils::Threading::PooledThreadExecutor>(ALLOCATION_TAG, 4);
+        s3ClientConfig.throughputTargetGbps = 2.0;
+        s3ClientConfig.partSize = 5 * 1024 * 1024;
+        s3ClientConfig.endpointOverride = "localhost";
+
+        Client = Aws::MakeShared<S3CrtClient>(ALLOCATION_TAG,
+                                              Aws::Auth::AWSCredentials{"", ""},
+                                              s3ClientConfig,
+                                              Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never);
+
+        //Make a request for one of out public doc pages
+        GetObjectRequest getObjectRequest;
+        getObjectRequest.SetBucket("aws-sdk-cpp-docs");
+        getObjectRequest.SetKey("cpp/api/LATEST/index.html");
+
+        GetObjectOutcome outcome = Client->GetObject(getObjectRequest);
+
+        ASSERT_FALSE(outcome.IsSuccess());
+    }
+
+    TEST_F(BucketAndObjectOperationTest, MissingCertificate) {
+        Aws::S3Crt::ClientConfiguration s3ClientConfig;
+        s3ClientConfig.region = Aws::Region::US_EAST_1;
+        s3ClientConfig.caFile = "/some-non-existing-certificate/cert.crt";
+        s3ClientConfig.verifySSL = true;
+
+        S3CrtClient crtClient = S3CrtClient(Aws::Auth::AWSCredentials{"", ""},
+                                              s3ClientConfig,
+                                              Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never);
+
+        GetObjectRequest getObjectRequest;
+        getObjectRequest.SetBucket("aws-sdk-cpp-docs");
+        getObjectRequest.SetKey("cpp/api/LATEST/index.html");
+
+        auto result = crtClient.GetObject(getObjectRequest);
+        ASSERT_FALSE(result.IsSuccess());
+        ASSERT_EQ((Aws::Client::CoreErrors) result.GetError().GetErrorType(), Aws::Client::CoreErrors::NOT_INITIALIZED);
+    }
+
+    TEST_F(BucketAndObjectOperationTest, PutObjectChecksum) {
+        struct ChecksumTestCase {
+            std::function<PutObjectRequest(PutObjectRequest)> chucksumRequestMutator;
+            HttpResponseCode responseCode;
+            String body;
+        };
+
+        const String fullBucketName = CalculateBucketName(BASE_CHECKSUMS_BUCKET_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
+        CreateBucketRequest createBucketRequest;
+        createBucketRequest.SetBucket(fullBucketName);
+        createBucketRequest.SetACL(BucketCannedACL::private_);
+        CreateBucketOutcome createBucketOutcome = Client->CreateBucket(createBucketRequest);
+        AWS_ASSERT_SUCCESS(createBucketOutcome);
+
+        Vector<ChecksumTestCase> testCases{
+            {
+                [](PutObjectRequest request) -> PutObjectRequest {
+                    return request.WithChecksumAlgorithm(ChecksumAlgorithm::CRC32).WithChecksumCRC32("Just runnin' scared each place we go");
+                },
+                HttpResponseCode::BAD_REQUEST,
+                "Just runnin' scared each place we go"
+            },
+            {
+                [](PutObjectRequest request) -> PutObjectRequest {
+                    return request.WithChecksumAlgorithm(ChecksumAlgorithm::SHA1).WithChecksumSHA1("So afraid that he might show");
+                },
+                HttpResponseCode::BAD_REQUEST,
+                "So afraid that he might show"
+            },
+            {
+                [](PutObjectRequest request) -> PutObjectRequest {
+                    return request.WithChecksumAlgorithm(ChecksumAlgorithm::SHA256).WithChecksumSHA256("Yeah, runnin' scared, what would I do");
+                },
+                HttpResponseCode::BAD_REQUEST,
+                "Yeah, runnin' scared, what would I do"
+            },
+            {
+                [](PutObjectRequest request) -> PutObjectRequest {
+                    return request.WithChecksumAlgorithm(ChecksumAlgorithm::CRC32C).WithChecksumCRC32C("If he came back and wanted you?");
+                },
+                HttpResponseCode::BAD_REQUEST,
+                "If he came back and wanted you?"
+            },
+            {
+                [](PutObjectRequest request) -> PutObjectRequest {
+                    return request.WithContentMD5("Just runnin' scared, feelin' low");
+                },
+                HttpResponseCode::BAD_REQUEST,
+                "Just runnin' scared, feelin' low",
+            },
+            {
+                [](PutObjectRequest request) -> PutObjectRequest {
+                    return request.WithChecksumAlgorithm(ChecksumAlgorithm::CRC32)
+                        .WithChecksumCRC32(HashingUtils::Base64Encode(HashingUtils::CalculateCRC32("Runnin' scared, you love him so")));
+                },
+                HttpResponseCode::OK,
+                "Runnin' scared, you love him so"
+            },
+            {
+                [](PutObjectRequest request) -> PutObjectRequest {
+                    return request.WithChecksumAlgorithm(ChecksumAlgorithm::SHA1)
+                        .WithChecksumSHA1(HashingUtils::Base64Encode(HashingUtils::CalculateSHA1("Just runnin' scared, afraid to lose")));
+                },
+                HttpResponseCode::OK,
+                "Just runnin' scared, afraid to lose"
+            },
+            {
+                [](PutObjectRequest request) -> PutObjectRequest {
+                    return request.WithChecksumAlgorithm(ChecksumAlgorithm::SHA256)
+                        .WithChecksumSHA256(HashingUtils::Base64Encode(HashingUtils::CalculateSHA256("If he came back, which one would you choose?")));
+                },
+                HttpResponseCode::OK,
+                "If he came back, which one would you choose?"
+            },
+            {
+                [](PutObjectRequest request) -> PutObjectRequest {
+                    return request.WithChecksumAlgorithm(ChecksumAlgorithm::CRC32C)
+                        .WithChecksumCRC32C(HashingUtils::Base64Encode(HashingUtils::CalculateCRC32C("Then all at once he was standing there")));
+                },
+                HttpResponseCode::OK,
+                "Then all at once he was standing there"
+            },
+            {
+                [](PutObjectRequest request) -> PutObjectRequest {
+                    return request.WithContentMD5(HashingUtils::Base64Encode(HashingUtils::CalculateMD5("So sure of himself, his head in the air")));
+                },
+                HttpResponseCode::OK,
+                "So sure of himself, his head in the air"
+            }
+        };
+
+        for (const auto&testCase: testCases) {
+            auto request = testCase.chucksumRequestMutator(PutObjectRequest()
+                .WithBucket(fullBucketName)
+                .WithKey("RunningScared"));
+            std::shared_ptr<IOStream> body = Aws::MakeShared<StringStream>(ALLOCATION_TAG,
+                testCase.body,
+                std::ios_base::in | std::ios_base::binary);
+            request.SetBody(body);
+            const auto response = Client->PutObject(request);
+            if (!response.IsSuccess()) {
+                ASSERT_EQ(testCase.responseCode, response.GetError().GetResponseCode());
+            } else {
+                ASSERT_EQ(testCase.responseCode, HttpResponseCode::OK);
+                ASSERT_TRUE(response.IsSuccess());
+            }
+        }
+    }
+
+    class TestMonitoring: public Aws::Monitoring::MonitoringInterface
+    {
+        mutable std::shared_ptr<Aws::Vector<Aws::String>> m_sequence;
+        mutable std::mutex m_mutex; 
+
+        inline void logCommand(const Aws::String& log) const{
+            const std::lock_guard<std::mutex> lock(m_mutex);
+            if(m_sequence)
+            {
+                std::cout<<log<< std::endl;
+                m_sequence->emplace_back(log);
+            }
+        }
+
+    public:
+
+        explicit TestMonitoring( std::shared_ptr<Aws::Vector<Aws::String> >& sequence):m_sequence{sequence}{};
+
+        void* OnRequestStarted(const Aws::String& serviceName, const Aws::String& requestName, const std::shared_ptr<const Aws::Http::HttpRequest>& request) const override
+        {
+            AWS_UNREFERENCED_PARAM(serviceName);
+            AWS_UNREFERENCED_PARAM(requestName);
+            AWS_UNREFERENCED_PARAM(request);
+            logCommand("OnRequestStarted");
+            return &m_sequence;
+        }
+
+        void OnRequestSucceeded(const Aws::String& serviceName, const Aws::String& requestName, const std::shared_ptr<const Aws::Http::HttpRequest>& request,
+            const Aws::Client::HttpResponseOutcome& outcome, const Aws::Monitoring::CoreMetricsCollection& metricsFromCore, void* context) const override
+        {
+            AWS_UNREFERENCED_PARAM(serviceName);
+            AWS_UNREFERENCED_PARAM(requestName);
+            AWS_UNREFERENCED_PARAM(request);
+            AWS_UNREFERENCED_PARAM(outcome);
+            AWS_UNREFERENCED_PARAM(metricsFromCore);
+            AWS_UNREFERENCED_PARAM(context);
+            logCommand("OnRequestSucceeded");
+            
+        }
+
+
+        void OnRequestFailed(const Aws::String& serviceName, const Aws::String& requestName, const std::shared_ptr<const Aws::Http::HttpRequest>& request,
+            const Aws::Client::HttpResponseOutcome& outcome, const Aws::Monitoring::CoreMetricsCollection& metricsFromCore, void* context) const override
+        {
+            AWS_UNREFERENCED_PARAM(serviceName);
+            AWS_UNREFERENCED_PARAM(requestName);
+            AWS_UNREFERENCED_PARAM(request);
+            AWS_UNREFERENCED_PARAM(outcome);
+            AWS_UNREFERENCED_PARAM(metricsFromCore);
+            AWS_UNREFERENCED_PARAM(context);
+            logCommand("OnRequestFailed");
+        }
+
+
+        void OnRequestRetry(const Aws::String& serviceName, const Aws::String& requestName,
+            const std::shared_ptr<const Aws::Http::HttpRequest>& request, void* context) const override
+        {
+            AWS_UNREFERENCED_PARAM(serviceName);
+            AWS_UNREFERENCED_PARAM(requestName);
+            AWS_UNREFERENCED_PARAM(request);
+            AWS_UNREFERENCED_PARAM(context);
+            logCommand("OnRequestRetry");
+        }
+
+
+        void OnFinish(const Aws::String& serviceName, const Aws::String& requestName,
+            const std::shared_ptr<const Aws::Http::HttpRequest>& request, void* context) const override
+        {
+            AWS_UNREFERENCED_PARAM(serviceName);
+            AWS_UNREFERENCED_PARAM(requestName);
+            AWS_UNREFERENCED_PARAM(request);
+            AWS_UNREFERENCED_PARAM(context);
+            logCommand("OnFinish");
+        }
+    };
+
+    class TestMonitoringFactory : public Aws::Monitoring::MonitoringFactory
+    {
+    public:
+        mutable std::shared_ptr<Aws::Vector<Aws::String>> m_sequenceSp;
+        explicit TestMonitoringFactory(  std::shared_ptr<Aws::Vector<Aws::String>>& seq): m_sequenceSp{seq}
+        {
+
+        }
+        Aws::UniquePtr<Aws::Monitoring::MonitoringInterface> CreateMonitoringInstance() const override
+        {
+            return Aws::MakeUnique<TestMonitoring>("CreateMonitoringInstance",m_sequenceSp);
+        }
+    };
+
+
+    TEST_F(BucketAndObjectOperationTest, TestMonitor)
+    {
+        std::shared_ptr<Aws::Vector<Aws::String>> monitorCallSequenceSp = Aws::MakeShared<Aws::Vector<Aws::String>>("monitorSequence");
+        std::vector<Aws::Monitoring::MonitoringFactoryCreateFunction> monitoringFactoryCreateFunctions;
+
+        monitoringFactoryCreateFunctions.emplace_back(
+            [&monitorCallSequenceSp](){
+                return Aws::MakeUnique<TestMonitoringFactory>("monitor",monitorCallSequenceSp);
+            }
+        );
+
+        const Aws::String fullBucketName = CalculateBucketName(BASE_PUT_OBJECTS_BUCKET_NAME.c_str());
+        SCOPED_TRACE(Aws::String("FullBucketName ") + fullBucketName);
+        CreateBucketRequest createBucketRequest;
+        createBucketRequest.SetBucket(fullBucketName);
+        createBucketRequest.SetACL(BucketCannedACL::private_);
+
+        CreateBucketOutcome createBucketOutcome = Client->CreateBucket(createBucketRequest);
+        AWS_ASSERT_SUCCESS(createBucketOutcome);
+        const CreateBucketResult& createBucketResult = createBucketOutcome.GetResult();
+        ASSERT_TRUE(!createBucketResult.GetLocation().empty());
+        ASSERT_TRUE(WaitForBucketToPropagate(fullBucketName));
+        TagTestBucket(fullBucketName, Client);
+
+        PutObjectRequest putObjectRequest;
+        putObjectRequest.SetBucket(fullBucketName);
+        putObjectRequest.SetKey("sbiscigl_was_here");
+
+        //Note monitoring already has default monitoring interface ins InitApi()
+        //adding custom monitoring
+        Aws::Monitoring::AddMonitoring(monitoringFactoryCreateFunctions);
+        PutObjectOutcome putObjectOutcome = Client->PutObject(putObjectRequest);
+        AWS_ASSERT_SUCCESS(putObjectOutcome);
+
+        EXPECT_EQ(monitorCallSequenceSp->size(), 2u);
+        EXPECT_EQ( (*monitorCallSequenceSp)[0], "OnRequestStarted");
+        EXPECT_EQ( (*monitorCallSequenceSp)[1], "OnRequestSucceeded");
+
+        Aws::Monitoring::CleanupMonitoring();
     }
 }

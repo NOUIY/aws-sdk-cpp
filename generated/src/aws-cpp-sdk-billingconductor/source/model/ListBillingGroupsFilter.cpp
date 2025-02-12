@@ -21,14 +21,14 @@ namespace Model
 ListBillingGroupsFilter::ListBillingGroupsFilter() : 
     m_arnsHasBeenSet(false),
     m_pricingPlanHasBeenSet(false),
-    m_statusesHasBeenSet(false)
+    m_statusesHasBeenSet(false),
+    m_autoAssociate(false),
+    m_autoAssociateHasBeenSet(false)
 {
 }
 
-ListBillingGroupsFilter::ListBillingGroupsFilter(JsonView jsonValue) : 
-    m_arnsHasBeenSet(false),
-    m_pricingPlanHasBeenSet(false),
-    m_statusesHasBeenSet(false)
+ListBillingGroupsFilter::ListBillingGroupsFilter(JsonView jsonValue)
+  : ListBillingGroupsFilter()
 {
   *this = jsonValue;
 }
@@ -60,6 +60,13 @@ ListBillingGroupsFilter& ListBillingGroupsFilter::operator =(JsonView jsonValue)
       m_statuses.push_back(BillingGroupStatusMapper::GetBillingGroupStatusForName(statusesJsonList[statusesIndex].AsString()));
     }
     m_statusesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AutoAssociate"))
+  {
+    m_autoAssociate = jsonValue.GetBool("AutoAssociate");
+
+    m_autoAssociateHasBeenSet = true;
   }
 
   return *this;
@@ -94,6 +101,12 @@ JsonValue ListBillingGroupsFilter::Jsonize() const
      statusesJsonList[statusesIndex].AsString(BillingGroupStatusMapper::GetNameForBillingGroupStatus(m_statuses[statusesIndex]));
    }
    payload.WithArray("Statuses", std::move(statusesJsonList));
+
+  }
+
+  if(m_autoAssociateHasBeenSet)
+  {
+   payload.WithBool("AutoAssociate", m_autoAssociate);
 
   }
 

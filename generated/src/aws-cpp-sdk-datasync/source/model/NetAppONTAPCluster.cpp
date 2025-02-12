@@ -34,27 +34,16 @@ NetAppONTAPCluster::NetAppONTAPCluster() :
     m_clusterBlockStorageLogicalUsedHasBeenSet(false),
     m_recommendationsHasBeenSet(false),
     m_recommendationStatus(RecommendationStatus::NOT_SET),
-    m_recommendationStatusHasBeenSet(false)
+    m_recommendationStatusHasBeenSet(false),
+    m_lunCount(0),
+    m_lunCountHasBeenSet(false),
+    m_clusterCloudStorageUsed(0),
+    m_clusterCloudStorageUsedHasBeenSet(false)
 {
 }
 
-NetAppONTAPCluster::NetAppONTAPCluster(JsonView jsonValue) : 
-    m_cifsShareCount(0),
-    m_cifsShareCountHasBeenSet(false),
-    m_nfsExportedVolumes(0),
-    m_nfsExportedVolumesHasBeenSet(false),
-    m_resourceIdHasBeenSet(false),
-    m_clusterNameHasBeenSet(false),
-    m_maxP95PerformanceHasBeenSet(false),
-    m_clusterBlockStorageSize(0),
-    m_clusterBlockStorageSizeHasBeenSet(false),
-    m_clusterBlockStorageUsed(0),
-    m_clusterBlockStorageUsedHasBeenSet(false),
-    m_clusterBlockStorageLogicalUsed(0),
-    m_clusterBlockStorageLogicalUsedHasBeenSet(false),
-    m_recommendationsHasBeenSet(false),
-    m_recommendationStatus(RecommendationStatus::NOT_SET),
-    m_recommendationStatusHasBeenSet(false)
+NetAppONTAPCluster::NetAppONTAPCluster(JsonView jsonValue)
+  : NetAppONTAPCluster()
 {
   *this = jsonValue;
 }
@@ -134,6 +123,20 @@ NetAppONTAPCluster& NetAppONTAPCluster::operator =(JsonView jsonValue)
     m_recommendationStatusHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("LunCount"))
+  {
+    m_lunCount = jsonValue.GetInt64("LunCount");
+
+    m_lunCountHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("ClusterCloudStorageUsed"))
+  {
+    m_clusterCloudStorageUsed = jsonValue.GetInt64("ClusterCloudStorageUsed");
+
+    m_clusterCloudStorageUsedHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -203,6 +206,18 @@ JsonValue NetAppONTAPCluster::Jsonize() const
   if(m_recommendationStatusHasBeenSet)
   {
    payload.WithString("RecommendationStatus", RecommendationStatusMapper::GetNameForRecommendationStatus(m_recommendationStatus));
+  }
+
+  if(m_lunCountHasBeenSet)
+  {
+   payload.WithInt64("LunCount", m_lunCount);
+
+  }
+
+  if(m_clusterCloudStorageUsedHasBeenSet)
+  {
+   payload.WithInt64("ClusterCloudStorageUsed", m_clusterCloudStorageUsed);
+
   }
 
   return payload;

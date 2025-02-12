@@ -43,6 +43,10 @@ ModifyDBInstanceRequest::ModifyDBInstanceRequest() :
     m_tdeCredentialPasswordHasBeenSet(false),
     m_cACertificateIdentifierHasBeenSet(false),
     m_domainHasBeenSet(false),
+    m_domainFqdnHasBeenSet(false),
+    m_domainOuHasBeenSet(false),
+    m_domainAuthSecretArnHasBeenSet(false),
+    m_domainDnsIpsHasBeenSet(false),
     m_copyTagsToSnapshot(false),
     m_copyTagsToSnapshotHasBeenSet(false),
     m_monitoringInterval(0),
@@ -53,10 +57,14 @@ ModifyDBInstanceRequest::ModifyDBInstanceRequest() :
     m_publiclyAccessibleHasBeenSet(false),
     m_monitoringRoleArnHasBeenSet(false),
     m_domainIAMRoleNameHasBeenSet(false),
+    m_disableDomain(false),
+    m_disableDomainHasBeenSet(false),
     m_promotionTier(0),
     m_promotionTierHasBeenSet(false),
     m_enableIAMDatabaseAuthentication(false),
     m_enableIAMDatabaseAuthenticationHasBeenSet(false),
+    m_databaseInsightsMode(DatabaseInsightsMode::NOT_SET),
+    m_databaseInsightsModeHasBeenSet(false),
     m_enablePerformanceInsights(false),
     m_enablePerformanceInsightsHasBeenSet(false),
     m_performanceInsightsKMSKeyIdHasBeenSet(false),
@@ -88,7 +96,12 @@ ModifyDBInstanceRequest::ModifyDBInstanceRequest() :
     m_manageMasterUserPasswordHasBeenSet(false),
     m_rotateMasterUserPassword(false),
     m_rotateMasterUserPasswordHasBeenSet(false),
-    m_masterUserSecretKmsKeyIdHasBeenSet(false)
+    m_masterUserSecretKmsKeyIdHasBeenSet(false),
+    m_engineHasBeenSet(false),
+    m_dedicatedLogVolume(false),
+    m_dedicatedLogVolumeHasBeenSet(false),
+    m_multiTenant(false),
+    m_multiTenantHasBeenSet(false)
 {
 }
 
@@ -118,23 +131,37 @@ Aws::String ModifyDBInstanceRequest::SerializePayload() const
 
   if(m_dBSecurityGroupsHasBeenSet)
   {
-    unsigned dBSecurityGroupsCount = 1;
-    for(auto& item : m_dBSecurityGroups)
+    if (m_dBSecurityGroups.empty())
     {
-      ss << "DBSecurityGroups.member." << dBSecurityGroupsCount << "="
-          << StringUtils::URLEncode(item.c_str()) << "&";
-      dBSecurityGroupsCount++;
+      ss << "DBSecurityGroups=&";
+    }
+    else
+    {
+      unsigned dBSecurityGroupsCount = 1;
+      for(auto& item : m_dBSecurityGroups)
+      {
+        ss << "DBSecurityGroups.DBSecurityGroupName." << dBSecurityGroupsCount << "="
+            << StringUtils::URLEncode(item.c_str()) << "&";
+        dBSecurityGroupsCount++;
+      }
     }
   }
 
   if(m_vpcSecurityGroupIdsHasBeenSet)
   {
-    unsigned vpcSecurityGroupIdsCount = 1;
-    for(auto& item : m_vpcSecurityGroupIds)
+    if (m_vpcSecurityGroupIds.empty())
     {
-      ss << "VpcSecurityGroupIds.member." << vpcSecurityGroupIdsCount << "="
-          << StringUtils::URLEncode(item.c_str()) << "&";
-      vpcSecurityGroupIdsCount++;
+      ss << "VpcSecurityGroupIds=&";
+    }
+    else
+    {
+      unsigned vpcSecurityGroupIdsCount = 1;
+      for(auto& item : m_vpcSecurityGroupIds)
+      {
+        ss << "VpcSecurityGroupIds.VpcSecurityGroupId." << vpcSecurityGroupIdsCount << "="
+            << StringUtils::URLEncode(item.c_str()) << "&";
+        vpcSecurityGroupIdsCount++;
+      }
     }
   }
 
@@ -233,6 +260,39 @@ Aws::String ModifyDBInstanceRequest::SerializePayload() const
     ss << "Domain=" << StringUtils::URLEncode(m_domain.c_str()) << "&";
   }
 
+  if(m_domainFqdnHasBeenSet)
+  {
+    ss << "DomainFqdn=" << StringUtils::URLEncode(m_domainFqdn.c_str()) << "&";
+  }
+
+  if(m_domainOuHasBeenSet)
+  {
+    ss << "DomainOu=" << StringUtils::URLEncode(m_domainOu.c_str()) << "&";
+  }
+
+  if(m_domainAuthSecretArnHasBeenSet)
+  {
+    ss << "DomainAuthSecretArn=" << StringUtils::URLEncode(m_domainAuthSecretArn.c_str()) << "&";
+  }
+
+  if(m_domainDnsIpsHasBeenSet)
+  {
+    if (m_domainDnsIps.empty())
+    {
+      ss << "DomainDnsIps=&";
+    }
+    else
+    {
+      unsigned domainDnsIpsCount = 1;
+      for(auto& item : m_domainDnsIps)
+      {
+        ss << "DomainDnsIps.member." << domainDnsIpsCount << "="
+            << StringUtils::URLEncode(item.c_str()) << "&";
+        domainDnsIpsCount++;
+      }
+    }
+  }
+
   if(m_copyTagsToSnapshotHasBeenSet)
   {
     ss << "CopyTagsToSnapshot=" << std::boolalpha << m_copyTagsToSnapshot << "&";
@@ -263,6 +323,11 @@ Aws::String ModifyDBInstanceRequest::SerializePayload() const
     ss << "DomainIAMRoleName=" << StringUtils::URLEncode(m_domainIAMRoleName.c_str()) << "&";
   }
 
+  if(m_disableDomainHasBeenSet)
+  {
+    ss << "DisableDomain=" << std::boolalpha << m_disableDomain << "&";
+  }
+
   if(m_promotionTierHasBeenSet)
   {
     ss << "PromotionTier=" << m_promotionTier << "&";
@@ -271,6 +336,11 @@ Aws::String ModifyDBInstanceRequest::SerializePayload() const
   if(m_enableIAMDatabaseAuthenticationHasBeenSet)
   {
     ss << "EnableIAMDatabaseAuthentication=" << std::boolalpha << m_enableIAMDatabaseAuthentication << "&";
+  }
+
+  if(m_databaseInsightsModeHasBeenSet)
+  {
+    ss << "DatabaseInsightsMode=" << DatabaseInsightsModeMapper::GetNameForDatabaseInsightsMode(m_databaseInsightsMode) << "&";
   }
 
   if(m_enablePerformanceInsightsHasBeenSet)
@@ -295,11 +365,18 @@ Aws::String ModifyDBInstanceRequest::SerializePayload() const
 
   if(m_processorFeaturesHasBeenSet)
   {
-    unsigned processorFeaturesCount = 1;
-    for(auto& item : m_processorFeatures)
+    if (m_processorFeatures.empty())
     {
-      item.OutputToStream(ss, "ProcessorFeatures.member.", processorFeaturesCount, "");
-      processorFeaturesCount++;
+      ss << "ProcessorFeatures=&";
+    }
+    else
+    {
+      unsigned processorFeaturesCount = 1;
+      for(auto& item : m_processorFeatures)
+      {
+        item.OutputToStream(ss, "ProcessorFeatures.ProcessorFeature.", processorFeaturesCount, "");
+        processorFeaturesCount++;
+      }
     }
   }
 
@@ -371,6 +448,21 @@ Aws::String ModifyDBInstanceRequest::SerializePayload() const
   if(m_masterUserSecretKmsKeyIdHasBeenSet)
   {
     ss << "MasterUserSecretKmsKeyId=" << StringUtils::URLEncode(m_masterUserSecretKmsKeyId.c_str()) << "&";
+  }
+
+  if(m_engineHasBeenSet)
+  {
+    ss << "Engine=" << StringUtils::URLEncode(m_engine.c_str()) << "&";
+  }
+
+  if(m_dedicatedLogVolumeHasBeenSet)
+  {
+    ss << "DedicatedLogVolume=" << std::boolalpha << m_dedicatedLogVolume << "&";
+  }
+
+  if(m_multiTenantHasBeenSet)
+  {
+    ss << "MultiTenant=" << std::boolalpha << m_multiTenant << "&";
   }
 
   ss << "Version=2014-10-31";

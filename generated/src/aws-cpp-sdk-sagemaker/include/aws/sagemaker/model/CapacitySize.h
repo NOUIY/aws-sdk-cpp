@@ -24,8 +24,13 @@ namespace Model
 {
 
   /**
-   * <p>Specifies the endpoint capacity to activate for production.</p><p><h3>See
-   * Also:</h3>   <a
+   * <p>Specifies the type and size of the endpoint capacity to activate for a
+   * blue/green deployment, a rolling deployment, or a rollback strategy. You can
+   * specify your batches as either instance count or the overall percentage or your
+   * fleet.</p> <p>For a rollback strategy, if you don't specify the fields in this
+   * object, or if you set the <code>Value</code> to 100%, then SageMaker uses a
+   * blue/green rollback strategy and rolls all traffic back to the blue
+   * fleet.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/sagemaker-2017-07-24/CapacitySize">AWS
    * API Reference</a></p>
    */
@@ -38,6 +43,7 @@ namespace Model
     AWS_SAGEMAKER_API Aws::Utils::Json::JsonValue Jsonize() const;
 
 
+    ///@{
     /**
      * <p>Specifies the endpoint capacity type.</p> <ul> <li> <p>
      * <code>INSTANCE_COUNT</code>: The endpoint activates based on the number of
@@ -45,72 +51,23 @@ namespace Model
      * activates based on the specified percentage of capacity.</p> </li> </ul>
      */
     inline const CapacitySizeType& GetType() const{ return m_type; }
-
-    /**
-     * <p>Specifies the endpoint capacity type.</p> <ul> <li> <p>
-     * <code>INSTANCE_COUNT</code>: The endpoint activates based on the number of
-     * instances.</p> </li> <li> <p> <code>CAPACITY_PERCENT</code>: The endpoint
-     * activates based on the specified percentage of capacity.</p> </li> </ul>
-     */
     inline bool TypeHasBeenSet() const { return m_typeHasBeenSet; }
-
-    /**
-     * <p>Specifies the endpoint capacity type.</p> <ul> <li> <p>
-     * <code>INSTANCE_COUNT</code>: The endpoint activates based on the number of
-     * instances.</p> </li> <li> <p> <code>CAPACITY_PERCENT</code>: The endpoint
-     * activates based on the specified percentage of capacity.</p> </li> </ul>
-     */
     inline void SetType(const CapacitySizeType& value) { m_typeHasBeenSet = true; m_type = value; }
-
-    /**
-     * <p>Specifies the endpoint capacity type.</p> <ul> <li> <p>
-     * <code>INSTANCE_COUNT</code>: The endpoint activates based on the number of
-     * instances.</p> </li> <li> <p> <code>CAPACITY_PERCENT</code>: The endpoint
-     * activates based on the specified percentage of capacity.</p> </li> </ul>
-     */
     inline void SetType(CapacitySizeType&& value) { m_typeHasBeenSet = true; m_type = std::move(value); }
-
-    /**
-     * <p>Specifies the endpoint capacity type.</p> <ul> <li> <p>
-     * <code>INSTANCE_COUNT</code>: The endpoint activates based on the number of
-     * instances.</p> </li> <li> <p> <code>CAPACITY_PERCENT</code>: The endpoint
-     * activates based on the specified percentage of capacity.</p> </li> </ul>
-     */
     inline CapacitySize& WithType(const CapacitySizeType& value) { SetType(value); return *this;}
-
-    /**
-     * <p>Specifies the endpoint capacity type.</p> <ul> <li> <p>
-     * <code>INSTANCE_COUNT</code>: The endpoint activates based on the number of
-     * instances.</p> </li> <li> <p> <code>CAPACITY_PERCENT</code>: The endpoint
-     * activates based on the specified percentage of capacity.</p> </li> </ul>
-     */
     inline CapacitySize& WithType(CapacitySizeType&& value) { SetType(std::move(value)); return *this;}
+    ///@}
 
-
+    ///@{
     /**
      * <p>Defines the capacity size, either as a number of instances or a capacity
      * percentage.</p>
      */
     inline int GetValue() const{ return m_value; }
-
-    /**
-     * <p>Defines the capacity size, either as a number of instances or a capacity
-     * percentage.</p>
-     */
     inline bool ValueHasBeenSet() const { return m_valueHasBeenSet; }
-
-    /**
-     * <p>Defines the capacity size, either as a number of instances or a capacity
-     * percentage.</p>
-     */
     inline void SetValue(int value) { m_valueHasBeenSet = true; m_value = value; }
-
-    /**
-     * <p>Defines the capacity size, either as a number of instances or a capacity
-     * percentage.</p>
-     */
     inline CapacitySize& WithValue(int value) { SetValue(value); return *this;}
-
+    ///@}
   private:
 
     CapacitySizeType m_type;

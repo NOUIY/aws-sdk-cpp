@@ -22,16 +22,14 @@ DescribeRecoveryPointResult::DescribeRecoveryPointResult() :
     m_backupSizeInBytes(0),
     m_isEncrypted(false),
     m_storageClass(StorageClass::NOT_SET),
-    m_isParent(false)
+    m_isParent(false),
+    m_vaultType(VaultType::NOT_SET),
+    m_indexStatus(IndexStatus::NOT_SET)
 {
 }
 
-DescribeRecoveryPointResult::DescribeRecoveryPointResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(RecoveryPointStatus::NOT_SET),
-    m_backupSizeInBytes(0),
-    m_isEncrypted(false),
-    m_storageClass(StorageClass::NOT_SET),
-    m_isParent(false)
+DescribeRecoveryPointResult::DescribeRecoveryPointResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeRecoveryPointResult()
 {
   *this = result;
 }
@@ -174,6 +172,24 @@ DescribeRecoveryPointResult& DescribeRecoveryPointResult::operator =(const Aws::
   if(jsonValue.ValueExists("ResourceName"))
   {
     m_resourceName = jsonValue.GetString("ResourceName");
+
+  }
+
+  if(jsonValue.ValueExists("VaultType"))
+  {
+    m_vaultType = VaultTypeMapper::GetVaultTypeForName(jsonValue.GetString("VaultType"));
+
+  }
+
+  if(jsonValue.ValueExists("IndexStatus"))
+  {
+    m_indexStatus = IndexStatusMapper::GetIndexStatusForName(jsonValue.GetString("IndexStatus"));
+
+  }
+
+  if(jsonValue.ValueExists("IndexStatusMessage"))
+  {
+    m_indexStatusMessage = jsonValue.GetString("IndexStatusMessage");
 
   }
 

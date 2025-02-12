@@ -26,23 +26,16 @@ ReplicaDescription::ReplicaDescription() :
     m_replicaStatusPercentProgressHasBeenSet(false),
     m_kMSMasterKeyIdHasBeenSet(false),
     m_provisionedThroughputOverrideHasBeenSet(false),
+    m_onDemandThroughputOverrideHasBeenSet(false),
+    m_warmThroughputHasBeenSet(false),
     m_globalSecondaryIndexesHasBeenSet(false),
     m_replicaInaccessibleDateTimeHasBeenSet(false),
     m_replicaTableClassSummaryHasBeenSet(false)
 {
 }
 
-ReplicaDescription::ReplicaDescription(JsonView jsonValue) : 
-    m_regionNameHasBeenSet(false),
-    m_replicaStatus(ReplicaStatus::NOT_SET),
-    m_replicaStatusHasBeenSet(false),
-    m_replicaStatusDescriptionHasBeenSet(false),
-    m_replicaStatusPercentProgressHasBeenSet(false),
-    m_kMSMasterKeyIdHasBeenSet(false),
-    m_provisionedThroughputOverrideHasBeenSet(false),
-    m_globalSecondaryIndexesHasBeenSet(false),
-    m_replicaInaccessibleDateTimeHasBeenSet(false),
-    m_replicaTableClassSummaryHasBeenSet(false)
+ReplicaDescription::ReplicaDescription(JsonView jsonValue)
+  : ReplicaDescription()
 {
   *this = jsonValue;
 }
@@ -89,6 +82,20 @@ ReplicaDescription& ReplicaDescription::operator =(JsonView jsonValue)
     m_provisionedThroughputOverride = jsonValue.GetObject("ProvisionedThroughputOverride");
 
     m_provisionedThroughputOverrideHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("OnDemandThroughputOverride"))
+  {
+    m_onDemandThroughputOverride = jsonValue.GetObject("OnDemandThroughputOverride");
+
+    m_onDemandThroughputOverrideHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("WarmThroughput"))
+  {
+    m_warmThroughput = jsonValue.GetObject("WarmThroughput");
+
+    m_warmThroughputHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("GlobalSecondaryIndexes"))
@@ -154,6 +161,18 @@ JsonValue ReplicaDescription::Jsonize() const
   if(m_provisionedThroughputOverrideHasBeenSet)
   {
    payload.WithObject("ProvisionedThroughputOverride", m_provisionedThroughputOverride.Jsonize());
+
+  }
+
+  if(m_onDemandThroughputOverrideHasBeenSet)
+  {
+   payload.WithObject("OnDemandThroughputOverride", m_onDemandThroughputOverride.Jsonize());
+
+  }
+
+  if(m_warmThroughputHasBeenSet)
+  {
+   payload.WithObject("WarmThroughput", m_warmThroughput.Jsonize());
 
   }
 

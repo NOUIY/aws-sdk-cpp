@@ -21,15 +21,16 @@ DescribeAssetBundleExportJobResult::DescribeAssetBundleExportJobResult() :
     m_jobStatus(AssetBundleExportJobStatus::NOT_SET),
     m_includeAllDependencies(false),
     m_exportFormat(AssetBundleExportFormat::NOT_SET),
-    m_status(0)
+    m_status(0),
+    m_includePermissions(false),
+    m_includeTags(false),
+    m_includeFolderMemberships(false),
+    m_includeFolderMembers(IncludeFolderMembers::NOT_SET)
 {
 }
 
-DescribeAssetBundleExportJobResult::DescribeAssetBundleExportJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_jobStatus(AssetBundleExportJobStatus::NOT_SET),
-    m_includeAllDependencies(false),
-    m_exportFormat(AssetBundleExportFormat::NOT_SET),
-    m_status(0)
+DescribeAssetBundleExportJobResult::DescribeAssetBundleExportJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeAssetBundleExportJobResult()
 {
   *this = result;
 }
@@ -106,6 +107,45 @@ DescribeAssetBundleExportJobResult& DescribeAssetBundleExportJobResult::operator
   if(jsonValue.ValueExists("CloudFormationOverridePropertyConfiguration"))
   {
     m_cloudFormationOverridePropertyConfiguration = jsonValue.GetObject("CloudFormationOverridePropertyConfiguration");
+
+  }
+
+  if(jsonValue.ValueExists("IncludePermissions"))
+  {
+    m_includePermissions = jsonValue.GetBool("IncludePermissions");
+
+  }
+
+  if(jsonValue.ValueExists("IncludeTags"))
+  {
+    m_includeTags = jsonValue.GetBool("IncludeTags");
+
+  }
+
+  if(jsonValue.ValueExists("ValidationStrategy"))
+  {
+    m_validationStrategy = jsonValue.GetObject("ValidationStrategy");
+
+  }
+
+  if(jsonValue.ValueExists("Warnings"))
+  {
+    Aws::Utils::Array<JsonView> warningsJsonList = jsonValue.GetArray("Warnings");
+    for(unsigned warningsIndex = 0; warningsIndex < warningsJsonList.GetLength(); ++warningsIndex)
+    {
+      m_warnings.push_back(warningsJsonList[warningsIndex].AsObject());
+    }
+  }
+
+  if(jsonValue.ValueExists("IncludeFolderMemberships"))
+  {
+    m_includeFolderMemberships = jsonValue.GetBool("IncludeFolderMemberships");
+
+  }
+
+  if(jsonValue.ValueExists("IncludeFolderMembers"))
+  {
+    m_includeFolderMembers = IncludeFolderMembersMapper::GetIncludeFolderMembersForName(jsonValue.GetString("IncludeFolderMembers"));
 
   }
 

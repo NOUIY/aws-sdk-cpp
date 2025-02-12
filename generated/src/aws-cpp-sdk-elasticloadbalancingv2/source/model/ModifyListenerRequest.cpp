@@ -19,7 +19,8 @@ ModifyListenerRequest::ModifyListenerRequest() :
     m_sslPolicyHasBeenSet(false),
     m_certificatesHasBeenSet(false),
     m_defaultActionsHasBeenSet(false),
-    m_alpnPolicyHasBeenSet(false)
+    m_alpnPolicyHasBeenSet(false),
+    m_mutualAuthenticationHasBeenSet(false)
 {
 }
 
@@ -49,33 +50,59 @@ Aws::String ModifyListenerRequest::SerializePayload() const
 
   if(m_certificatesHasBeenSet)
   {
-    unsigned certificatesCount = 1;
-    for(auto& item : m_certificates)
+    if (m_certificates.empty())
     {
-      item.OutputToStream(ss, "Certificates.member.", certificatesCount, "");
-      certificatesCount++;
+      ss << "Certificates=&";
+    }
+    else
+    {
+      unsigned certificatesCount = 1;
+      for(auto& item : m_certificates)
+      {
+        item.OutputToStream(ss, "Certificates.member.", certificatesCount, "");
+        certificatesCount++;
+      }
     }
   }
 
   if(m_defaultActionsHasBeenSet)
   {
-    unsigned defaultActionsCount = 1;
-    for(auto& item : m_defaultActions)
+    if (m_defaultActions.empty())
     {
-      item.OutputToStream(ss, "DefaultActions.member.", defaultActionsCount, "");
-      defaultActionsCount++;
+      ss << "DefaultActions=&";
+    }
+    else
+    {
+      unsigned defaultActionsCount = 1;
+      for(auto& item : m_defaultActions)
+      {
+        item.OutputToStream(ss, "DefaultActions.member.", defaultActionsCount, "");
+        defaultActionsCount++;
+      }
     }
   }
 
   if(m_alpnPolicyHasBeenSet)
   {
-    unsigned alpnPolicyCount = 1;
-    for(auto& item : m_alpnPolicy)
+    if (m_alpnPolicy.empty())
     {
-      ss << "AlpnPolicy.member." << alpnPolicyCount << "="
-          << StringUtils::URLEncode(item.c_str()) << "&";
-      alpnPolicyCount++;
+      ss << "AlpnPolicy=&";
     }
+    else
+    {
+      unsigned alpnPolicyCount = 1;
+      for(auto& item : m_alpnPolicy)
+      {
+        ss << "AlpnPolicy.member." << alpnPolicyCount << "="
+            << StringUtils::URLEncode(item.c_str()) << "&";
+        alpnPolicyCount++;
+      }
+    }
+  }
+
+  if(m_mutualAuthenticationHasBeenSet)
+  {
+    m_mutualAuthentication.OutputToStream(ss, "MutualAuthentication");
   }
 
   ss << "Version=2015-12-01";

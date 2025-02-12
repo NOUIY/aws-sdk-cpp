@@ -27,7 +27,9 @@ DomainStatus::DomainStatus() :
     m_deleted(false),
     m_deletedHasBeenSet(false),
     m_endpointHasBeenSet(false),
+    m_endpointV2HasBeenSet(false),
     m_endpointsHasBeenSet(false),
+    m_domainEndpointV2HostedZoneIdHasBeenSet(false),
     m_processing(false),
     m_processingHasBeenSet(false),
     m_upgradeProcessing(false),
@@ -36,6 +38,8 @@ DomainStatus::DomainStatus() :
     m_clusterConfigHasBeenSet(false),
     m_eBSOptionsHasBeenSet(false),
     m_accessPoliciesHasBeenSet(false),
+    m_iPAddressType(IPAddressType::NOT_SET),
+    m_iPAddressTypeHasBeenSet(false),
     m_snapshotOptionsHasBeenSet(false),
     m_vPCOptionsHasBeenSet(false),
     m_cognitoOptionsHasBeenSet(false),
@@ -46,45 +50,20 @@ DomainStatus::DomainStatus() :
     m_serviceSoftwareOptionsHasBeenSet(false),
     m_domainEndpointOptionsHasBeenSet(false),
     m_advancedSecurityOptionsHasBeenSet(false),
+    m_identityCenterOptionsHasBeenSet(false),
     m_autoTuneOptionsHasBeenSet(false),
     m_changeProgressDetailsHasBeenSet(false),
     m_offPeakWindowOptionsHasBeenSet(false),
-    m_softwareUpdateOptionsHasBeenSet(false)
+    m_softwareUpdateOptionsHasBeenSet(false),
+    m_domainProcessingStatus(DomainProcessingStatusType::NOT_SET),
+    m_domainProcessingStatusHasBeenSet(false),
+    m_modifyingPropertiesHasBeenSet(false),
+    m_aIMLOptionsHasBeenSet(false)
 {
 }
 
-DomainStatus::DomainStatus(JsonView jsonValue) : 
-    m_domainIdHasBeenSet(false),
-    m_domainNameHasBeenSet(false),
-    m_aRNHasBeenSet(false),
-    m_created(false),
-    m_createdHasBeenSet(false),
-    m_deleted(false),
-    m_deletedHasBeenSet(false),
-    m_endpointHasBeenSet(false),
-    m_endpointsHasBeenSet(false),
-    m_processing(false),
-    m_processingHasBeenSet(false),
-    m_upgradeProcessing(false),
-    m_upgradeProcessingHasBeenSet(false),
-    m_engineVersionHasBeenSet(false),
-    m_clusterConfigHasBeenSet(false),
-    m_eBSOptionsHasBeenSet(false),
-    m_accessPoliciesHasBeenSet(false),
-    m_snapshotOptionsHasBeenSet(false),
-    m_vPCOptionsHasBeenSet(false),
-    m_cognitoOptionsHasBeenSet(false),
-    m_encryptionAtRestOptionsHasBeenSet(false),
-    m_nodeToNodeEncryptionOptionsHasBeenSet(false),
-    m_advancedOptionsHasBeenSet(false),
-    m_logPublishingOptionsHasBeenSet(false),
-    m_serviceSoftwareOptionsHasBeenSet(false),
-    m_domainEndpointOptionsHasBeenSet(false),
-    m_advancedSecurityOptionsHasBeenSet(false),
-    m_autoTuneOptionsHasBeenSet(false),
-    m_changeProgressDetailsHasBeenSet(false),
-    m_offPeakWindowOptionsHasBeenSet(false),
-    m_softwareUpdateOptionsHasBeenSet(false)
+DomainStatus::DomainStatus(JsonView jsonValue)
+  : DomainStatus()
 {
   *this = jsonValue;
 }
@@ -133,6 +112,13 @@ DomainStatus& DomainStatus::operator =(JsonView jsonValue)
     m_endpointHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("EndpointV2"))
+  {
+    m_endpointV2 = jsonValue.GetString("EndpointV2");
+
+    m_endpointV2HasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("Endpoints"))
   {
     Aws::Map<Aws::String, JsonView> endpointsJsonMap = jsonValue.GetObject("Endpoints").GetAllObjects();
@@ -141,6 +127,13 @@ DomainStatus& DomainStatus::operator =(JsonView jsonValue)
       m_endpoints[endpointsItem.first] = endpointsItem.second.AsString();
     }
     m_endpointsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("DomainEndpointV2HostedZoneId"))
+  {
+    m_domainEndpointV2HostedZoneId = jsonValue.GetString("DomainEndpointV2HostedZoneId");
+
+    m_domainEndpointV2HostedZoneIdHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("Processing"))
@@ -183,6 +176,13 @@ DomainStatus& DomainStatus::operator =(JsonView jsonValue)
     m_accessPolicies = jsonValue.GetString("AccessPolicies");
 
     m_accessPoliciesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("IPAddressType"))
+  {
+    m_iPAddressType = IPAddressTypeMapper::GetIPAddressTypeForName(jsonValue.GetString("IPAddressType"));
+
+    m_iPAddressTypeHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("SnapshotOptions"))
@@ -261,6 +261,13 @@ DomainStatus& DomainStatus::operator =(JsonView jsonValue)
     m_advancedSecurityOptionsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("IdentityCenterOptions"))
+  {
+    m_identityCenterOptions = jsonValue.GetObject("IdentityCenterOptions");
+
+    m_identityCenterOptionsHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("AutoTuneOptions"))
   {
     m_autoTuneOptions = jsonValue.GetObject("AutoTuneOptions");
@@ -287,6 +294,30 @@ DomainStatus& DomainStatus::operator =(JsonView jsonValue)
     m_softwareUpdateOptions = jsonValue.GetObject("SoftwareUpdateOptions");
 
     m_softwareUpdateOptionsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("DomainProcessingStatus"))
+  {
+    m_domainProcessingStatus = DomainProcessingStatusTypeMapper::GetDomainProcessingStatusTypeForName(jsonValue.GetString("DomainProcessingStatus"));
+
+    m_domainProcessingStatusHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("ModifyingProperties"))
+  {
+    Aws::Utils::Array<JsonView> modifyingPropertiesJsonList = jsonValue.GetArray("ModifyingProperties");
+    for(unsigned modifyingPropertiesIndex = 0; modifyingPropertiesIndex < modifyingPropertiesJsonList.GetLength(); ++modifyingPropertiesIndex)
+    {
+      m_modifyingProperties.push_back(modifyingPropertiesJsonList[modifyingPropertiesIndex].AsObject());
+    }
+    m_modifyingPropertiesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AIMLOptions"))
+  {
+    m_aIMLOptions = jsonValue.GetObject("AIMLOptions");
+
+    m_aIMLOptionsHasBeenSet = true;
   }
 
   return *this;
@@ -332,6 +363,12 @@ JsonValue DomainStatus::Jsonize() const
 
   }
 
+  if(m_endpointV2HasBeenSet)
+  {
+   payload.WithString("EndpointV2", m_endpointV2);
+
+  }
+
   if(m_endpointsHasBeenSet)
   {
    JsonValue endpointsJsonMap;
@@ -340,6 +377,12 @@ JsonValue DomainStatus::Jsonize() const
      endpointsJsonMap.WithString(endpointsItem.first, endpointsItem.second);
    }
    payload.WithObject("Endpoints", std::move(endpointsJsonMap));
+
+  }
+
+  if(m_domainEndpointV2HostedZoneIdHasBeenSet)
+  {
+   payload.WithString("DomainEndpointV2HostedZoneId", m_domainEndpointV2HostedZoneId);
 
   }
 
@@ -377,6 +420,11 @@ JsonValue DomainStatus::Jsonize() const
   {
    payload.WithString("AccessPolicies", m_accessPolicies);
 
+  }
+
+  if(m_iPAddressTypeHasBeenSet)
+  {
+   payload.WithString("IPAddressType", IPAddressTypeMapper::GetNameForIPAddressType(m_iPAddressType));
   }
 
   if(m_snapshotOptionsHasBeenSet)
@@ -449,6 +497,12 @@ JsonValue DomainStatus::Jsonize() const
 
   }
 
+  if(m_identityCenterOptionsHasBeenSet)
+  {
+   payload.WithObject("IdentityCenterOptions", m_identityCenterOptions.Jsonize());
+
+  }
+
   if(m_autoTuneOptionsHasBeenSet)
   {
    payload.WithObject("AutoTuneOptions", m_autoTuneOptions.Jsonize());
@@ -470,6 +524,28 @@ JsonValue DomainStatus::Jsonize() const
   if(m_softwareUpdateOptionsHasBeenSet)
   {
    payload.WithObject("SoftwareUpdateOptions", m_softwareUpdateOptions.Jsonize());
+
+  }
+
+  if(m_domainProcessingStatusHasBeenSet)
+  {
+   payload.WithString("DomainProcessingStatus", DomainProcessingStatusTypeMapper::GetNameForDomainProcessingStatusType(m_domainProcessingStatus));
+  }
+
+  if(m_modifyingPropertiesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> modifyingPropertiesJsonList(m_modifyingProperties.size());
+   for(unsigned modifyingPropertiesIndex = 0; modifyingPropertiesIndex < modifyingPropertiesJsonList.GetLength(); ++modifyingPropertiesIndex)
+   {
+     modifyingPropertiesJsonList[modifyingPropertiesIndex].AsObject(m_modifyingProperties[modifyingPropertiesIndex].Jsonize());
+   }
+   payload.WithArray("ModifyingProperties", std::move(modifyingPropertiesJsonList));
+
+  }
+
+  if(m_aIMLOptionsHasBeenSet)
+  {
+   payload.WithObject("AIMLOptions", m_aIMLOptions.Jsonize());
 
   }
 

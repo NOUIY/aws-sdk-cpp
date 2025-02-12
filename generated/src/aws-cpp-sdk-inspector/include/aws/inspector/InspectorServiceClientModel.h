@@ -46,6 +46,13 @@
 #include <aws/inspector/model/PreviewAgentsResult.h>
 #include <aws/inspector/model/RemoveAttributesFromFindingsResult.h>
 #include <aws/inspector/model/StartAssessmentRunResult.h>
+#include <aws/inspector/model/ListAssessmentTargetsRequest.h>
+#include <aws/inspector/model/DescribeCrossAccountAccessRoleRequest.h>
+#include <aws/inspector/model/ListEventSubscriptionsRequest.h>
+#include <aws/inspector/model/ListAssessmentRunsRequest.h>
+#include <aws/inspector/model/ListFindingsRequest.h>
+#include <aws/inspector/model/ListAssessmentTemplatesRequest.h>
+#include <aws/inspector/model/ListRulesPackagesRequest.h>
 #include <aws/core/NoResult.h>
 /* End of service model headers required in InspectorClient header */
 
@@ -80,7 +87,7 @@ namespace Aws
 
   namespace Inspector
   {
-    using InspectorClientConfiguration = Aws::Client::GenericClientConfiguration<false>;
+    using InspectorClientConfiguration = Aws::Client::GenericClientConfiguration;
     using InspectorEndpointProviderBase = Aws::Inspector::Endpoint::InspectorEndpointProviderBase;
     using InspectorEndpointProvider = Aws::Inspector::Endpoint::InspectorEndpointProvider;
 
@@ -98,6 +105,7 @@ namespace Aws
       class DescribeAssessmentRunsRequest;
       class DescribeAssessmentTargetsRequest;
       class DescribeAssessmentTemplatesRequest;
+      class DescribeCrossAccountAccessRoleRequest;
       class DescribeExclusionsRequest;
       class DescribeFindingsRequest;
       class DescribeResourceGroupsRequest;
@@ -220,7 +228,7 @@ namespace Aws
     typedef std::function<void(const InspectorClient*, const Model::DescribeAssessmentRunsRequest&, const Model::DescribeAssessmentRunsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeAssessmentRunsResponseReceivedHandler;
     typedef std::function<void(const InspectorClient*, const Model::DescribeAssessmentTargetsRequest&, const Model::DescribeAssessmentTargetsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeAssessmentTargetsResponseReceivedHandler;
     typedef std::function<void(const InspectorClient*, const Model::DescribeAssessmentTemplatesRequest&, const Model::DescribeAssessmentTemplatesOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeAssessmentTemplatesResponseReceivedHandler;
-    typedef std::function<void(const InspectorClient*, const Model::DescribeCrossAccountAccessRoleOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeCrossAccountAccessRoleResponseReceivedHandler;
+    typedef std::function<void(const InspectorClient*, const Model::DescribeCrossAccountAccessRoleRequest&, const Model::DescribeCrossAccountAccessRoleOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeCrossAccountAccessRoleResponseReceivedHandler;
     typedef std::function<void(const InspectorClient*, const Model::DescribeExclusionsRequest&, const Model::DescribeExclusionsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeExclusionsResponseReceivedHandler;
     typedef std::function<void(const InspectorClient*, const Model::DescribeFindingsRequest&, const Model::DescribeFindingsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeFindingsResponseReceivedHandler;
     typedef std::function<void(const InspectorClient*, const Model::DescribeResourceGroupsRequest&, const Model::DescribeResourceGroupsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeResourceGroupsResponseReceivedHandler;

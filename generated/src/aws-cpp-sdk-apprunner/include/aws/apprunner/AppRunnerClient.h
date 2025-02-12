@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/apprunner/AppRunner_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/apprunner/AppRunnerServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/apprunner/AppRunnerErrorMarshaller.h>
 
 namespace Aws
 {
 namespace AppRunner
 {
+  AWS_APPRUNNER_API extern const char SERVICE_NAME[];
   /**
    * <fullname>App Runner</fullname> <p>App Runner is an application service that
    * provides a fast, simple, and cost-effective way to go directly from an existing
@@ -37,12 +41,20 @@ namespace AppRunner
    * endpoints and quotas</a> in the <i>Amazon Web Services General
    * Reference</i>.</p>
    */
-  class AWS_APPRUNNER_API AppRunnerClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<AppRunnerClient>
+  class AWS_APPRUNNER_API AppRunnerClient : smithy::client::AwsSmithyClientT<Aws::AppRunner::SERVICE_NAME,
+      Aws::AppRunner::AppRunnerClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      AppRunnerEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::AppRunnerErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<AppRunnerClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "AppRunner"; }
 
       typedef AppRunnerClientConfiguration ClientConfigurationType;
       typedef AppRunnerEndpointProvider EndpointProviderType;
@@ -52,14 +64,14 @@ namespace AppRunner
         * is not specified, it will be initialized to default values.
         */
         AppRunnerClient(const Aws::AppRunner::AppRunnerClientConfiguration& clientConfiguration = Aws::AppRunner::AppRunnerClientConfiguration(),
-                        std::shared_ptr<AppRunnerEndpointProviderBase> endpointProvider = Aws::MakeShared<AppRunnerEndpointProvider>(ALLOCATION_TAG));
+                        std::shared_ptr<AppRunnerEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         AppRunnerClient(const Aws::Auth::AWSCredentials& credentials,
-                        std::shared_ptr<AppRunnerEndpointProviderBase> endpointProvider = Aws::MakeShared<AppRunnerEndpointProvider>(ALLOCATION_TAG),
+                        std::shared_ptr<AppRunnerEndpointProviderBase> endpointProvider = nullptr,
                         const Aws::AppRunner::AppRunnerClientConfiguration& clientConfiguration = Aws::AppRunner::AppRunnerClientConfiguration());
 
        /**
@@ -67,7 +79,7 @@ namespace AppRunner
         * the default http client factory will be used
         */
         AppRunnerClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                        std::shared_ptr<AppRunnerEndpointProviderBase> endpointProvider = Aws::MakeShared<AppRunnerEndpointProvider>(ALLOCATION_TAG),
+                        std::shared_ptr<AppRunnerEndpointProviderBase> endpointProvider = nullptr,
                         const Aws::AppRunner::AppRunnerClientConfiguration& clientConfiguration = Aws::AppRunner::AppRunnerClientConfiguration());
 
 
@@ -172,9 +184,9 @@ namespace AppRunner
          * <p>Create an App Runner connection resource. App Runner requires a connection
          * resource when you create App Runner services that access private repositories
          * from certain third-party providers. You can share a connection across multiple
-         * services.</p> <p>A connection resource is needed to access GitHub repositories.
-         * GitHub requires a user interface approval process through the App Runner console
-         * before you can use the connection.</p><p><h3>See Also:</h3>   <a
+         * services.</p> <p>A connection resource is needed to access GitHub and Bitbucket
+         * repositories. Both require a user interface approval process through the App
+         * Runner console before you can use the connection.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/apprunner-2020-05-15/CreateConnection">AWS
          * API Reference</a></p>
          */
@@ -322,9 +334,10 @@ namespace AppRunner
 
         /**
          * <p>Delete an App Runner automatic scaling configuration resource. You can delete
-         * a specific revision or the latest active revision. You can't delete a
-         * configuration that's used by one or more App Runner services.</p><p><h3>See
-         * Also:</h3>   <a
+         * a top level auto scaling configuration, a specific revision of one, or all
+         * revisions associated with the top level configuration. You can't delete the
+         * default auto scaling configuration or a configuration that's used by one or more
+         * App Runner services.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/apprunner-2020-05-15/DeleteAutoScalingConfiguration">AWS
          * API Reference</a></p>
          */
@@ -685,13 +698,13 @@ namespace AppRunner
          * href="http://docs.aws.amazon.com/goto/WebAPI/apprunner-2020-05-15/ListAutoScalingConfigurations">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListAutoScalingConfigurationsOutcome ListAutoScalingConfigurations(const Model::ListAutoScalingConfigurationsRequest& request) const;
+        virtual Model::ListAutoScalingConfigurationsOutcome ListAutoScalingConfigurations(const Model::ListAutoScalingConfigurationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListAutoScalingConfigurations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListAutoScalingConfigurationsRequestT = Model::ListAutoScalingConfigurationsRequest>
-        Model::ListAutoScalingConfigurationsOutcomeCallable ListAutoScalingConfigurationsCallable(const ListAutoScalingConfigurationsRequestT& request) const
+        Model::ListAutoScalingConfigurationsOutcomeCallable ListAutoScalingConfigurationsCallable(const ListAutoScalingConfigurationsRequestT& request = {}) const
         {
             return SubmitCallable(&AppRunnerClient::ListAutoScalingConfigurations, request);
         }
@@ -700,7 +713,7 @@ namespace AppRunner
          * An Async wrapper for ListAutoScalingConfigurations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListAutoScalingConfigurationsRequestT = Model::ListAutoScalingConfigurationsRequest>
-        void ListAutoScalingConfigurationsAsync(const ListAutoScalingConfigurationsRequestT& request, const ListAutoScalingConfigurationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListAutoScalingConfigurationsAsync(const ListAutoScalingConfigurationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListAutoScalingConfigurationsRequestT& request = {}) const
         {
             return SubmitAsync(&AppRunnerClient::ListAutoScalingConfigurations, request, handler, context);
         }
@@ -711,13 +724,13 @@ namespace AppRunner
          * href="http://docs.aws.amazon.com/goto/WebAPI/apprunner-2020-05-15/ListConnections">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListConnectionsOutcome ListConnections(const Model::ListConnectionsRequest& request) const;
+        virtual Model::ListConnectionsOutcome ListConnections(const Model::ListConnectionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListConnections that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListConnectionsRequestT = Model::ListConnectionsRequest>
-        Model::ListConnectionsOutcomeCallable ListConnectionsCallable(const ListConnectionsRequestT& request) const
+        Model::ListConnectionsOutcomeCallable ListConnectionsCallable(const ListConnectionsRequestT& request = {}) const
         {
             return SubmitCallable(&AppRunnerClient::ListConnections, request);
         }
@@ -726,7 +739,7 @@ namespace AppRunner
          * An Async wrapper for ListConnections that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListConnectionsRequestT = Model::ListConnectionsRequest>
-        void ListConnectionsAsync(const ListConnectionsRequestT& request, const ListConnectionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListConnectionsAsync(const ListConnectionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListConnectionsRequestT& request = {}) const
         {
             return SubmitAsync(&AppRunnerClient::ListConnections, request, handler, context);
         }
@@ -742,13 +755,13 @@ namespace AppRunner
          * href="http://docs.aws.amazon.com/goto/WebAPI/apprunner-2020-05-15/ListObservabilityConfigurations">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListObservabilityConfigurationsOutcome ListObservabilityConfigurations(const Model::ListObservabilityConfigurationsRequest& request) const;
+        virtual Model::ListObservabilityConfigurationsOutcome ListObservabilityConfigurations(const Model::ListObservabilityConfigurationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListObservabilityConfigurations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListObservabilityConfigurationsRequestT = Model::ListObservabilityConfigurationsRequest>
-        Model::ListObservabilityConfigurationsOutcomeCallable ListObservabilityConfigurationsCallable(const ListObservabilityConfigurationsRequestT& request) const
+        Model::ListObservabilityConfigurationsOutcomeCallable ListObservabilityConfigurationsCallable(const ListObservabilityConfigurationsRequestT& request = {}) const
         {
             return SubmitCallable(&AppRunnerClient::ListObservabilityConfigurations, request);
         }
@@ -757,7 +770,7 @@ namespace AppRunner
          * An Async wrapper for ListObservabilityConfigurations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListObservabilityConfigurationsRequestT = Model::ListObservabilityConfigurationsRequest>
-        void ListObservabilityConfigurationsAsync(const ListObservabilityConfigurationsRequestT& request, const ListObservabilityConfigurationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListObservabilityConfigurationsAsync(const ListObservabilityConfigurationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListObservabilityConfigurationsRequestT& request = {}) const
         {
             return SubmitAsync(&AppRunnerClient::ListObservabilityConfigurations, request, handler, context);
         }
@@ -796,13 +809,13 @@ namespace AppRunner
          * href="http://docs.aws.amazon.com/goto/WebAPI/apprunner-2020-05-15/ListServices">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListServicesOutcome ListServices(const Model::ListServicesRequest& request) const;
+        virtual Model::ListServicesOutcome ListServices(const Model::ListServicesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListServices that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListServicesRequestT = Model::ListServicesRequest>
-        Model::ListServicesOutcomeCallable ListServicesCallable(const ListServicesRequestT& request) const
+        Model::ListServicesOutcomeCallable ListServicesCallable(const ListServicesRequestT& request = {}) const
         {
             return SubmitCallable(&AppRunnerClient::ListServices, request);
         }
@@ -811,9 +824,35 @@ namespace AppRunner
          * An Async wrapper for ListServices that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListServicesRequestT = Model::ListServicesRequest>
-        void ListServicesAsync(const ListServicesRequestT& request, const ListServicesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListServicesAsync(const ListServicesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListServicesRequestT& request = {}) const
         {
             return SubmitAsync(&AppRunnerClient::ListServices, request, handler, context);
+        }
+
+        /**
+         * <p>Returns a list of the associated App Runner services using an auto scaling
+         * configuration.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/apprunner-2020-05-15/ListServicesForAutoScalingConfiguration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListServicesForAutoScalingConfigurationOutcome ListServicesForAutoScalingConfiguration(const Model::ListServicesForAutoScalingConfigurationRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListServicesForAutoScalingConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListServicesForAutoScalingConfigurationRequestT = Model::ListServicesForAutoScalingConfigurationRequest>
+        Model::ListServicesForAutoScalingConfigurationOutcomeCallable ListServicesForAutoScalingConfigurationCallable(const ListServicesForAutoScalingConfigurationRequestT& request) const
+        {
+            return SubmitCallable(&AppRunnerClient::ListServicesForAutoScalingConfiguration, request);
+        }
+
+        /**
+         * An Async wrapper for ListServicesForAutoScalingConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListServicesForAutoScalingConfigurationRequestT = Model::ListServicesForAutoScalingConfigurationRequest>
+        void ListServicesForAutoScalingConfigurationAsync(const ListServicesForAutoScalingConfigurationRequestT& request, const ListServicesForAutoScalingConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AppRunnerClient::ListServicesForAutoScalingConfiguration, request, handler, context);
         }
 
         /**
@@ -848,13 +887,13 @@ namespace AppRunner
          * href="http://docs.aws.amazon.com/goto/WebAPI/apprunner-2020-05-15/ListVpcConnectors">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListVpcConnectorsOutcome ListVpcConnectors(const Model::ListVpcConnectorsRequest& request) const;
+        virtual Model::ListVpcConnectorsOutcome ListVpcConnectors(const Model::ListVpcConnectorsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListVpcConnectors that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListVpcConnectorsRequestT = Model::ListVpcConnectorsRequest>
-        Model::ListVpcConnectorsOutcomeCallable ListVpcConnectorsCallable(const ListVpcConnectorsRequestT& request) const
+        Model::ListVpcConnectorsOutcomeCallable ListVpcConnectorsCallable(const ListVpcConnectorsRequestT& request = {}) const
         {
             return SubmitCallable(&AppRunnerClient::ListVpcConnectors, request);
         }
@@ -863,7 +902,7 @@ namespace AppRunner
          * An Async wrapper for ListVpcConnectors that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListVpcConnectorsRequestT = Model::ListVpcConnectorsRequest>
-        void ListVpcConnectorsAsync(const ListVpcConnectorsRequestT& request, const ListVpcConnectorsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListVpcConnectorsAsync(const ListVpcConnectorsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListVpcConnectorsRequestT& request = {}) const
         {
             return SubmitAsync(&AppRunnerClient::ListVpcConnectors, request, handler, context);
         }
@@ -874,13 +913,13 @@ namespace AppRunner
          * href="http://docs.aws.amazon.com/goto/WebAPI/apprunner-2020-05-15/ListVpcIngressConnections">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListVpcIngressConnectionsOutcome ListVpcIngressConnections(const Model::ListVpcIngressConnectionsRequest& request) const;
+        virtual Model::ListVpcIngressConnectionsOutcome ListVpcIngressConnections(const Model::ListVpcIngressConnectionsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListVpcIngressConnections that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListVpcIngressConnectionsRequestT = Model::ListVpcIngressConnectionsRequest>
-        Model::ListVpcIngressConnectionsOutcomeCallable ListVpcIngressConnectionsCallable(const ListVpcIngressConnectionsRequestT& request) const
+        Model::ListVpcIngressConnectionsOutcomeCallable ListVpcIngressConnectionsCallable(const ListVpcIngressConnectionsRequestT& request = {}) const
         {
             return SubmitCallable(&AppRunnerClient::ListVpcIngressConnections, request);
         }
@@ -889,7 +928,7 @@ namespace AppRunner
          * An Async wrapper for ListVpcIngressConnections that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListVpcIngressConnectionsRequestT = Model::ListVpcIngressConnectionsRequest>
-        void ListVpcIngressConnectionsAsync(const ListVpcIngressConnectionsRequestT& request, const ListVpcIngressConnectionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListVpcIngressConnectionsAsync(const ListVpcIngressConnectionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListVpcIngressConnectionsRequestT& request = {}) const
         {
             return SubmitAsync(&AppRunnerClient::ListVpcIngressConnections, request, handler, context);
         }
@@ -1036,6 +1075,33 @@ namespace AppRunner
         }
 
         /**
+         * <p>Update an auto scaling configuration to be the default. The existing default
+         * auto scaling configuration will be set to non-default
+         * automatically.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/apprunner-2020-05-15/UpdateDefaultAutoScalingConfiguration">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateDefaultAutoScalingConfigurationOutcome UpdateDefaultAutoScalingConfiguration(const Model::UpdateDefaultAutoScalingConfigurationRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateDefaultAutoScalingConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateDefaultAutoScalingConfigurationRequestT = Model::UpdateDefaultAutoScalingConfigurationRequest>
+        Model::UpdateDefaultAutoScalingConfigurationOutcomeCallable UpdateDefaultAutoScalingConfigurationCallable(const UpdateDefaultAutoScalingConfigurationRequestT& request) const
+        {
+            return SubmitCallable(&AppRunnerClient::UpdateDefaultAutoScalingConfiguration, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateDefaultAutoScalingConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateDefaultAutoScalingConfigurationRequestT = Model::UpdateDefaultAutoScalingConfigurationRequest>
+        void UpdateDefaultAutoScalingConfigurationAsync(const UpdateDefaultAutoScalingConfigurationRequestT& request, const UpdateDefaultAutoScalingConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AppRunnerClient::UpdateDefaultAutoScalingConfiguration, request, handler, context);
+        }
+
+        /**
          * <p>Update an App Runner service. You can update the source configuration and
          * instance configuration of the service. You can also update the ARN of the auto
          * scaling configuration resource that's associated with the service. However, you
@@ -1102,11 +1168,7 @@ namespace AppRunner
       std::shared_ptr<AppRunnerEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<AppRunnerClient>;
-      void init(const AppRunnerClientConfiguration& clientConfiguration);
 
-      AppRunnerClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<AppRunnerEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace AppRunner

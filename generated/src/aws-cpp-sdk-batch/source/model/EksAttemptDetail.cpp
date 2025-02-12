@@ -20,7 +20,10 @@ namespace Model
 
 EksAttemptDetail::EksAttemptDetail() : 
     m_containersHasBeenSet(false),
+    m_initContainersHasBeenSet(false),
+    m_eksClusterArnHasBeenSet(false),
     m_podNameHasBeenSet(false),
+    m_podNamespaceHasBeenSet(false),
     m_nodeNameHasBeenSet(false),
     m_startedAt(0),
     m_startedAtHasBeenSet(false),
@@ -30,15 +33,8 @@ EksAttemptDetail::EksAttemptDetail() :
 {
 }
 
-EksAttemptDetail::EksAttemptDetail(JsonView jsonValue) : 
-    m_containersHasBeenSet(false),
-    m_podNameHasBeenSet(false),
-    m_nodeNameHasBeenSet(false),
-    m_startedAt(0),
-    m_startedAtHasBeenSet(false),
-    m_stoppedAt(0),
-    m_stoppedAtHasBeenSet(false),
-    m_statusReasonHasBeenSet(false)
+EksAttemptDetail::EksAttemptDetail(JsonView jsonValue)
+  : EksAttemptDetail()
 {
   *this = jsonValue;
 }
@@ -55,11 +51,35 @@ EksAttemptDetail& EksAttemptDetail::operator =(JsonView jsonValue)
     m_containersHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("initContainers"))
+  {
+    Aws::Utils::Array<JsonView> initContainersJsonList = jsonValue.GetArray("initContainers");
+    for(unsigned initContainersIndex = 0; initContainersIndex < initContainersJsonList.GetLength(); ++initContainersIndex)
+    {
+      m_initContainers.push_back(initContainersJsonList[initContainersIndex].AsObject());
+    }
+    m_initContainersHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("eksClusterArn"))
+  {
+    m_eksClusterArn = jsonValue.GetString("eksClusterArn");
+
+    m_eksClusterArnHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("podName"))
   {
     m_podName = jsonValue.GetString("podName");
 
     m_podNameHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("podNamespace"))
+  {
+    m_podNamespace = jsonValue.GetString("podNamespace");
+
+    m_podNamespaceHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("nodeName"))
@@ -108,9 +128,32 @@ JsonValue EksAttemptDetail::Jsonize() const
 
   }
 
+  if(m_initContainersHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> initContainersJsonList(m_initContainers.size());
+   for(unsigned initContainersIndex = 0; initContainersIndex < initContainersJsonList.GetLength(); ++initContainersIndex)
+   {
+     initContainersJsonList[initContainersIndex].AsObject(m_initContainers[initContainersIndex].Jsonize());
+   }
+   payload.WithArray("initContainers", std::move(initContainersJsonList));
+
+  }
+
+  if(m_eksClusterArnHasBeenSet)
+  {
+   payload.WithString("eksClusterArn", m_eksClusterArn);
+
+  }
+
   if(m_podNameHasBeenSet)
   {
    payload.WithString("podName", m_podName);
+
+  }
+
+  if(m_podNamespaceHasBeenSet)
+  {
+   payload.WithString("podNamespace", m_podNamespace);
 
   }
 

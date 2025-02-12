@@ -31,24 +31,13 @@ AwsS3BucketDetails::AwsS3BucketDetails() :
     m_bucketWebsiteConfigurationHasBeenSet(false),
     m_bucketNotificationConfigurationHasBeenSet(false),
     m_bucketVersioningConfigurationHasBeenSet(false),
-    m_objectLockConfigurationHasBeenSet(false)
+    m_objectLockConfigurationHasBeenSet(false),
+    m_nameHasBeenSet(false)
 {
 }
 
-AwsS3BucketDetails::AwsS3BucketDetails(JsonView jsonValue) : 
-    m_ownerIdHasBeenSet(false),
-    m_ownerNameHasBeenSet(false),
-    m_ownerAccountIdHasBeenSet(false),
-    m_createdAtHasBeenSet(false),
-    m_serverSideEncryptionConfigurationHasBeenSet(false),
-    m_bucketLifecycleConfigurationHasBeenSet(false),
-    m_publicAccessBlockConfigurationHasBeenSet(false),
-    m_accessControlListHasBeenSet(false),
-    m_bucketLoggingConfigurationHasBeenSet(false),
-    m_bucketWebsiteConfigurationHasBeenSet(false),
-    m_bucketNotificationConfigurationHasBeenSet(false),
-    m_bucketVersioningConfigurationHasBeenSet(false),
-    m_objectLockConfigurationHasBeenSet(false)
+AwsS3BucketDetails::AwsS3BucketDetails(JsonView jsonValue)
+  : AwsS3BucketDetails()
 {
   *this = jsonValue;
 }
@@ -146,6 +135,13 @@ AwsS3BucketDetails& AwsS3BucketDetails::operator =(JsonView jsonValue)
     m_objectLockConfigurationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Name"))
+  {
+    m_name = jsonValue.GetString("Name");
+
+    m_nameHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -228,6 +224,12 @@ JsonValue AwsS3BucketDetails::Jsonize() const
   if(m_objectLockConfigurationHasBeenSet)
   {
    payload.WithObject("ObjectLockConfiguration", m_objectLockConfiguration.Jsonize());
+
+  }
+
+  if(m_nameHasBeenSet)
+  {
+   payload.WithString("Name", m_name);
 
   }
 

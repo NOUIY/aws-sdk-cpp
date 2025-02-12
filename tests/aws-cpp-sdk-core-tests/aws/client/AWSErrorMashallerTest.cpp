@@ -4,7 +4,7 @@
  */
 
 
-#include <gtest/gtest.h>
+#include <aws/testing/AwsCppSdkGTestSuite.h>
 #include <aws/core/client/AWSErrorMarshaller.h>
 #include <aws/core/client/AWSError.h>
 #include <aws/core/client/CoreErrors.h>
@@ -131,7 +131,11 @@ public:
     inline Aws::Utils::Json::JsonValue GetJsonPayload() { return AWSError<CoreErrors>::GetJsonPayload(); }
 };
 
-TEST(XmlErrorMarshallerTest, TestXmlErrorPayload)
+class AWSErrorMarshallerTest : public Aws::Testing::AwsCppSdkGTestSuite
+{
+};
+
+TEST_F(AWSErrorMarshallerTest, TestXmlErrorPayload)
 {
     XmlErrorMarshaller awsErrorMarshaller;
     Aws::String message = "Test Message";
@@ -179,9 +183,12 @@ TEST(XmlErrorMarshallerTest, TestXmlErrorPayload)
     ASSERT_EQ("", error.GetMessage());
     ASSERT_EQ("", error.GetRequestId());
     ASSERT_TRUE(error.ShouldRetry());
+
+    AWSError<CoreErrors> emptyError;
+    error = emptyError; // ASAN must not complain.
 }
 
-TEST(JsonErrorMashallerTest, TestCombinationsOfJsonErrorPayload)
+TEST_F(AWSErrorMarshallerTest, TestCombinationsOfJsonErrorPayload)
 {
     AWSError<CoreErrors> error2(CoreErrors::INCOMPLETE_SIGNATURE, false);
     JsonErrorMarshaller awsErrorMarshaller;
@@ -223,7 +230,7 @@ TEST(JsonErrorMashallerTest, TestCombinationsOfJsonErrorPayload)
     ASSERT_FALSE(error.ShouldRetry());
 }
 
-TEST(JsonErrorMashallerTest, TestErrorsWithPrefixParse)
+TEST_F(AWSErrorMarshallerTest, TestErrorsWithPrefixParse)
 {
     JsonErrorMarshaller awsErrorMarshaller;
     Aws::String message = "Test Message";
@@ -467,7 +474,9 @@ TEST(JsonErrorMashallerTest, TestErrorsWithPrefixParse)
     ASSERT_EQ(requestId, error.GetRequestId());
     ASSERT_FALSE(error.ShouldRetry());
 
-    error = awsErrorMarshaller.Marshall(*BuildHttpResponse(exceptionPrefix + "AccessDeniedException", message, requestId, LowerCaseMessage, "AwsQueryErrorCode"));
+    JsonErrorMarshallerQueryCompatible awsErrorMarshaller2;
+    error = awsErrorMarshaller2.Marshall(
+        *BuildHttpResponse(exceptionPrefix + "AccessDeniedException", message, requestId, LowerCaseMessage, "AwsQueryErrorCode"));
     ASSERT_EQ(CoreErrors::ACCESS_DENIED, error.GetErrorType());
     ASSERT_EQ("AwsQueryErrorCode", error.GetExceptionName());
     ASSERT_EQ(message, error.GetMessage());
@@ -475,7 +484,7 @@ TEST(JsonErrorMashallerTest, TestErrorsWithPrefixParse)
     ASSERT_FALSE(error.ShouldRetry());
 }
 
-TEST(AWSErrorMashallerTest, TestErrorsWithoutPrefixParse)
+TEST_F(AWSErrorMarshallerTest, TestErrorsWithoutPrefixParse)
 {
     JsonErrorMarshaller awsErrorMarshaller;
     Aws::String message = "Test Message";
@@ -734,7 +743,9 @@ TEST(AWSErrorMashallerTest, TestErrorsWithoutPrefixParse)
     ASSERT_EQ(requestId, error.GetRequestId());
     ASSERT_FALSE(error.ShouldRetry());
 
-    error = awsErrorMarshaller.Marshall(*BuildHttpResponse(exceptionPrefix + "AccessDeniedException", message, requestId, LowerCaseMessage, "AwsQueryErrorCode"));
+    JsonErrorMarshallerQueryCompatible awsErrorMarshaller2;
+    error = awsErrorMarshaller2.Marshall(
+        *BuildHttpResponse(exceptionPrefix + "AccessDeniedException", message, requestId, LowerCaseMessage, "AwsQueryErrorCode"));
     ASSERT_EQ(CoreErrors::ACCESS_DENIED, error.GetErrorType());
     ASSERT_EQ("AwsQueryErrorCode", error.GetExceptionName());
     ASSERT_EQ(message, error.GetMessage());

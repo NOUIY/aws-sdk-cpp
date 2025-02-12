@@ -26,6 +26,9 @@ namespace Aws
         static const int Webhook_HASH = HashingUtils::HashString("Webhook");
         static const int CloudWatchEvent_HASH = HashingUtils::HashString("CloudWatchEvent");
         static const int PutActionRevision_HASH = HashingUtils::HashString("PutActionRevision");
+        static const int WebhookV2_HASH = HashingUtils::HashString("WebhookV2");
+        static const int ManualRollback_HASH = HashingUtils::HashString("ManualRollback");
+        static const int AutomatedRollback_HASH = HashingUtils::HashString("AutomatedRollback");
 
 
         TriggerType GetTriggerTypeForName(const Aws::String& name)
@@ -55,6 +58,18 @@ namespace Aws
           {
             return TriggerType::PutActionRevision;
           }
+          else if (hashCode == WebhookV2_HASH)
+          {
+            return TriggerType::WebhookV2;
+          }
+          else if (hashCode == ManualRollback_HASH)
+          {
+            return TriggerType::ManualRollback;
+          }
+          else if (hashCode == AutomatedRollback_HASH)
+          {
+            return TriggerType::AutomatedRollback;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -69,6 +84,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case TriggerType::NOT_SET:
+            return {};
           case TriggerType::CreatePipeline:
             return "CreatePipeline";
           case TriggerType::StartPipelineExecution:
@@ -81,6 +98,12 @@ namespace Aws
             return "CloudWatchEvent";
           case TriggerType::PutActionRevision:
             return "PutActionRevision";
+          case TriggerType::WebhookV2:
+            return "WebhookV2";
+          case TriggerType::ManualRollback:
+            return "ManualRollback";
+          case TriggerType::AutomatedRollback:
+            return "AutomatedRollback";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

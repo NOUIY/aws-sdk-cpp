@@ -25,11 +25,8 @@ GetEmailIdentityResult::GetEmailIdentityResult() :
 {
 }
 
-GetEmailIdentityResult::GetEmailIdentityResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_identityType(IdentityType::NOT_SET),
-    m_feedbackForwardingStatus(false),
-    m_verifiedForSendingStatus(false),
-    m_verificationStatus(VerificationStatus::NOT_SET)
+GetEmailIdentityResult::GetEmailIdentityResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetEmailIdentityResult()
 {
   *this = result;
 }
@@ -94,6 +91,12 @@ GetEmailIdentityResult& GetEmailIdentityResult::operator =(const Aws::AmazonWebS
   if(jsonValue.ValueExists("VerificationStatus"))
   {
     m_verificationStatus = VerificationStatusMapper::GetVerificationStatusForName(jsonValue.GetString("VerificationStatus"));
+
+  }
+
+  if(jsonValue.ValueExists("VerificationInfo"))
+  {
+    m_verificationInfo = jsonValue.GetObject("VerificationInfo");
 
   }
 

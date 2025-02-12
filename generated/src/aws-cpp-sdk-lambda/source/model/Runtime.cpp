@@ -41,6 +41,7 @@ namespace Aws
         static const int dotnetcore2_1_HASH = HashingUtils::HashString("dotnetcore2.1");
         static const int dotnetcore3_1_HASH = HashingUtils::HashString("dotnetcore3.1");
         static const int dotnet6_HASH = HashingUtils::HashString("dotnet6");
+        static const int dotnet8_HASH = HashingUtils::HashString("dotnet8");
         static const int nodejs4_3_edge_HASH = HashingUtils::HashString("nodejs4.3-edge");
         static const int go1_x_HASH = HashingUtils::HashString("go1.x");
         static const int ruby2_5_HASH = HashingUtils::HashString("ruby2.5");
@@ -50,6 +51,15 @@ namespace Aws
         static const int nodejs18_x_HASH = HashingUtils::HashString("nodejs18.x");
         static const int python3_10_HASH = HashingUtils::HashString("python3.10");
         static const int java17_HASH = HashingUtils::HashString("java17");
+        static const int ruby3_2_HASH = HashingUtils::HashString("ruby3.2");
+        static const int ruby3_3_HASH = HashingUtils::HashString("ruby3.3");
+        static const int python3_11_HASH = HashingUtils::HashString("python3.11");
+        static const int nodejs20_x_HASH = HashingUtils::HashString("nodejs20.x");
+        static const int provided_al2023_HASH = HashingUtils::HashString("provided.al2023");
+        static const int python3_12_HASH = HashingUtils::HashString("python3.12");
+        static const int java21_HASH = HashingUtils::HashString("java21");
+        static const int python3_13_HASH = HashingUtils::HashString("python3.13");
+        static const int nodejs22_x_HASH = HashingUtils::HashString("nodejs22.x");
 
 
         Runtime GetRuntimeForName(const Aws::String& name)
@@ -139,6 +149,10 @@ namespace Aws
           {
             return Runtime::dotnet6;
           }
+          else if (hashCode == dotnet8_HASH)
+          {
+            return Runtime::dotnet8;
+          }
           else if (hashCode == nodejs4_3_edge_HASH)
           {
             return Runtime::nodejs4_3_edge;
@@ -175,6 +189,42 @@ namespace Aws
           {
             return Runtime::java17;
           }
+          else if (hashCode == ruby3_2_HASH)
+          {
+            return Runtime::ruby3_2;
+          }
+          else if (hashCode == ruby3_3_HASH)
+          {
+            return Runtime::ruby3_3;
+          }
+          else if (hashCode == python3_11_HASH)
+          {
+            return Runtime::python3_11;
+          }
+          else if (hashCode == nodejs20_x_HASH)
+          {
+            return Runtime::nodejs20_x;
+          }
+          else if (hashCode == provided_al2023_HASH)
+          {
+            return Runtime::provided_al2023;
+          }
+          else if (hashCode == python3_12_HASH)
+          {
+            return Runtime::python3_12;
+          }
+          else if (hashCode == java21_HASH)
+          {
+            return Runtime::java21;
+          }
+          else if (hashCode == python3_13_HASH)
+          {
+            return Runtime::python3_13;
+          }
+          else if (hashCode == nodejs22_x_HASH)
+          {
+            return Runtime::nodejs22_x;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -189,6 +239,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case Runtime::NOT_SET:
+            return {};
           case Runtime::nodejs:
             return "nodejs";
           case Runtime::nodejs4_3:
@@ -231,6 +283,8 @@ namespace Aws
             return "dotnetcore3.1";
           case Runtime::dotnet6:
             return "dotnet6";
+          case Runtime::dotnet8:
+            return "dotnet8";
           case Runtime::nodejs4_3_edge:
             return "nodejs4.3-edge";
           case Runtime::go1_x:
@@ -249,6 +303,24 @@ namespace Aws
             return "python3.10";
           case Runtime::java17:
             return "java17";
+          case Runtime::ruby3_2:
+            return "ruby3.2";
+          case Runtime::ruby3_3:
+            return "ruby3.3";
+          case Runtime::python3_11:
+            return "python3.11";
+          case Runtime::nodejs20_x:
+            return "nodejs20.x";
+          case Runtime::provided_al2023:
+            return "provided.al2023";
+          case Runtime::python3_12:
+            return "python3.12";
+          case Runtime::java21:
+            return "java21";
+          case Runtime::python3_13:
+            return "python3.13";
+          case Runtime::nodejs22_x:
+            return "nodejs22.x";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

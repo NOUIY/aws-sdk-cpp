@@ -23,7 +23,7 @@ namespace Model
    * are required for Easy DKIM signing, and whether Amazon SES successfully verified
    * that these tokens were published. For more information about Easy DKIM, see the
    * <a
-   * href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html">Amazon
+   * href="https://docs.aws.amazon.com/ses/latest/dg/send-email-authentication-dkim-easy.html">Amazon
    * SES Developer Guide</a>.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/email-2010-12-01/GetIdentityDkimAttributesRequest">AWS
    * API Reference</a></p>
@@ -46,60 +46,21 @@ namespace Model
 
   public:
 
+    ///@{
     /**
      * <p>A list of one or more verified identities - email addresses, domains, or
      * both.</p>
      */
     inline const Aws::Vector<Aws::String>& GetIdentities() const{ return m_identities; }
-
-    /**
-     * <p>A list of one or more verified identities - email addresses, domains, or
-     * both.</p>
-     */
     inline bool IdentitiesHasBeenSet() const { return m_identitiesHasBeenSet; }
-
-    /**
-     * <p>A list of one or more verified identities - email addresses, domains, or
-     * both.</p>
-     */
     inline void SetIdentities(const Aws::Vector<Aws::String>& value) { m_identitiesHasBeenSet = true; m_identities = value; }
-
-    /**
-     * <p>A list of one or more verified identities - email addresses, domains, or
-     * both.</p>
-     */
     inline void SetIdentities(Aws::Vector<Aws::String>&& value) { m_identitiesHasBeenSet = true; m_identities = std::move(value); }
-
-    /**
-     * <p>A list of one or more verified identities - email addresses, domains, or
-     * both.</p>
-     */
     inline GetIdentityDkimAttributesRequest& WithIdentities(const Aws::Vector<Aws::String>& value) { SetIdentities(value); return *this;}
-
-    /**
-     * <p>A list of one or more verified identities - email addresses, domains, or
-     * both.</p>
-     */
     inline GetIdentityDkimAttributesRequest& WithIdentities(Aws::Vector<Aws::String>&& value) { SetIdentities(std::move(value)); return *this;}
-
-    /**
-     * <p>A list of one or more verified identities - email addresses, domains, or
-     * both.</p>
-     */
     inline GetIdentityDkimAttributesRequest& AddIdentities(const Aws::String& value) { m_identitiesHasBeenSet = true; m_identities.push_back(value); return *this; }
-
-    /**
-     * <p>A list of one or more verified identities - email addresses, domains, or
-     * both.</p>
-     */
     inline GetIdentityDkimAttributesRequest& AddIdentities(Aws::String&& value) { m_identitiesHasBeenSet = true; m_identities.push_back(std::move(value)); return *this; }
-
-    /**
-     * <p>A list of one or more verified identities - email addresses, domains, or
-     * both.</p>
-     */
     inline GetIdentityDkimAttributesRequest& AddIdentities(const char* value) { m_identitiesHasBeenSet = true; m_identities.push_back(value); return *this; }
-
+    ///@}
   private:
 
     Aws::Vector<Aws::String> m_identities;

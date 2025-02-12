@@ -91,6 +91,20 @@
 #include <aws/frauddetector/model/UpdateRuleMetadataResult.h>
 #include <aws/frauddetector/model/UpdateRuleVersionResult.h>
 #include <aws/frauddetector/model/UpdateVariableResult.h>
+#include <aws/frauddetector/model/GetKMSEncryptionKeyRequest.h>
+#include <aws/frauddetector/model/GetEventTypesRequest.h>
+#include <aws/frauddetector/model/GetEntityTypesRequest.h>
+#include <aws/frauddetector/model/ListEventPredictionsRequest.h>
+#include <aws/frauddetector/model/GetExternalModelsRequest.h>
+#include <aws/frauddetector/model/GetLabelsRequest.h>
+#include <aws/frauddetector/model/GetOutcomesRequest.h>
+#include <aws/frauddetector/model/GetVariablesRequest.h>
+#include <aws/frauddetector/model/GetBatchPredictionJobsRequest.h>
+#include <aws/frauddetector/model/GetModelsRequest.h>
+#include <aws/frauddetector/model/DescribeModelVersionsRequest.h>
+#include <aws/frauddetector/model/GetDetectorsRequest.h>
+#include <aws/frauddetector/model/GetBatchImportJobsRequest.h>
+#include <aws/frauddetector/model/GetListsMetadataRequest.h>
 /* End of service model headers required in FraudDetectorClient header */
 
 namespace Aws
@@ -124,7 +138,7 @@ namespace Aws
 
   namespace FraudDetector
   {
-    using FraudDetectorClientConfiguration = Aws::Client::GenericClientConfiguration<false>;
+    using FraudDetectorClientConfiguration = Aws::Client::GenericClientConfiguration;
     using FraudDetectorEndpointProviderBase = Aws::FraudDetector::Endpoint::FraudDetectorEndpointProviderBase;
     using FraudDetectorEndpointProvider = Aws::FraudDetector::Endpoint::FraudDetectorEndpointProvider;
 
@@ -172,6 +186,7 @@ namespace Aws
       class GetEventPredictionMetadataRequest;
       class GetEventTypesRequest;
       class GetExternalModelsRequest;
+      class GetKMSEncryptionKeyRequest;
       class GetLabelsRequest;
       class GetListElementsRequest;
       class GetListsMetadataRequest;
@@ -402,7 +417,7 @@ namespace Aws
     typedef std::function<void(const FraudDetectorClient*, const Model::GetEventPredictionMetadataRequest&, const Model::GetEventPredictionMetadataOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetEventPredictionMetadataResponseReceivedHandler;
     typedef std::function<void(const FraudDetectorClient*, const Model::GetEventTypesRequest&, const Model::GetEventTypesOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetEventTypesResponseReceivedHandler;
     typedef std::function<void(const FraudDetectorClient*, const Model::GetExternalModelsRequest&, const Model::GetExternalModelsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetExternalModelsResponseReceivedHandler;
-    typedef std::function<void(const FraudDetectorClient*, const Model::GetKMSEncryptionKeyOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetKMSEncryptionKeyResponseReceivedHandler;
+    typedef std::function<void(const FraudDetectorClient*, const Model::GetKMSEncryptionKeyRequest&, const Model::GetKMSEncryptionKeyOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetKMSEncryptionKeyResponseReceivedHandler;
     typedef std::function<void(const FraudDetectorClient*, const Model::GetLabelsRequest&, const Model::GetLabelsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetLabelsResponseReceivedHandler;
     typedef std::function<void(const FraudDetectorClient*, const Model::GetListElementsRequest&, const Model::GetListElementsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetListElementsResponseReceivedHandler;
     typedef std::function<void(const FraudDetectorClient*, const Model::GetListsMetadataRequest&, const Model::GetListsMetadataOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetListsMetadataResponseReceivedHandler;

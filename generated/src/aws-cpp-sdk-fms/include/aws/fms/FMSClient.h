@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/fms/FMS_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/fms/FMSServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/fms/FMSErrorMarshaller.h>
 
 namespace Aws
 {
 namespace FMS
 {
+  AWS_FMS_API extern const char SERVICE_NAME[];
   /**
    * <p>This is the <i>Firewall Manager API Reference</i>. This guide is for
    * developers who need detailed information about the Firewall Manager API actions,
@@ -26,12 +30,20 @@ namespace FMS
    * href="https://docs.aws.amazon.com/waf/latest/developerguide/fms-security_iam_service-with-iam.html#fms-security_iam_service-with-iam-roles-service">Service
    * roles for Firewall Manager</a>. </p>
    */
-  class AWS_FMS_API FMSClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<FMSClient>
+  class AWS_FMS_API FMSClient : smithy::client::AwsSmithyClientT<Aws::FMS::SERVICE_NAME,
+      Aws::FMS::FMSClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      FMSEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::FMSErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<FMSClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "FMS"; }
 
       typedef FMSClientConfiguration ClientConfigurationType;
       typedef FMSEndpointProvider EndpointProviderType;
@@ -41,14 +53,14 @@ namespace FMS
         * is not specified, it will be initialized to default values.
         */
         FMSClient(const Aws::FMS::FMSClientConfiguration& clientConfiguration = Aws::FMS::FMSClientConfiguration(),
-                  std::shared_ptr<FMSEndpointProviderBase> endpointProvider = Aws::MakeShared<FMSEndpointProvider>(ALLOCATION_TAG));
+                  std::shared_ptr<FMSEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         FMSClient(const Aws::Auth::AWSCredentials& credentials,
-                  std::shared_ptr<FMSEndpointProviderBase> endpointProvider = Aws::MakeShared<FMSEndpointProvider>(ALLOCATION_TAG),
+                  std::shared_ptr<FMSEndpointProviderBase> endpointProvider = nullptr,
                   const Aws::FMS::FMSClientConfiguration& clientConfiguration = Aws::FMS::FMSClientConfiguration());
 
        /**
@@ -56,7 +68,7 @@ namespace FMS
         * the default http client factory will be used
         */
         FMSClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                  std::shared_ptr<FMSEndpointProviderBase> endpointProvider = Aws::MakeShared<FMSEndpointProvider>(ALLOCATION_TAG),
+                  std::shared_ptr<FMSEndpointProviderBase> endpointProvider = nullptr,
                   const Aws::FMS::FMSClientConfiguration& clientConfiguration = Aws::FMS::FMSClientConfiguration());
 
 
@@ -230,13 +242,13 @@ namespace FMS
          * href="http://docs.aws.amazon.com/goto/WebAPI/fms-2018-01-01/DeleteNotificationChannel">AWS
          * API Reference</a></p>
          */
-        virtual Model::DeleteNotificationChannelOutcome DeleteNotificationChannel(const Model::DeleteNotificationChannelRequest& request) const;
+        virtual Model::DeleteNotificationChannelOutcome DeleteNotificationChannel(const Model::DeleteNotificationChannelRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DeleteNotificationChannel that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DeleteNotificationChannelRequestT = Model::DeleteNotificationChannelRequest>
-        Model::DeleteNotificationChannelOutcomeCallable DeleteNotificationChannelCallable(const DeleteNotificationChannelRequestT& request) const
+        Model::DeleteNotificationChannelOutcomeCallable DeleteNotificationChannelCallable(const DeleteNotificationChannelRequestT& request = {}) const
         {
             return SubmitCallable(&FMSClient::DeleteNotificationChannel, request);
         }
@@ -245,7 +257,7 @@ namespace FMS
          * An Async wrapper for DeleteNotificationChannel that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DeleteNotificationChannelRequestT = Model::DeleteNotificationChannelRequest>
-        void DeleteNotificationChannelAsync(const DeleteNotificationChannelRequestT& request, const DeleteNotificationChannelResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DeleteNotificationChannelAsync(const DeleteNotificationChannelResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DeleteNotificationChannelRequestT& request = {}) const
         {
             return SubmitAsync(&FMSClient::DeleteNotificationChannel, request, handler, context);
         }
@@ -338,13 +350,13 @@ namespace FMS
          * href="http://docs.aws.amazon.com/goto/WebAPI/fms-2018-01-01/DisassociateAdminAccount">AWS
          * API Reference</a></p>
          */
-        virtual Model::DisassociateAdminAccountOutcome DisassociateAdminAccount(const Model::DisassociateAdminAccountRequest& request) const;
+        virtual Model::DisassociateAdminAccountOutcome DisassociateAdminAccount(const Model::DisassociateAdminAccountRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DisassociateAdminAccount that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DisassociateAdminAccountRequestT = Model::DisassociateAdminAccountRequest>
-        Model::DisassociateAdminAccountOutcomeCallable DisassociateAdminAccountCallable(const DisassociateAdminAccountRequestT& request) const
+        Model::DisassociateAdminAccountOutcomeCallable DisassociateAdminAccountCallable(const DisassociateAdminAccountRequestT& request = {}) const
         {
             return SubmitCallable(&FMSClient::DisassociateAdminAccount, request);
         }
@@ -353,7 +365,7 @@ namespace FMS
          * An Async wrapper for DisassociateAdminAccount that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DisassociateAdminAccountRequestT = Model::DisassociateAdminAccountRequest>
-        void DisassociateAdminAccountAsync(const DisassociateAdminAccountRequestT& request, const DisassociateAdminAccountResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DisassociateAdminAccountAsync(const DisassociateAdminAccountResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DisassociateAdminAccountRequestT& request = {}) const
         {
             return SubmitAsync(&FMSClient::DisassociateAdminAccount, request, handler, context);
         }
@@ -392,13 +404,13 @@ namespace FMS
          * href="http://docs.aws.amazon.com/goto/WebAPI/fms-2018-01-01/GetAdminAccount">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetAdminAccountOutcome GetAdminAccount(const Model::GetAdminAccountRequest& request) const;
+        virtual Model::GetAdminAccountOutcome GetAdminAccount(const Model::GetAdminAccountRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetAdminAccount that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetAdminAccountRequestT = Model::GetAdminAccountRequest>
-        Model::GetAdminAccountOutcomeCallable GetAdminAccountCallable(const GetAdminAccountRequestT& request) const
+        Model::GetAdminAccountOutcomeCallable GetAdminAccountCallable(const GetAdminAccountRequestT& request = {}) const
         {
             return SubmitCallable(&FMSClient::GetAdminAccount, request);
         }
@@ -407,15 +419,15 @@ namespace FMS
          * An Async wrapper for GetAdminAccount that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetAdminAccountRequestT = Model::GetAdminAccountRequest>
-        void GetAdminAccountAsync(const GetAdminAccountRequestT& request, const GetAdminAccountResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetAdminAccountAsync(const GetAdminAccountResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetAdminAccountRequestT& request = {}) const
         {
             return SubmitAsync(&FMSClient::GetAdminAccount, request, handler, context);
         }
 
         /**
          * <p>Returns information about the specified account's administrative scope. The
-         * admistrative scope defines the resources that an Firewall Manager administrator
-         * can manage.</p><p><h3>See Also:</h3>   <a
+         * administrative scope defines the resources that an Firewall Manager
+         * administrator can manage.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/fms-2018-01-01/GetAdminScope">AWS
          * API Reference</a></p>
          */
@@ -468,19 +480,8 @@ namespace FMS
         /**
          * <p>Returns detailed compliance information about the specified member account.
          * Details include resources that are in and out of compliance with the specified
-         * policy. </p> <ul> <li> <p>Resources are considered noncompliant for WAF and
-         * Shield Advanced policies if the specified policy has not been applied to
-         * them.</p> </li> <li> <p>Resources are considered noncompliant for security group
-         * policies if they are in scope of the policy, they violate one or more of the
-         * policy rules, and remediation is disabled or not possible.</p> </li> <li>
-         * <p>Resources are considered noncompliant for Network Firewall policies if a
-         * firewall is missing in the VPC, if the firewall endpoint isn't set up in an
-         * expected Availability Zone and subnet, if a subnet created by the Firewall
-         * Manager doesn't have the expected route table, and for modifications to a
-         * firewall policy that violate the Firewall Manager policy's rules.</p> </li> <li>
-         * <p>Resources are considered noncompliant for DNS Firewall policies if a DNS
-         * Firewall rule group is missing from the rule group associations for the VPC.
-         * </p> </li> </ul><p><h3>See Also:</h3>   <a
+         * policy. </p> <p>The reasons for resources being considered compliant depend on
+         * the Firewall Manager policy type. </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/fms-2018-01-01/GetComplianceDetail">AWS
          * API Reference</a></p>
          */
@@ -510,13 +511,13 @@ namespace FMS
          * href="http://docs.aws.amazon.com/goto/WebAPI/fms-2018-01-01/GetNotificationChannel">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetNotificationChannelOutcome GetNotificationChannel(const Model::GetNotificationChannelRequest& request) const;
+        virtual Model::GetNotificationChannelOutcome GetNotificationChannel(const Model::GetNotificationChannelRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetNotificationChannel that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetNotificationChannelRequestT = Model::GetNotificationChannelRequest>
-        Model::GetNotificationChannelOutcomeCallable GetNotificationChannelCallable(const GetNotificationChannelRequestT& request) const
+        Model::GetNotificationChannelOutcomeCallable GetNotificationChannelCallable(const GetNotificationChannelRequestT& request = {}) const
         {
             return SubmitCallable(&FMSClient::GetNotificationChannel, request);
         }
@@ -525,7 +526,7 @@ namespace FMS
          * An Async wrapper for GetNotificationChannel that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetNotificationChannelRequestT = Model::GetNotificationChannelRequest>
-        void GetNotificationChannelAsync(const GetNotificationChannelRequestT& request, const GetNotificationChannelResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetNotificationChannelAsync(const GetNotificationChannelResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetNotificationChannelRequestT& request = {}) const
         {
             return SubmitAsync(&FMSClient::GetNotificationChannel, request, handler, context);
         }
@@ -694,13 +695,13 @@ namespace FMS
          * href="http://docs.aws.amazon.com/goto/WebAPI/fms-2018-01-01/ListAdminAccountsForOrganization">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListAdminAccountsForOrganizationOutcome ListAdminAccountsForOrganization(const Model::ListAdminAccountsForOrganizationRequest& request) const;
+        virtual Model::ListAdminAccountsForOrganizationOutcome ListAdminAccountsForOrganization(const Model::ListAdminAccountsForOrganizationRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListAdminAccountsForOrganization that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListAdminAccountsForOrganizationRequestT = Model::ListAdminAccountsForOrganizationRequest>
-        Model::ListAdminAccountsForOrganizationOutcomeCallable ListAdminAccountsForOrganizationCallable(const ListAdminAccountsForOrganizationRequestT& request) const
+        Model::ListAdminAccountsForOrganizationOutcomeCallable ListAdminAccountsForOrganizationCallable(const ListAdminAccountsForOrganizationRequestT& request = {}) const
         {
             return SubmitCallable(&FMSClient::ListAdminAccountsForOrganization, request);
         }
@@ -709,7 +710,7 @@ namespace FMS
          * An Async wrapper for ListAdminAccountsForOrganization that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListAdminAccountsForOrganizationRequestT = Model::ListAdminAccountsForOrganizationRequest>
-        void ListAdminAccountsForOrganizationAsync(const ListAdminAccountsForOrganizationRequestT& request, const ListAdminAccountsForOrganizationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListAdminAccountsForOrganizationAsync(const ListAdminAccountsForOrganizationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListAdminAccountsForOrganizationRequestT& request = {}) const
         {
             return SubmitAsync(&FMSClient::ListAdminAccountsForOrganization, request, handler, context);
         }
@@ -723,13 +724,13 @@ namespace FMS
          * href="http://docs.aws.amazon.com/goto/WebAPI/fms-2018-01-01/ListAdminsManagingAccount">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListAdminsManagingAccountOutcome ListAdminsManagingAccount(const Model::ListAdminsManagingAccountRequest& request) const;
+        virtual Model::ListAdminsManagingAccountOutcome ListAdminsManagingAccount(const Model::ListAdminsManagingAccountRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListAdminsManagingAccount that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListAdminsManagingAccountRequestT = Model::ListAdminsManagingAccountRequest>
-        Model::ListAdminsManagingAccountOutcomeCallable ListAdminsManagingAccountCallable(const ListAdminsManagingAccountRequestT& request) const
+        Model::ListAdminsManagingAccountOutcomeCallable ListAdminsManagingAccountCallable(const ListAdminsManagingAccountRequestT& request = {}) const
         {
             return SubmitCallable(&FMSClient::ListAdminsManagingAccount, request);
         }
@@ -738,7 +739,7 @@ namespace FMS
          * An Async wrapper for ListAdminsManagingAccount that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListAdminsManagingAccountRequestT = Model::ListAdminsManagingAccountRequest>
-        void ListAdminsManagingAccountAsync(const ListAdminsManagingAccountRequestT& request, const ListAdminsManagingAccountResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListAdminsManagingAccountAsync(const ListAdminsManagingAccountResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListAdminsManagingAccountRequestT& request = {}) const
         {
             return SubmitAsync(&FMSClient::ListAdminsManagingAccount, request, handler, context);
         }
@@ -830,13 +831,13 @@ namespace FMS
          * href="http://docs.aws.amazon.com/goto/WebAPI/fms-2018-01-01/ListMemberAccounts">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListMemberAccountsOutcome ListMemberAccounts(const Model::ListMemberAccountsRequest& request) const;
+        virtual Model::ListMemberAccountsOutcome ListMemberAccounts(const Model::ListMemberAccountsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListMemberAccounts that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListMemberAccountsRequestT = Model::ListMemberAccountsRequest>
-        Model::ListMemberAccountsOutcomeCallable ListMemberAccountsCallable(const ListMemberAccountsRequestT& request) const
+        Model::ListMemberAccountsOutcomeCallable ListMemberAccountsCallable(const ListMemberAccountsRequestT& request = {}) const
         {
             return SubmitCallable(&FMSClient::ListMemberAccounts, request);
         }
@@ -845,7 +846,7 @@ namespace FMS
          * An Async wrapper for ListMemberAccounts that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListMemberAccountsRequestT = Model::ListMemberAccountsRequest>
-        void ListMemberAccountsAsync(const ListMemberAccountsRequestT& request, const ListMemberAccountsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListMemberAccountsAsync(const ListMemberAccountsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListMemberAccountsRequestT& request = {}) const
         {
             return SubmitAsync(&FMSClient::ListMemberAccounts, request, handler, context);
         }
@@ -856,13 +857,13 @@ namespace FMS
          * href="http://docs.aws.amazon.com/goto/WebAPI/fms-2018-01-01/ListPolicies">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListPoliciesOutcome ListPolicies(const Model::ListPoliciesRequest& request) const;
+        virtual Model::ListPoliciesOutcome ListPolicies(const Model::ListPoliciesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListPolicies that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListPoliciesRequestT = Model::ListPoliciesRequest>
-        Model::ListPoliciesOutcomeCallable ListPoliciesCallable(const ListPoliciesRequestT& request) const
+        Model::ListPoliciesOutcomeCallable ListPoliciesCallable(const ListPoliciesRequestT& request = {}) const
         {
             return SubmitCallable(&FMSClient::ListPolicies, request);
         }
@@ -871,7 +872,7 @@ namespace FMS
          * An Async wrapper for ListPolicies that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListPoliciesRequestT = Model::ListPoliciesRequest>
-        void ListPoliciesAsync(const ListPoliciesRequestT& request, const ListPoliciesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListPoliciesAsync(const ListPoliciesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListPoliciesRequestT& request = {}) const
         {
             return SubmitAsync(&FMSClient::ListPolicies, request, handler, context);
         }
@@ -934,13 +935,13 @@ namespace FMS
          * href="http://docs.aws.amazon.com/goto/WebAPI/fms-2018-01-01/ListResourceSets">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListResourceSetsOutcome ListResourceSets(const Model::ListResourceSetsRequest& request) const;
+        virtual Model::ListResourceSetsOutcome ListResourceSets(const Model::ListResourceSetsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListResourceSets that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListResourceSetsRequestT = Model::ListResourceSetsRequest>
-        Model::ListResourceSetsOutcomeCallable ListResourceSetsCallable(const ListResourceSetsRequestT& request) const
+        Model::ListResourceSetsOutcomeCallable ListResourceSetsCallable(const ListResourceSetsRequestT& request = {}) const
         {
             return SubmitCallable(&FMSClient::ListResourceSets, request);
         }
@@ -949,7 +950,7 @@ namespace FMS
          * An Async wrapper for ListResourceSets that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListResourceSetsRequestT = Model::ListResourceSetsRequest>
-        void ListResourceSetsAsync(const ListResourceSetsRequestT& request, const ListResourceSetsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListResourceSetsAsync(const ListResourceSetsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListResourceSetsRequestT& request = {}) const
         {
             return SubmitAsync(&FMSClient::ListResourceSets, request, handler, context);
         }
@@ -1105,24 +1106,40 @@ namespace FMS
         }
 
         /**
-         * <p>Creates an Firewall Manager policy.</p> <p>Firewall Manager provides the
-         * following types of policies: </p> <ul> <li> <p>An WAF policy (type WAFV2), which
-         * defines rule groups to run first in the corresponding WAF web ACL and rule
-         * groups to run last in the web ACL.</p> </li> <li> <p>An WAF Classic policy (type
-         * WAF), which defines a rule group. </p> </li> <li> <p>A Shield Advanced policy,
-         * which applies Shield Advanced protection to specified accounts and
-         * resources.</p> </li> <li> <p>A security group policy, which manages VPC security
-         * groups across your Amazon Web Services organization. </p> </li> <li> <p>An
-         * Network Firewall policy, which provides firewall rules to filter network traffic
-         * in specified Amazon VPCs.</p> </li> <li> <p>A DNS Firewall policy, which
-         * provides Route 53 Resolver DNS Firewall rules to filter DNS queries for
-         * specified VPCs.</p> </li> </ul> <p>Each policy is specific to one of the types.
-         * If you want to enforce more than one policy type across accounts, create
-         * multiple policies. You can create multiple policies for each type.</p> <p>You
-         * must be subscribed to Shield Advanced to create a Shield Advanced policy. For
-         * more information about subscribing to Shield Advanced, see <a
-         * href="https://docs.aws.amazon.com/waf/latest/DDOSAPIReference/API_CreateSubscription.html">CreateSubscription</a>.</p><p><h3>See
-         * Also:</h3>   <a
+         * <p>Creates an Firewall Manager policy.</p> <p>A Firewall Manager policy is
+         * specific to the individual policy type. If you want to enforce multiple policy
+         * types across accounts, you can create multiple policies. You can create more
+         * than one policy for each type. </p> <p>If you add a new account to an
+         * organization that you created with Organizations, Firewall Manager automatically
+         * applies the policy to the resources in that account that are within scope of the
+         * policy. </p> <p>Firewall Manager provides the following types of policies: </p>
+         * <ul> <li> <p> <b>WAF policy</b> - This policy applies WAF web ACL protections to
+         * specified accounts and resources. </p> </li> <li> <p> <b>Shield Advanced
+         * policy</b> - This policy applies Shield Advanced protection to specified
+         * accounts and resources. </p> </li> <li> <p> <b>Security Groups policy</b> - This
+         * type of policy gives you control over security groups that are in use throughout
+         * your organization in Organizations and lets you enforce a baseline set of rules
+         * across your organization. </p> </li> <li> <p> <b>Network ACL policy</b> - This
+         * type of policy gives you control over the network ACLs that are in use
+         * throughout your organization in Organizations and lets you enforce a baseline
+         * set of first and last network ACL rules across your organization. </p> </li>
+         * <li> <p> <b>Network Firewall policy</b> - This policy applies Network Firewall
+         * protection to your organization's VPCs. </p> </li> <li> <p> <b>DNS Firewall
+         * policy</b> - This policy applies Amazon Route 53 Resolver DNS Firewall
+         * protections to your organization's VPCs. </p> </li> <li> <p> <b>Third-party
+         * firewall policy</b> - This policy applies third-party firewall protections.
+         * Third-party firewalls are available by subscription through the Amazon Web
+         * Services Marketplace console at <a
+         * href="http://aws.amazon.com/marketplace">Amazon Web Services
+         * Marketplace</a>.</p> <ul> <li> <p> <b>Palo Alto Networks Cloud NGFW policy</b> -
+         * This policy applies Palo Alto Networks Cloud Next Generation Firewall (NGFW)
+         * protections and Palo Alto Networks Cloud NGFW rulestacks to your organization's
+         * VPCs.</p> </li> <li> <p> <b>Fortigate CNF policy</b> - This policy applies
+         * Fortigate Cloud Native Firewall (CNF) protections. Fortigate CNF is a
+         * cloud-centered solution that blocks Zero-Day threats and secures cloud
+         * infrastructures with industry-leading advanced threat prevention, smart web
+         * application firewalls (WAF), and API protection.</p> </li> </ul> </li>
+         * </ul><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/fms-2018-01-01/PutPolicy">AWS API
          * Reference</a></p>
          */
@@ -1255,11 +1272,7 @@ namespace FMS
       std::shared_ptr<FMSEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<FMSClient>;
-      void init(const FMSClientConfiguration& clientConfiguration);
 
-      FMSClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<FMSEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace FMS

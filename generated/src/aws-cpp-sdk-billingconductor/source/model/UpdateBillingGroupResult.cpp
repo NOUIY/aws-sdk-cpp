@@ -24,10 +24,8 @@ UpdateBillingGroupResult::UpdateBillingGroupResult() :
 {
 }
 
-UpdateBillingGroupResult::UpdateBillingGroupResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_size(0),
-    m_lastModifiedTime(0),
-    m_status(BillingGroupStatus::NOT_SET)
+UpdateBillingGroupResult::UpdateBillingGroupResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : UpdateBillingGroupResult()
 {
   *this = result;
 }
@@ -86,6 +84,12 @@ UpdateBillingGroupResult& UpdateBillingGroupResult::operator =(const Aws::Amazon
   if(jsonValue.ValueExists("StatusReason"))
   {
     m_statusReason = jsonValue.GetString("StatusReason");
+
+  }
+
+  if(jsonValue.ValueExists("AccountGrouping"))
+  {
+    m_accountGrouping = jsonValue.GetObject("AccountGrouping");
 
   }
 

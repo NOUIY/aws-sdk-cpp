@@ -23,9 +23,8 @@ GetDeviceResult::GetDeviceResult() :
 {
 }
 
-GetDeviceResult::GetDeviceResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_deviceStatus(DeviceStatus::NOT_SET),
-    m_deviceType(DeviceType::NOT_SET)
+GetDeviceResult::GetDeviceResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetDeviceResult()
 {
   *this = result;
 }
@@ -49,6 +48,15 @@ GetDeviceResult& GetDeviceResult::operator =(const Aws::AmazonWebServiceResult<J
   {
     m_deviceName = jsonValue.GetString("deviceName");
 
+  }
+
+  if(jsonValue.ValueExists("deviceQueueInfo"))
+  {
+    Aws::Utils::Array<JsonView> deviceQueueInfoJsonList = jsonValue.GetArray("deviceQueueInfo");
+    for(unsigned deviceQueueInfoIndex = 0; deviceQueueInfoIndex < deviceQueueInfoJsonList.GetLength(); ++deviceQueueInfoIndex)
+    {
+      m_deviceQueueInfo.push_back(deviceQueueInfoJsonList[deviceQueueInfoIndex].AsObject());
+    }
   }
 
   if(jsonValue.ValueExists("deviceStatus"))

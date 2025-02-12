@@ -23,9 +23,8 @@ GetApplicationResult::GetApplicationResult() :
 {
 }
 
-GetApplicationResult::GetApplicationResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_engineType(EngineType::NOT_SET),
-    m_status(ApplicationLifecycle::NOT_SET)
+GetApplicationResult::GetApplicationResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetApplicationResult()
 {
   *this = result;
 }
@@ -129,6 +128,12 @@ GetApplicationResult& GetApplicationResult::operator =(const Aws::AmazonWebServi
   if(jsonValue.ValueExists("name"))
   {
     m_name = jsonValue.GetString("name");
+
+  }
+
+  if(jsonValue.ValueExists("roleArn"))
+  {
+    m_roleArn = jsonValue.GetString("roleArn");
 
   }
 

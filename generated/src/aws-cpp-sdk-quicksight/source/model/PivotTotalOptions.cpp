@@ -28,21 +28,13 @@ PivotTotalOptions::PivotTotalOptions() :
     m_customLabelHasBeenSet(false),
     m_totalCellStyleHasBeenSet(false),
     m_valueCellStyleHasBeenSet(false),
-    m_metricHeaderCellStyleHasBeenSet(false)
+    m_metricHeaderCellStyleHasBeenSet(false),
+    m_totalAggregationOptionsHasBeenSet(false)
 {
 }
 
-PivotTotalOptions::PivotTotalOptions(JsonView jsonValue) : 
-    m_totalsVisibility(Visibility::NOT_SET),
-    m_totalsVisibilityHasBeenSet(false),
-    m_placement(TableTotalsPlacement::NOT_SET),
-    m_placementHasBeenSet(false),
-    m_scrollStatus(TableTotalsScrollStatus::NOT_SET),
-    m_scrollStatusHasBeenSet(false),
-    m_customLabelHasBeenSet(false),
-    m_totalCellStyleHasBeenSet(false),
-    m_valueCellStyleHasBeenSet(false),
-    m_metricHeaderCellStyleHasBeenSet(false)
+PivotTotalOptions::PivotTotalOptions(JsonView jsonValue)
+  : PivotTotalOptions()
 {
   *this = jsonValue;
 }
@@ -98,6 +90,16 @@ PivotTotalOptions& PivotTotalOptions::operator =(JsonView jsonValue)
     m_metricHeaderCellStyleHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("TotalAggregationOptions"))
+  {
+    Aws::Utils::Array<JsonView> totalAggregationOptionsJsonList = jsonValue.GetArray("TotalAggregationOptions");
+    for(unsigned totalAggregationOptionsIndex = 0; totalAggregationOptionsIndex < totalAggregationOptionsJsonList.GetLength(); ++totalAggregationOptionsIndex)
+    {
+      m_totalAggregationOptions.push_back(totalAggregationOptionsJsonList[totalAggregationOptionsIndex].AsObject());
+    }
+    m_totalAggregationOptionsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -141,6 +143,17 @@ JsonValue PivotTotalOptions::Jsonize() const
   if(m_metricHeaderCellStyleHasBeenSet)
   {
    payload.WithObject("MetricHeaderCellStyle", m_metricHeaderCellStyle.Jsonize());
+
+  }
+
+  if(m_totalAggregationOptionsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> totalAggregationOptionsJsonList(m_totalAggregationOptions.size());
+   for(unsigned totalAggregationOptionsIndex = 0; totalAggregationOptionsIndex < totalAggregationOptionsJsonList.GetLength(); ++totalAggregationOptionsIndex)
+   {
+     totalAggregationOptionsJsonList[totalAggregationOptionsIndex].AsObject(m_totalAggregationOptions[totalAggregationOptionsIndex].Jsonize());
+   }
+   payload.WithArray("TotalAggregationOptions", std::move(totalAggregationOptionsJsonList));
 
   }
 

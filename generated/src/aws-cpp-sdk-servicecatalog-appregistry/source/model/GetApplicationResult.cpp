@@ -22,8 +22,8 @@ GetApplicationResult::GetApplicationResult() :
 {
 }
 
-GetApplicationResult::GetApplicationResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_associatedResourceCount(0)
+GetApplicationResult::GetApplicationResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetApplicationResult()
 {
   *this = result;
 }
@@ -86,6 +86,15 @@ GetApplicationResult& GetApplicationResult::operator =(const Aws::AmazonWebServi
   {
     m_integrations = jsonValue.GetObject("integrations");
 
+  }
+
+  if(jsonValue.ValueExists("applicationTag"))
+  {
+    Aws::Map<Aws::String, JsonView> applicationTagJsonMap = jsonValue.GetObject("applicationTag").GetAllObjects();
+    for(auto& applicationTagItem : applicationTagJsonMap)
+    {
+      m_applicationTag[applicationTagItem.first] = applicationTagItem.second.AsString();
+    }
   }
 
 

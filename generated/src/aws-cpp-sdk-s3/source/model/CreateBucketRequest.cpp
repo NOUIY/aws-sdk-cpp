@@ -6,6 +6,7 @@
 #include <aws/s3/model/CreateBucketRequest.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/memory/stl/AWSStringStream.h>
+#include <aws/core/utils/UnreferencedParam.h>
 #include <aws/core/http/URI.h>
 #include <aws/core/utils/memory/stl/AWSStringStream.h>
 
@@ -32,6 +33,25 @@ CreateBucketRequest::CreateBucketRequest() :
     m_objectOwnershipHasBeenSet(false),
     m_customizedAccessLogTagHasBeenSet(false)
 {
+}
+
+bool CreateBucketRequest::HasEmbeddedError(Aws::IOStream &body,
+  const Aws::Http::HeaderValueCollection &header) const
+{
+  // Header is unused
+  AWS_UNREFERENCED_PARAM(header);
+
+  auto readPointer = body.tellg();
+  Utils::Xml::XmlDocument doc = XmlDocument::CreateFromXmlStream(body);
+  body.seekg(readPointer);
+  if (!doc.WasParseSuccessful()) {
+    return false;
+  }
+
+  if (!doc.GetRootElement().IsNull() && doc.GetRootElement().GetName() == Aws::String("Error")) {
+    return true;
+  }
+  return false;
 }
 
 Aws::String CreateBucketRequest::SerializePayload() const
@@ -76,7 +96,7 @@ Aws::Http::HeaderValueCollection CreateBucketRequest::GetRequestSpecificHeaders(
 {
   Aws::Http::HeaderValueCollection headers;
   Aws::StringStream ss;
-  if(m_aCLHasBeenSet)
+  if(m_aCLHasBeenSet && m_aCL != BucketCannedACL::NOT_SET)
   {
     headers.emplace("x-amz-acl", BucketCannedACLMapper::GetNameForBucketCannedACL(m_aCL));
   }
@@ -123,7 +143,7 @@ Aws::Http::HeaderValueCollection CreateBucketRequest::GetRequestSpecificHeaders(
     ss.str("");
   }
 
-  if(m_objectOwnershipHasBeenSet)
+  if(m_objectOwnershipHasBeenSet && m_objectOwnership != ObjectOwnership::NOT_SET)
   {
     headers.emplace("x-amz-object-ownership", ObjectOwnershipMapper::GetNameForObjectOwnership(m_objectOwnership));
   }
@@ -136,6 +156,7 @@ CreateBucketRequest::EndpointParameters CreateBucketRequest::GetEndpointContextP
     EndpointParameters parameters;
     // Static context parameters
     parameters.emplace_back(Aws::String("DisableAccessPoints"), true, Aws::Endpoint::EndpointParameter::ParameterOrigin::STATIC_CONTEXT);
+    parameters.emplace_back(Aws::String("UseS3ExpressControlEndpoint"), true, Aws::Endpoint::EndpointParameter::ParameterOrigin::STATIC_CONTEXT);
     // Operation context parameters
     if (BucketHasBeenSet()) {
         parameters.emplace_back(Aws::String("Bucket"), this->GetBucket(), Aws::Endpoint::EndpointParameter::ParameterOrigin::OPERATION_CONTEXT);

@@ -29,22 +29,14 @@ ProtectedQuery::ProtectedQuery() :
     m_resultConfigurationHasBeenSet(false),
     m_statisticsHasBeenSet(false),
     m_resultHasBeenSet(false),
-    m_errorHasBeenSet(false)
+    m_errorHasBeenSet(false),
+    m_differentialPrivacyHasBeenSet(false),
+    m_computeConfigurationHasBeenSet(false)
 {
 }
 
-ProtectedQuery::ProtectedQuery(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_membershipIdHasBeenSet(false),
-    m_membershipArnHasBeenSet(false),
-    m_createTimeHasBeenSet(false),
-    m_sqlParametersHasBeenSet(false),
-    m_status(ProtectedQueryStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_resultConfigurationHasBeenSet(false),
-    m_statisticsHasBeenSet(false),
-    m_resultHasBeenSet(false),
-    m_errorHasBeenSet(false)
+ProtectedQuery::ProtectedQuery(JsonView jsonValue)
+  : ProtectedQuery()
 {
   *this = jsonValue;
 }
@@ -121,6 +113,20 @@ ProtectedQuery& ProtectedQuery::operator =(JsonView jsonValue)
     m_errorHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("differentialPrivacy"))
+  {
+    m_differentialPrivacy = jsonValue.GetObject("differentialPrivacy");
+
+    m_differentialPrivacyHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("computeConfiguration"))
+  {
+    m_computeConfiguration = jsonValue.GetObject("computeConfiguration");
+
+    m_computeConfigurationHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -183,6 +189,18 @@ JsonValue ProtectedQuery::Jsonize() const
   if(m_errorHasBeenSet)
   {
    payload.WithObject("error", m_error.Jsonize());
+
+  }
+
+  if(m_differentialPrivacyHasBeenSet)
+  {
+   payload.WithObject("differentialPrivacy", m_differentialPrivacy.Jsonize());
+
+  }
+
+  if(m_computeConfigurationHasBeenSet)
+  {
+   payload.WithObject("computeConfiguration", m_computeConfiguration.Jsonize());
 
   }
 

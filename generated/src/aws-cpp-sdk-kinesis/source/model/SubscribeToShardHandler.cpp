@@ -29,6 +29,13 @@ namespace Model
 
     SubscribeToShardHandler::SubscribeToShardHandler() : EventStreamHandler()
     {
+        m_onInitialResponse = [&](const SubscribeToShardInitialResponse&, const Utils::Event::InitialResponseType eventType)
+        {
+            AWS_LOGSTREAM_TRACE(SUBSCRIBETOSHARD_HANDLER_CLASS_TAG,
+                "SubscribeToShard initial response received from "
+                << (eventType == Utils::Event::InitialResponseType::ON_EVENT ? "event" : "http headers"));
+        };
+
         m_onSubscribeToShardEvent = [&](const SubscribeToShardEvent&)
         {
             AWS_LOGSTREAM_TRACE(SUBSCRIBETOSHARD_HANDLER_CLASS_TAG, "SubscribeToShardEvent received.");
@@ -88,6 +95,14 @@ namespace Model
         }
         switch (SubscribeToShardEventMapper::GetSubscribeToShardEventTypeForName(eventTypeHeaderIter->second.GetEventHeaderValueAsString()))
         {
+
+        case SubscribeToShardEventType::INITIAL_RESPONSE:
+        {
+            SubscribeToShardInitialResponse event(GetEventHeadersAsHttpHeaders());
+            m_onInitialResponse(event, Utils::Event::InitialResponseType::ON_EVENT);
+            break;
+        }   
+
         case SubscribeToShardEventType::SUBSCRIBETOSHARDEVENT:
         {
             JsonValue json(GetEventPayloadAsString());
@@ -192,12 +207,18 @@ namespace Model
 
 namespace SubscribeToShardEventMapper
 {
+    static const int INITIAL_RESPONSE_HASH = Aws::Utils::HashingUtils::HashString("initial-response");
     static const int SUBSCRIBETOSHARDEVENT_HASH = Aws::Utils::HashingUtils::HashString("SubscribeToShardEvent");
 
     SubscribeToShardEventType GetSubscribeToShardEventTypeForName(const Aws::String& name)
     {
         int hashCode = Aws::Utils::HashingUtils::HashString(name.c_str());
-        if (hashCode == SUBSCRIBETOSHARDEVENT_HASH)
+
+        if (hashCode == INITIAL_RESPONSE_HASH) 
+        {
+            return SubscribeToShardEventType::INITIAL_RESPONSE;
+        }
+        else if (hashCode == SUBSCRIBETOSHARDEVENT_HASH)
         {
             return SubscribeToShardEventType::SUBSCRIBETOSHARDEVENT;
         }
@@ -208,6 +229,8 @@ namespace SubscribeToShardEventMapper
     {
         switch (value)
         {
+        case SubscribeToShardEventType::INITIAL_RESPONSE:
+            return "initial-response";
         case SubscribeToShardEventType::SUBSCRIBETOSHARDEVENT:
             return "SubscribeToShardEvent";
         default:

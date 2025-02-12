@@ -15,8 +15,11 @@ using namespace Aws::Utils;
 UpdateUserSettingsRequest::UpdateUserSettingsRequest() : 
     m_clientToken(Aws::Utils::UUID::PseudoRandomUUID()),
     m_clientTokenHasBeenSet(true),
+    m_cookieSynchronizationConfigurationHasBeenSet(false),
     m_copyAllowed(EnabledType::NOT_SET),
     m_copyAllowedHasBeenSet(false),
+    m_deepLinkAllowed(EnabledType::NOT_SET),
+    m_deepLinkAllowedHasBeenSet(false),
     m_disconnectTimeoutInMinutes(0),
     m_disconnectTimeoutInMinutesHasBeenSet(false),
     m_downloadAllowed(EnabledType::NOT_SET),
@@ -43,9 +46,20 @@ Aws::String UpdateUserSettingsRequest::SerializePayload() const
 
   }
 
+  if(m_cookieSynchronizationConfigurationHasBeenSet)
+  {
+   payload.WithObject("cookieSynchronizationConfiguration", m_cookieSynchronizationConfiguration.Jsonize());
+
+  }
+
   if(m_copyAllowedHasBeenSet)
   {
    payload.WithString("copyAllowed", EnabledTypeMapper::GetNameForEnabledType(m_copyAllowed));
+  }
+
+  if(m_deepLinkAllowedHasBeenSet)
+  {
+   payload.WithString("deepLinkAllowed", EnabledTypeMapper::GetNameForEnabledType(m_deepLinkAllowed));
   }
 
   if(m_disconnectTimeoutInMinutesHasBeenSet)

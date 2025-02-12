@@ -23,9 +23,8 @@ UpdateBotLocaleResult::UpdateBotLocaleResult() :
 {
 }
 
-UpdateBotLocaleResult::UpdateBotLocaleResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_nluIntentConfidenceThreshold(0.0),
-    m_botLocaleStatus(BotLocaleStatus::NOT_SET)
+UpdateBotLocaleResult::UpdateBotLocaleResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : UpdateBotLocaleResult()
 {
   *this = result;
 }
@@ -109,6 +108,12 @@ UpdateBotLocaleResult& UpdateBotLocaleResult::operator =(const Aws::AmazonWebSer
     {
       m_recommendedActions.push_back(recommendedActionsJsonList[recommendedActionsIndex].AsString());
     }
+  }
+
+  if(jsonValue.ValueExists("generativeAISettings"))
+  {
+    m_generativeAISettings = jsonValue.GetObject("generativeAISettings");
+
   }
 
 

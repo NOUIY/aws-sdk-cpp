@@ -23,6 +23,7 @@ namespace Aws
         static const int NotUpdatable_HASH = HashingUtils::HashString("NotUpdatable");
         static const int InvalidRequest_HASH = HashingUtils::HashString("InvalidRequest");
         static const int AccessDenied_HASH = HashingUtils::HashString("AccessDenied");
+        static const int UnauthorizedTaggingOperation_HASH = HashingUtils::HashString("UnauthorizedTaggingOperation");
         static const int InvalidCredentials_HASH = HashingUtils::HashString("InvalidCredentials");
         static const int AlreadyExists_HASH = HashingUtils::HashString("AlreadyExists");
         static const int NotFound_HASH = HashingUtils::HashString("NotFound");
@@ -51,6 +52,10 @@ namespace Aws
           else if (hashCode == AccessDenied_HASH)
           {
             return HandlerErrorCode::AccessDenied;
+          }
+          else if (hashCode == UnauthorizedTaggingOperation_HASH)
+          {
+            return HandlerErrorCode::UnauthorizedTaggingOperation;
           }
           else if (hashCode == InvalidCredentials_HASH)
           {
@@ -114,12 +119,16 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case HandlerErrorCode::NOT_SET:
+            return {};
           case HandlerErrorCode::NotUpdatable:
             return "NotUpdatable";
           case HandlerErrorCode::InvalidRequest:
             return "InvalidRequest";
           case HandlerErrorCode::AccessDenied:
             return "AccessDenied";
+          case HandlerErrorCode::UnauthorizedTaggingOperation:
+            return "UnauthorizedTaggingOperation";
           case HandlerErrorCode::InvalidCredentials:
             return "InvalidCredentials";
           case HandlerErrorCode::AlreadyExists:

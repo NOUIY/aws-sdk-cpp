@@ -38,6 +38,9 @@ namespace Aws
         static const int PUSH_DOMAIN_HASH = HashingUtils::HashString("PUSH_DOMAIN");
         static const int INTERNAL_TRANSFER_OUT_DOMAIN_HASH = HashingUtils::HashString("INTERNAL_TRANSFER_OUT_DOMAIN");
         static const int INTERNAL_TRANSFER_IN_DOMAIN_HASH = HashingUtils::HashString("INTERNAL_TRANSFER_IN_DOMAIN");
+        static const int RELEASE_TO_GANDI_HASH = HashingUtils::HashString("RELEASE_TO_GANDI");
+        static const int TRANSFER_ON_RENEW_HASH = HashingUtils::HashString("TRANSFER_ON_RENEW");
+        static const int RESTORE_DOMAIN_HASH = HashingUtils::HashString("RESTORE_DOMAIN");
 
 
         OperationType GetOperationTypeForName(const Aws::String& name)
@@ -115,6 +118,18 @@ namespace Aws
           {
             return OperationType::INTERNAL_TRANSFER_IN_DOMAIN;
           }
+          else if (hashCode == RELEASE_TO_GANDI_HASH)
+          {
+            return OperationType::RELEASE_TO_GANDI;
+          }
+          else if (hashCode == TRANSFER_ON_RENEW_HASH)
+          {
+            return OperationType::TRANSFER_ON_RENEW;
+          }
+          else if (hashCode == RESTORE_DOMAIN_HASH)
+          {
+            return OperationType::RESTORE_DOMAIN;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -129,6 +144,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case OperationType::NOT_SET:
+            return {};
           case OperationType::REGISTER_DOMAIN:
             return "REGISTER_DOMAIN";
           case OperationType::DELETE_DOMAIN:
@@ -165,6 +182,12 @@ namespace Aws
             return "INTERNAL_TRANSFER_OUT_DOMAIN";
           case OperationType::INTERNAL_TRANSFER_IN_DOMAIN:
             return "INTERNAL_TRANSFER_IN_DOMAIN";
+          case OperationType::RELEASE_TO_GANDI:
+            return "RELEASE_TO_GANDI";
+          case OperationType::TRANSFER_ON_RENEW:
+            return "TRANSFER_ON_RENEW";
+          case OperationType::RESTORE_DOMAIN:
+            return "RESTORE_DOMAIN";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

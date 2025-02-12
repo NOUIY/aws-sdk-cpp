@@ -33,26 +33,14 @@ WorkGroupConfiguration::WorkGroupConfiguration() :
     m_executionRoleHasBeenSet(false),
     m_customerContentEncryptionConfigurationHasBeenSet(false),
     m_enableMinimumEncryptionConfiguration(false),
-    m_enableMinimumEncryptionConfigurationHasBeenSet(false)
+    m_enableMinimumEncryptionConfigurationHasBeenSet(false),
+    m_identityCenterConfigurationHasBeenSet(false),
+    m_queryResultsS3AccessGrantsConfigurationHasBeenSet(false)
 {
 }
 
-WorkGroupConfiguration::WorkGroupConfiguration(JsonView jsonValue) : 
-    m_resultConfigurationHasBeenSet(false),
-    m_enforceWorkGroupConfiguration(false),
-    m_enforceWorkGroupConfigurationHasBeenSet(false),
-    m_publishCloudWatchMetricsEnabled(false),
-    m_publishCloudWatchMetricsEnabledHasBeenSet(false),
-    m_bytesScannedCutoffPerQuery(0),
-    m_bytesScannedCutoffPerQueryHasBeenSet(false),
-    m_requesterPaysEnabled(false),
-    m_requesterPaysEnabledHasBeenSet(false),
-    m_engineVersionHasBeenSet(false),
-    m_additionalConfigurationHasBeenSet(false),
-    m_executionRoleHasBeenSet(false),
-    m_customerContentEncryptionConfigurationHasBeenSet(false),
-    m_enableMinimumEncryptionConfiguration(false),
-    m_enableMinimumEncryptionConfigurationHasBeenSet(false)
+WorkGroupConfiguration::WorkGroupConfiguration(JsonView jsonValue)
+  : WorkGroupConfiguration()
 {
   *this = jsonValue;
 }
@@ -129,6 +117,20 @@ WorkGroupConfiguration& WorkGroupConfiguration::operator =(JsonView jsonValue)
     m_enableMinimumEncryptionConfigurationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("IdentityCenterConfiguration"))
+  {
+    m_identityCenterConfiguration = jsonValue.GetObject("IdentityCenterConfiguration");
+
+    m_identityCenterConfigurationHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("QueryResultsS3AccessGrantsConfiguration"))
+  {
+    m_queryResultsS3AccessGrantsConfiguration = jsonValue.GetObject("QueryResultsS3AccessGrantsConfiguration");
+
+    m_queryResultsS3AccessGrantsConfigurationHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -193,6 +195,18 @@ JsonValue WorkGroupConfiguration::Jsonize() const
   if(m_enableMinimumEncryptionConfigurationHasBeenSet)
   {
    payload.WithBool("EnableMinimumEncryptionConfiguration", m_enableMinimumEncryptionConfiguration);
+
+  }
+
+  if(m_identityCenterConfigurationHasBeenSet)
+  {
+   payload.WithObject("IdentityCenterConfiguration", m_identityCenterConfiguration.Jsonize());
+
+  }
+
+  if(m_queryResultsS3AccessGrantsConfigurationHasBeenSet)
+  {
+   payload.WithObject("QueryResultsS3AccessGrantsConfiguration", m_queryResultsS3AccessGrantsConfiguration.Jsonize());
 
   }
 

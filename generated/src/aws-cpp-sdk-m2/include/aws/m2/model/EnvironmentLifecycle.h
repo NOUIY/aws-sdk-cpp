@@ -18,9 +18,10 @@ namespace Model
     NOT_SET,
     Creating,
     Available,
+    Updating,
     Deleting,
     Failed,
-    Updating
+    UnHealthy
   };
 
 namespace EnvironmentLifecycleMapper

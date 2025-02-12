@@ -103,7 +103,18 @@ namespace Model
     Ruth,
     Stephen,
     Kazuha,
-    Tomoko
+    Tomoko,
+    Niamh,
+    Sofie,
+    Lisa,
+    Isabelle,
+    Zayd,
+    Danielle,
+    Gregory,
+    Burcu,
+    Jitka,
+    Sabrina,
+    Jasmine
   };
 
 namespace VoiceIdMapper

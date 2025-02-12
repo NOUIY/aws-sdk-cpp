@@ -34,27 +34,16 @@ MapRunItemCounts::MapRunItemCounts() :
     m_total(0),
     m_totalHasBeenSet(false),
     m_resultsWritten(0),
-    m_resultsWrittenHasBeenSet(false)
+    m_resultsWrittenHasBeenSet(false),
+    m_failuresNotRedrivable(0),
+    m_failuresNotRedrivableHasBeenSet(false),
+    m_pendingRedrive(0),
+    m_pendingRedriveHasBeenSet(false)
 {
 }
 
-MapRunItemCounts::MapRunItemCounts(JsonView jsonValue) : 
-    m_pending(0),
-    m_pendingHasBeenSet(false),
-    m_running(0),
-    m_runningHasBeenSet(false),
-    m_succeeded(0),
-    m_succeededHasBeenSet(false),
-    m_failed(0),
-    m_failedHasBeenSet(false),
-    m_timedOut(0),
-    m_timedOutHasBeenSet(false),
-    m_aborted(0),
-    m_abortedHasBeenSet(false),
-    m_total(0),
-    m_totalHasBeenSet(false),
-    m_resultsWritten(0),
-    m_resultsWrittenHasBeenSet(false)
+MapRunItemCounts::MapRunItemCounts(JsonView jsonValue)
+  : MapRunItemCounts()
 {
   *this = jsonValue;
 }
@@ -117,6 +106,20 @@ MapRunItemCounts& MapRunItemCounts::operator =(JsonView jsonValue)
     m_resultsWrittenHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("failuresNotRedrivable"))
+  {
+    m_failuresNotRedrivable = jsonValue.GetInt64("failuresNotRedrivable");
+
+    m_failuresNotRedrivableHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("pendingRedrive"))
+  {
+    m_pendingRedrive = jsonValue.GetInt64("pendingRedrive");
+
+    m_pendingRedriveHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -169,6 +172,18 @@ JsonValue MapRunItemCounts::Jsonize() const
   if(m_resultsWrittenHasBeenSet)
   {
    payload.WithInt64("resultsWritten", m_resultsWritten);
+
+  }
+
+  if(m_failuresNotRedrivableHasBeenSet)
+  {
+   payload.WithInt64("failuresNotRedrivable", m_failuresNotRedrivable);
+
+  }
+
+  if(m_pendingRedriveHasBeenSet)
+  {
+   payload.WithInt64("pendingRedrive", m_pendingRedrive);
 
   }
 

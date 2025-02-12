@@ -31,24 +31,15 @@ InferenceExecutionSummary::InferenceExecutionSummary() :
     m_customerResultObjectHasBeenSet(false),
     m_status(InferenceExecutionStatus::NOT_SET),
     m_statusHasBeenSet(false),
-    m_failedReasonHasBeenSet(false)
+    m_failedReasonHasBeenSet(false),
+    m_modelVersion(0),
+    m_modelVersionHasBeenSet(false),
+    m_modelVersionArnHasBeenSet(false)
 {
 }
 
-InferenceExecutionSummary::InferenceExecutionSummary(JsonView jsonValue) : 
-    m_modelNameHasBeenSet(false),
-    m_modelArnHasBeenSet(false),
-    m_inferenceSchedulerNameHasBeenSet(false),
-    m_inferenceSchedulerArnHasBeenSet(false),
-    m_scheduledStartTimeHasBeenSet(false),
-    m_dataStartTimeHasBeenSet(false),
-    m_dataEndTimeHasBeenSet(false),
-    m_dataInputConfigurationHasBeenSet(false),
-    m_dataOutputConfigurationHasBeenSet(false),
-    m_customerResultObjectHasBeenSet(false),
-    m_status(InferenceExecutionStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_failedReasonHasBeenSet(false)
+InferenceExecutionSummary::InferenceExecutionSummary(JsonView jsonValue)
+  : InferenceExecutionSummary()
 {
   *this = jsonValue;
 }
@@ -139,6 +130,20 @@ InferenceExecutionSummary& InferenceExecutionSummary::operator =(JsonView jsonVa
     m_failedReasonHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ModelVersion"))
+  {
+    m_modelVersion = jsonValue.GetInt64("ModelVersion");
+
+    m_modelVersionHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("ModelVersionArn"))
+  {
+    m_modelVersionArn = jsonValue.GetString("ModelVersionArn");
+
+    m_modelVersionArnHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -211,6 +216,18 @@ JsonValue InferenceExecutionSummary::Jsonize() const
   if(m_failedReasonHasBeenSet)
   {
    payload.WithString("FailedReason", m_failedReason);
+
+  }
+
+  if(m_modelVersionHasBeenSet)
+  {
+   payload.WithInt64("ModelVersion", m_modelVersion);
+
+  }
+
+  if(m_modelVersionArnHasBeenSet)
+  {
+   payload.WithString("ModelVersionArn", m_modelVersionArn);
 
   }
 

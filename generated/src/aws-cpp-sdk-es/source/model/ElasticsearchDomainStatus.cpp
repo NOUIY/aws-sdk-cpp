@@ -47,40 +47,15 @@ ElasticsearchDomainStatus::ElasticsearchDomainStatus() :
     m_domainEndpointOptionsHasBeenSet(false),
     m_advancedSecurityOptionsHasBeenSet(false),
     m_autoTuneOptionsHasBeenSet(false),
-    m_changeProgressDetailsHasBeenSet(false)
+    m_changeProgressDetailsHasBeenSet(false),
+    m_domainProcessingStatus(DomainProcessingStatusType::NOT_SET),
+    m_domainProcessingStatusHasBeenSet(false),
+    m_modifyingPropertiesHasBeenSet(false)
 {
 }
 
-ElasticsearchDomainStatus::ElasticsearchDomainStatus(JsonView jsonValue) : 
-    m_domainIdHasBeenSet(false),
-    m_domainNameHasBeenSet(false),
-    m_aRNHasBeenSet(false),
-    m_created(false),
-    m_createdHasBeenSet(false),
-    m_deleted(false),
-    m_deletedHasBeenSet(false),
-    m_endpointHasBeenSet(false),
-    m_endpointsHasBeenSet(false),
-    m_processing(false),
-    m_processingHasBeenSet(false),
-    m_upgradeProcessing(false),
-    m_upgradeProcessingHasBeenSet(false),
-    m_elasticsearchVersionHasBeenSet(false),
-    m_elasticsearchClusterConfigHasBeenSet(false),
-    m_eBSOptionsHasBeenSet(false),
-    m_accessPoliciesHasBeenSet(false),
-    m_snapshotOptionsHasBeenSet(false),
-    m_vPCOptionsHasBeenSet(false),
-    m_cognitoOptionsHasBeenSet(false),
-    m_encryptionAtRestOptionsHasBeenSet(false),
-    m_nodeToNodeEncryptionOptionsHasBeenSet(false),
-    m_advancedOptionsHasBeenSet(false),
-    m_logPublishingOptionsHasBeenSet(false),
-    m_serviceSoftwareOptionsHasBeenSet(false),
-    m_domainEndpointOptionsHasBeenSet(false),
-    m_advancedSecurityOptionsHasBeenSet(false),
-    m_autoTuneOptionsHasBeenSet(false),
-    m_changeProgressDetailsHasBeenSet(false)
+ElasticsearchDomainStatus::ElasticsearchDomainStatus(JsonView jsonValue)
+  : ElasticsearchDomainStatus()
 {
   *this = jsonValue;
 }
@@ -271,6 +246,23 @@ ElasticsearchDomainStatus& ElasticsearchDomainStatus::operator =(JsonView jsonVa
     m_changeProgressDetailsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("DomainProcessingStatus"))
+  {
+    m_domainProcessingStatus = DomainProcessingStatusTypeMapper::GetDomainProcessingStatusTypeForName(jsonValue.GetString("DomainProcessingStatus"));
+
+    m_domainProcessingStatusHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("ModifyingProperties"))
+  {
+    Aws::Utils::Array<JsonView> modifyingPropertiesJsonList = jsonValue.GetArray("ModifyingProperties");
+    for(unsigned modifyingPropertiesIndex = 0; modifyingPropertiesIndex < modifyingPropertiesJsonList.GetLength(); ++modifyingPropertiesIndex)
+    {
+      m_modifyingProperties.push_back(modifyingPropertiesJsonList[modifyingPropertiesIndex].AsObject());
+    }
+    m_modifyingPropertiesHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -440,6 +432,22 @@ JsonValue ElasticsearchDomainStatus::Jsonize() const
   if(m_changeProgressDetailsHasBeenSet)
   {
    payload.WithObject("ChangeProgressDetails", m_changeProgressDetails.Jsonize());
+
+  }
+
+  if(m_domainProcessingStatusHasBeenSet)
+  {
+   payload.WithString("DomainProcessingStatus", DomainProcessingStatusTypeMapper::GetNameForDomainProcessingStatusType(m_domainProcessingStatus));
+  }
+
+  if(m_modifyingPropertiesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> modifyingPropertiesJsonList(m_modifyingProperties.size());
+   for(unsigned modifyingPropertiesIndex = 0; modifyingPropertiesIndex < modifyingPropertiesJsonList.GetLength(); ++modifyingPropertiesIndex)
+   {
+     modifyingPropertiesJsonList[modifyingPropertiesIndex].AsObject(m_modifyingProperties[modifyingPropertiesIndex].Jsonize());
+   }
+   payload.WithArray("ModifyingProperties", std::move(modifyingPropertiesJsonList));
 
   }
 

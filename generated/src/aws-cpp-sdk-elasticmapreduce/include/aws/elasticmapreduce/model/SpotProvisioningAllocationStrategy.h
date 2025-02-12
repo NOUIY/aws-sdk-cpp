@@ -16,7 +16,11 @@ namespace Model
   enum class SpotProvisioningAllocationStrategy
   {
     NOT_SET,
-    capacity_optimized
+    capacity_optimized,
+    price_capacity_optimized,
+    lowest_price,
+    diversified,
+    capacity_optimized_prioritized
   };
 
 namespace SpotProvisioningAllocationStrategyMapper

@@ -24,17 +24,16 @@ RuleAction::RuleAction() :
     m_taskActionHasBeenSet(false),
     m_eventBridgeActionHasBeenSet(false),
     m_assignContactCategoryActionHasBeenSet(false),
-    m_sendNotificationActionHasBeenSet(false)
+    m_sendNotificationActionHasBeenSet(false),
+    m_createCaseActionHasBeenSet(false),
+    m_updateCaseActionHasBeenSet(false),
+    m_endAssociatedTasksActionHasBeenSet(false),
+    m_submitAutoEvaluationActionHasBeenSet(false)
 {
 }
 
-RuleAction::RuleAction(JsonView jsonValue) : 
-    m_actionType(ActionType::NOT_SET),
-    m_actionTypeHasBeenSet(false),
-    m_taskActionHasBeenSet(false),
-    m_eventBridgeActionHasBeenSet(false),
-    m_assignContactCategoryActionHasBeenSet(false),
-    m_sendNotificationActionHasBeenSet(false)
+RuleAction::RuleAction(JsonView jsonValue)
+  : RuleAction()
 {
   *this = jsonValue;
 }
@@ -76,6 +75,34 @@ RuleAction& RuleAction::operator =(JsonView jsonValue)
     m_sendNotificationActionHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("CreateCaseAction"))
+  {
+    m_createCaseAction = jsonValue.GetObject("CreateCaseAction");
+
+    m_createCaseActionHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("UpdateCaseAction"))
+  {
+    m_updateCaseAction = jsonValue.GetObject("UpdateCaseAction");
+
+    m_updateCaseActionHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("EndAssociatedTasksAction"))
+  {
+    m_endAssociatedTasksAction = jsonValue.GetObject("EndAssociatedTasksAction");
+
+    m_endAssociatedTasksActionHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("SubmitAutoEvaluationAction"))
+  {
+    m_submitAutoEvaluationAction = jsonValue.GetObject("SubmitAutoEvaluationAction");
+
+    m_submitAutoEvaluationActionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -109,6 +136,30 @@ JsonValue RuleAction::Jsonize() const
   if(m_sendNotificationActionHasBeenSet)
   {
    payload.WithObject("SendNotificationAction", m_sendNotificationAction.Jsonize());
+
+  }
+
+  if(m_createCaseActionHasBeenSet)
+  {
+   payload.WithObject("CreateCaseAction", m_createCaseAction.Jsonize());
+
+  }
+
+  if(m_updateCaseActionHasBeenSet)
+  {
+   payload.WithObject("UpdateCaseAction", m_updateCaseAction.Jsonize());
+
+  }
+
+  if(m_endAssociatedTasksActionHasBeenSet)
+  {
+   payload.WithObject("EndAssociatedTasksAction", m_endAssociatedTasksAction.Jsonize());
+
+  }
+
+  if(m_submitAutoEvaluationActionHasBeenSet)
+  {
+   payload.WithObject("SubmitAutoEvaluationAction", m_submitAutoEvaluationAction.Jsonize());
 
   }
 

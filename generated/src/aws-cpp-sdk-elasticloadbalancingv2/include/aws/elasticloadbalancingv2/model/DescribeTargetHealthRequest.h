@@ -9,6 +9,7 @@
 #include <aws/core/utils/memory/stl/AWSString.h>
 #include <aws/core/utils/memory/stl/AWSVector.h>
 #include <aws/elasticloadbalancingv2/model/TargetDescription.h>
+#include <aws/elasticloadbalancingv2/model/DescribeTargetHealthInputIncludeEnum.h>
 #include <utility>
 
 namespace Aws
@@ -38,87 +39,47 @@ namespace Model
 
   public:
 
+    ///@{
     /**
      * <p>The Amazon Resource Name (ARN) of the target group.</p>
      */
     inline const Aws::String& GetTargetGroupArn() const{ return m_targetGroupArn; }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the target group.</p>
-     */
     inline bool TargetGroupArnHasBeenSet() const { return m_targetGroupArnHasBeenSet; }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the target group.</p>
-     */
     inline void SetTargetGroupArn(const Aws::String& value) { m_targetGroupArnHasBeenSet = true; m_targetGroupArn = value; }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the target group.</p>
-     */
     inline void SetTargetGroupArn(Aws::String&& value) { m_targetGroupArnHasBeenSet = true; m_targetGroupArn = std::move(value); }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the target group.</p>
-     */
     inline void SetTargetGroupArn(const char* value) { m_targetGroupArnHasBeenSet = true; m_targetGroupArn.assign(value); }
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the target group.</p>
-     */
     inline DescribeTargetHealthRequest& WithTargetGroupArn(const Aws::String& value) { SetTargetGroupArn(value); return *this;}
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the target group.</p>
-     */
     inline DescribeTargetHealthRequest& WithTargetGroupArn(Aws::String&& value) { SetTargetGroupArn(std::move(value)); return *this;}
-
-    /**
-     * <p>The Amazon Resource Name (ARN) of the target group.</p>
-     */
     inline DescribeTargetHealthRequest& WithTargetGroupArn(const char* value) { SetTargetGroupArn(value); return *this;}
+    ///@}
 
-
+    ///@{
     /**
      * <p>The targets.</p>
      */
     inline const Aws::Vector<TargetDescription>& GetTargets() const{ return m_targets; }
-
-    /**
-     * <p>The targets.</p>
-     */
     inline bool TargetsHasBeenSet() const { return m_targetsHasBeenSet; }
-
-    /**
-     * <p>The targets.</p>
-     */
     inline void SetTargets(const Aws::Vector<TargetDescription>& value) { m_targetsHasBeenSet = true; m_targets = value; }
-
-    /**
-     * <p>The targets.</p>
-     */
     inline void SetTargets(Aws::Vector<TargetDescription>&& value) { m_targetsHasBeenSet = true; m_targets = std::move(value); }
-
-    /**
-     * <p>The targets.</p>
-     */
     inline DescribeTargetHealthRequest& WithTargets(const Aws::Vector<TargetDescription>& value) { SetTargets(value); return *this;}
-
-    /**
-     * <p>The targets.</p>
-     */
     inline DescribeTargetHealthRequest& WithTargets(Aws::Vector<TargetDescription>&& value) { SetTargets(std::move(value)); return *this;}
-
-    /**
-     * <p>The targets.</p>
-     */
     inline DescribeTargetHealthRequest& AddTargets(const TargetDescription& value) { m_targetsHasBeenSet = true; m_targets.push_back(value); return *this; }
-
-    /**
-     * <p>The targets.</p>
-     */
     inline DescribeTargetHealthRequest& AddTargets(TargetDescription&& value) { m_targetsHasBeenSet = true; m_targets.push_back(std::move(value)); return *this; }
+    ///@}
 
+    ///@{
+    /**
+     * <p>Used to include anomaly detection information.</p>
+     */
+    inline const Aws::Vector<DescribeTargetHealthInputIncludeEnum>& GetInclude() const{ return m_include; }
+    inline bool IncludeHasBeenSet() const { return m_includeHasBeenSet; }
+    inline void SetInclude(const Aws::Vector<DescribeTargetHealthInputIncludeEnum>& value) { m_includeHasBeenSet = true; m_include = value; }
+    inline void SetInclude(Aws::Vector<DescribeTargetHealthInputIncludeEnum>&& value) { m_includeHasBeenSet = true; m_include = std::move(value); }
+    inline DescribeTargetHealthRequest& WithInclude(const Aws::Vector<DescribeTargetHealthInputIncludeEnum>& value) { SetInclude(value); return *this;}
+    inline DescribeTargetHealthRequest& WithInclude(Aws::Vector<DescribeTargetHealthInputIncludeEnum>&& value) { SetInclude(std::move(value)); return *this;}
+    inline DescribeTargetHealthRequest& AddInclude(const DescribeTargetHealthInputIncludeEnum& value) { m_includeHasBeenSet = true; m_include.push_back(value); return *this; }
+    inline DescribeTargetHealthRequest& AddInclude(DescribeTargetHealthInputIncludeEnum&& value) { m_includeHasBeenSet = true; m_include.push_back(std::move(value)); return *this; }
+    ///@}
   private:
 
     Aws::String m_targetGroupArn;
@@ -126,6 +87,9 @@ namespace Model
 
     Aws::Vector<TargetDescription> m_targets;
     bool m_targetsHasBeenSet = false;
+
+    Aws::Vector<DescribeTargetHealthInputIncludeEnum> m_include;
+    bool m_includeHasBeenSet = false;
   };
 
 } // namespace Model

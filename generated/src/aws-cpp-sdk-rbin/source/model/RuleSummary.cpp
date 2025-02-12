@@ -23,16 +23,13 @@ RuleSummary::RuleSummary() :
     m_descriptionHasBeenSet(false),
     m_retentionPeriodHasBeenSet(false),
     m_lockState(LockState::NOT_SET),
-    m_lockStateHasBeenSet(false)
+    m_lockStateHasBeenSet(false),
+    m_ruleArnHasBeenSet(false)
 {
 }
 
-RuleSummary::RuleSummary(JsonView jsonValue) : 
-    m_identifierHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_retentionPeriodHasBeenSet(false),
-    m_lockState(LockState::NOT_SET),
-    m_lockStateHasBeenSet(false)
+RuleSummary::RuleSummary(JsonView jsonValue)
+  : RuleSummary()
 {
   *this = jsonValue;
 }
@@ -67,6 +64,13 @@ RuleSummary& RuleSummary::operator =(JsonView jsonValue)
     m_lockStateHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("RuleArn"))
+  {
+    m_ruleArn = jsonValue.GetString("RuleArn");
+
+    m_ruleArnHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -95,6 +99,12 @@ JsonValue RuleSummary::Jsonize() const
   if(m_lockStateHasBeenSet)
   {
    payload.WithString("LockState", LockStateMapper::GetNameForLockState(m_lockState));
+  }
+
+  if(m_ruleArnHasBeenSet)
+  {
+   payload.WithString("RuleArn", m_ruleArn);
+
   }
 
   return payload;

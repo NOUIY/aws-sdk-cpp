@@ -20,14 +20,13 @@ using namespace Aws;
 GetAnnotationStoreResult::GetAnnotationStoreResult() : 
     m_status(StoreStatus::NOT_SET),
     m_storeFormat(StoreFormat::NOT_SET),
-    m_storeSizeBytes(0)
+    m_storeSizeBytes(0),
+    m_numVersions(0)
 {
 }
 
-GetAnnotationStoreResult::GetAnnotationStoreResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(StoreStatus::NOT_SET),
-    m_storeFormat(StoreFormat::NOT_SET),
-    m_storeSizeBytes(0)
+GetAnnotationStoreResult::GetAnnotationStoreResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetAnnotationStoreResult()
 {
   *this = result;
 }
@@ -119,6 +118,12 @@ GetAnnotationStoreResult& GetAnnotationStoreResult::operator =(const Aws::Amazon
   if(jsonValue.ValueExists("storeSizeBytes"))
   {
     m_storeSizeBytes = jsonValue.GetInt64("storeSizeBytes");
+
+  }
+
+  if(jsonValue.ValueExists("numVersions"))
+  {
+    m_numVersions = jsonValue.GetInteger("numVersions");
 
   }
 

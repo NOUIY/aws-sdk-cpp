@@ -28,6 +28,10 @@ namespace Aws
         static const int API_HASH = HashingUtils::HashString("API");
         static const int DISCONNECT_HASH = HashingUtils::HashString("DISCONNECT");
         static const int MONITOR_HASH = HashingUtils::HashString("MONITOR");
+        static const int EXTERNAL_OUTBOUND_HASH = HashingUtils::HashString("EXTERNAL_OUTBOUND");
+        static const int WEBRTC_API_HASH = HashingUtils::HashString("WEBRTC_API");
+        static const int AGENT_REPLY_HASH = HashingUtils::HashString("AGENT_REPLY");
+        static const int FLOW_HASH = HashingUtils::HashString("FLOW");
 
 
         ContactInitiationMethod GetContactInitiationMethodForName(const Aws::String& name)
@@ -65,6 +69,22 @@ namespace Aws
           {
             return ContactInitiationMethod::MONITOR;
           }
+          else if (hashCode == EXTERNAL_OUTBOUND_HASH)
+          {
+            return ContactInitiationMethod::EXTERNAL_OUTBOUND;
+          }
+          else if (hashCode == WEBRTC_API_HASH)
+          {
+            return ContactInitiationMethod::WEBRTC_API;
+          }
+          else if (hashCode == AGENT_REPLY_HASH)
+          {
+            return ContactInitiationMethod::AGENT_REPLY;
+          }
+          else if (hashCode == FLOW_HASH)
+          {
+            return ContactInitiationMethod::FLOW;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -79,6 +99,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ContactInitiationMethod::NOT_SET:
+            return {};
           case ContactInitiationMethod::INBOUND:
             return "INBOUND";
           case ContactInitiationMethod::OUTBOUND:
@@ -95,6 +117,14 @@ namespace Aws
             return "DISCONNECT";
           case ContactInitiationMethod::MONITOR:
             return "MONITOR";
+          case ContactInitiationMethod::EXTERNAL_OUTBOUND:
+            return "EXTERNAL_OUTBOUND";
+          case ContactInitiationMethod::WEBRTC_API:
+            return "WEBRTC_API";
+          case ContactInitiationMethod::AGENT_REPLY:
+            return "AGENT_REPLY";
+          case ContactInitiationMethod::FLOW:
+            return "FLOW";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

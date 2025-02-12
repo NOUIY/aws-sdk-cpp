@@ -20,14 +20,13 @@ using namespace Aws;
 StartSnapshotResult::StartSnapshotResult() : 
     m_status(Status::NOT_SET),
     m_volumeSize(0),
-    m_blockSize(0)
+    m_blockSize(0),
+    m_sseType(SSEType::NOT_SET)
 {
 }
 
-StartSnapshotResult::StartSnapshotResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(Status::NOT_SET),
-    m_volumeSize(0),
-    m_blockSize(0)
+StartSnapshotResult::StartSnapshotResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : StartSnapshotResult()
 {
   *this = result;
 }
@@ -95,6 +94,12 @@ StartSnapshotResult& StartSnapshotResult::operator =(const Aws::AmazonWebService
   if(jsonValue.ValueExists("KmsKeyArn"))
   {
     m_kmsKeyArn = jsonValue.GetString("KmsKeyArn");
+
+  }
+
+  if(jsonValue.ValueExists("SseType"))
+  {
+    m_sseType = SSETypeMapper::GetSSETypeForName(jsonValue.GetString("SseType"));
 
   }
 

@@ -19,7 +19,10 @@ namespace Model
     WINDOWS,
     WINDOWS_SERVER_2016,
     WINDOWS_SERVER_2019,
-    AMAZON_LINUX2
+    WINDOWS_SERVER_2022,
+    AMAZON_LINUX2,
+    RHEL8,
+    ROCKY_LINUX8
   };
 
 namespace PlatformTypeMapper

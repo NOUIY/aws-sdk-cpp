@@ -35,28 +35,16 @@ InputDeviceSummary::InputDeviceSummary() :
     m_type(InputDeviceType::NOT_SET),
     m_typeHasBeenSet(false),
     m_uhdDeviceSettingsHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+    m_tagsHasBeenSet(false),
+    m_availabilityZoneHasBeenSet(false),
+    m_medialiveInputArnsHasBeenSet(false),
+    m_outputType(InputDeviceOutputType::NOT_SET),
+    m_outputTypeHasBeenSet(false)
 {
 }
 
-InputDeviceSummary::InputDeviceSummary(JsonView jsonValue) : 
-    m_arnHasBeenSet(false),
-    m_connectionState(InputDeviceConnectionState::NOT_SET),
-    m_connectionStateHasBeenSet(false),
-    m_deviceSettingsSyncState(DeviceSettingsSyncState::NOT_SET),
-    m_deviceSettingsSyncStateHasBeenSet(false),
-    m_deviceUpdateStatus(DeviceUpdateStatus::NOT_SET),
-    m_deviceUpdateStatusHasBeenSet(false),
-    m_hdDeviceSettingsHasBeenSet(false),
-    m_idHasBeenSet(false),
-    m_macAddressHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_networkSettingsHasBeenSet(false),
-    m_serialNumberHasBeenSet(false),
-    m_type(InputDeviceType::NOT_SET),
-    m_typeHasBeenSet(false),
-    m_uhdDeviceSettingsHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+InputDeviceSummary::InputDeviceSummary(JsonView jsonValue)
+  : InputDeviceSummary()
 {
   *this = jsonValue;
 }
@@ -157,6 +145,30 @@ InputDeviceSummary& InputDeviceSummary::operator =(JsonView jsonValue)
     m_tagsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("availabilityZone"))
+  {
+    m_availabilityZone = jsonValue.GetString("availabilityZone");
+
+    m_availabilityZoneHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("medialiveInputArns"))
+  {
+    Aws::Utils::Array<JsonView> medialiveInputArnsJsonList = jsonValue.GetArray("medialiveInputArns");
+    for(unsigned medialiveInputArnsIndex = 0; medialiveInputArnsIndex < medialiveInputArnsJsonList.GetLength(); ++medialiveInputArnsIndex)
+    {
+      m_medialiveInputArns.push_back(medialiveInputArnsJsonList[medialiveInputArnsIndex].AsString());
+    }
+    m_medialiveInputArnsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("outputType"))
+  {
+    m_outputType = InputDeviceOutputTypeMapper::GetInputDeviceOutputTypeForName(jsonValue.GetString("outputType"));
+
+    m_outputTypeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -241,6 +253,28 @@ JsonValue InputDeviceSummary::Jsonize() const
    }
    payload.WithObject("tags", std::move(tagsJsonMap));
 
+  }
+
+  if(m_availabilityZoneHasBeenSet)
+  {
+   payload.WithString("availabilityZone", m_availabilityZone);
+
+  }
+
+  if(m_medialiveInputArnsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> medialiveInputArnsJsonList(m_medialiveInputArns.size());
+   for(unsigned medialiveInputArnsIndex = 0; medialiveInputArnsIndex < medialiveInputArnsJsonList.GetLength(); ++medialiveInputArnsIndex)
+   {
+     medialiveInputArnsJsonList[medialiveInputArnsIndex].AsString(m_medialiveInputArns[medialiveInputArnsIndex]);
+   }
+   payload.WithArray("medialiveInputArns", std::move(medialiveInputArnsJsonList));
+
+  }
+
+  if(m_outputTypeHasBeenSet)
+  {
+   payload.WithString("outputType", InputDeviceOutputTypeMapper::GetNameForInputDeviceOutputType(m_outputType));
   }
 
   return payload;

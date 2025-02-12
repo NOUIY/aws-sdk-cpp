@@ -20,6 +20,7 @@
 /* Service model headers required in KinesisVideoClient header */
 #include <aws/kinesisvideo/model/CreateSignalingChannelResult.h>
 #include <aws/kinesisvideo/model/CreateStreamResult.h>
+#include <aws/kinesisvideo/model/DeleteEdgeConfigurationResult.h>
 #include <aws/kinesisvideo/model/DeleteSignalingChannelResult.h>
 #include <aws/kinesisvideo/model/DeleteStreamResult.h>
 #include <aws/kinesisvideo/model/DescribeEdgeConfigurationResult.h>
@@ -31,6 +32,7 @@
 #include <aws/kinesisvideo/model/DescribeStreamResult.h>
 #include <aws/kinesisvideo/model/GetDataEndpointResult.h>
 #include <aws/kinesisvideo/model/GetSignalingChannelEndpointResult.h>
+#include <aws/kinesisvideo/model/ListEdgeAgentConfigurationsResult.h>
 #include <aws/kinesisvideo/model/ListSignalingChannelsResult.h>
 #include <aws/kinesisvideo/model/ListStreamsResult.h>
 #include <aws/kinesisvideo/model/ListTagsForResourceResult.h>
@@ -46,6 +48,19 @@
 #include <aws/kinesisvideo/model/UpdateNotificationConfigurationResult.h>
 #include <aws/kinesisvideo/model/UpdateSignalingChannelResult.h>
 #include <aws/kinesisvideo/model/UpdateStreamResult.h>
+#include <aws/kinesisvideo/model/ListStreamsRequest.h>
+#include <aws/kinesisvideo/model/UpdateImageGenerationConfigurationRequest.h>
+#include <aws/kinesisvideo/model/ListTagsForStreamRequest.h>
+#include <aws/kinesisvideo/model/DescribeImageGenerationConfigurationRequest.h>
+#include <aws/kinesisvideo/model/DescribeNotificationConfigurationRequest.h>
+#include <aws/kinesisvideo/model/DescribeStreamRequest.h>
+#include <aws/kinesisvideo/model/ListSignalingChannelsRequest.h>
+#include <aws/kinesisvideo/model/DescribeSignalingChannelRequest.h>
+#include <aws/kinesisvideo/model/UpdateNotificationConfigurationRequest.h>
+#include <aws/kinesisvideo/model/DescribeEdgeConfigurationRequest.h>
+#include <aws/kinesisvideo/model/DescribeMappedResourceConfigurationRequest.h>
+#include <aws/kinesisvideo/model/DeleteEdgeConfigurationRequest.h>
+#include <aws/kinesisvideo/model/DescribeMediaStorageConfigurationRequest.h>
 /* End of service model headers required in KinesisVideoClient header */
 
 namespace Aws
@@ -79,7 +94,7 @@ namespace Aws
 
   namespace KinesisVideo
   {
-    using KinesisVideoClientConfiguration = Aws::Client::GenericClientConfiguration<false>;
+    using KinesisVideoClientConfiguration = Aws::Client::GenericClientConfiguration;
     using KinesisVideoEndpointProviderBase = Aws::KinesisVideo::Endpoint::KinesisVideoEndpointProviderBase;
     using KinesisVideoEndpointProvider = Aws::KinesisVideo::Endpoint::KinesisVideoEndpointProvider;
 
@@ -88,6 +103,7 @@ namespace Aws
       /* Service model forward declarations required in KinesisVideoClient header */
       class CreateSignalingChannelRequest;
       class CreateStreamRequest;
+      class DeleteEdgeConfigurationRequest;
       class DeleteSignalingChannelRequest;
       class DeleteStreamRequest;
       class DescribeEdgeConfigurationRequest;
@@ -99,6 +115,7 @@ namespace Aws
       class DescribeStreamRequest;
       class GetDataEndpointRequest;
       class GetSignalingChannelEndpointRequest;
+      class ListEdgeAgentConfigurationsRequest;
       class ListSignalingChannelsRequest;
       class ListStreamsRequest;
       class ListTagsForResourceRequest;
@@ -119,6 +136,7 @@ namespace Aws
       /* Service model Outcome class definitions */
       typedef Aws::Utils::Outcome<CreateSignalingChannelResult, KinesisVideoError> CreateSignalingChannelOutcome;
       typedef Aws::Utils::Outcome<CreateStreamResult, KinesisVideoError> CreateStreamOutcome;
+      typedef Aws::Utils::Outcome<DeleteEdgeConfigurationResult, KinesisVideoError> DeleteEdgeConfigurationOutcome;
       typedef Aws::Utils::Outcome<DeleteSignalingChannelResult, KinesisVideoError> DeleteSignalingChannelOutcome;
       typedef Aws::Utils::Outcome<DeleteStreamResult, KinesisVideoError> DeleteStreamOutcome;
       typedef Aws::Utils::Outcome<DescribeEdgeConfigurationResult, KinesisVideoError> DescribeEdgeConfigurationOutcome;
@@ -130,6 +148,7 @@ namespace Aws
       typedef Aws::Utils::Outcome<DescribeStreamResult, KinesisVideoError> DescribeStreamOutcome;
       typedef Aws::Utils::Outcome<GetDataEndpointResult, KinesisVideoError> GetDataEndpointOutcome;
       typedef Aws::Utils::Outcome<GetSignalingChannelEndpointResult, KinesisVideoError> GetSignalingChannelEndpointOutcome;
+      typedef Aws::Utils::Outcome<ListEdgeAgentConfigurationsResult, KinesisVideoError> ListEdgeAgentConfigurationsOutcome;
       typedef Aws::Utils::Outcome<ListSignalingChannelsResult, KinesisVideoError> ListSignalingChannelsOutcome;
       typedef Aws::Utils::Outcome<ListStreamsResult, KinesisVideoError> ListStreamsOutcome;
       typedef Aws::Utils::Outcome<ListTagsForResourceResult, KinesisVideoError> ListTagsForResourceOutcome;
@@ -150,6 +169,7 @@ namespace Aws
       /* Service model Outcome callable definitions */
       typedef std::future<CreateSignalingChannelOutcome> CreateSignalingChannelOutcomeCallable;
       typedef std::future<CreateStreamOutcome> CreateStreamOutcomeCallable;
+      typedef std::future<DeleteEdgeConfigurationOutcome> DeleteEdgeConfigurationOutcomeCallable;
       typedef std::future<DeleteSignalingChannelOutcome> DeleteSignalingChannelOutcomeCallable;
       typedef std::future<DeleteStreamOutcome> DeleteStreamOutcomeCallable;
       typedef std::future<DescribeEdgeConfigurationOutcome> DescribeEdgeConfigurationOutcomeCallable;
@@ -161,6 +181,7 @@ namespace Aws
       typedef std::future<DescribeStreamOutcome> DescribeStreamOutcomeCallable;
       typedef std::future<GetDataEndpointOutcome> GetDataEndpointOutcomeCallable;
       typedef std::future<GetSignalingChannelEndpointOutcome> GetSignalingChannelEndpointOutcomeCallable;
+      typedef std::future<ListEdgeAgentConfigurationsOutcome> ListEdgeAgentConfigurationsOutcomeCallable;
       typedef std::future<ListSignalingChannelsOutcome> ListSignalingChannelsOutcomeCallable;
       typedef std::future<ListStreamsOutcome> ListStreamsOutcomeCallable;
       typedef std::future<ListTagsForResourceOutcome> ListTagsForResourceOutcomeCallable;
@@ -184,6 +205,7 @@ namespace Aws
     /* Service model async handlers definitions */
     typedef std::function<void(const KinesisVideoClient*, const Model::CreateSignalingChannelRequest&, const Model::CreateSignalingChannelOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CreateSignalingChannelResponseReceivedHandler;
     typedef std::function<void(const KinesisVideoClient*, const Model::CreateStreamRequest&, const Model::CreateStreamOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CreateStreamResponseReceivedHandler;
+    typedef std::function<void(const KinesisVideoClient*, const Model::DeleteEdgeConfigurationRequest&, const Model::DeleteEdgeConfigurationOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteEdgeConfigurationResponseReceivedHandler;
     typedef std::function<void(const KinesisVideoClient*, const Model::DeleteSignalingChannelRequest&, const Model::DeleteSignalingChannelOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteSignalingChannelResponseReceivedHandler;
     typedef std::function<void(const KinesisVideoClient*, const Model::DeleteStreamRequest&, const Model::DeleteStreamOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteStreamResponseReceivedHandler;
     typedef std::function<void(const KinesisVideoClient*, const Model::DescribeEdgeConfigurationRequest&, const Model::DescribeEdgeConfigurationOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeEdgeConfigurationResponseReceivedHandler;
@@ -195,6 +217,7 @@ namespace Aws
     typedef std::function<void(const KinesisVideoClient*, const Model::DescribeStreamRequest&, const Model::DescribeStreamOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeStreamResponseReceivedHandler;
     typedef std::function<void(const KinesisVideoClient*, const Model::GetDataEndpointRequest&, const Model::GetDataEndpointOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetDataEndpointResponseReceivedHandler;
     typedef std::function<void(const KinesisVideoClient*, const Model::GetSignalingChannelEndpointRequest&, const Model::GetSignalingChannelEndpointOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetSignalingChannelEndpointResponseReceivedHandler;
+    typedef std::function<void(const KinesisVideoClient*, const Model::ListEdgeAgentConfigurationsRequest&, const Model::ListEdgeAgentConfigurationsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListEdgeAgentConfigurationsResponseReceivedHandler;
     typedef std::function<void(const KinesisVideoClient*, const Model::ListSignalingChannelsRequest&, const Model::ListSignalingChannelsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListSignalingChannelsResponseReceivedHandler;
     typedef std::function<void(const KinesisVideoClient*, const Model::ListStreamsRequest&, const Model::ListStreamsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListStreamsResponseReceivedHandler;
     typedef std::function<void(const KinesisVideoClient*, const Model::ListTagsForResourceRequest&, const Model::ListTagsForResourceOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListTagsForResourceResponseReceivedHandler;

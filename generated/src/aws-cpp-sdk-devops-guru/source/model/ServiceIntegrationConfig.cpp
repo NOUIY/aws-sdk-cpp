@@ -20,13 +20,13 @@ namespace Model
 
 ServiceIntegrationConfig::ServiceIntegrationConfig() : 
     m_opsCenterHasBeenSet(false),
-    m_logsAnomalyDetectionHasBeenSet(false)
+    m_logsAnomalyDetectionHasBeenSet(false),
+    m_kMSServerSideEncryptionHasBeenSet(false)
 {
 }
 
-ServiceIntegrationConfig::ServiceIntegrationConfig(JsonView jsonValue) : 
-    m_opsCenterHasBeenSet(false),
-    m_logsAnomalyDetectionHasBeenSet(false)
+ServiceIntegrationConfig::ServiceIntegrationConfig(JsonView jsonValue)
+  : ServiceIntegrationConfig()
 {
   *this = jsonValue;
 }
@@ -47,6 +47,13 @@ ServiceIntegrationConfig& ServiceIntegrationConfig::operator =(JsonView jsonValu
     m_logsAnomalyDetectionHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("KMSServerSideEncryption"))
+  {
+    m_kMSServerSideEncryption = jsonValue.GetObject("KMSServerSideEncryption");
+
+    m_kMSServerSideEncryptionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +70,12 @@ JsonValue ServiceIntegrationConfig::Jsonize() const
   if(m_logsAnomalyDetectionHasBeenSet)
   {
    payload.WithObject("LogsAnomalyDetection", m_logsAnomalyDetection.Jsonize());
+
+  }
+
+  if(m_kMSServerSideEncryptionHasBeenSet)
+  {
+   payload.WithObject("KMSServerSideEncryption", m_kMSServerSideEncryption.Jsonize());
 
   }
 

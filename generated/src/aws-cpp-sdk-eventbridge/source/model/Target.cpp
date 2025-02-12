@@ -34,27 +34,13 @@ Target::Target() :
     m_redshiftDataParametersHasBeenSet(false),
     m_sageMakerPipelineParametersHasBeenSet(false),
     m_deadLetterConfigHasBeenSet(false),
-    m_retryPolicyHasBeenSet(false)
+    m_retryPolicyHasBeenSet(false),
+    m_appSyncParametersHasBeenSet(false)
 {
 }
 
-Target::Target(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_roleArnHasBeenSet(false),
-    m_inputHasBeenSet(false),
-    m_inputPathHasBeenSet(false),
-    m_inputTransformerHasBeenSet(false),
-    m_kinesisParametersHasBeenSet(false),
-    m_runCommandParametersHasBeenSet(false),
-    m_ecsParametersHasBeenSet(false),
-    m_batchParametersHasBeenSet(false),
-    m_sqsParametersHasBeenSet(false),
-    m_httpParametersHasBeenSet(false),
-    m_redshiftDataParametersHasBeenSet(false),
-    m_sageMakerPipelineParametersHasBeenSet(false),
-    m_deadLetterConfigHasBeenSet(false),
-    m_retryPolicyHasBeenSet(false)
+Target::Target(JsonView jsonValue)
+  : Target()
 {
   *this = jsonValue;
 }
@@ -173,6 +159,13 @@ Target& Target::operator =(JsonView jsonValue)
     m_retryPolicyHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("AppSyncParameters"))
+  {
+    m_appSyncParameters = jsonValue.GetObject("AppSyncParameters");
+
+    m_appSyncParametersHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -273,6 +266,12 @@ JsonValue Target::Jsonize() const
   if(m_retryPolicyHasBeenSet)
   {
    payload.WithObject("RetryPolicy", m_retryPolicy.Jsonize());
+
+  }
+
+  if(m_appSyncParametersHasBeenSet)
+  {
+   payload.WithObject("AppSyncParameters", m_appSyncParameters.Jsonize());
 
   }
 

@@ -31,24 +31,15 @@ As2ConnectorConfig::As2ConnectorConfig() :
     m_mdnSigningAlgorithm(MdnSigningAlg::NOT_SET),
     m_mdnSigningAlgorithmHasBeenSet(false),
     m_mdnResponse(MdnResponse::NOT_SET),
-    m_mdnResponseHasBeenSet(false)
+    m_mdnResponseHasBeenSet(false),
+    m_basicAuthSecretIdHasBeenSet(false),
+    m_preserveContentType(PreserveContentType::NOT_SET),
+    m_preserveContentTypeHasBeenSet(false)
 {
 }
 
-As2ConnectorConfig::As2ConnectorConfig(JsonView jsonValue) : 
-    m_localProfileIdHasBeenSet(false),
-    m_partnerProfileIdHasBeenSet(false),
-    m_messageSubjectHasBeenSet(false),
-    m_compression(CompressionEnum::NOT_SET),
-    m_compressionHasBeenSet(false),
-    m_encryptionAlgorithm(EncryptionAlg::NOT_SET),
-    m_encryptionAlgorithmHasBeenSet(false),
-    m_signingAlgorithm(SigningAlg::NOT_SET),
-    m_signingAlgorithmHasBeenSet(false),
-    m_mdnSigningAlgorithm(MdnSigningAlg::NOT_SET),
-    m_mdnSigningAlgorithmHasBeenSet(false),
-    m_mdnResponse(MdnResponse::NOT_SET),
-    m_mdnResponseHasBeenSet(false)
+As2ConnectorConfig::As2ConnectorConfig(JsonView jsonValue)
+  : As2ConnectorConfig()
 {
   *this = jsonValue;
 }
@@ -111,6 +102,20 @@ As2ConnectorConfig& As2ConnectorConfig::operator =(JsonView jsonValue)
     m_mdnResponseHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("BasicAuthSecretId"))
+  {
+    m_basicAuthSecretId = jsonValue.GetString("BasicAuthSecretId");
+
+    m_basicAuthSecretIdHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("PreserveContentType"))
+  {
+    m_preserveContentType = PreserveContentTypeMapper::GetPreserveContentTypeForName(jsonValue.GetString("PreserveContentType"));
+
+    m_preserveContentTypeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -159,6 +164,17 @@ JsonValue As2ConnectorConfig::Jsonize() const
   if(m_mdnResponseHasBeenSet)
   {
    payload.WithString("MdnResponse", MdnResponseMapper::GetNameForMdnResponse(m_mdnResponse));
+  }
+
+  if(m_basicAuthSecretIdHasBeenSet)
+  {
+   payload.WithString("BasicAuthSecretId", m_basicAuthSecretId);
+
+  }
+
+  if(m_preserveContentTypeHasBeenSet)
+  {
+   payload.WithString("PreserveContentType", PreserveContentTypeMapper::GetNameForPreserveContentType(m_preserveContentType));
   }
 
   return payload;

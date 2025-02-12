@@ -22,6 +22,8 @@ namespace Aws
 
         static const int DirectPut_HASH = HashingUtils::HashString("DirectPut");
         static const int KinesisStreamAsSource_HASH = HashingUtils::HashString("KinesisStreamAsSource");
+        static const int MSKAsSource_HASH = HashingUtils::HashString("MSKAsSource");
+        static const int DatabaseAsSource_HASH = HashingUtils::HashString("DatabaseAsSource");
 
 
         DeliveryStreamType GetDeliveryStreamTypeForName(const Aws::String& name)
@@ -34,6 +36,14 @@ namespace Aws
           else if (hashCode == KinesisStreamAsSource_HASH)
           {
             return DeliveryStreamType::KinesisStreamAsSource;
+          }
+          else if (hashCode == MSKAsSource_HASH)
+          {
+            return DeliveryStreamType::MSKAsSource;
+          }
+          else if (hashCode == DatabaseAsSource_HASH)
+          {
+            return DeliveryStreamType::DatabaseAsSource;
           }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
@@ -49,10 +59,16 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case DeliveryStreamType::NOT_SET:
+            return {};
           case DeliveryStreamType::DirectPut:
             return "DirectPut";
           case DeliveryStreamType::KinesisStreamAsSource:
             return "KinesisStreamAsSource";
+          case DeliveryStreamType::MSKAsSource:
+            return "MSKAsSource";
+          case DeliveryStreamType::DatabaseAsSource:
+            return "DatabaseAsSource";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

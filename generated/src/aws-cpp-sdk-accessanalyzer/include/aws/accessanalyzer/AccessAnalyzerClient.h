@@ -6,37 +6,60 @@
 #pragma once
 #include <aws/accessanalyzer/AccessAnalyzer_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/accessanalyzer/AccessAnalyzerServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/accessanalyzer/AccessAnalyzerErrorMarshaller.h>
 
 namespace Aws
 {
 namespace AccessAnalyzer
 {
+  AWS_ACCESSANALYZER_API extern const char SERVICE_NAME[];
   /**
-   * <p>Identity and Access Management Access Analyzer helps identify potential
-   * resource-access risks by enabling you to identify any policies that grant access
-   * to an external principal. It does this by using logic-based reasoning to analyze
-   * resource-based policies in your Amazon Web Services environment. An external
-   * principal can be another Amazon Web Services account, a root user, an IAM user
-   * or role, a federated user, an Amazon Web Services service, or an anonymous user.
-   * You can also use IAM Access Analyzer to preview and validate public and
-   * cross-account access to your resources before deploying permissions changes.
-   * This guide describes the Identity and Access Management Access Analyzer
-   * operations that you can call programmatically. For general information about IAM
-   * Access Analyzer, see <a
+   * <p>Identity and Access Management Access Analyzer helps you to set, verify, and
+   * refine your IAM policies by providing a suite of capabilities. Its features
+   * include findings for external and unused access, basic and custom policy checks
+   * for validating policies, and policy generation to generate fine-grained
+   * policies. To start using IAM Access Analyzer to identify external or unused
+   * access, you first need to create an analyzer.</p> <p> <b>External access
+   * analyzers</b> help identify potential risks of accessing resources by enabling
+   * you to identify any resource policies that grant access to an external
+   * principal. It does this by using logic-based reasoning to analyze resource-based
+   * policies in your Amazon Web Services environment. An external principal can be
+   * another Amazon Web Services account, a root user, an IAM user or role, a
+   * federated user, an Amazon Web Services service, or an anonymous user. You can
+   * also use IAM Access Analyzer to preview public and cross-account access to your
+   * resources before deploying permissions changes.</p> <p> <b>Unused access
+   * analyzers</b> help identify potential identity access risks by enabling you to
+   * identify unused IAM roles, unused access keys, unused console passwords, and IAM
+   * principals with unused service and action-level permissions.</p> <p>Beyond
+   * findings, IAM Access Analyzer provides basic and custom policy checks to
+   * validate IAM policies before deploying permissions changes. You can use policy
+   * generation to refine permissions by attaching a policy generated using access
+   * activity logged in CloudTrail logs. </p> <p>This guide describes the IAM Access
+   * Analyzer operations that you can call programmatically. For general information
+   * about IAM Access Analyzer, see <a
    * href="https://docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html">Identity
    * and Access Management Access Analyzer</a> in the <b>IAM User Guide</b>.</p>
-   * <p>To start using IAM Access Analyzer, you first need to create an analyzer.</p>
    */
-  class AWS_ACCESSANALYZER_API AccessAnalyzerClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<AccessAnalyzerClient>
+  class AWS_ACCESSANALYZER_API AccessAnalyzerClient : smithy::client::AwsSmithyClientT<Aws::AccessAnalyzer::SERVICE_NAME,
+      Aws::AccessAnalyzer::AccessAnalyzerClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      AccessAnalyzerEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::AccessAnalyzerErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<AccessAnalyzerClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "AccessAnalyzer"; }
 
       typedef AccessAnalyzerClientConfiguration ClientConfigurationType;
       typedef AccessAnalyzerEndpointProvider EndpointProviderType;
@@ -46,14 +69,14 @@ namespace AccessAnalyzer
         * is not specified, it will be initialized to default values.
         */
         AccessAnalyzerClient(const Aws::AccessAnalyzer::AccessAnalyzerClientConfiguration& clientConfiguration = Aws::AccessAnalyzer::AccessAnalyzerClientConfiguration(),
-                             std::shared_ptr<AccessAnalyzerEndpointProviderBase> endpointProvider = Aws::MakeShared<AccessAnalyzerEndpointProvider>(ALLOCATION_TAG));
+                             std::shared_ptr<AccessAnalyzerEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         AccessAnalyzerClient(const Aws::Auth::AWSCredentials& credentials,
-                             std::shared_ptr<AccessAnalyzerEndpointProviderBase> endpointProvider = Aws::MakeShared<AccessAnalyzerEndpointProvider>(ALLOCATION_TAG),
+                             std::shared_ptr<AccessAnalyzerEndpointProviderBase> endpointProvider = nullptr,
                              const Aws::AccessAnalyzer::AccessAnalyzerClientConfiguration& clientConfiguration = Aws::AccessAnalyzer::AccessAnalyzerClientConfiguration());
 
        /**
@@ -61,7 +84,7 @@ namespace AccessAnalyzer
         * the default http client factory will be used
         */
         AccessAnalyzerClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                             std::shared_ptr<AccessAnalyzerEndpointProviderBase> endpointProvider = Aws::MakeShared<AccessAnalyzerEndpointProvider>(ALLOCATION_TAG),
+                             std::shared_ptr<AccessAnalyzerEndpointProviderBase> endpointProvider = nullptr,
                              const Aws::AccessAnalyzer::AccessAnalyzerClientConfiguration& clientConfiguration = Aws::AccessAnalyzer::AccessAnalyzerClientConfiguration());
 
 
@@ -138,6 +161,90 @@ namespace AccessAnalyzer
         void CancelPolicyGenerationAsync(const CancelPolicyGenerationRequestT& request, const CancelPolicyGenerationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&AccessAnalyzerClient::CancelPolicyGeneration, request, handler, context);
+        }
+
+        /**
+         * <p>Checks whether the specified access isn't allowed by a policy.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/CheckAccessNotGranted">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CheckAccessNotGrantedOutcome CheckAccessNotGranted(const Model::CheckAccessNotGrantedRequest& request) const;
+
+        /**
+         * A Callable wrapper for CheckAccessNotGranted that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CheckAccessNotGrantedRequestT = Model::CheckAccessNotGrantedRequest>
+        Model::CheckAccessNotGrantedOutcomeCallable CheckAccessNotGrantedCallable(const CheckAccessNotGrantedRequestT& request) const
+        {
+            return SubmitCallable(&AccessAnalyzerClient::CheckAccessNotGranted, request);
+        }
+
+        /**
+         * An Async wrapper for CheckAccessNotGranted that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CheckAccessNotGrantedRequestT = Model::CheckAccessNotGrantedRequest>
+        void CheckAccessNotGrantedAsync(const CheckAccessNotGrantedRequestT& request, const CheckAccessNotGrantedResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AccessAnalyzerClient::CheckAccessNotGranted, request, handler, context);
+        }
+
+        /**
+         * <p>Checks whether new access is allowed for an updated policy when compared to
+         * the existing policy.</p> <p>You can find examples for reference policies and
+         * learn how to set up and run a custom policy check for new access in the <a
+         * href="https://github.com/aws-samples/iam-access-analyzer-custom-policy-check-samples">IAM
+         * Access Analyzer custom policy checks samples</a> repository on GitHub. The
+         * reference policies in this repository are meant to be passed to the
+         * <code>existingPolicyDocument</code> request parameter.</p><p><h3>See Also:</h3> 
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/CheckNoNewAccess">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CheckNoNewAccessOutcome CheckNoNewAccess(const Model::CheckNoNewAccessRequest& request) const;
+
+        /**
+         * A Callable wrapper for CheckNoNewAccess that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CheckNoNewAccessRequestT = Model::CheckNoNewAccessRequest>
+        Model::CheckNoNewAccessOutcomeCallable CheckNoNewAccessCallable(const CheckNoNewAccessRequestT& request) const
+        {
+            return SubmitCallable(&AccessAnalyzerClient::CheckNoNewAccess, request);
+        }
+
+        /**
+         * An Async wrapper for CheckNoNewAccess that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CheckNoNewAccessRequestT = Model::CheckNoNewAccessRequest>
+        void CheckNoNewAccessAsync(const CheckNoNewAccessRequestT& request, const CheckNoNewAccessResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AccessAnalyzerClient::CheckNoNewAccess, request, handler, context);
+        }
+
+        /**
+         * <p>Checks whether a resource policy can grant public access to the specified
+         * resource type.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/CheckNoPublicAccess">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CheckNoPublicAccessOutcome CheckNoPublicAccess(const Model::CheckNoPublicAccessRequest& request) const;
+
+        /**
+         * A Callable wrapper for CheckNoPublicAccess that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CheckNoPublicAccessRequestT = Model::CheckNoPublicAccessRequest>
+        Model::CheckNoPublicAccessOutcomeCallable CheckNoPublicAccessCallable(const CheckNoPublicAccessRequestT& request) const
+        {
+            return SubmitCallable(&AccessAnalyzerClient::CheckNoPublicAccess, request);
+        }
+
+        /**
+         * An Async wrapper for CheckNoPublicAccess that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CheckNoPublicAccessRequestT = Model::CheckNoPublicAccessRequest>
+        void CheckNoPublicAccessAsync(const CheckNoPublicAccessRequestT& request, const CheckNoPublicAccessResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AccessAnalyzerClient::CheckNoPublicAccess, request, handler, context);
         }
 
         /**
@@ -277,6 +384,32 @@ namespace AccessAnalyzer
         }
 
         /**
+         * <p>Creates a recommendation for an unused permissions finding.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/GenerateFindingRecommendation">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GenerateFindingRecommendationOutcome GenerateFindingRecommendation(const Model::GenerateFindingRecommendationRequest& request) const;
+
+        /**
+         * A Callable wrapper for GenerateFindingRecommendation that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GenerateFindingRecommendationRequestT = Model::GenerateFindingRecommendationRequest>
+        Model::GenerateFindingRecommendationOutcomeCallable GenerateFindingRecommendationCallable(const GenerateFindingRecommendationRequestT& request) const
+        {
+            return SubmitCallable(&AccessAnalyzerClient::GenerateFindingRecommendation, request);
+        }
+
+        /**
+         * An Async wrapper for GenerateFindingRecommendation that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GenerateFindingRecommendationRequestT = Model::GenerateFindingRecommendationRequest>
+        void GenerateFindingRecommendationAsync(const GenerateFindingRecommendationRequestT& request, const GenerateFindingRecommendationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AccessAnalyzerClient::GenerateFindingRecommendation, request, handler, context);
+        }
+
+        /**
          * <p>Retrieves information about an access preview for the specified
          * analyzer.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/GetAccessPreview">AWS
@@ -384,8 +517,11 @@ namespace AccessAnalyzer
         }
 
         /**
-         * <p>Retrieves information about the specified finding.</p><p><h3>See Also:</h3>  
-         * <a
+         * <p>Retrieves information about the specified finding. GetFinding and
+         * GetFindingV2 both use <code>access-analyzer:GetFinding</code> in the
+         * <code>Action</code> element of an IAM policy statement. You must have permission
+         * to perform the <code>access-analyzer:GetFinding</code> action.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/GetFinding">AWS
          * API Reference</a></p>
          */
@@ -407,6 +543,61 @@ namespace AccessAnalyzer
         void GetFindingAsync(const GetFindingRequestT& request, const GetFindingResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&AccessAnalyzerClient::GetFinding, request, handler, context);
+        }
+
+        /**
+         * <p>Retrieves information about a finding recommendation for the specified
+         * analyzer.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/GetFindingRecommendation">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetFindingRecommendationOutcome GetFindingRecommendation(const Model::GetFindingRecommendationRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetFindingRecommendation that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetFindingRecommendationRequestT = Model::GetFindingRecommendationRequest>
+        Model::GetFindingRecommendationOutcomeCallable GetFindingRecommendationCallable(const GetFindingRecommendationRequestT& request) const
+        {
+            return SubmitCallable(&AccessAnalyzerClient::GetFindingRecommendation, request);
+        }
+
+        /**
+         * An Async wrapper for GetFindingRecommendation that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetFindingRecommendationRequestT = Model::GetFindingRecommendationRequest>
+        void GetFindingRecommendationAsync(const GetFindingRecommendationRequestT& request, const GetFindingRecommendationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AccessAnalyzerClient::GetFindingRecommendation, request, handler, context);
+        }
+
+        /**
+         * <p>Retrieves information about the specified finding. GetFinding and
+         * GetFindingV2 both use <code>access-analyzer:GetFinding</code> in the
+         * <code>Action</code> element of an IAM policy statement. You must have permission
+         * to perform the <code>access-analyzer:GetFinding</code> action.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/GetFindingV2">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetFindingV2Outcome GetFindingV2(const Model::GetFindingV2Request& request) const;
+
+        /**
+         * A Callable wrapper for GetFindingV2 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetFindingV2RequestT = Model::GetFindingV2Request>
+        Model::GetFindingV2OutcomeCallable GetFindingV2Callable(const GetFindingV2RequestT& request) const
+        {
+            return SubmitCallable(&AccessAnalyzerClient::GetFindingV2, request);
+        }
+
+        /**
+         * An Async wrapper for GetFindingV2 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetFindingV2RequestT = Model::GetFindingV2Request>
+        void GetFindingV2Async(const GetFindingV2RequestT& request, const GetFindingV2ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AccessAnalyzerClient::GetFindingV2, request, handler, context);
         }
 
         /**
@@ -489,7 +680,7 @@ namespace AccessAnalyzer
 
         /**
          * <p>Retrieves a list of resources of the specified type that have been analyzed
-         * by the specified analyzer..</p><p><h3>See Also:</h3>   <a
+         * by the specified analyzer.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/ListAnalyzedResources">AWS
          * API Reference</a></p>
          */
@@ -518,13 +709,13 @@ namespace AccessAnalyzer
          * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/ListAnalyzers">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListAnalyzersOutcome ListAnalyzers(const Model::ListAnalyzersRequest& request) const;
+        virtual Model::ListAnalyzersOutcome ListAnalyzers(const Model::ListAnalyzersRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListAnalyzers that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListAnalyzersRequestT = Model::ListAnalyzersRequest>
-        Model::ListAnalyzersOutcomeCallable ListAnalyzersCallable(const ListAnalyzersRequestT& request) const
+        Model::ListAnalyzersOutcomeCallable ListAnalyzersCallable(const ListAnalyzersRequestT& request = {}) const
         {
             return SubmitCallable(&AccessAnalyzerClient::ListAnalyzers, request);
         }
@@ -533,7 +724,7 @@ namespace AccessAnalyzer
          * An Async wrapper for ListAnalyzers that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListAnalyzersRequestT = Model::ListAnalyzersRequest>
-        void ListAnalyzersAsync(const ListAnalyzersRequestT& request, const ListAnalyzersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListAnalyzersAsync(const ListAnalyzersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListAnalyzersRequestT& request = {}) const
         {
             return SubmitAsync(&AccessAnalyzerClient::ListAnalyzers, request, handler, context);
         }
@@ -565,8 +756,12 @@ namespace AccessAnalyzer
         }
 
         /**
-         * <p>Retrieves a list of findings generated by the specified analyzer.</p> <p>To
-         * learn about filter keys that you can use to retrieve a list of findings, see <a
+         * <p>Retrieves a list of findings generated by the specified analyzer.
+         * ListFindings and ListFindingsV2 both use
+         * <code>access-analyzer:ListFindings</code> in the <code>Action</code> element of
+         * an IAM policy statement. You must have permission to perform the
+         * <code>access-analyzer:ListFindings</code> action.</p> <p>To learn about filter
+         * keys that you can use to retrieve a list of findings, see <a
          * href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html">IAM
          * Access Analyzer filter keys</a> in the <b>IAM User Guide</b>.</p><p><h3>See
          * Also:</h3>   <a
@@ -594,18 +789,51 @@ namespace AccessAnalyzer
         }
 
         /**
+         * <p>Retrieves a list of findings generated by the specified analyzer.
+         * ListFindings and ListFindingsV2 both use
+         * <code>access-analyzer:ListFindings</code> in the <code>Action</code> element of
+         * an IAM policy statement. You must have permission to perform the
+         * <code>access-analyzer:ListFindings</code> action.</p> <p>To learn about filter
+         * keys that you can use to retrieve a list of findings, see <a
+         * href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html">IAM
+         * Access Analyzer filter keys</a> in the <b>IAM User Guide</b>.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/ListFindingsV2">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListFindingsV2Outcome ListFindingsV2(const Model::ListFindingsV2Request& request) const;
+
+        /**
+         * A Callable wrapper for ListFindingsV2 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListFindingsV2RequestT = Model::ListFindingsV2Request>
+        Model::ListFindingsV2OutcomeCallable ListFindingsV2Callable(const ListFindingsV2RequestT& request) const
+        {
+            return SubmitCallable(&AccessAnalyzerClient::ListFindingsV2, request);
+        }
+
+        /**
+         * An Async wrapper for ListFindingsV2 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListFindingsV2RequestT = Model::ListFindingsV2Request>
+        void ListFindingsV2Async(const ListFindingsV2RequestT& request, const ListFindingsV2ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AccessAnalyzerClient::ListFindingsV2, request, handler, context);
+        }
+
+        /**
          * <p>Lists all of the policy generations requested in the last seven
          * days.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/ListPolicyGenerations">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListPolicyGenerationsOutcome ListPolicyGenerations(const Model::ListPolicyGenerationsRequest& request) const;
+        virtual Model::ListPolicyGenerationsOutcome ListPolicyGenerations(const Model::ListPolicyGenerationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListPolicyGenerations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListPolicyGenerationsRequestT = Model::ListPolicyGenerationsRequest>
-        Model::ListPolicyGenerationsOutcomeCallable ListPolicyGenerationsCallable(const ListPolicyGenerationsRequestT& request) const
+        Model::ListPolicyGenerationsOutcomeCallable ListPolicyGenerationsCallable(const ListPolicyGenerationsRequestT& request = {}) const
         {
             return SubmitCallable(&AccessAnalyzerClient::ListPolicyGenerations, request);
         }
@@ -614,7 +842,7 @@ namespace AccessAnalyzer
          * An Async wrapper for ListPolicyGenerations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListPolicyGenerationsRequestT = Model::ListPolicyGenerationsRequest>
-        void ListPolicyGenerationsAsync(const ListPolicyGenerationsRequestT& request, const ListPolicyGenerationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListPolicyGenerationsAsync(const ListPolicyGenerationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListPolicyGenerationsRequestT& request = {}) const
         {
             return SubmitAsync(&AccessAnalyzerClient::ListPolicyGenerations, request, handler, context);
         }
@@ -747,6 +975,32 @@ namespace AccessAnalyzer
         }
 
         /**
+         * <p>Modifies the configuration of an existing analyzer.</p><p><h3>See Also:</h3> 
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/UpdateAnalyzer">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateAnalyzerOutcome UpdateAnalyzer(const Model::UpdateAnalyzerRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateAnalyzer that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateAnalyzerRequestT = Model::UpdateAnalyzerRequest>
+        Model::UpdateAnalyzerOutcomeCallable UpdateAnalyzerCallable(const UpdateAnalyzerRequestT& request) const
+        {
+            return SubmitCallable(&AccessAnalyzerClient::UpdateAnalyzer, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateAnalyzer that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateAnalyzerRequestT = Model::UpdateAnalyzerRequest>
+        void UpdateAnalyzerAsync(const UpdateAnalyzerRequestT& request, const UpdateAnalyzerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&AccessAnalyzerClient::UpdateAnalyzer, request, handler, context);
+        }
+
+        /**
          * <p>Updates the criteria and values for the specified archive rule.</p><p><h3>See
          * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/accessanalyzer-2019-11-01/UpdateArchiveRule">AWS
@@ -830,11 +1084,7 @@ namespace AccessAnalyzer
       std::shared_ptr<AccessAnalyzerEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<AccessAnalyzerClient>;
-      void init(const AccessAnalyzerClientConfiguration& clientConfiguration);
 
-      AccessAnalyzerClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<AccessAnalyzerEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace AccessAnalyzer

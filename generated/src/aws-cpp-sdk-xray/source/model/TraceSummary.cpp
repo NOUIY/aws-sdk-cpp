@@ -20,6 +20,7 @@ namespace Model
 
 TraceSummary::TraceSummary() : 
     m_idHasBeenSet(false),
+    m_startTimeHasBeenSet(false),
     m_duration(0.0),
     m_durationHasBeenSet(false),
     m_responseTime(0.0),
@@ -49,34 +50,8 @@ TraceSummary::TraceSummary() :
 {
 }
 
-TraceSummary::TraceSummary(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_duration(0.0),
-    m_durationHasBeenSet(false),
-    m_responseTime(0.0),
-    m_responseTimeHasBeenSet(false),
-    m_hasFault(false),
-    m_hasFaultHasBeenSet(false),
-    m_hasError(false),
-    m_hasErrorHasBeenSet(false),
-    m_hasThrottle(false),
-    m_hasThrottleHasBeenSet(false),
-    m_isPartial(false),
-    m_isPartialHasBeenSet(false),
-    m_httpHasBeenSet(false),
-    m_annotationsHasBeenSet(false),
-    m_usersHasBeenSet(false),
-    m_serviceIdsHasBeenSet(false),
-    m_resourceARNsHasBeenSet(false),
-    m_instanceIdsHasBeenSet(false),
-    m_availabilityZonesHasBeenSet(false),
-    m_entryPointHasBeenSet(false),
-    m_faultRootCausesHasBeenSet(false),
-    m_errorRootCausesHasBeenSet(false),
-    m_responseTimeRootCausesHasBeenSet(false),
-    m_revision(0),
-    m_revisionHasBeenSet(false),
-    m_matchedEventTimeHasBeenSet(false)
+TraceSummary::TraceSummary(JsonView jsonValue)
+  : TraceSummary()
 {
   *this = jsonValue;
 }
@@ -88,6 +63,13 @@ TraceSummary& TraceSummary::operator =(JsonView jsonValue)
     m_id = jsonValue.GetString("Id");
 
     m_idHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("StartTime"))
+  {
+    m_startTime = jsonValue.GetDouble("StartTime");
+
+    m_startTimeHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("Duration"))
@@ -268,6 +250,11 @@ JsonValue TraceSummary::Jsonize() const
   {
    payload.WithString("Id", m_id);
 
+  }
+
+  if(m_startTimeHasBeenSet)
+  {
+   payload.WithDouble("StartTime", m_startTime.SecondsWithMSPrecision());
   }
 
   if(m_durationHasBeenSet)

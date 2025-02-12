@@ -21,14 +21,13 @@ namespace Model
 DecisionTaskScheduledEventAttributes::DecisionTaskScheduledEventAttributes() : 
     m_taskListHasBeenSet(false),
     m_taskPriorityHasBeenSet(false),
-    m_startToCloseTimeoutHasBeenSet(false)
+    m_startToCloseTimeoutHasBeenSet(false),
+    m_scheduleToStartTimeoutHasBeenSet(false)
 {
 }
 
-DecisionTaskScheduledEventAttributes::DecisionTaskScheduledEventAttributes(JsonView jsonValue) : 
-    m_taskListHasBeenSet(false),
-    m_taskPriorityHasBeenSet(false),
-    m_startToCloseTimeoutHasBeenSet(false)
+DecisionTaskScheduledEventAttributes::DecisionTaskScheduledEventAttributes(JsonView jsonValue)
+  : DecisionTaskScheduledEventAttributes()
 {
   *this = jsonValue;
 }
@@ -56,6 +55,13 @@ DecisionTaskScheduledEventAttributes& DecisionTaskScheduledEventAttributes::oper
     m_startToCloseTimeoutHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("scheduleToStartTimeout"))
+  {
+    m_scheduleToStartTimeout = jsonValue.GetString("scheduleToStartTimeout");
+
+    m_scheduleToStartTimeoutHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -78,6 +84,12 @@ JsonValue DecisionTaskScheduledEventAttributes::Jsonize() const
   if(m_startToCloseTimeoutHasBeenSet)
   {
    payload.WithString("startToCloseTimeout", m_startToCloseTimeout);
+
+  }
+
+  if(m_scheduleToStartTimeoutHasBeenSet)
+  {
+   payload.WithString("scheduleToStartTimeout", m_scheduleToStartTimeout);
 
   }
 

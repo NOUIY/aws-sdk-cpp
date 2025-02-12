@@ -24,23 +24,17 @@ MemberSummary::MemberSummary() :
     m_statusHasBeenSet(false),
     m_displayNameHasBeenSet(false),
     m_abilitiesHasBeenSet(false),
+    m_mlAbilitiesHasBeenSet(false),
     m_createTimeHasBeenSet(false),
     m_updateTimeHasBeenSet(false),
     m_membershipIdHasBeenSet(false),
-    m_membershipArnHasBeenSet(false)
+    m_membershipArnHasBeenSet(false),
+    m_paymentConfigurationHasBeenSet(false)
 {
 }
 
-MemberSummary::MemberSummary(JsonView jsonValue) : 
-    m_accountIdHasBeenSet(false),
-    m_status(MemberStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_displayNameHasBeenSet(false),
-    m_abilitiesHasBeenSet(false),
-    m_createTimeHasBeenSet(false),
-    m_updateTimeHasBeenSet(false),
-    m_membershipIdHasBeenSet(false),
-    m_membershipArnHasBeenSet(false)
+MemberSummary::MemberSummary(JsonView jsonValue)
+  : MemberSummary()
 {
   *this = jsonValue;
 }
@@ -78,6 +72,13 @@ MemberSummary& MemberSummary::operator =(JsonView jsonValue)
     m_abilitiesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("mlAbilities"))
+  {
+    m_mlAbilities = jsonValue.GetObject("mlAbilities");
+
+    m_mlAbilitiesHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("createTime"))
   {
     m_createTime = jsonValue.GetDouble("createTime");
@@ -104,6 +105,13 @@ MemberSummary& MemberSummary::operator =(JsonView jsonValue)
     m_membershipArn = jsonValue.GetString("membershipArn");
 
     m_membershipArnHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("paymentConfiguration"))
+  {
+    m_paymentConfiguration = jsonValue.GetObject("paymentConfiguration");
+
+    m_paymentConfigurationHasBeenSet = true;
   }
 
   return *this;
@@ -141,6 +149,12 @@ JsonValue MemberSummary::Jsonize() const
 
   }
 
+  if(m_mlAbilitiesHasBeenSet)
+  {
+   payload.WithObject("mlAbilities", m_mlAbilities.Jsonize());
+
+  }
+
   if(m_createTimeHasBeenSet)
   {
    payload.WithDouble("createTime", m_createTime.SecondsWithMSPrecision());
@@ -160,6 +174,12 @@ JsonValue MemberSummary::Jsonize() const
   if(m_membershipArnHasBeenSet)
   {
    payload.WithString("membershipArn", m_membershipArn);
+
+  }
+
+  if(m_paymentConfigurationHasBeenSet)
+  {
+   payload.WithObject("paymentConfiguration", m_paymentConfiguration.Jsonize());
 
   }
 

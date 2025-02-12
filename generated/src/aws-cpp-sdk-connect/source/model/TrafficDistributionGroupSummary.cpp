@@ -24,17 +24,14 @@ TrafficDistributionGroupSummary::TrafficDistributionGroupSummary() :
     m_nameHasBeenSet(false),
     m_instanceArnHasBeenSet(false),
     m_status(TrafficDistributionGroupStatus::NOT_SET),
-    m_statusHasBeenSet(false)
+    m_statusHasBeenSet(false),
+    m_isDefault(false),
+    m_isDefaultHasBeenSet(false)
 {
 }
 
-TrafficDistributionGroupSummary::TrafficDistributionGroupSummary(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_instanceArnHasBeenSet(false),
-    m_status(TrafficDistributionGroupStatus::NOT_SET),
-    m_statusHasBeenSet(false)
+TrafficDistributionGroupSummary::TrafficDistributionGroupSummary(JsonView jsonValue)
+  : TrafficDistributionGroupSummary()
 {
   *this = jsonValue;
 }
@@ -76,6 +73,13 @@ TrafficDistributionGroupSummary& TrafficDistributionGroupSummary::operator =(Jso
     m_statusHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("IsDefault"))
+  {
+    m_isDefault = jsonValue.GetBool("IsDefault");
+
+    m_isDefaultHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -110,6 +114,12 @@ JsonValue TrafficDistributionGroupSummary::Jsonize() const
   if(m_statusHasBeenSet)
   {
    payload.WithString("Status", TrafficDistributionGroupStatusMapper::GetNameForTrafficDistributionGroupStatus(m_status));
+  }
+
+  if(m_isDefaultHasBeenSet)
+  {
+   payload.WithBool("IsDefault", m_isDefault);
+
   }
 
   return payload;

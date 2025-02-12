@@ -6,29 +6,42 @@
 #pragma once
 #include <aws/savingsplans/SavingsPlans_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/savingsplans/SavingsPlansServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/savingsplans/SavingsPlansErrorMarshaller.h>
 
 namespace Aws
 {
 namespace SavingsPlans
 {
+  AWS_SAVINGSPLANS_API extern const char SERVICE_NAME[];
   /**
-   * <p>Savings Plans are a pricing model that offer significant savings on AWS usage
-   * (for example, on Amazon EC2 instances). You commit to a consistent amount of
-   * usage, in USD per hour, for a term of 1 or 3 years, and receive a lower price
-   * for that usage. For more information, see the <a
-   * href="https://docs.aws.amazon.com/savingsplans/latest/userguide/">AWS Savings
-   * Plans User Guide</a>.</p>
+   * <p>Savings Plans are a pricing model that offer significant savings on Amazon
+   * Web Services usage (for example, on Amazon EC2 instances). You commit to a
+   * consistent amount of usage per hour, in the specified currency, for a term of
+   * one or three years, and receive a lower price for that usage. For more
+   * information, see the <a
+   * href="https://docs.aws.amazon.com/savingsplans/latest/userguide/">Amazon Web
+   * Services Savings Plans User Guide</a>.</p>
    */
-  class AWS_SAVINGSPLANS_API SavingsPlansClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<SavingsPlansClient>
+  class AWS_SAVINGSPLANS_API SavingsPlansClient : smithy::client::AwsSmithyClientT<Aws::SavingsPlans::SERVICE_NAME,
+      Aws::SavingsPlans::SavingsPlansClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      SavingsPlansEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::SavingsPlansErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<SavingsPlansClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "savingsplans"; }
 
       typedef SavingsPlansClientConfiguration ClientConfigurationType;
       typedef SavingsPlansEndpointProvider EndpointProviderType;
@@ -38,14 +51,14 @@ namespace SavingsPlans
         * is not specified, it will be initialized to default values.
         */
         SavingsPlansClient(const Aws::SavingsPlans::SavingsPlansClientConfiguration& clientConfiguration = Aws::SavingsPlans::SavingsPlansClientConfiguration(),
-                           std::shared_ptr<SavingsPlansEndpointProviderBase> endpointProvider = Aws::MakeShared<SavingsPlansEndpointProvider>(ALLOCATION_TAG));
+                           std::shared_ptr<SavingsPlansEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         SavingsPlansClient(const Aws::Auth::AWSCredentials& credentials,
-                           std::shared_ptr<SavingsPlansEndpointProviderBase> endpointProvider = Aws::MakeShared<SavingsPlansEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<SavingsPlansEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::SavingsPlans::SavingsPlansClientConfiguration& clientConfiguration = Aws::SavingsPlans::SavingsPlansClientConfiguration());
 
        /**
@@ -53,7 +66,7 @@ namespace SavingsPlans
         * the default http client factory will be used
         */
         SavingsPlansClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                           std::shared_ptr<SavingsPlansEndpointProviderBase> endpointProvider = Aws::MakeShared<SavingsPlansEndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<SavingsPlansEndpointProviderBase> endpointProvider = nullptr,
                            const Aws::SavingsPlans::SavingsPlansClientConfiguration& clientConfiguration = Aws::SavingsPlans::SavingsPlansClientConfiguration());
 
 
@@ -133,7 +146,8 @@ namespace SavingsPlans
         }
 
         /**
-         * <p>Describes the specified Savings Plans rates.</p><p><h3>See Also:</h3>   <a
+         * <p>Describes the rates for the specified Savings Plan.</p><p><h3>See Also:</h3> 
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/savingsplans-2019-06-28/DescribeSavingsPlanRates">AWS
          * API Reference</a></p>
          */
@@ -162,13 +176,13 @@ namespace SavingsPlans
          * href="http://docs.aws.amazon.com/goto/WebAPI/savingsplans-2019-06-28/DescribeSavingsPlans">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeSavingsPlansOutcome DescribeSavingsPlans(const Model::DescribeSavingsPlansRequest& request) const;
+        virtual Model::DescribeSavingsPlansOutcome DescribeSavingsPlans(const Model::DescribeSavingsPlansRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeSavingsPlans that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeSavingsPlansRequestT = Model::DescribeSavingsPlansRequest>
-        Model::DescribeSavingsPlansOutcomeCallable DescribeSavingsPlansCallable(const DescribeSavingsPlansRequestT& request) const
+        Model::DescribeSavingsPlansOutcomeCallable DescribeSavingsPlansCallable(const DescribeSavingsPlansRequestT& request = {}) const
         {
             return SubmitCallable(&SavingsPlansClient::DescribeSavingsPlans, request);
         }
@@ -177,24 +191,24 @@ namespace SavingsPlans
          * An Async wrapper for DescribeSavingsPlans that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeSavingsPlansRequestT = Model::DescribeSavingsPlansRequest>
-        void DescribeSavingsPlansAsync(const DescribeSavingsPlansRequestT& request, const DescribeSavingsPlansResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeSavingsPlansAsync(const DescribeSavingsPlansResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeSavingsPlansRequestT& request = {}) const
         {
             return SubmitAsync(&SavingsPlansClient::DescribeSavingsPlans, request, handler, context);
         }
 
         /**
-         * <p>Describes the specified Savings Plans offering rates.</p><p><h3>See
+         * <p>Describes the offering rates for the specified Savings Plans.</p><p><h3>See
          * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/savingsplans-2019-06-28/DescribeSavingsPlansOfferingRates">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeSavingsPlansOfferingRatesOutcome DescribeSavingsPlansOfferingRates(const Model::DescribeSavingsPlansOfferingRatesRequest& request) const;
+        virtual Model::DescribeSavingsPlansOfferingRatesOutcome DescribeSavingsPlansOfferingRates(const Model::DescribeSavingsPlansOfferingRatesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeSavingsPlansOfferingRates that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeSavingsPlansOfferingRatesRequestT = Model::DescribeSavingsPlansOfferingRatesRequest>
-        Model::DescribeSavingsPlansOfferingRatesOutcomeCallable DescribeSavingsPlansOfferingRatesCallable(const DescribeSavingsPlansOfferingRatesRequestT& request) const
+        Model::DescribeSavingsPlansOfferingRatesOutcomeCallable DescribeSavingsPlansOfferingRatesCallable(const DescribeSavingsPlansOfferingRatesRequestT& request = {}) const
         {
             return SubmitCallable(&SavingsPlansClient::DescribeSavingsPlansOfferingRates, request);
         }
@@ -203,24 +217,24 @@ namespace SavingsPlans
          * An Async wrapper for DescribeSavingsPlansOfferingRates that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeSavingsPlansOfferingRatesRequestT = Model::DescribeSavingsPlansOfferingRatesRequest>
-        void DescribeSavingsPlansOfferingRatesAsync(const DescribeSavingsPlansOfferingRatesRequestT& request, const DescribeSavingsPlansOfferingRatesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeSavingsPlansOfferingRatesAsync(const DescribeSavingsPlansOfferingRatesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeSavingsPlansOfferingRatesRequestT& request = {}) const
         {
             return SubmitAsync(&SavingsPlansClient::DescribeSavingsPlansOfferingRates, request, handler, context);
         }
 
         /**
-         * <p>Describes the specified Savings Plans offerings.</p><p><h3>See Also:</h3>  
-         * <a
+         * <p>Describes the offerings for the specified Savings Plans.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/savingsplans-2019-06-28/DescribeSavingsPlansOfferings">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeSavingsPlansOfferingsOutcome DescribeSavingsPlansOfferings(const Model::DescribeSavingsPlansOfferingsRequest& request) const;
+        virtual Model::DescribeSavingsPlansOfferingsOutcome DescribeSavingsPlansOfferings(const Model::DescribeSavingsPlansOfferingsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeSavingsPlansOfferings that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeSavingsPlansOfferingsRequestT = Model::DescribeSavingsPlansOfferingsRequest>
-        Model::DescribeSavingsPlansOfferingsOutcomeCallable DescribeSavingsPlansOfferingsCallable(const DescribeSavingsPlansOfferingsRequestT& request) const
+        Model::DescribeSavingsPlansOfferingsOutcomeCallable DescribeSavingsPlansOfferingsCallable(const DescribeSavingsPlansOfferingsRequestT& request = {}) const
         {
             return SubmitCallable(&SavingsPlansClient::DescribeSavingsPlansOfferings, request);
         }
@@ -229,7 +243,7 @@ namespace SavingsPlans
          * An Async wrapper for DescribeSavingsPlansOfferings that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeSavingsPlansOfferingsRequestT = Model::DescribeSavingsPlansOfferingsRequest>
-        void DescribeSavingsPlansOfferingsAsync(const DescribeSavingsPlansOfferingsRequestT& request, const DescribeSavingsPlansOfferingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeSavingsPlansOfferingsAsync(const DescribeSavingsPlansOfferingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeSavingsPlansOfferingsRequestT& request = {}) const
         {
             return SubmitAsync(&SavingsPlansClient::DescribeSavingsPlansOfferings, request, handler, context);
         }
@@ -257,6 +271,31 @@ namespace SavingsPlans
         void ListTagsForResourceAsync(const ListTagsForResourceRequestT& request, const ListTagsForResourceResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&SavingsPlansClient::ListTagsForResource, request, handler, context);
+        }
+
+        /**
+         * <p>Returns the specified Savings Plan.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/savingsplans-2019-06-28/ReturnSavingsPlan">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ReturnSavingsPlanOutcome ReturnSavingsPlan(const Model::ReturnSavingsPlanRequest& request) const;
+
+        /**
+         * A Callable wrapper for ReturnSavingsPlan that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ReturnSavingsPlanRequestT = Model::ReturnSavingsPlanRequest>
+        Model::ReturnSavingsPlanOutcomeCallable ReturnSavingsPlanCallable(const ReturnSavingsPlanRequestT& request) const
+        {
+            return SubmitCallable(&SavingsPlansClient::ReturnSavingsPlan, request);
+        }
+
+        /**
+         * An Async wrapper for ReturnSavingsPlan that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ReturnSavingsPlanRequestT = Model::ReturnSavingsPlanRequest>
+        void ReturnSavingsPlanAsync(const ReturnSavingsPlanRequestT& request, const ReturnSavingsPlanResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&SavingsPlansClient::ReturnSavingsPlan, request, handler, context);
         }
 
         /**
@@ -316,11 +355,7 @@ namespace SavingsPlans
       std::shared_ptr<SavingsPlansEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<SavingsPlansClient>;
-      void init(const SavingsPlansClientConfiguration& clientConfiguration);
 
-      SavingsPlansClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<SavingsPlansEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace SavingsPlans

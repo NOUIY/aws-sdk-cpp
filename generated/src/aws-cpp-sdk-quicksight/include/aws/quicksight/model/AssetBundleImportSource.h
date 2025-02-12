@@ -26,7 +26,8 @@ namespace Model
 
   /**
    * <p>The source of the asset bundle zip file that contains the data that you want
-   * to import.</p><p><h3>See Also:</h3>   <a
+   * to import. The file must be in <code>QUICKSIGHT_JSON</code>
+   * format.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/quicksight-2018-04-01/AssetBundleImportSource">AWS
    * API Reference</a></p>
    */
@@ -39,123 +40,40 @@ namespace Model
     AWS_QUICKSIGHT_API Aws::Utils::Json::JsonValue Jsonize() const;
 
 
+    ///@{
     /**
-     * <p>The bytes of the Base64 encoded asset bundle import zip file. This file can't
-     * exceed 20MB.</p> <p>If you are calling the APIs from the Amazon Web Services
-     * Java, JavaScript, Python, or PHP SDKs, the SDK encodes Base64 automatically to
-     * allow the direct setting of the zip file's bytes. If you are using a SDK of a
-     * different language or are receiving related errors, try to Base64 encode your
-     * data.</p>
+     * <p>The bytes of the base64 encoded asset bundle import zip file. This file can't
+     * exceed 20 MB. If the size of the file that you want to upload is more than 20
+     * MB, add the file to your Amazon S3 bucket and use <code>S3Uri</code> of the file
+     * for this operation.</p> <p>If you are calling the API operations from the Amazon
+     * Web Services SDK for Java, JavaScript, Python, or PHP, the SDK encodes base64
+     * automatically to allow the direct setting of the zip file's bytes. If you are
+     * using an SDK for a different language or receiving related errors, try to base64
+     * encode your data.</p>
      */
     inline const Aws::Utils::CryptoBuffer& GetBody() const{ return m_body; }
-
-    /**
-     * <p>The bytes of the Base64 encoded asset bundle import zip file. This file can't
-     * exceed 20MB.</p> <p>If you are calling the APIs from the Amazon Web Services
-     * Java, JavaScript, Python, or PHP SDKs, the SDK encodes Base64 automatically to
-     * allow the direct setting of the zip file's bytes. If you are using a SDK of a
-     * different language or are receiving related errors, try to Base64 encode your
-     * data.</p>
-     */
     inline bool BodyHasBeenSet() const { return m_bodyHasBeenSet; }
-
-    /**
-     * <p>The bytes of the Base64 encoded asset bundle import zip file. This file can't
-     * exceed 20MB.</p> <p>If you are calling the APIs from the Amazon Web Services
-     * Java, JavaScript, Python, or PHP SDKs, the SDK encodes Base64 automatically to
-     * allow the direct setting of the zip file's bytes. If you are using a SDK of a
-     * different language or are receiving related errors, try to Base64 encode your
-     * data.</p>
-     */
     inline void SetBody(const Aws::Utils::CryptoBuffer& value) { m_bodyHasBeenSet = true; m_body = value; }
-
-    /**
-     * <p>The bytes of the Base64 encoded asset bundle import zip file. This file can't
-     * exceed 20MB.</p> <p>If you are calling the APIs from the Amazon Web Services
-     * Java, JavaScript, Python, or PHP SDKs, the SDK encodes Base64 automatically to
-     * allow the direct setting of the zip file's bytes. If you are using a SDK of a
-     * different language or are receiving related errors, try to Base64 encode your
-     * data.</p>
-     */
     inline void SetBody(Aws::Utils::CryptoBuffer&& value) { m_bodyHasBeenSet = true; m_body = std::move(value); }
-
-    /**
-     * <p>The bytes of the Base64 encoded asset bundle import zip file. This file can't
-     * exceed 20MB.</p> <p>If you are calling the APIs from the Amazon Web Services
-     * Java, JavaScript, Python, or PHP SDKs, the SDK encodes Base64 automatically to
-     * allow the direct setting of the zip file's bytes. If you are using a SDK of a
-     * different language or are receiving related errors, try to Base64 encode your
-     * data.</p>
-     */
     inline AssetBundleImportSource& WithBody(const Aws::Utils::CryptoBuffer& value) { SetBody(value); return *this;}
-
-    /**
-     * <p>The bytes of the Base64 encoded asset bundle import zip file. This file can't
-     * exceed 20MB.</p> <p>If you are calling the APIs from the Amazon Web Services
-     * Java, JavaScript, Python, or PHP SDKs, the SDK encodes Base64 automatically to
-     * allow the direct setting of the zip file's bytes. If you are using a SDK of a
-     * different language or are receiving related errors, try to Base64 encode your
-     * data.</p>
-     */
     inline AssetBundleImportSource& WithBody(Aws::Utils::CryptoBuffer&& value) { SetBody(std::move(value)); return *this;}
+    ///@}
 
-
+    ///@{
     /**
-     * <p>The Amazon S3 uri for an asset bundle import file that exists in an Amazon S3
+     * <p>The Amazon S3 URI for an asset bundle import file that exists in an Amazon S3
      * bucket that the caller has read access to. The file must be a zip format file
-     * and can't exceed 20MB.</p>
+     * and can't exceed 1 GB.</p>
      */
     inline const Aws::String& GetS3Uri() const{ return m_s3Uri; }
-
-    /**
-     * <p>The Amazon S3 uri for an asset bundle import file that exists in an Amazon S3
-     * bucket that the caller has read access to. The file must be a zip format file
-     * and can't exceed 20MB.</p>
-     */
     inline bool S3UriHasBeenSet() const { return m_s3UriHasBeenSet; }
-
-    /**
-     * <p>The Amazon S3 uri for an asset bundle import file that exists in an Amazon S3
-     * bucket that the caller has read access to. The file must be a zip format file
-     * and can't exceed 20MB.</p>
-     */
     inline void SetS3Uri(const Aws::String& value) { m_s3UriHasBeenSet = true; m_s3Uri = value; }
-
-    /**
-     * <p>The Amazon S3 uri for an asset bundle import file that exists in an Amazon S3
-     * bucket that the caller has read access to. The file must be a zip format file
-     * and can't exceed 20MB.</p>
-     */
     inline void SetS3Uri(Aws::String&& value) { m_s3UriHasBeenSet = true; m_s3Uri = std::move(value); }
-
-    /**
-     * <p>The Amazon S3 uri for an asset bundle import file that exists in an Amazon S3
-     * bucket that the caller has read access to. The file must be a zip format file
-     * and can't exceed 20MB.</p>
-     */
     inline void SetS3Uri(const char* value) { m_s3UriHasBeenSet = true; m_s3Uri.assign(value); }
-
-    /**
-     * <p>The Amazon S3 uri for an asset bundle import file that exists in an Amazon S3
-     * bucket that the caller has read access to. The file must be a zip format file
-     * and can't exceed 20MB.</p>
-     */
     inline AssetBundleImportSource& WithS3Uri(const Aws::String& value) { SetS3Uri(value); return *this;}
-
-    /**
-     * <p>The Amazon S3 uri for an asset bundle import file that exists in an Amazon S3
-     * bucket that the caller has read access to. The file must be a zip format file
-     * and can't exceed 20MB.</p>
-     */
     inline AssetBundleImportSource& WithS3Uri(Aws::String&& value) { SetS3Uri(std::move(value)); return *this;}
-
-    /**
-     * <p>The Amazon S3 uri for an asset bundle import file that exists in an Amazon S3
-     * bucket that the caller has read access to. The file must be a zip format file
-     * and can't exceed 20MB.</p>
-     */
     inline AssetBundleImportSource& WithS3Uri(const char* value) { SetS3Uri(value); return *this;}
-
+    ///@}
   private:
 
     Aws::Utils::CryptoBuffer m_body;

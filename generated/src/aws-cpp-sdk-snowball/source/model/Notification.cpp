@@ -22,15 +22,13 @@ Notification::Notification() :
     m_snsTopicARNHasBeenSet(false),
     m_jobStatesToNotifyHasBeenSet(false),
     m_notifyAll(false),
-    m_notifyAllHasBeenSet(false)
+    m_notifyAllHasBeenSet(false),
+    m_devicePickupSnsTopicARNHasBeenSet(false)
 {
 }
 
-Notification::Notification(JsonView jsonValue) : 
-    m_snsTopicARNHasBeenSet(false),
-    m_jobStatesToNotifyHasBeenSet(false),
-    m_notifyAll(false),
-    m_notifyAllHasBeenSet(false)
+Notification::Notification(JsonView jsonValue)
+  : Notification()
 {
   *this = jsonValue;
 }
@@ -61,6 +59,13 @@ Notification& Notification::operator =(JsonView jsonValue)
     m_notifyAllHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("DevicePickupSnsTopicARN"))
+  {
+    m_devicePickupSnsTopicARN = jsonValue.GetString("DevicePickupSnsTopicARN");
+
+    m_devicePickupSnsTopicARNHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -88,6 +93,12 @@ JsonValue Notification::Jsonize() const
   if(m_notifyAllHasBeenSet)
   {
    payload.WithBool("NotifyAll", m_notifyAll);
+
+  }
+
+  if(m_devicePickupSnsTopicARNHasBeenSet)
+  {
+   payload.WithString("DevicePickupSnsTopicARN", m_devicePickupSnsTopicARN);
 
   }
 

@@ -30,16 +30,8 @@ CreateFunctionResult::CreateFunctionResult() :
 {
 }
 
-CreateFunctionResult::CreateFunctionResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_runtime(Runtime::NOT_SET),
-    m_codeSize(0),
-    m_timeout(0),
-    m_memorySize(0),
-    m_state(State::NOT_SET),
-    m_stateReasonCode(StateReasonCode::NOT_SET),
-    m_lastUpdateStatus(LastUpdateStatus::NOT_SET),
-    m_lastUpdateStatusReasonCode(LastUpdateStatusReasonCode::NOT_SET),
-    m_packageType(PackageType::NOT_SET)
+CreateFunctionResult::CreateFunctionResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : CreateFunctionResult()
 {
   *this = result;
 }
@@ -263,6 +255,12 @@ CreateFunctionResult& CreateFunctionResult::operator =(const Aws::AmazonWebServi
   if(jsonValue.ValueExists("RuntimeVersionConfig"))
   {
     m_runtimeVersionConfig = jsonValue.GetObject("RuntimeVersionConfig");
+
+  }
+
+  if(jsonValue.ValueExists("LoggingConfig"))
+  {
+    m_loggingConfig = jsonValue.GetObject("LoggingConfig");
 
   }
 

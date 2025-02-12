@@ -23,9 +23,8 @@ RetryDataReplicationResult::RetryDataReplicationResult() :
 {
 }
 
-RetryDataReplicationResult::RetryDataReplicationResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_isArchived(false),
-    m_replicationType(ReplicationType::NOT_SET)
+RetryDataReplicationResult::RetryDataReplicationResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : RetryDataReplicationResult()
 {
   *this = result;
 }
@@ -42,6 +41,12 @@ RetryDataReplicationResult& RetryDataReplicationResult::operator =(const Aws::Am
   if(jsonValue.ValueExists("arn"))
   {
     m_arn = jsonValue.GetString("arn");
+
+  }
+
+  if(jsonValue.ValueExists("connectorAction"))
+  {
+    m_connectorAction = jsonValue.GetObject("connectorAction");
 
   }
 

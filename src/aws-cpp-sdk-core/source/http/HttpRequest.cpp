@@ -42,7 +42,7 @@ namespace Aws
         const char X_AMZN_TRACE_ID_HEADER[] = "X-Amzn-Trace-Id";
         const char ALLOCATION_TAG[] = "HttpRequestConversion";
         const char X_AMZN_ERROR_TYPE[] = "x-amzn-errortype";
-
+        const char X_AMZN_QUERY_MODE[] = "x-amzn-query-mode";
         std::shared_ptr<Aws::Crt::Http::HttpRequest> HttpRequest::ToCrtHttpRequest()
         {
             auto request = Aws::MakeShared<Aws::Crt::Http::HttpRequest>(ALLOCATION_TAG);
@@ -77,8 +77,16 @@ namespace Aws
                 port << ":" << uri.GetPort();
             }
 
+            // Note: GetURLEncodedPathRFC3986 does legacy mode by default, which
+            // leaves some reserved delimeter characters unencoded (things like
+            // = or , in RFC 3986 parlance). This mode can be adjusted using
+            // flag to use a modern GetURLEncodedPath encoding approach (i.e.
+            // encode everything except for a couple of known safe chars). In
+            // practice however CRT will never support legacy mode and will
+            // always need modern encoding, so be explicit here about which mode
+            // we use.
             ss << SchemeMapper::ToString(uri.GetScheme()) << SEPARATOR << uri.GetAuthority() << port.str()
-                << ((uri.GetPath() == "/") ? "" : URI::URLEncodePath(uri.GetPath()))
+                << ((uri.GetPath() == "/") ? "" : uri.GetURLEncodedPath())
                 << uri.GetQueryString();
 
             request->SetPath(Aws::Crt::ByteCursorFromCString(ss.str().c_str()));

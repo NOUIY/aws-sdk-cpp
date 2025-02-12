@@ -19,13 +19,21 @@ namespace Model
 {
 
 Portal::Portal() : 
+    m_additionalEncryptionContextHasBeenSet(false),
     m_authenticationType(AuthenticationType::NOT_SET),
     m_authenticationTypeHasBeenSet(false),
     m_browserSettingsArnHasBeenSet(false),
     m_browserType(BrowserType::NOT_SET),
     m_browserTypeHasBeenSet(false),
     m_creationDateHasBeenSet(false),
+    m_customerManagedKeyHasBeenSet(false),
+    m_dataProtectionSettingsArnHasBeenSet(false),
     m_displayNameHasBeenSet(false),
+    m_instanceType(InstanceType::NOT_SET),
+    m_instanceTypeHasBeenSet(false),
+    m_ipAccessSettingsArnHasBeenSet(false),
+    m_maxConcurrentSessions(0),
+    m_maxConcurrentSessionsHasBeenSet(false),
     m_networkSettingsArnHasBeenSet(false),
     m_portalArnHasBeenSet(false),
     m_portalEndpointHasBeenSet(false),
@@ -40,31 +48,24 @@ Portal::Portal() :
 {
 }
 
-Portal::Portal(JsonView jsonValue) : 
-    m_authenticationType(AuthenticationType::NOT_SET),
-    m_authenticationTypeHasBeenSet(false),
-    m_browserSettingsArnHasBeenSet(false),
-    m_browserType(BrowserType::NOT_SET),
-    m_browserTypeHasBeenSet(false),
-    m_creationDateHasBeenSet(false),
-    m_displayNameHasBeenSet(false),
-    m_networkSettingsArnHasBeenSet(false),
-    m_portalArnHasBeenSet(false),
-    m_portalEndpointHasBeenSet(false),
-    m_portalStatus(PortalStatus::NOT_SET),
-    m_portalStatusHasBeenSet(false),
-    m_rendererType(RendererType::NOT_SET),
-    m_rendererTypeHasBeenSet(false),
-    m_statusReasonHasBeenSet(false),
-    m_trustStoreArnHasBeenSet(false),
-    m_userAccessLoggingSettingsArnHasBeenSet(false),
-    m_userSettingsArnHasBeenSet(false)
+Portal::Portal(JsonView jsonValue)
+  : Portal()
 {
   *this = jsonValue;
 }
 
 Portal& Portal::operator =(JsonView jsonValue)
 {
+  if(jsonValue.ValueExists("additionalEncryptionContext"))
+  {
+    Aws::Map<Aws::String, JsonView> additionalEncryptionContextJsonMap = jsonValue.GetObject("additionalEncryptionContext").GetAllObjects();
+    for(auto& additionalEncryptionContextItem : additionalEncryptionContextJsonMap)
+    {
+      m_additionalEncryptionContext[additionalEncryptionContextItem.first] = additionalEncryptionContextItem.second.AsString();
+    }
+    m_additionalEncryptionContextHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("authenticationType"))
   {
     m_authenticationType = AuthenticationTypeMapper::GetAuthenticationTypeForName(jsonValue.GetString("authenticationType"));
@@ -93,11 +94,46 @@ Portal& Portal::operator =(JsonView jsonValue)
     m_creationDateHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("customerManagedKey"))
+  {
+    m_customerManagedKey = jsonValue.GetString("customerManagedKey");
+
+    m_customerManagedKeyHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("dataProtectionSettingsArn"))
+  {
+    m_dataProtectionSettingsArn = jsonValue.GetString("dataProtectionSettingsArn");
+
+    m_dataProtectionSettingsArnHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("displayName"))
   {
     m_displayName = jsonValue.GetString("displayName");
 
     m_displayNameHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("instanceType"))
+  {
+    m_instanceType = InstanceTypeMapper::GetInstanceTypeForName(jsonValue.GetString("instanceType"));
+
+    m_instanceTypeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("ipAccessSettingsArn"))
+  {
+    m_ipAccessSettingsArn = jsonValue.GetString("ipAccessSettingsArn");
+
+    m_ipAccessSettingsArnHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("maxConcurrentSessions"))
+  {
+    m_maxConcurrentSessions = jsonValue.GetInteger("maxConcurrentSessions");
+
+    m_maxConcurrentSessionsHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("networkSettingsArn"))
@@ -170,6 +206,17 @@ JsonValue Portal::Jsonize() const
 {
   JsonValue payload;
 
+  if(m_additionalEncryptionContextHasBeenSet)
+  {
+   JsonValue additionalEncryptionContextJsonMap;
+   for(auto& additionalEncryptionContextItem : m_additionalEncryptionContext)
+   {
+     additionalEncryptionContextJsonMap.WithString(additionalEncryptionContextItem.first, additionalEncryptionContextItem.second);
+   }
+   payload.WithObject("additionalEncryptionContext", std::move(additionalEncryptionContextJsonMap));
+
+  }
+
   if(m_authenticationTypeHasBeenSet)
   {
    payload.WithString("authenticationType", AuthenticationTypeMapper::GetNameForAuthenticationType(m_authenticationType));
@@ -191,9 +238,38 @@ JsonValue Portal::Jsonize() const
    payload.WithDouble("creationDate", m_creationDate.SecondsWithMSPrecision());
   }
 
+  if(m_customerManagedKeyHasBeenSet)
+  {
+   payload.WithString("customerManagedKey", m_customerManagedKey);
+
+  }
+
+  if(m_dataProtectionSettingsArnHasBeenSet)
+  {
+   payload.WithString("dataProtectionSettingsArn", m_dataProtectionSettingsArn);
+
+  }
+
   if(m_displayNameHasBeenSet)
   {
    payload.WithString("displayName", m_displayName);
+
+  }
+
+  if(m_instanceTypeHasBeenSet)
+  {
+   payload.WithString("instanceType", InstanceTypeMapper::GetNameForInstanceType(m_instanceType));
+  }
+
+  if(m_ipAccessSettingsArnHasBeenSet)
+  {
+   payload.WithString("ipAccessSettingsArn", m_ipAccessSettingsArn);
+
+  }
+
+  if(m_maxConcurrentSessionsHasBeenSet)
+  {
+   payload.WithInteger("maxConcurrentSessions", m_maxConcurrentSessions);
 
   }
 

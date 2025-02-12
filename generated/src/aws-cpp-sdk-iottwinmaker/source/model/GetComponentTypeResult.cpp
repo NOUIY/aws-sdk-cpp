@@ -24,10 +24,8 @@ GetComponentTypeResult::GetComponentTypeResult() :
 {
 }
 
-GetComponentTypeResult::GetComponentTypeResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_isSingleton(false),
-    m_isAbstract(false),
-    m_isSchemaInitialized(false)
+GetComponentTypeResult::GetComponentTypeResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetComponentTypeResult()
 {
   *this = result;
 }
@@ -141,6 +139,15 @@ GetComponentTypeResult& GetComponentTypeResult::operator =(const Aws::AmazonWebS
   {
     m_componentTypeName = jsonValue.GetString("componentTypeName");
 
+  }
+
+  if(jsonValue.ValueExists("compositeComponentTypes"))
+  {
+    Aws::Map<Aws::String, JsonView> compositeComponentTypesJsonMap = jsonValue.GetObject("compositeComponentTypes").GetAllObjects();
+    for(auto& compositeComponentTypesItem : compositeComponentTypesJsonMap)
+    {
+      m_compositeComponentTypes[compositeComponentTypesItem.first] = compositeComponentTypesItem.second.AsObject();
+    }
   }
 
 

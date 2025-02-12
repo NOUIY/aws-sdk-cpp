@@ -83,6 +83,34 @@ DescribeStateMachineForExecutionResult& DescribeStateMachineForExecutionResult::
 
   }
 
+  if(jsonValue.ValueExists("revisionId"))
+  {
+    m_revisionId = jsonValue.GetString("revisionId");
+
+  }
+
+  if(jsonValue.ValueExists("encryptionConfiguration"))
+  {
+    m_encryptionConfiguration = jsonValue.GetObject("encryptionConfiguration");
+
+  }
+
+  if(jsonValue.ValueExists("variableReferences"))
+  {
+    Aws::Map<Aws::String, JsonView> variableReferencesJsonMap = jsonValue.GetObject("variableReferences").GetAllObjects();
+    for(auto& variableReferencesItem : variableReferencesJsonMap)
+    {
+      Aws::Utils::Array<JsonView> variableNameListJsonList = variableReferencesItem.second.AsArray();
+      Aws::Vector<Aws::String> variableNameListList;
+      variableNameListList.reserve((size_t)variableNameListJsonList.GetLength());
+      for(unsigned variableNameListIndex = 0; variableNameListIndex < variableNameListJsonList.GetLength(); ++variableNameListIndex)
+      {
+        variableNameListList.push_back(variableNameListJsonList[variableNameListIndex].AsString());
+      }
+      m_variableReferences[variableReferencesItem.first] = std::move(variableNameListList);
+    }
+  }
+
 
   const auto& headers = result.GetHeaderValueCollection();
   const auto& requestIdIter = headers.find("x-amzn-requestid");

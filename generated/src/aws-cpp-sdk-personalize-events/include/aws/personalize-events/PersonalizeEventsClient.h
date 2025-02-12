@@ -6,28 +6,40 @@
 #pragma once
 #include <aws/personalize-events/PersonalizeEvents_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/personalize-events/PersonalizeEventsServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/personalize-events/PersonalizeEventsErrorMarshaller.h>
 
 namespace Aws
 {
 namespace PersonalizeEvents
 {
+  AWS_PERSONALIZEEVENTS_API extern const char SERVICE_NAME[];
   /**
    * <p>Amazon Personalize can consume real-time user event data, such as
    * <i>stream</i> or <i>click</i> data, and use it for model training either alone
    * or combined with historical data. For more information see <a
-   * href="https://docs.aws.amazon.com/personalize/latest/dg/recording-events.html">Recording
-   * Events</a>.</p>
+   * href="https://docs.aws.amazon.com/personalize/latest/dg/recording-item-interaction-events.html">Recording
+   * item interaction events</a>.</p>
    */
-  class AWS_PERSONALIZEEVENTS_API PersonalizeEventsClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<PersonalizeEventsClient>
+  class AWS_PERSONALIZEEVENTS_API PersonalizeEventsClient : smithy::client::AwsSmithyClientT<Aws::PersonalizeEvents::SERVICE_NAME,
+      Aws::PersonalizeEvents::PersonalizeEventsClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      PersonalizeEventsEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::PersonalizeEventsErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<PersonalizeEventsClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Personalize Events"; }
 
       typedef PersonalizeEventsClientConfiguration ClientConfigurationType;
       typedef PersonalizeEventsEndpointProvider EndpointProviderType;
@@ -37,14 +49,14 @@ namespace PersonalizeEvents
         * is not specified, it will be initialized to default values.
         */
         PersonalizeEventsClient(const Aws::PersonalizeEvents::PersonalizeEventsClientConfiguration& clientConfiguration = Aws::PersonalizeEvents::PersonalizeEventsClientConfiguration(),
-                                std::shared_ptr<PersonalizeEventsEndpointProviderBase> endpointProvider = Aws::MakeShared<PersonalizeEventsEndpointProvider>(ALLOCATION_TAG));
+                                std::shared_ptr<PersonalizeEventsEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         PersonalizeEventsClient(const Aws::Auth::AWSCredentials& credentials,
-                                std::shared_ptr<PersonalizeEventsEndpointProviderBase> endpointProvider = Aws::MakeShared<PersonalizeEventsEndpointProvider>(ALLOCATION_TAG),
+                                std::shared_ptr<PersonalizeEventsEndpointProviderBase> endpointProvider = nullptr,
                                 const Aws::PersonalizeEvents::PersonalizeEventsClientConfiguration& clientConfiguration = Aws::PersonalizeEvents::PersonalizeEventsClientConfiguration());
 
        /**
@@ -52,7 +64,7 @@ namespace PersonalizeEvents
         * the default http client factory will be used
         */
         PersonalizeEventsClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                std::shared_ptr<PersonalizeEventsEndpointProviderBase> endpointProvider = Aws::MakeShared<PersonalizeEventsEndpointProvider>(ALLOCATION_TAG),
+                                std::shared_ptr<PersonalizeEventsEndpointProviderBase> endpointProvider = nullptr,
                                 const Aws::PersonalizeEvents::PersonalizeEventsClientConfiguration& clientConfiguration = Aws::PersonalizeEvents::PersonalizeEventsClientConfiguration());
 
 
@@ -81,9 +93,69 @@ namespace PersonalizeEvents
         virtual ~PersonalizeEventsClient();
 
         /**
-         * <p>Records user interaction event data. For more information see <a
-         * href="https://docs.aws.amazon.com/personalize/latest/dg/recording-events.html">Recording
-         * Events</a>.</p><p><h3>See Also:</h3>   <a
+         * <p>Records action interaction event data. An <i>action interaction</i> event is
+         * an interaction between a user and an <i>action</i>. For example, a user taking
+         * an action, such a enrolling in a membership program or downloading your app.</p>
+         * <p> For more information about recording action interactions, see <a
+         * href="https://docs.aws.amazon.com/personalize/latest/dg/recording-action-interaction-events.html">Recording
+         * action interaction events</a>. For more information about actions in an Actions
+         * dataset, see <a
+         * href="https://docs.aws.amazon.com/personalize/latest/dg/actions-datasets.html">Actions
+         * dataset</a>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/personalize-events-2018-03-22/PutActionInteractions">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::PutActionInteractionsOutcome PutActionInteractions(const Model::PutActionInteractionsRequest& request) const;
+
+        /**
+         * A Callable wrapper for PutActionInteractions that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename PutActionInteractionsRequestT = Model::PutActionInteractionsRequest>
+        Model::PutActionInteractionsOutcomeCallable PutActionInteractionsCallable(const PutActionInteractionsRequestT& request) const
+        {
+            return SubmitCallable(&PersonalizeEventsClient::PutActionInteractions, request);
+        }
+
+        /**
+         * An Async wrapper for PutActionInteractions that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename PutActionInteractionsRequestT = Model::PutActionInteractionsRequest>
+        void PutActionInteractionsAsync(const PutActionInteractionsRequestT& request, const PutActionInteractionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&PersonalizeEventsClient::PutActionInteractions, request, handler, context);
+        }
+
+        /**
+         * <p>Adds one or more actions to an Actions dataset. For more information see <a
+         * href="https://docs.aws.amazon.com/personalize/latest/dg/importing-actions.html">Importing
+         * actions individually</a>. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/personalize-events-2018-03-22/PutActions">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::PutActionsOutcome PutActions(const Model::PutActionsRequest& request) const;
+
+        /**
+         * A Callable wrapper for PutActions that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename PutActionsRequestT = Model::PutActionsRequest>
+        Model::PutActionsOutcomeCallable PutActionsCallable(const PutActionsRequestT& request) const
+        {
+            return SubmitCallable(&PersonalizeEventsClient::PutActions, request);
+        }
+
+        /**
+         * An Async wrapper for PutActions that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename PutActionsRequestT = Model::PutActionsRequest>
+        void PutActionsAsync(const PutActionsRequestT& request, const PutActionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&PersonalizeEventsClient::PutActions, request, handler, context);
+        }
+
+        /**
+         * <p>Records item interaction event data. For more information see <a
+         * href="https://docs.aws.amazon.com/personalize/latest/dg/recording-item-interaction-events.html">Recording
+         * item interaction events</a>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/personalize-events-2018-03-22/PutEvents">AWS
          * API Reference</a></p>
          */
@@ -110,7 +182,7 @@ namespace PersonalizeEvents
         /**
          * <p>Adds one or more items to an Items dataset. For more information see <a
          * href="https://docs.aws.amazon.com/personalize/latest/dg/importing-items.html">Importing
-         * Items Incrementally</a>. </p><p><h3>See Also:</h3>   <a
+         * items individually</a>. </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/personalize-events-2018-03-22/PutItems">AWS
          * API Reference</a></p>
          */
@@ -137,7 +209,7 @@ namespace PersonalizeEvents
         /**
          * <p>Adds one or more users to a Users dataset. For more information see <a
          * href="https://docs.aws.amazon.com/personalize/latest/dg/importing-users.html">Importing
-         * Users Incrementally</a>.</p><p><h3>See Also:</h3>   <a
+         * users individually</a>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/personalize-events-2018-03-22/PutUsers">AWS
          * API Reference</a></p>
          */
@@ -166,11 +238,7 @@ namespace PersonalizeEvents
       std::shared_ptr<PersonalizeEventsEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<PersonalizeEventsClient>;
-      void init(const PersonalizeEventsClientConfiguration& clientConfiguration);
 
-      PersonalizeEventsClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<PersonalizeEventsEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace PersonalizeEvents

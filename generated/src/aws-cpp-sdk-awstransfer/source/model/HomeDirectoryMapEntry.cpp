@@ -20,13 +20,14 @@ namespace Model
 
 HomeDirectoryMapEntry::HomeDirectoryMapEntry() : 
     m_entryHasBeenSet(false),
-    m_targetHasBeenSet(false)
+    m_targetHasBeenSet(false),
+    m_type(MapType::NOT_SET),
+    m_typeHasBeenSet(false)
 {
 }
 
-HomeDirectoryMapEntry::HomeDirectoryMapEntry(JsonView jsonValue) : 
-    m_entryHasBeenSet(false),
-    m_targetHasBeenSet(false)
+HomeDirectoryMapEntry::HomeDirectoryMapEntry(JsonView jsonValue)
+  : HomeDirectoryMapEntry()
 {
   *this = jsonValue;
 }
@@ -47,6 +48,13 @@ HomeDirectoryMapEntry& HomeDirectoryMapEntry::operator =(JsonView jsonValue)
     m_targetHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Type"))
+  {
+    m_type = MapTypeMapper::GetMapTypeForName(jsonValue.GetString("Type"));
+
+    m_typeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -64,6 +72,11 @@ JsonValue HomeDirectoryMapEntry::Jsonize() const
   {
    payload.WithString("Target", m_target);
 
+  }
+
+  if(m_typeHasBeenSet)
+  {
+   payload.WithString("Type", MapTypeMapper::GetNameForMapType(m_type));
   }
 
   return payload;

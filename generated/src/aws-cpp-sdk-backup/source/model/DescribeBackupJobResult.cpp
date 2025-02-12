@@ -26,12 +26,8 @@ DescribeBackupJobResult::DescribeBackupJobResult() :
 {
 }
 
-DescribeBackupJobResult::DescribeBackupJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_state(BackupJobState::NOT_SET),
-    m_backupSizeInBytes(0),
-    m_bytesTransferred(0),
-    m_isParent(false),
-    m_numberOfChildJobs(0)
+DescribeBackupJobResult::DescribeBackupJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeBackupJobResult()
 {
   *this = result;
 }
@@ -192,6 +188,18 @@ DescribeBackupJobResult& DescribeBackupJobResult::operator =(const Aws::AmazonWe
   if(jsonValue.ValueExists("ResourceName"))
   {
     m_resourceName = jsonValue.GetString("ResourceName");
+
+  }
+
+  if(jsonValue.ValueExists("InitiationDate"))
+  {
+    m_initiationDate = jsonValue.GetDouble("InitiationDate");
+
+  }
+
+  if(jsonValue.ValueExists("MessageCategory"))
+  {
+    m_messageCategory = jsonValue.GetString("MessageCategory");
 
   }
 

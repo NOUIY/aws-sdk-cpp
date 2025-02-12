@@ -20,7 +20,7 @@ namespace Model
    * <p>Represents a request to create a configuration set. Configuration sets enable
    * you to publish email sending events. For information about using configuration
    * sets, see the <a
-   * href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/monitor-sending-activity.html">Amazon
+   * href="https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity.html">Amazon
    * SES Developer Guide</a>.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/email-2010-12-01/CreateConfigurationSetRequest">AWS
    * API Reference</a></p>
@@ -43,36 +43,17 @@ namespace Model
 
   public:
 
+    ///@{
     /**
      * <p>A data structure that contains the name of the configuration set.</p>
      */
     inline const ConfigurationSet& GetConfigurationSet() const{ return m_configurationSet; }
-
-    /**
-     * <p>A data structure that contains the name of the configuration set.</p>
-     */
     inline bool ConfigurationSetHasBeenSet() const { return m_configurationSetHasBeenSet; }
-
-    /**
-     * <p>A data structure that contains the name of the configuration set.</p>
-     */
     inline void SetConfigurationSet(const ConfigurationSet& value) { m_configurationSetHasBeenSet = true; m_configurationSet = value; }
-
-    /**
-     * <p>A data structure that contains the name of the configuration set.</p>
-     */
     inline void SetConfigurationSet(ConfigurationSet&& value) { m_configurationSetHasBeenSet = true; m_configurationSet = std::move(value); }
-
-    /**
-     * <p>A data structure that contains the name of the configuration set.</p>
-     */
     inline CreateConfigurationSetRequest& WithConfigurationSet(const ConfigurationSet& value) { SetConfigurationSet(value); return *this;}
-
-    /**
-     * <p>A data structure that contains the name of the configuration set.</p>
-     */
     inline CreateConfigurationSetRequest& WithConfigurationSet(ConfigurationSet&& value) { SetConfigurationSet(std::move(value)); return *this;}
-
+    ///@}
   private:
 
     ConfigurationSet m_configurationSet;

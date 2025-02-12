@@ -30,8 +30,12 @@ namespace Aws
         static const int CREATE_DATABASE_HASH = HashingUtils::HashString("CREATE_DATABASE");
         static const int CREATE_TABLE_HASH = HashingUtils::HashString("CREATE_TABLE");
         static const int DATA_LOCATION_ACCESS_HASH = HashingUtils::HashString("DATA_LOCATION_ACCESS");
-        static const int CREATE_TAG_HASH = HashingUtils::HashString("CREATE_TAG");
+        static const int CREATE_LF_TAG_HASH = HashingUtils::HashString("CREATE_LF_TAG");
         static const int ASSOCIATE_HASH = HashingUtils::HashString("ASSOCIATE");
+        static const int GRANT_WITH_LF_TAG_EXPRESSION_HASH = HashingUtils::HashString("GRANT_WITH_LF_TAG_EXPRESSION");
+        static const int CREATE_LF_TAG_EXPRESSION_HASH = HashingUtils::HashString("CREATE_LF_TAG_EXPRESSION");
+        static const int CREATE_CATALOG_HASH = HashingUtils::HashString("CREATE_CATALOG");
+        static const int SUPER_USER_HASH = HashingUtils::HashString("SUPER_USER");
 
 
         Permission GetPermissionForName(const Aws::String& name)
@@ -77,13 +81,29 @@ namespace Aws
           {
             return Permission::DATA_LOCATION_ACCESS;
           }
-          else if (hashCode == CREATE_TAG_HASH)
+          else if (hashCode == CREATE_LF_TAG_HASH)
           {
-            return Permission::CREATE_TAG;
+            return Permission::CREATE_LF_TAG;
           }
           else if (hashCode == ASSOCIATE_HASH)
           {
             return Permission::ASSOCIATE;
+          }
+          else if (hashCode == GRANT_WITH_LF_TAG_EXPRESSION_HASH)
+          {
+            return Permission::GRANT_WITH_LF_TAG_EXPRESSION;
+          }
+          else if (hashCode == CREATE_LF_TAG_EXPRESSION_HASH)
+          {
+            return Permission::CREATE_LF_TAG_EXPRESSION;
+          }
+          else if (hashCode == CREATE_CATALOG_HASH)
+          {
+            return Permission::CREATE_CATALOG;
+          }
+          else if (hashCode == SUPER_USER_HASH)
+          {
+            return Permission::SUPER_USER;
           }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
@@ -99,6 +119,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case Permission::NOT_SET:
+            return {};
           case Permission::ALL:
             return "ALL";
           case Permission::SELECT:
@@ -119,10 +141,18 @@ namespace Aws
             return "CREATE_TABLE";
           case Permission::DATA_LOCATION_ACCESS:
             return "DATA_LOCATION_ACCESS";
-          case Permission::CREATE_TAG:
-            return "CREATE_TAG";
+          case Permission::CREATE_LF_TAG:
+            return "CREATE_LF_TAG";
           case Permission::ASSOCIATE:
             return "ASSOCIATE";
+          case Permission::GRANT_WITH_LF_TAG_EXPRESSION:
+            return "GRANT_WITH_LF_TAG_EXPRESSION";
+          case Permission::CREATE_LF_TAG_EXPRESSION:
+            return "CREATE_LF_TAG_EXPRESSION";
+          case Permission::CREATE_CATALOG:
+            return "CREATE_CATALOG";
+          case Permission::SUPER_USER:
+            return "SUPER_USER";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

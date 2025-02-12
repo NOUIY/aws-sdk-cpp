@@ -22,9 +22,10 @@ namespace Aws
 
         static const int Creating_HASH = HashingUtils::HashString("Creating");
         static const int Available_HASH = HashingUtils::HashString("Available");
+        static const int Updating_HASH = HashingUtils::HashString("Updating");
         static const int Deleting_HASH = HashingUtils::HashString("Deleting");
         static const int Failed_HASH = HashingUtils::HashString("Failed");
-        static const int Updating_HASH = HashingUtils::HashString("Updating");
+        static const int UnHealthy_HASH = HashingUtils::HashString("UnHealthy");
 
 
         EnvironmentLifecycle GetEnvironmentLifecycleForName(const Aws::String& name)
@@ -38,6 +39,10 @@ namespace Aws
           {
             return EnvironmentLifecycle::Available;
           }
+          else if (hashCode == Updating_HASH)
+          {
+            return EnvironmentLifecycle::Updating;
+          }
           else if (hashCode == Deleting_HASH)
           {
             return EnvironmentLifecycle::Deleting;
@@ -46,9 +51,9 @@ namespace Aws
           {
             return EnvironmentLifecycle::Failed;
           }
-          else if (hashCode == Updating_HASH)
+          else if (hashCode == UnHealthy_HASH)
           {
-            return EnvironmentLifecycle::Updating;
+            return EnvironmentLifecycle::UnHealthy;
           }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
@@ -64,16 +69,20 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case EnvironmentLifecycle::NOT_SET:
+            return {};
           case EnvironmentLifecycle::Creating:
             return "Creating";
           case EnvironmentLifecycle::Available:
             return "Available";
+          case EnvironmentLifecycle::Updating:
+            return "Updating";
           case EnvironmentLifecycle::Deleting:
             return "Deleting";
           case EnvironmentLifecycle::Failed:
             return "Failed";
-          case EnvironmentLifecycle::Updating:
-            return "Updating";
+          case EnvironmentLifecycle::UnHealthy:
+            return "UnHealthy";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

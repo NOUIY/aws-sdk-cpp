@@ -25,18 +25,14 @@ HoursOfOperation::HoursOfOperation() :
     m_descriptionHasBeenSet(false),
     m_timeZoneHasBeenSet(false),
     m_configHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+    m_tagsHasBeenSet(false),
+    m_lastModifiedTimeHasBeenSet(false),
+    m_lastModifiedRegionHasBeenSet(false)
 {
 }
 
-HoursOfOperation::HoursOfOperation(JsonView jsonValue) : 
-    m_hoursOfOperationIdHasBeenSet(false),
-    m_hoursOfOperationArnHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_timeZoneHasBeenSet(false),
-    m_configHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+HoursOfOperation::HoursOfOperation(JsonView jsonValue)
+  : HoursOfOperation()
 {
   *this = jsonValue;
 }
@@ -98,6 +94,20 @@ HoursOfOperation& HoursOfOperation::operator =(JsonView jsonValue)
     m_tagsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("LastModifiedTime"))
+  {
+    m_lastModifiedTime = jsonValue.GetDouble("LastModifiedTime");
+
+    m_lastModifiedTimeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("LastModifiedRegion"))
+  {
+    m_lastModifiedRegion = jsonValue.GetString("LastModifiedRegion");
+
+    m_lastModifiedRegionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -154,6 +164,17 @@ JsonValue HoursOfOperation::Jsonize() const
      tagsJsonMap.WithString(tagsItem.first, tagsItem.second);
    }
    payload.WithObject("Tags", std::move(tagsJsonMap));
+
+  }
+
+  if(m_lastModifiedTimeHasBeenSet)
+  {
+   payload.WithDouble("LastModifiedTime", m_lastModifiedTime.SecondsWithMSPrecision());
+  }
+
+  if(m_lastModifiedRegionHasBeenSet)
+  {
+   payload.WithString("LastModifiedRegion", m_lastModifiedRegion);
 
   }
 

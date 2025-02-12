@@ -35,28 +35,15 @@ RadarChartConfiguration::RadarChartConfiguration() :
     m_categoryLabelOptionsHasBeenSet(false),
     m_colorAxisHasBeenSet(false),
     m_colorLabelOptionsHasBeenSet(false),
-    m_legendHasBeenSet(false)
+    m_legendHasBeenSet(false),
+    m_axesRangeScale(RadarChartAxesRangeScale::NOT_SET),
+    m_axesRangeScaleHasBeenSet(false),
+    m_interactionsHasBeenSet(false)
 {
 }
 
-RadarChartConfiguration::RadarChartConfiguration(JsonView jsonValue) : 
-    m_fieldWellsHasBeenSet(false),
-    m_sortConfigurationHasBeenSet(false),
-    m_shape(RadarChartShape::NOT_SET),
-    m_shapeHasBeenSet(false),
-    m_baseSeriesSettingsHasBeenSet(false),
-    m_startAngle(0.0),
-    m_startAngleHasBeenSet(false),
-    m_visualPaletteHasBeenSet(false),
-    m_alternateBandColorsVisibility(Visibility::NOT_SET),
-    m_alternateBandColorsVisibilityHasBeenSet(false),
-    m_alternateBandEvenColorHasBeenSet(false),
-    m_alternateBandOddColorHasBeenSet(false),
-    m_categoryAxisHasBeenSet(false),
-    m_categoryLabelOptionsHasBeenSet(false),
-    m_colorAxisHasBeenSet(false),
-    m_colorLabelOptionsHasBeenSet(false),
-    m_legendHasBeenSet(false)
+RadarChartConfiguration::RadarChartConfiguration(JsonView jsonValue)
+  : RadarChartConfiguration()
 {
   *this = jsonValue;
 }
@@ -161,6 +148,20 @@ RadarChartConfiguration& RadarChartConfiguration::operator =(JsonView jsonValue)
     m_legendHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("AxesRangeScale"))
+  {
+    m_axesRangeScale = RadarChartAxesRangeScaleMapper::GetRadarChartAxesRangeScaleForName(jsonValue.GetString("AxesRangeScale"));
+
+    m_axesRangeScaleHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Interactions"))
+  {
+    m_interactions = jsonValue.GetObject("Interactions");
+
+    m_interactionsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -247,6 +248,17 @@ JsonValue RadarChartConfiguration::Jsonize() const
   if(m_legendHasBeenSet)
   {
    payload.WithObject("Legend", m_legend.Jsonize());
+
+  }
+
+  if(m_axesRangeScaleHasBeenSet)
+  {
+   payload.WithString("AxesRangeScale", RadarChartAxesRangeScaleMapper::GetNameForRadarChartAxesRangeScale(m_axesRangeScale));
+  }
+
+  if(m_interactionsHasBeenSet)
+  {
+   payload.WithObject("Interactions", m_interactions.Jsonize());
 
   }
 

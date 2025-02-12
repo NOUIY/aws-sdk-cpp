@@ -26,8 +26,16 @@ ModifyDBClusterRequest::ModifyDBClusterRequest() :
     m_preferredMaintenanceWindowHasBeenSet(false),
     m_cloudwatchLogsExportConfigurationHasBeenSet(false),
     m_engineVersionHasBeenSet(false),
+    m_allowMajorVersionUpgrade(false),
+    m_allowMajorVersionUpgradeHasBeenSet(false),
     m_deletionProtection(false),
-    m_deletionProtectionHasBeenSet(false)
+    m_deletionProtectionHasBeenSet(false),
+    m_storageTypeHasBeenSet(false),
+    m_manageMasterUserPassword(false),
+    m_manageMasterUserPasswordHasBeenSet(false),
+    m_masterUserSecretKmsKeyIdHasBeenSet(false),
+    m_rotateMasterUserPassword(false),
+    m_rotateMasterUserPasswordHasBeenSet(false)
 {
 }
 
@@ -62,12 +70,19 @@ Aws::String ModifyDBClusterRequest::SerializePayload() const
 
   if(m_vpcSecurityGroupIdsHasBeenSet)
   {
-    unsigned vpcSecurityGroupIdsCount = 1;
-    for(auto& item : m_vpcSecurityGroupIds)
+    if (m_vpcSecurityGroupIds.empty())
     {
-      ss << "VpcSecurityGroupIds.member." << vpcSecurityGroupIdsCount << "="
-          << StringUtils::URLEncode(item.c_str()) << "&";
-      vpcSecurityGroupIdsCount++;
+      ss << "VpcSecurityGroupIds=&";
+    }
+    else
+    {
+      unsigned vpcSecurityGroupIdsCount = 1;
+      for(auto& item : m_vpcSecurityGroupIds)
+      {
+        ss << "VpcSecurityGroupIds.VpcSecurityGroupId." << vpcSecurityGroupIdsCount << "="
+            << StringUtils::URLEncode(item.c_str()) << "&";
+        vpcSecurityGroupIdsCount++;
+      }
     }
   }
 
@@ -101,9 +116,34 @@ Aws::String ModifyDBClusterRequest::SerializePayload() const
     ss << "EngineVersion=" << StringUtils::URLEncode(m_engineVersion.c_str()) << "&";
   }
 
+  if(m_allowMajorVersionUpgradeHasBeenSet)
+  {
+    ss << "AllowMajorVersionUpgrade=" << std::boolalpha << m_allowMajorVersionUpgrade << "&";
+  }
+
   if(m_deletionProtectionHasBeenSet)
   {
     ss << "DeletionProtection=" << std::boolalpha << m_deletionProtection << "&";
+  }
+
+  if(m_storageTypeHasBeenSet)
+  {
+    ss << "StorageType=" << StringUtils::URLEncode(m_storageType.c_str()) << "&";
+  }
+
+  if(m_manageMasterUserPasswordHasBeenSet)
+  {
+    ss << "ManageMasterUserPassword=" << std::boolalpha << m_manageMasterUserPassword << "&";
+  }
+
+  if(m_masterUserSecretKmsKeyIdHasBeenSet)
+  {
+    ss << "MasterUserSecretKmsKeyId=" << StringUtils::URLEncode(m_masterUserSecretKmsKeyId.c_str()) << "&";
+  }
+
+  if(m_rotateMasterUserPasswordHasBeenSet)
+  {
+    ss << "RotateMasterUserPassword=" << std::boolalpha << m_rotateMasterUserPassword << "&";
   }
 
   ss << "Version=2014-10-31";

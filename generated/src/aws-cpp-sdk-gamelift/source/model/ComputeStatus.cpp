@@ -23,6 +23,7 @@ namespace Aws
         static const int PENDING_HASH = HashingUtils::HashString("PENDING");
         static const int ACTIVE_HASH = HashingUtils::HashString("ACTIVE");
         static const int TERMINATING_HASH = HashingUtils::HashString("TERMINATING");
+        static const int IMPAIRED_HASH = HashingUtils::HashString("IMPAIRED");
 
 
         ComputeStatus GetComputeStatusForName(const Aws::String& name)
@@ -40,6 +41,10 @@ namespace Aws
           {
             return ComputeStatus::TERMINATING;
           }
+          else if (hashCode == IMPAIRED_HASH)
+          {
+            return ComputeStatus::IMPAIRED;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -54,12 +59,16 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ComputeStatus::NOT_SET:
+            return {};
           case ComputeStatus::PENDING:
             return "PENDING";
           case ComputeStatus::ACTIVE:
             return "ACTIVE";
           case ComputeStatus::TERMINATING:
             return "TERMINATING";
+          case ComputeStatus::IMPAIRED:
+            return "IMPAIRED";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

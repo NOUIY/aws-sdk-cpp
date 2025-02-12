@@ -32,25 +32,17 @@ OpenZFSFileSystemConfiguration::OpenZFSFileSystemConfiguration() :
     m_throughputCapacityHasBeenSet(false),
     m_weeklyMaintenanceStartTimeHasBeenSet(false),
     m_diskIopsConfigurationHasBeenSet(false),
-    m_rootVolumeIdHasBeenSet(false)
+    m_rootVolumeIdHasBeenSet(false),
+    m_preferredSubnetIdHasBeenSet(false),
+    m_endpointIpAddressRangeHasBeenSet(false),
+    m_routeTableIdsHasBeenSet(false),
+    m_endpointIpAddressHasBeenSet(false),
+    m_readCacheConfigurationHasBeenSet(false)
 {
 }
 
-OpenZFSFileSystemConfiguration::OpenZFSFileSystemConfiguration(JsonView jsonValue) : 
-    m_automaticBackupRetentionDays(0),
-    m_automaticBackupRetentionDaysHasBeenSet(false),
-    m_copyTagsToBackups(false),
-    m_copyTagsToBackupsHasBeenSet(false),
-    m_copyTagsToVolumes(false),
-    m_copyTagsToVolumesHasBeenSet(false),
-    m_dailyAutomaticBackupStartTimeHasBeenSet(false),
-    m_deploymentType(OpenZFSDeploymentType::NOT_SET),
-    m_deploymentTypeHasBeenSet(false),
-    m_throughputCapacity(0),
-    m_throughputCapacityHasBeenSet(false),
-    m_weeklyMaintenanceStartTimeHasBeenSet(false),
-    m_diskIopsConfigurationHasBeenSet(false),
-    m_rootVolumeIdHasBeenSet(false)
+OpenZFSFileSystemConfiguration::OpenZFSFileSystemConfiguration(JsonView jsonValue)
+  : OpenZFSFileSystemConfiguration()
 {
   *this = jsonValue;
 }
@@ -120,6 +112,44 @@ OpenZFSFileSystemConfiguration& OpenZFSFileSystemConfiguration::operator =(JsonV
     m_rootVolumeIdHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("PreferredSubnetId"))
+  {
+    m_preferredSubnetId = jsonValue.GetString("PreferredSubnetId");
+
+    m_preferredSubnetIdHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("EndpointIpAddressRange"))
+  {
+    m_endpointIpAddressRange = jsonValue.GetString("EndpointIpAddressRange");
+
+    m_endpointIpAddressRangeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("RouteTableIds"))
+  {
+    Aws::Utils::Array<JsonView> routeTableIdsJsonList = jsonValue.GetArray("RouteTableIds");
+    for(unsigned routeTableIdsIndex = 0; routeTableIdsIndex < routeTableIdsJsonList.GetLength(); ++routeTableIdsIndex)
+    {
+      m_routeTableIds.push_back(routeTableIdsJsonList[routeTableIdsIndex].AsString());
+    }
+    m_routeTableIdsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("EndpointIpAddress"))
+  {
+    m_endpointIpAddress = jsonValue.GetString("EndpointIpAddress");
+
+    m_endpointIpAddressHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("ReadCacheConfiguration"))
+  {
+    m_readCacheConfiguration = jsonValue.GetObject("ReadCacheConfiguration");
+
+    m_readCacheConfigurationHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -177,6 +207,41 @@ JsonValue OpenZFSFileSystemConfiguration::Jsonize() const
   if(m_rootVolumeIdHasBeenSet)
   {
    payload.WithString("RootVolumeId", m_rootVolumeId);
+
+  }
+
+  if(m_preferredSubnetIdHasBeenSet)
+  {
+   payload.WithString("PreferredSubnetId", m_preferredSubnetId);
+
+  }
+
+  if(m_endpointIpAddressRangeHasBeenSet)
+  {
+   payload.WithString("EndpointIpAddressRange", m_endpointIpAddressRange);
+
+  }
+
+  if(m_routeTableIdsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> routeTableIdsJsonList(m_routeTableIds.size());
+   for(unsigned routeTableIdsIndex = 0; routeTableIdsIndex < routeTableIdsJsonList.GetLength(); ++routeTableIdsIndex)
+   {
+     routeTableIdsJsonList[routeTableIdsIndex].AsString(m_routeTableIds[routeTableIdsIndex]);
+   }
+   payload.WithArray("RouteTableIds", std::move(routeTableIdsJsonList));
+
+  }
+
+  if(m_endpointIpAddressHasBeenSet)
+  {
+   payload.WithString("EndpointIpAddress", m_endpointIpAddress);
+
+  }
+
+  if(m_readCacheConfigurationHasBeenSet)
+  {
+   payload.WithObject("ReadCacheConfiguration", m_readCacheConfiguration.Jsonize());
 
   }
 

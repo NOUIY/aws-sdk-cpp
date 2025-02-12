@@ -7,6 +7,7 @@
 #include <aws/core/utils/HashingUtils.h>
 #include <aws/guardduty/GuardDutyErrors.h>
 #include <aws/guardduty/model/ConflictException.h>
+#include <aws/guardduty/model/ResourceNotFoundException.h>
 #include <aws/guardduty/model/AccessDeniedException.h>
 #include <aws/guardduty/model/BadRequestException.h>
 #include <aws/guardduty/model/InternalServerErrorException.h>
@@ -24,6 +25,12 @@ template<> AWS_GUARDDUTY_API ConflictException GuardDutyError::GetModeledError()
 {
   assert(this->GetErrorType() == GuardDutyErrors::CONFLICT);
   return ConflictException(this->GetJsonPayload().View());
+}
+
+template<> AWS_GUARDDUTY_API ResourceNotFoundException GuardDutyError::GetModeledError()
+{
+  assert(this->GetErrorType() == GuardDutyErrors::RESOURCE_NOT_FOUND);
+  return ResourceNotFoundException(this->GetJsonPayload().View());
 }
 
 template<> AWS_GUARDDUTY_API AccessDeniedException GuardDutyError::GetModeledError()
@@ -58,15 +65,15 @@ AWSError<CoreErrors> GetErrorForName(const char* errorName)
 
   if (hashCode == CONFLICT_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(GuardDutyErrors::CONFLICT), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(GuardDutyErrors::CONFLICT), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == BAD_REQUEST_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(GuardDutyErrors::BAD_REQUEST), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(GuardDutyErrors::BAD_REQUEST), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == INTERNAL_SERVER_ERROR_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(GuardDutyErrors::INTERNAL_SERVER_ERROR), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(GuardDutyErrors::INTERNAL_SERVER_ERROR), RetryableType::NOT_RETRYABLE);
   }
   return AWSError<CoreErrors>(CoreErrors::UNKNOWN, false);
 }

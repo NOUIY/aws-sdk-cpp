@@ -22,8 +22,8 @@ CreateDomainResult::CreateDomainResult() :
 {
 }
 
-CreateDomainResult::CreateDomainResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_defaultExpirationDays(0)
+CreateDomainResult::CreateDomainResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : CreateDomainResult()
 {
   *this = result;
 }
@@ -58,6 +58,12 @@ CreateDomainResult& CreateDomainResult::operator =(const Aws::AmazonWebServiceRe
   if(jsonValue.ValueExists("Matching"))
   {
     m_matching = jsonValue.GetObject("Matching");
+
+  }
+
+  if(jsonValue.ValueExists("RuleBasedMatching"))
+  {
+    m_ruleBasedMatching = jsonValue.GetObject("RuleBasedMatching");
 
   }
 

@@ -20,6 +20,7 @@ namespace Model
 
 InstanceRecommendationOption::InstanceRecommendationOption() : 
     m_instanceTypeHasBeenSet(false),
+    m_instanceGpuInfoHasBeenSet(false),
     m_projectedUtilizationMetricsHasBeenSet(false),
     m_platformDifferencesHasBeenSet(false),
     m_performanceRisk(0.0),
@@ -27,22 +28,14 @@ InstanceRecommendationOption::InstanceRecommendationOption() :
     m_rank(0),
     m_rankHasBeenSet(false),
     m_savingsOpportunityHasBeenSet(false),
+    m_savingsOpportunityAfterDiscountsHasBeenSet(false),
     m_migrationEffort(MigrationEffort::NOT_SET),
     m_migrationEffortHasBeenSet(false)
 {
 }
 
-InstanceRecommendationOption::InstanceRecommendationOption(JsonView jsonValue) : 
-    m_instanceTypeHasBeenSet(false),
-    m_projectedUtilizationMetricsHasBeenSet(false),
-    m_platformDifferencesHasBeenSet(false),
-    m_performanceRisk(0.0),
-    m_performanceRiskHasBeenSet(false),
-    m_rank(0),
-    m_rankHasBeenSet(false),
-    m_savingsOpportunityHasBeenSet(false),
-    m_migrationEffort(MigrationEffort::NOT_SET),
-    m_migrationEffortHasBeenSet(false)
+InstanceRecommendationOption::InstanceRecommendationOption(JsonView jsonValue)
+  : InstanceRecommendationOption()
 {
   *this = jsonValue;
 }
@@ -54,6 +47,13 @@ InstanceRecommendationOption& InstanceRecommendationOption::operator =(JsonView 
     m_instanceType = jsonValue.GetString("instanceType");
 
     m_instanceTypeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("instanceGpuInfo"))
+  {
+    m_instanceGpuInfo = jsonValue.GetObject("instanceGpuInfo");
+
+    m_instanceGpuInfoHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("projectedUtilizationMetrics"))
@@ -97,6 +97,13 @@ InstanceRecommendationOption& InstanceRecommendationOption::operator =(JsonView 
     m_savingsOpportunityHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("savingsOpportunityAfterDiscounts"))
+  {
+    m_savingsOpportunityAfterDiscounts = jsonValue.GetObject("savingsOpportunityAfterDiscounts");
+
+    m_savingsOpportunityAfterDiscountsHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("migrationEffort"))
   {
     m_migrationEffort = MigrationEffortMapper::GetMigrationEffortForName(jsonValue.GetString("migrationEffort"));
@@ -114,6 +121,12 @@ JsonValue InstanceRecommendationOption::Jsonize() const
   if(m_instanceTypeHasBeenSet)
   {
    payload.WithString("instanceType", m_instanceType);
+
+  }
+
+  if(m_instanceGpuInfoHasBeenSet)
+  {
+   payload.WithObject("instanceGpuInfo", m_instanceGpuInfo.Jsonize());
 
   }
 
@@ -154,6 +167,12 @@ JsonValue InstanceRecommendationOption::Jsonize() const
   if(m_savingsOpportunityHasBeenSet)
   {
    payload.WithObject("savingsOpportunity", m_savingsOpportunity.Jsonize());
+
+  }
+
+  if(m_savingsOpportunityAfterDiscountsHasBeenSet)
+  {
+   payload.WithObject("savingsOpportunityAfterDiscounts", m_savingsOpportunityAfterDiscounts.Jsonize());
 
   }
 

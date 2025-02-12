@@ -26,6 +26,7 @@ AudioCodecSettings::AudioCodecSettings() :
     m_codecHasBeenSet(false),
     m_eac3AtmosSettingsHasBeenSet(false),
     m_eac3SettingsHasBeenSet(false),
+    m_flacSettingsHasBeenSet(false),
     m_mp2SettingsHasBeenSet(false),
     m_mp3SettingsHasBeenSet(false),
     m_opusSettingsHasBeenSet(false),
@@ -34,19 +35,8 @@ AudioCodecSettings::AudioCodecSettings() :
 {
 }
 
-AudioCodecSettings::AudioCodecSettings(JsonView jsonValue) : 
-    m_aacSettingsHasBeenSet(false),
-    m_ac3SettingsHasBeenSet(false),
-    m_aiffSettingsHasBeenSet(false),
-    m_codec(AudioCodec::NOT_SET),
-    m_codecHasBeenSet(false),
-    m_eac3AtmosSettingsHasBeenSet(false),
-    m_eac3SettingsHasBeenSet(false),
-    m_mp2SettingsHasBeenSet(false),
-    m_mp3SettingsHasBeenSet(false),
-    m_opusSettingsHasBeenSet(false),
-    m_vorbisSettingsHasBeenSet(false),
-    m_wavSettingsHasBeenSet(false)
+AudioCodecSettings::AudioCodecSettings(JsonView jsonValue)
+  : AudioCodecSettings()
 {
   *this = jsonValue;
 }
@@ -93,6 +83,13 @@ AudioCodecSettings& AudioCodecSettings::operator =(JsonView jsonValue)
     m_eac3Settings = jsonValue.GetObject("eac3Settings");
 
     m_eac3SettingsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("flacSettings"))
+  {
+    m_flacSettings = jsonValue.GetObject("flacSettings");
+
+    m_flacSettingsHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("mp2Settings"))
@@ -169,6 +166,12 @@ JsonValue AudioCodecSettings::Jsonize() const
   if(m_eac3SettingsHasBeenSet)
   {
    payload.WithObject("eac3Settings", m_eac3Settings.Jsonize());
+
+  }
+
+  if(m_flacSettingsHasBeenSet)
+  {
+   payload.WithObject("flacSettings", m_flacSettings.Jsonize());
 
   }
 

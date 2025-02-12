@@ -27,20 +27,13 @@ AssertionRule::AssertionRule() :
     m_status(Status::NOT_SET),
     m_statusHasBeenSet(false),
     m_waitPeriodMs(0),
-    m_waitPeriodMsHasBeenSet(false)
+    m_waitPeriodMsHasBeenSet(false),
+    m_ownerHasBeenSet(false)
 {
 }
 
-AssertionRule::AssertionRule(JsonView jsonValue) : 
-    m_assertedControlsHasBeenSet(false),
-    m_controlPanelArnHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_ruleConfigHasBeenSet(false),
-    m_safetyRuleArnHasBeenSet(false),
-    m_status(Status::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_waitPeriodMs(0),
-    m_waitPeriodMsHasBeenSet(false)
+AssertionRule::AssertionRule(JsonView jsonValue)
+  : AssertionRule()
 {
   *this = jsonValue;
 }
@@ -99,6 +92,13 @@ AssertionRule& AssertionRule::operator =(JsonView jsonValue)
     m_waitPeriodMsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Owner"))
+  {
+    m_owner = jsonValue.GetString("Owner");
+
+    m_ownerHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -149,6 +149,12 @@ JsonValue AssertionRule::Jsonize() const
   if(m_waitPeriodMsHasBeenSet)
   {
    payload.WithInteger("WaitPeriodMs", m_waitPeriodMs);
+
+  }
+
+  if(m_ownerHasBeenSet)
+  {
+   payload.WithString("Owner", m_owner);
 
   }
 

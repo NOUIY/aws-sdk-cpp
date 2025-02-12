@@ -17,11 +17,14 @@ using namespace Aws::Utils::Json;
 using namespace Aws::Utils;
 using namespace Aws;
 
-GetSequenceStoreResult::GetSequenceStoreResult()
+GetSequenceStoreResult::GetSequenceStoreResult() : 
+    m_eTagAlgorithmFamily(ETagAlgorithmFamily::NOT_SET),
+    m_status(SequenceStoreStatus::NOT_SET)
 {
 }
 
 GetSequenceStoreResult::GetSequenceStoreResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetSequenceStoreResult()
 {
   *this = result;
 }
@@ -68,6 +71,45 @@ GetSequenceStoreResult& GetSequenceStoreResult::operator =(const Aws::AmazonWebS
   if(jsonValue.ValueExists("fallbackLocation"))
   {
     m_fallbackLocation = jsonValue.GetString("fallbackLocation");
+
+  }
+
+  if(jsonValue.ValueExists("s3Access"))
+  {
+    m_s3Access = jsonValue.GetObject("s3Access");
+
+  }
+
+  if(jsonValue.ValueExists("eTagAlgorithmFamily"))
+  {
+    m_eTagAlgorithmFamily = ETagAlgorithmFamilyMapper::GetETagAlgorithmFamilyForName(jsonValue.GetString("eTagAlgorithmFamily"));
+
+  }
+
+  if(jsonValue.ValueExists("status"))
+  {
+    m_status = SequenceStoreStatusMapper::GetSequenceStoreStatusForName(jsonValue.GetString("status"));
+
+  }
+
+  if(jsonValue.ValueExists("statusMessage"))
+  {
+    m_statusMessage = jsonValue.GetString("statusMessage");
+
+  }
+
+  if(jsonValue.ValueExists("propagatedSetLevelTags"))
+  {
+    Aws::Utils::Array<JsonView> propagatedSetLevelTagsJsonList = jsonValue.GetArray("propagatedSetLevelTags");
+    for(unsigned propagatedSetLevelTagsIndex = 0; propagatedSetLevelTagsIndex < propagatedSetLevelTagsJsonList.GetLength(); ++propagatedSetLevelTagsIndex)
+    {
+      m_propagatedSetLevelTags.push_back(propagatedSetLevelTagsJsonList[propagatedSetLevelTagsIndex].AsString());
+    }
+  }
+
+  if(jsonValue.ValueExists("updateTime"))
+  {
+    m_updateTime = jsonValue.GetString("updateTime");
 
   }
 

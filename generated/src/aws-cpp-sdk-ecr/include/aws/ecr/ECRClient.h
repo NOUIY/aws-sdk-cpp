@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/ecr/ECR_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/ecr/ECRServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/ecr/ECRErrorMarshaller.h>
 
 namespace Aws
 {
 namespace ECR
 {
+  AWS_ECR_API extern const char SERVICE_NAME[];
   /**
    * <fullname>Amazon Elastic Container Registry</fullname> <p>Amazon Elastic
    * Container Registry (Amazon ECR) is a managed container image registry service.
@@ -28,12 +32,20 @@ namespace ECR
    * href="https://docs.aws.amazon.com/general/latest/gr/ecr.html">Amazon ECR
    * endpoints</a> in the <i>Amazon Web Services General Reference</i>.</p>
    */
-  class AWS_ECR_API ECRClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<ECRClient>
+  class AWS_ECR_API ECRClient : smithy::client::AwsSmithyClientT<Aws::ECR::SERVICE_NAME,
+      Aws::ECR::ECRClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      ECREndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::ECRErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<ECRClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "ECR"; }
 
       typedef ECRClientConfiguration ClientConfigurationType;
       typedef ECREndpointProvider EndpointProviderType;
@@ -43,14 +55,14 @@ namespace ECR
         * is not specified, it will be initialized to default values.
         */
         ECRClient(const Aws::ECR::ECRClientConfiguration& clientConfiguration = Aws::ECR::ECRClientConfiguration(),
-                  std::shared_ptr<ECREndpointProviderBase> endpointProvider = Aws::MakeShared<ECREndpointProvider>(ALLOCATION_TAG));
+                  std::shared_ptr<ECREndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         ECRClient(const Aws::Auth::AWSCredentials& credentials,
-                  std::shared_ptr<ECREndpointProviderBase> endpointProvider = Aws::MakeShared<ECREndpointProvider>(ALLOCATION_TAG),
+                  std::shared_ptr<ECREndpointProviderBase> endpointProvider = nullptr,
                   const Aws::ECR::ECRClientConfiguration& clientConfiguration = Aws::ECR::ECRClientConfiguration());
 
        /**
@@ -58,7 +70,7 @@ namespace ECR
         * the default http client factory will be used
         */
         ECRClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                  std::shared_ptr<ECREndpointProviderBase> endpointProvider = Aws::MakeShared<ECREndpointProvider>(ALLOCATION_TAG),
+                  std::shared_ptr<ECREndpointProviderBase> endpointProvider = nullptr,
                   const Aws::ECR::ECRClientConfiguration& clientConfiguration = Aws::ECR::ECRClientConfiguration());
 
 
@@ -236,8 +248,11 @@ namespace ECR
 
         /**
          * <p>Creates a pull through cache rule. A pull through cache rule provides a way
-         * to cache images from an external public registry in your Amazon ECR private
-         * registry.</p><p><h3>See Also:</h3>   <a
+         * to cache images from an upstream registry source in your Amazon ECR private
+         * registry. For more information, see <a
+         * href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/pull-through-cache.html">Using
+         * pull through cache rules</a> in the <i>Amazon Elastic Container Registry User
+         * Guide</i>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/CreatePullThroughCacheRule">AWS
          * API Reference</a></p>
          */
@@ -287,6 +302,37 @@ namespace ECR
         void CreateRepositoryAsync(const CreateRepositoryRequestT& request, const CreateRepositoryResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ECRClient::CreateRepository, request, handler, context);
+        }
+
+        /**
+         * <p>Creates a repository creation template. This template is used to define the
+         * settings for repositories created by Amazon ECR on your behalf. For example,
+         * repositories created through pull through cache actions. For more information,
+         * see <a
+         * href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-creation-templates.html">Private
+         * repository creation templates</a> in the <i>Amazon Elastic Container Registry
+         * User Guide</i>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/CreateRepositoryCreationTemplate">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateRepositoryCreationTemplateOutcome CreateRepositoryCreationTemplate(const Model::CreateRepositoryCreationTemplateRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateRepositoryCreationTemplate that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateRepositoryCreationTemplateRequestT = Model::CreateRepositoryCreationTemplateRequest>
+        Model::CreateRepositoryCreationTemplateOutcomeCallable CreateRepositoryCreationTemplateCallable(const CreateRepositoryCreationTemplateRequestT& request) const
+        {
+            return SubmitCallable(&ECRClient::CreateRepositoryCreationTemplate, request);
+        }
+
+        /**
+         * An Async wrapper for CreateRepositoryCreationTemplate that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateRepositoryCreationTemplateRequestT = Model::CreateRepositoryCreationTemplateRequest>
+        void CreateRepositoryCreationTemplateAsync(const CreateRepositoryCreationTemplateRequestT& request, const CreateRepositoryCreationTemplateResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ECRClient::CreateRepositoryCreationTemplate, request, handler, context);
         }
 
         /**
@@ -345,13 +391,13 @@ namespace ECR
          * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/DeleteRegistryPolicy">AWS
          * API Reference</a></p>
          */
-        virtual Model::DeleteRegistryPolicyOutcome DeleteRegistryPolicy(const Model::DeleteRegistryPolicyRequest& request) const;
+        virtual Model::DeleteRegistryPolicyOutcome DeleteRegistryPolicy(const Model::DeleteRegistryPolicyRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DeleteRegistryPolicy that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DeleteRegistryPolicyRequestT = Model::DeleteRegistryPolicyRequest>
-        Model::DeleteRegistryPolicyOutcomeCallable DeleteRegistryPolicyCallable(const DeleteRegistryPolicyRequestT& request) const
+        Model::DeleteRegistryPolicyOutcomeCallable DeleteRegistryPolicyCallable(const DeleteRegistryPolicyRequestT& request = {}) const
         {
             return SubmitCallable(&ECRClient::DeleteRegistryPolicy, request);
         }
@@ -360,15 +406,16 @@ namespace ECR
          * An Async wrapper for DeleteRegistryPolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DeleteRegistryPolicyRequestT = Model::DeleteRegistryPolicyRequest>
-        void DeleteRegistryPolicyAsync(const DeleteRegistryPolicyRequestT& request, const DeleteRegistryPolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DeleteRegistryPolicyAsync(const DeleteRegistryPolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DeleteRegistryPolicyRequestT& request = {}) const
         {
             return SubmitAsync(&ECRClient::DeleteRegistryPolicy, request, handler, context);
         }
 
         /**
-         * <p>Deletes a repository. If the repository contains images, you must either
-         * delete all images in the repository or use the <code>force</code> option to
-         * delete the repository.</p><p><h3>See Also:</h3>   <a
+         * <p>Deletes a repository. If the repository isn't empty, you must either delete
+         * the contents of the repository or use the <code>force</code> option to delete
+         * the repository and have Amazon ECR delete all of its contents on your
+         * behalf.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/DeleteRepository">AWS
          * API Reference</a></p>
          */
@@ -390,6 +437,31 @@ namespace ECR
         void DeleteRepositoryAsync(const DeleteRepositoryRequestT& request, const DeleteRepositoryResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ECRClient::DeleteRepository, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes a repository creation template.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/DeleteRepositoryCreationTemplate">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteRepositoryCreationTemplateOutcome DeleteRepositoryCreationTemplate(const Model::DeleteRepositoryCreationTemplateRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteRepositoryCreationTemplate that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteRepositoryCreationTemplateRequestT = Model::DeleteRepositoryCreationTemplateRequest>
+        Model::DeleteRepositoryCreationTemplateOutcomeCallable DeleteRepositoryCreationTemplateCallable(const DeleteRepositoryCreationTemplateRequestT& request) const
+        {
+            return SubmitCallable(&ECRClient::DeleteRepositoryCreationTemplate, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteRepositoryCreationTemplate that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteRepositoryCreationTemplateRequestT = Model::DeleteRepositoryCreationTemplateRequest>
+        void DeleteRepositoryCreationTemplateAsync(const DeleteRepositoryCreationTemplateRequestT& request, const DeleteRepositoryCreationTemplateResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ECRClient::DeleteRepositoryCreationTemplate, request, handler, context);
         }
 
         /**
@@ -506,13 +578,13 @@ namespace ECR
          * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/DescribePullThroughCacheRules">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribePullThroughCacheRulesOutcome DescribePullThroughCacheRules(const Model::DescribePullThroughCacheRulesRequest& request) const;
+        virtual Model::DescribePullThroughCacheRulesOutcome DescribePullThroughCacheRules(const Model::DescribePullThroughCacheRulesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribePullThroughCacheRules that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribePullThroughCacheRulesRequestT = Model::DescribePullThroughCacheRulesRequest>
-        Model::DescribePullThroughCacheRulesOutcomeCallable DescribePullThroughCacheRulesCallable(const DescribePullThroughCacheRulesRequestT& request) const
+        Model::DescribePullThroughCacheRulesOutcomeCallable DescribePullThroughCacheRulesCallable(const DescribePullThroughCacheRulesRequestT& request = {}) const
         {
             return SubmitCallable(&ECRClient::DescribePullThroughCacheRules, request);
         }
@@ -521,7 +593,7 @@ namespace ECR
          * An Async wrapper for DescribePullThroughCacheRules that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribePullThroughCacheRulesRequestT = Model::DescribePullThroughCacheRulesRequest>
-        void DescribePullThroughCacheRulesAsync(const DescribePullThroughCacheRulesRequestT& request, const DescribePullThroughCacheRulesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribePullThroughCacheRulesAsync(const DescribePullThroughCacheRulesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribePullThroughCacheRulesRequestT& request = {}) const
         {
             return SubmitAsync(&ECRClient::DescribePullThroughCacheRules, request, handler, context);
         }
@@ -533,13 +605,13 @@ namespace ECR
          * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/DescribeRegistry">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeRegistryOutcome DescribeRegistry(const Model::DescribeRegistryRequest& request) const;
+        virtual Model::DescribeRegistryOutcome DescribeRegistry(const Model::DescribeRegistryRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeRegistry that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeRegistryRequestT = Model::DescribeRegistryRequest>
-        Model::DescribeRegistryOutcomeCallable DescribeRegistryCallable(const DescribeRegistryRequestT& request) const
+        Model::DescribeRegistryOutcomeCallable DescribeRegistryCallable(const DescribeRegistryRequestT& request = {}) const
         {
             return SubmitCallable(&ECRClient::DescribeRegistry, request);
         }
@@ -548,7 +620,7 @@ namespace ECR
          * An Async wrapper for DescribeRegistry that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeRegistryRequestT = Model::DescribeRegistryRequest>
-        void DescribeRegistryAsync(const DescribeRegistryRequestT& request, const DescribeRegistryResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeRegistryAsync(const DescribeRegistryResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeRegistryRequestT& request = {}) const
         {
             return SubmitAsync(&ECRClient::DescribeRegistry, request, handler, context);
         }
@@ -558,13 +630,13 @@ namespace ECR
          * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/DescribeRepositories">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeRepositoriesOutcome DescribeRepositories(const Model::DescribeRepositoriesRequest& request) const;
+        virtual Model::DescribeRepositoriesOutcome DescribeRepositories(const Model::DescribeRepositoriesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeRepositories that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeRepositoriesRequestT = Model::DescribeRepositoriesRequest>
-        Model::DescribeRepositoriesOutcomeCallable DescribeRepositoriesCallable(const DescribeRepositoriesRequestT& request) const
+        Model::DescribeRepositoriesOutcomeCallable DescribeRepositoriesCallable(const DescribeRepositoriesRequestT& request = {}) const
         {
             return SubmitCallable(&ECRClient::DescribeRepositories, request);
         }
@@ -573,9 +645,62 @@ namespace ECR
          * An Async wrapper for DescribeRepositories that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeRepositoriesRequestT = Model::DescribeRepositoriesRequest>
-        void DescribeRepositoriesAsync(const DescribeRepositoriesRequestT& request, const DescribeRepositoriesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeRepositoriesAsync(const DescribeRepositoriesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeRepositoriesRequestT& request = {}) const
         {
             return SubmitAsync(&ECRClient::DescribeRepositories, request, handler, context);
+        }
+
+        /**
+         * <p>Returns details about the repository creation templates in a registry. The
+         * <code>prefixes</code> request parameter can be used to return the details for a
+         * specific repository creation template.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/DescribeRepositoryCreationTemplates">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeRepositoryCreationTemplatesOutcome DescribeRepositoryCreationTemplates(const Model::DescribeRepositoryCreationTemplatesRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for DescribeRepositoryCreationTemplates that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeRepositoryCreationTemplatesRequestT = Model::DescribeRepositoryCreationTemplatesRequest>
+        Model::DescribeRepositoryCreationTemplatesOutcomeCallable DescribeRepositoryCreationTemplatesCallable(const DescribeRepositoryCreationTemplatesRequestT& request = {}) const
+        {
+            return SubmitCallable(&ECRClient::DescribeRepositoryCreationTemplates, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeRepositoryCreationTemplates that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeRepositoryCreationTemplatesRequestT = Model::DescribeRepositoryCreationTemplatesRequest>
+        void DescribeRepositoryCreationTemplatesAsync(const DescribeRepositoryCreationTemplatesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeRepositoryCreationTemplatesRequestT& request = {}) const
+        {
+            return SubmitAsync(&ECRClient::DescribeRepositoryCreationTemplates, request, handler, context);
+        }
+
+        /**
+         * <p>Retrieves the account setting value for the specified setting
+         * name.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/GetAccountSetting">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetAccountSettingOutcome GetAccountSetting(const Model::GetAccountSettingRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetAccountSetting that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetAccountSettingRequestT = Model::GetAccountSettingRequest>
+        Model::GetAccountSettingOutcomeCallable GetAccountSettingCallable(const GetAccountSettingRequestT& request) const
+        {
+            return SubmitCallable(&ECRClient::GetAccountSetting, request);
+        }
+
+        /**
+         * An Async wrapper for GetAccountSetting that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetAccountSettingRequestT = Model::GetAccountSettingRequest>
+        void GetAccountSettingAsync(const GetAccountSettingRequestT& request, const GetAccountSettingResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ECRClient::GetAccountSetting, request, handler, context);
         }
 
         /**
@@ -592,13 +717,13 @@ namespace ECR
          * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/GetAuthorizationToken">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetAuthorizationTokenOutcome GetAuthorizationToken(const Model::GetAuthorizationTokenRequest& request) const;
+        virtual Model::GetAuthorizationTokenOutcome GetAuthorizationToken(const Model::GetAuthorizationTokenRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetAuthorizationToken that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetAuthorizationTokenRequestT = Model::GetAuthorizationTokenRequest>
-        Model::GetAuthorizationTokenOutcomeCallable GetAuthorizationTokenCallable(const GetAuthorizationTokenRequestT& request) const
+        Model::GetAuthorizationTokenOutcomeCallable GetAuthorizationTokenCallable(const GetAuthorizationTokenRequestT& request = {}) const
         {
             return SubmitCallable(&ECRClient::GetAuthorizationToken, request);
         }
@@ -607,7 +732,7 @@ namespace ECR
          * An Async wrapper for GetAuthorizationToken that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetAuthorizationTokenRequestT = Model::GetAuthorizationTokenRequest>
-        void GetAuthorizationTokenAsync(const GetAuthorizationTokenRequestT& request, const GetAuthorizationTokenResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetAuthorizationTokenAsync(const GetAuthorizationTokenResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetAuthorizationTokenRequestT& request = {}) const
         {
             return SubmitAsync(&ECRClient::GetAuthorizationToken, request, handler, context);
         }
@@ -701,13 +826,13 @@ namespace ECR
          * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/GetRegistryPolicy">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetRegistryPolicyOutcome GetRegistryPolicy(const Model::GetRegistryPolicyRequest& request) const;
+        virtual Model::GetRegistryPolicyOutcome GetRegistryPolicy(const Model::GetRegistryPolicyRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetRegistryPolicy that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetRegistryPolicyRequestT = Model::GetRegistryPolicyRequest>
-        Model::GetRegistryPolicyOutcomeCallable GetRegistryPolicyCallable(const GetRegistryPolicyRequestT& request) const
+        Model::GetRegistryPolicyOutcomeCallable GetRegistryPolicyCallable(const GetRegistryPolicyRequestT& request = {}) const
         {
             return SubmitCallable(&ECRClient::GetRegistryPolicy, request);
         }
@@ -716,7 +841,7 @@ namespace ECR
          * An Async wrapper for GetRegistryPolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetRegistryPolicyRequestT = Model::GetRegistryPolicyRequest>
-        void GetRegistryPolicyAsync(const GetRegistryPolicyRequestT& request, const GetRegistryPolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetRegistryPolicyAsync(const GetRegistryPolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetRegistryPolicyRequestT& request = {}) const
         {
             return SubmitAsync(&ECRClient::GetRegistryPolicy, request, handler, context);
         }
@@ -727,13 +852,13 @@ namespace ECR
          * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/GetRegistryScanningConfiguration">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetRegistryScanningConfigurationOutcome GetRegistryScanningConfiguration(const Model::GetRegistryScanningConfigurationRequest& request) const;
+        virtual Model::GetRegistryScanningConfigurationOutcome GetRegistryScanningConfiguration(const Model::GetRegistryScanningConfigurationRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetRegistryScanningConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetRegistryScanningConfigurationRequestT = Model::GetRegistryScanningConfigurationRequest>
-        Model::GetRegistryScanningConfigurationOutcomeCallable GetRegistryScanningConfigurationCallable(const GetRegistryScanningConfigurationRequestT& request) const
+        Model::GetRegistryScanningConfigurationOutcomeCallable GetRegistryScanningConfigurationCallable(const GetRegistryScanningConfigurationRequestT& request = {}) const
         {
             return SubmitCallable(&ECRClient::GetRegistryScanningConfiguration, request);
         }
@@ -742,7 +867,7 @@ namespace ECR
          * An Async wrapper for GetRegistryScanningConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetRegistryScanningConfigurationRequestT = Model::GetRegistryScanningConfigurationRequest>
-        void GetRegistryScanningConfigurationAsync(const GetRegistryScanningConfigurationRequestT& request, const GetRegistryScanningConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetRegistryScanningConfigurationAsync(const GetRegistryScanningConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetRegistryScanningConfigurationRequestT& request = {}) const
         {
             return SubmitAsync(&ECRClient::GetRegistryScanningConfiguration, request, handler, context);
         }
@@ -860,6 +985,32 @@ namespace ECR
         void ListTagsForResourceAsync(const ListTagsForResourceRequestT& request, const ListTagsForResourceResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ECRClient::ListTagsForResource, request, handler, context);
+        }
+
+        /**
+         * <p>Allows you to change the basic scan type version or registry policy
+         * scope.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/PutAccountSetting">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::PutAccountSettingOutcome PutAccountSetting(const Model::PutAccountSettingRequest& request) const;
+
+        /**
+         * A Callable wrapper for PutAccountSetting that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename PutAccountSettingRequestT = Model::PutAccountSettingRequest>
+        Model::PutAccountSettingOutcomeCallable PutAccountSettingCallable(const PutAccountSettingRequestT& request) const
+        {
+            return SubmitCallable(&ECRClient::PutAccountSetting, request);
+        }
+
+        /**
+         * An Async wrapper for PutAccountSetting that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename PutAccountSettingRequestT = Model::PutAccountSettingRequest>
+        void PutAccountSettingAsync(const PutAccountSettingRequestT& request, const PutAccountSettingResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ECRClient::PutAccountSetting, request, handler, context);
         }
 
         /**
@@ -1017,13 +1168,13 @@ namespace ECR
          * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/PutRegistryScanningConfiguration">AWS
          * API Reference</a></p>
          */
-        virtual Model::PutRegistryScanningConfigurationOutcome PutRegistryScanningConfiguration(const Model::PutRegistryScanningConfigurationRequest& request) const;
+        virtual Model::PutRegistryScanningConfigurationOutcome PutRegistryScanningConfiguration(const Model::PutRegistryScanningConfigurationRequest& request = {}) const;
 
         /**
          * A Callable wrapper for PutRegistryScanningConfiguration that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename PutRegistryScanningConfigurationRequestT = Model::PutRegistryScanningConfigurationRequest>
-        Model::PutRegistryScanningConfigurationOutcomeCallable PutRegistryScanningConfigurationCallable(const PutRegistryScanningConfigurationRequestT& request) const
+        Model::PutRegistryScanningConfigurationOutcomeCallable PutRegistryScanningConfigurationCallable(const PutRegistryScanningConfigurationRequestT& request = {}) const
         {
             return SubmitCallable(&ECRClient::PutRegistryScanningConfiguration, request);
         }
@@ -1032,7 +1183,7 @@ namespace ECR
          * An Async wrapper for PutRegistryScanningConfiguration that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename PutRegistryScanningConfigurationRequestT = Model::PutRegistryScanningConfigurationRequest>
-        void PutRegistryScanningConfigurationAsync(const PutRegistryScanningConfigurationRequestT& request, const PutRegistryScanningConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void PutRegistryScanningConfigurationAsync(const PutRegistryScanningConfigurationResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const PutRegistryScanningConfigurationRequestT& request = {}) const
         {
             return SubmitAsync(&ECRClient::PutRegistryScanningConfiguration, request, handler, context);
         }
@@ -1045,7 +1196,10 @@ namespace ECR
          * in your account for the replication process. For more information, see <a
          * href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/using-service-linked-roles.html">Using
          * service-linked roles for Amazon ECR</a> in the <i>Amazon Elastic Container
-         * Registry User Guide</i>.</p>  <p>When configuring cross-account
+         * Registry User Guide</i>. For more information on the custom role for
+         * replication, see <a
+         * href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/replication-creation-templates.html#roles-creatingrole-user-console">Creating
+         * an IAM role for replication</a>.</p>  <p>When configuring cross-account
          * replication, the destination account must grant the source account permission to
          * replicate. This permission is controlled using a registry permissions policy.
          * For more information, see <a>PutRegistryPolicy</a>.</p> <p><h3>See
@@ -1103,10 +1257,12 @@ namespace ECR
         }
 
         /**
-         * <p>Starts an image vulnerability scan. An image scan can only be started once
-         * per 24 hours on an individual image. This limit includes if an image was scanned
-         * on initial push. For more information, see <a
-         * href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html">Image
+         * <p>Starts a basic image vulnerability scan.</p> <p> A basic image scan can only
+         * be started once per 24 hours on an individual image. This limit includes if an
+         * image was scanned on initial push. You can start up to 100,000 basic scans per
+         * 24 hours. This limit includes both scans on initial push and scans initiated by
+         * the StartImageScan API. For more information, see <a
+         * href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning-basic.html">Basic
          * scanning</a> in the <i>Amazon Elastic Container Registry User
          * Guide</i>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/StartImageScan">AWS
@@ -1212,6 +1368,57 @@ namespace ECR
         }
 
         /**
+         * <p>Updates an existing pull through cache rule.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/UpdatePullThroughCacheRule">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdatePullThroughCacheRuleOutcome UpdatePullThroughCacheRule(const Model::UpdatePullThroughCacheRuleRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdatePullThroughCacheRule that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdatePullThroughCacheRuleRequestT = Model::UpdatePullThroughCacheRuleRequest>
+        Model::UpdatePullThroughCacheRuleOutcomeCallable UpdatePullThroughCacheRuleCallable(const UpdatePullThroughCacheRuleRequestT& request) const
+        {
+            return SubmitCallable(&ECRClient::UpdatePullThroughCacheRule, request);
+        }
+
+        /**
+         * An Async wrapper for UpdatePullThroughCacheRule that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdatePullThroughCacheRuleRequestT = Model::UpdatePullThroughCacheRuleRequest>
+        void UpdatePullThroughCacheRuleAsync(const UpdatePullThroughCacheRuleRequestT& request, const UpdatePullThroughCacheRuleResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ECRClient::UpdatePullThroughCacheRule, request, handler, context);
+        }
+
+        /**
+         * <p>Updates an existing repository creation template.</p><p><h3>See Also:</h3>  
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/UpdateRepositoryCreationTemplate">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateRepositoryCreationTemplateOutcome UpdateRepositoryCreationTemplate(const Model::UpdateRepositoryCreationTemplateRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateRepositoryCreationTemplate that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateRepositoryCreationTemplateRequestT = Model::UpdateRepositoryCreationTemplateRequest>
+        Model::UpdateRepositoryCreationTemplateOutcomeCallable UpdateRepositoryCreationTemplateCallable(const UpdateRepositoryCreationTemplateRequestT& request) const
+        {
+            return SubmitCallable(&ECRClient::UpdateRepositoryCreationTemplate, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateRepositoryCreationTemplate that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateRepositoryCreationTemplateRequestT = Model::UpdateRepositoryCreationTemplateRequest>
+        void UpdateRepositoryCreationTemplateAsync(const UpdateRepositoryCreationTemplateRequestT& request, const UpdateRepositoryCreationTemplateResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ECRClient::UpdateRepositoryCreationTemplate, request, handler, context);
+        }
+
+        /**
          * <p>Uploads an image layer part to Amazon ECR.</p> <p>When an image is pushed,
          * each new image layer is uploaded in parts. The maximum size of each image layer
          * part can be 20971520 bytes (or about 20MB). The UploadLayerPart API is called
@@ -1242,16 +1449,41 @@ namespace ECR
             return SubmitAsync(&ECRClient::UploadLayerPart, request, handler, context);
         }
 
+        /**
+         * <p>Validates an existing pull through cache rule for an upstream registry that
+         * requires authentication. This will retrieve the contents of the Amazon Web
+         * Services Secrets Manager secret, verify the syntax, and then validate that
+         * authentication to the upstream registry is successful.</p><p><h3>See Also:</h3> 
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/ecr-2015-09-21/ValidatePullThroughCacheRule">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ValidatePullThroughCacheRuleOutcome ValidatePullThroughCacheRule(const Model::ValidatePullThroughCacheRuleRequest& request) const;
+
+        /**
+         * A Callable wrapper for ValidatePullThroughCacheRule that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ValidatePullThroughCacheRuleRequestT = Model::ValidatePullThroughCacheRuleRequest>
+        Model::ValidatePullThroughCacheRuleOutcomeCallable ValidatePullThroughCacheRuleCallable(const ValidatePullThroughCacheRuleRequestT& request) const
+        {
+            return SubmitCallable(&ECRClient::ValidatePullThroughCacheRule, request);
+        }
+
+        /**
+         * An Async wrapper for ValidatePullThroughCacheRule that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ValidatePullThroughCacheRuleRequestT = Model::ValidatePullThroughCacheRuleRequest>
+        void ValidatePullThroughCacheRuleAsync(const ValidatePullThroughCacheRuleRequestT& request, const ValidatePullThroughCacheRuleResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ECRClient::ValidatePullThroughCacheRule, request, handler, context);
+        }
+
 
       void OverrideEndpoint(const Aws::String& endpoint);
       std::shared_ptr<ECREndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<ECRClient>;
-      void init(const ECRClientConfiguration& clientConfiguration);
 
-      ECRClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<ECREndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace ECR

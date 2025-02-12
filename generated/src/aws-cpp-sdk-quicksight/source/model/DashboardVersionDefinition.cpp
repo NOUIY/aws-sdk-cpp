@@ -25,18 +25,14 @@ DashboardVersionDefinition::DashboardVersionDefinition() :
     m_parameterDeclarationsHasBeenSet(false),
     m_filterGroupsHasBeenSet(false),
     m_columnConfigurationsHasBeenSet(false),
-    m_analysisDefaultsHasBeenSet(false)
+    m_analysisDefaultsHasBeenSet(false),
+    m_optionsHasBeenSet(false),
+    m_staticFilesHasBeenSet(false)
 {
 }
 
-DashboardVersionDefinition::DashboardVersionDefinition(JsonView jsonValue) : 
-    m_dataSetIdentifierDeclarationsHasBeenSet(false),
-    m_sheetsHasBeenSet(false),
-    m_calculatedFieldsHasBeenSet(false),
-    m_parameterDeclarationsHasBeenSet(false),
-    m_filterGroupsHasBeenSet(false),
-    m_columnConfigurationsHasBeenSet(false),
-    m_analysisDefaultsHasBeenSet(false)
+DashboardVersionDefinition::DashboardVersionDefinition(JsonView jsonValue)
+  : DashboardVersionDefinition()
 {
   *this = jsonValue;
 }
@@ -108,6 +104,23 @@ DashboardVersionDefinition& DashboardVersionDefinition::operator =(JsonView json
     m_analysisDefaults = jsonValue.GetObject("AnalysisDefaults");
 
     m_analysisDefaultsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Options"))
+  {
+    m_options = jsonValue.GetObject("Options");
+
+    m_optionsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("StaticFiles"))
+  {
+    Aws::Utils::Array<JsonView> staticFilesJsonList = jsonValue.GetArray("StaticFiles");
+    for(unsigned staticFilesIndex = 0; staticFilesIndex < staticFilesJsonList.GetLength(); ++staticFilesIndex)
+    {
+      m_staticFiles.push_back(staticFilesJsonList[staticFilesIndex].AsObject());
+    }
+    m_staticFilesHasBeenSet = true;
   }
 
   return *this;
@@ -186,6 +199,23 @@ JsonValue DashboardVersionDefinition::Jsonize() const
   if(m_analysisDefaultsHasBeenSet)
   {
    payload.WithObject("AnalysisDefaults", m_analysisDefaults.Jsonize());
+
+  }
+
+  if(m_optionsHasBeenSet)
+  {
+   payload.WithObject("Options", m_options.Jsonize());
+
+  }
+
+  if(m_staticFilesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> staticFilesJsonList(m_staticFiles.size());
+   for(unsigned staticFilesIndex = 0; staticFilesIndex < staticFilesJsonList.GetLength(); ++staticFilesIndex)
+   {
+     staticFilesJsonList[staticFilesIndex].AsObject(m_staticFiles[staticFilesIndex].Jsonize());
+   }
+   payload.WithArray("StaticFiles", std::move(staticFilesJsonList));
 
   }
 

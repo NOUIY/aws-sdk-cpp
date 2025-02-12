@@ -36,13 +36,16 @@ namespace Model
    * completed.</p> </li> <li> <p>An item size becomes too large (larger than 400
    * KB), or a local secondary index (LSI) becomes too large, or a similar validation
    * error occurs because of changes made by the transaction.</p> </li> <li> <p>There
-   * is a user error, such as an invalid data format.</p> </li> </ul> <p>DynamoDB
-   * cancels a <code>TransactGetItems</code> request under the following
-   * circumstances:</p> <ul> <li> <p>There is an ongoing
-   * <code>TransactGetItems</code> operation that conflicts with a concurrent
-   * <code>PutItem</code>, <code>UpdateItem</code>, <code>DeleteItem</code> or
-   * <code>TransactWriteItems</code> request. In this case the
-   * <code>TransactGetItems</code> operation fails with a
+   * is a user error, such as an invalid data format.</p> </li> <li> <p> There is an
+   * ongoing <code>TransactWriteItems</code> operation that conflicts with a
+   * concurrent <code>TransactWriteItems</code> request. In this case the
+   * <code>TransactWriteItems</code> operation fails with a
+   * <code>TransactionCanceledException</code>. </p> </li> </ul> <p>DynamoDB cancels
+   * a <code>TransactGetItems</code> request under the following circumstances:</p>
+   * <ul> <li> <p>There is an ongoing <code>TransactGetItems</code> operation that
+   * conflicts with a concurrent <code>PutItem</code>, <code>UpdateItem</code>,
+   * <code>DeleteItem</code> or <code>TransactWriteItems</code> request. In this case
+   * the <code>TransactGetItems</code> operation fails with a
    * <code>TransactionCanceledException</code>.</p> </li> <li> <p>A table in the
    * <code>TransactGetItems</code> request is in a different account or region.</p>
    * </li> <li> <p>There is insufficient provisioned capacity for the transaction to
@@ -109,71 +112,31 @@ namespace Model
     AWS_DYNAMODB_API Aws::Utils::Json::JsonValue Jsonize() const;
 
 
+    ///@{
     
     inline const Aws::String& GetMessage() const{ return m_message; }
-
-    
     inline bool MessageHasBeenSet() const { return m_messageHasBeenSet; }
-
-    
     inline void SetMessage(const Aws::String& value) { m_messageHasBeenSet = true; m_message = value; }
-
-    
     inline void SetMessage(Aws::String&& value) { m_messageHasBeenSet = true; m_message = std::move(value); }
-
-    
     inline void SetMessage(const char* value) { m_messageHasBeenSet = true; m_message.assign(value); }
-
-    
     inline TransactionCanceledException& WithMessage(const Aws::String& value) { SetMessage(value); return *this;}
-
-    
     inline TransactionCanceledException& WithMessage(Aws::String&& value) { SetMessage(std::move(value)); return *this;}
-
-    
     inline TransactionCanceledException& WithMessage(const char* value) { SetMessage(value); return *this;}
+    ///@}
 
-
+    ///@{
     /**
      * <p>A list of cancellation reasons.</p>
      */
     inline const Aws::Vector<CancellationReason>& GetCancellationReasons() const{ return m_cancellationReasons; }
-
-    /**
-     * <p>A list of cancellation reasons.</p>
-     */
     inline bool CancellationReasonsHasBeenSet() const { return m_cancellationReasonsHasBeenSet; }
-
-    /**
-     * <p>A list of cancellation reasons.</p>
-     */
     inline void SetCancellationReasons(const Aws::Vector<CancellationReason>& value) { m_cancellationReasonsHasBeenSet = true; m_cancellationReasons = value; }
-
-    /**
-     * <p>A list of cancellation reasons.</p>
-     */
     inline void SetCancellationReasons(Aws::Vector<CancellationReason>&& value) { m_cancellationReasonsHasBeenSet = true; m_cancellationReasons = std::move(value); }
-
-    /**
-     * <p>A list of cancellation reasons.</p>
-     */
     inline TransactionCanceledException& WithCancellationReasons(const Aws::Vector<CancellationReason>& value) { SetCancellationReasons(value); return *this;}
-
-    /**
-     * <p>A list of cancellation reasons.</p>
-     */
     inline TransactionCanceledException& WithCancellationReasons(Aws::Vector<CancellationReason>&& value) { SetCancellationReasons(std::move(value)); return *this;}
-
-    /**
-     * <p>A list of cancellation reasons.</p>
-     */
     inline TransactionCanceledException& AddCancellationReasons(const CancellationReason& value) { m_cancellationReasonsHasBeenSet = true; m_cancellationReasons.push_back(value); return *this; }
-
-    /**
-     * <p>A list of cancellation reasons.</p>
-     */
     inline TransactionCanceledException& AddCancellationReasons(CancellationReason&& value) { m_cancellationReasonsHasBeenSet = true; m_cancellationReasons.push_back(std::move(value)); return *this; }
-
+    ///@}
   private:
 
     Aws::String m_message;

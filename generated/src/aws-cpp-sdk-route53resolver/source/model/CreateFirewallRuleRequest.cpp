@@ -28,7 +28,14 @@ CreateFirewallRuleRequest::CreateFirewallRuleRequest() :
     m_blockOverrideDnsTypeHasBeenSet(false),
     m_blockOverrideTtl(0),
     m_blockOverrideTtlHasBeenSet(false),
-    m_nameHasBeenSet(false)
+    m_nameHasBeenSet(false),
+    m_firewallDomainRedirectionAction(FirewallDomainRedirectionAction::NOT_SET),
+    m_firewallDomainRedirectionActionHasBeenSet(false),
+    m_qtypeHasBeenSet(false),
+    m_dnsThreatProtection(DnsThreatProtection::NOT_SET),
+    m_dnsThreatProtectionHasBeenSet(false),
+    m_confidenceThreshold(ConfidenceThreshold::NOT_SET),
+    m_confidenceThresholdHasBeenSet(false)
 {
 }
 
@@ -91,6 +98,27 @@ Aws::String CreateFirewallRuleRequest::SerializePayload() const
   {
    payload.WithString("Name", m_name);
 
+  }
+
+  if(m_firewallDomainRedirectionActionHasBeenSet)
+  {
+   payload.WithString("FirewallDomainRedirectionAction", FirewallDomainRedirectionActionMapper::GetNameForFirewallDomainRedirectionAction(m_firewallDomainRedirectionAction));
+  }
+
+  if(m_qtypeHasBeenSet)
+  {
+   payload.WithString("Qtype", m_qtype);
+
+  }
+
+  if(m_dnsThreatProtectionHasBeenSet)
+  {
+   payload.WithString("DnsThreatProtection", DnsThreatProtectionMapper::GetNameForDnsThreatProtection(m_dnsThreatProtection));
+  }
+
+  if(m_confidenceThresholdHasBeenSet)
+  {
+   payload.WithString("ConfidenceThreshold", ConfidenceThresholdMapper::GetNameForConfidenceThreshold(m_confidenceThreshold));
   }
 
   return payload.View().WriteReadable();

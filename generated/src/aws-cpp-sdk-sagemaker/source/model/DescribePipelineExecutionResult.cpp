@@ -22,8 +22,8 @@ DescribePipelineExecutionResult::DescribePipelineExecutionResult() :
 {
 }
 
-DescribePipelineExecutionResult::DescribePipelineExecutionResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_pipelineExecutionStatus(PipelineExecutionStatus::NOT_SET)
+DescribePipelineExecutionResult::DescribePipelineExecutionResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribePipelineExecutionResult()
 {
   *this = result;
 }
@@ -100,6 +100,12 @@ DescribePipelineExecutionResult& DescribePipelineExecutionResult::operator =(con
   if(jsonValue.ValueExists("ParallelismConfiguration"))
   {
     m_parallelismConfiguration = jsonValue.GetObject("ParallelismConfiguration");
+
+  }
+
+  if(jsonValue.ValueExists("SelectiveExecutionConfig"))
+  {
+    m_selectiveExecutionConfig = jsonValue.GetObject("SelectiveExecutionConfig");
 
   }
 

@@ -20,13 +20,13 @@ namespace Model
 
 ConfiguredTableAnalysisRulePolicyV1::ConfiguredTableAnalysisRulePolicyV1() : 
     m_listHasBeenSet(false),
-    m_aggregationHasBeenSet(false)
+    m_aggregationHasBeenSet(false),
+    m_customHasBeenSet(false)
 {
 }
 
-ConfiguredTableAnalysisRulePolicyV1::ConfiguredTableAnalysisRulePolicyV1(JsonView jsonValue) : 
-    m_listHasBeenSet(false),
-    m_aggregationHasBeenSet(false)
+ConfiguredTableAnalysisRulePolicyV1::ConfiguredTableAnalysisRulePolicyV1(JsonView jsonValue)
+  : ConfiguredTableAnalysisRulePolicyV1()
 {
   *this = jsonValue;
 }
@@ -47,6 +47,13 @@ ConfiguredTableAnalysisRulePolicyV1& ConfiguredTableAnalysisRulePolicyV1::operat
     m_aggregationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("custom"))
+  {
+    m_custom = jsonValue.GetObject("custom");
+
+    m_customHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +70,12 @@ JsonValue ConfiguredTableAnalysisRulePolicyV1::Jsonize() const
   if(m_aggregationHasBeenSet)
   {
    payload.WithObject("aggregation", m_aggregation.Jsonize());
+
+  }
+
+  if(m_customHasBeenSet)
+  {
+   payload.WithObject("custom", m_custom.Jsonize());
 
   }
 

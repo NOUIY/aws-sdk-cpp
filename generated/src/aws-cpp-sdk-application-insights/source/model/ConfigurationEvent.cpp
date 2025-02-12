@@ -19,6 +19,8 @@ namespace Model
 {
 
 ConfigurationEvent::ConfigurationEvent() : 
+    m_resourceGroupNameHasBeenSet(false),
+    m_accountIdHasBeenSet(false),
     m_monitoredResourceARNHasBeenSet(false),
     m_eventStatus(ConfigurationEventStatus::NOT_SET),
     m_eventStatusHasBeenSet(false),
@@ -30,21 +32,28 @@ ConfigurationEvent::ConfigurationEvent() :
 {
 }
 
-ConfigurationEvent::ConfigurationEvent(JsonView jsonValue) : 
-    m_monitoredResourceARNHasBeenSet(false),
-    m_eventStatus(ConfigurationEventStatus::NOT_SET),
-    m_eventStatusHasBeenSet(false),
-    m_eventResourceType(ConfigurationEventResourceType::NOT_SET),
-    m_eventResourceTypeHasBeenSet(false),
-    m_eventTimeHasBeenSet(false),
-    m_eventDetailHasBeenSet(false),
-    m_eventResourceNameHasBeenSet(false)
+ConfigurationEvent::ConfigurationEvent(JsonView jsonValue)
+  : ConfigurationEvent()
 {
   *this = jsonValue;
 }
 
 ConfigurationEvent& ConfigurationEvent::operator =(JsonView jsonValue)
 {
+  if(jsonValue.ValueExists("ResourceGroupName"))
+  {
+    m_resourceGroupName = jsonValue.GetString("ResourceGroupName");
+
+    m_resourceGroupNameHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AccountId"))
+  {
+    m_accountId = jsonValue.GetString("AccountId");
+
+    m_accountIdHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("MonitoredResourceARN"))
   {
     m_monitoredResourceARN = jsonValue.GetString("MonitoredResourceARN");
@@ -93,6 +102,18 @@ ConfigurationEvent& ConfigurationEvent::operator =(JsonView jsonValue)
 JsonValue ConfigurationEvent::Jsonize() const
 {
   JsonValue payload;
+
+  if(m_resourceGroupNameHasBeenSet)
+  {
+   payload.WithString("ResourceGroupName", m_resourceGroupName);
+
+  }
+
+  if(m_accountIdHasBeenSet)
+  {
+   payload.WithString("AccountId", m_accountId);
+
+  }
 
   if(m_monitoredResourceARNHasBeenSet)
   {

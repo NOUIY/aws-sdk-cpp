@@ -20,13 +20,13 @@ namespace Model
 
 ServiceNowConnectorProfileCredentials::ServiceNowConnectorProfileCredentials() : 
     m_usernameHasBeenSet(false),
-    m_passwordHasBeenSet(false)
+    m_passwordHasBeenSet(false),
+    m_oAuth2CredentialsHasBeenSet(false)
 {
 }
 
-ServiceNowConnectorProfileCredentials::ServiceNowConnectorProfileCredentials(JsonView jsonValue) : 
-    m_usernameHasBeenSet(false),
-    m_passwordHasBeenSet(false)
+ServiceNowConnectorProfileCredentials::ServiceNowConnectorProfileCredentials(JsonView jsonValue)
+  : ServiceNowConnectorProfileCredentials()
 {
   *this = jsonValue;
 }
@@ -47,6 +47,13 @@ ServiceNowConnectorProfileCredentials& ServiceNowConnectorProfileCredentials::op
     m_passwordHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("oAuth2Credentials"))
+  {
+    m_oAuth2Credentials = jsonValue.GetObject("oAuth2Credentials");
+
+    m_oAuth2CredentialsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +70,12 @@ JsonValue ServiceNowConnectorProfileCredentials::Jsonize() const
   if(m_passwordHasBeenSet)
   {
    payload.WithString("password", m_password);
+
+  }
+
+  if(m_oAuth2CredentialsHasBeenSet)
+  {
+   payload.WithObject("oAuth2Credentials", m_oAuth2Credentials.Jsonize());
 
   }
 

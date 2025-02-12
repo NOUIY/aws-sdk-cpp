@@ -23,6 +23,8 @@ namespace Aws
         static const int GITHUB_HASH = HashingUtils::HashString("GITHUB");
         static const int BITBUCKET_HASH = HashingUtils::HashString("BITBUCKET");
         static const int GITHUB_ENTERPRISE_HASH = HashingUtils::HashString("GITHUB_ENTERPRISE");
+        static const int GITLAB_HASH = HashingUtils::HashString("GITLAB");
+        static const int GITLAB_SELF_MANAGED_HASH = HashingUtils::HashString("GITLAB_SELF_MANAGED");
 
 
         ServerType GetServerTypeForName(const Aws::String& name)
@@ -40,6 +42,14 @@ namespace Aws
           {
             return ServerType::GITHUB_ENTERPRISE;
           }
+          else if (hashCode == GITLAB_HASH)
+          {
+            return ServerType::GITLAB;
+          }
+          else if (hashCode == GITLAB_SELF_MANAGED_HASH)
+          {
+            return ServerType::GITLAB_SELF_MANAGED;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -54,12 +64,18 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ServerType::NOT_SET:
+            return {};
           case ServerType::GITHUB:
             return "GITHUB";
           case ServerType::BITBUCKET:
             return "BITBUCKET";
           case ServerType::GITHUB_ENTERPRISE:
             return "GITHUB_ENTERPRISE";
+          case ServerType::GITLAB:
+            return "GITLAB";
+          case ServerType::GITLAB_SELF_MANAGED:
+            return "GITLAB_SELF_MANAGED";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

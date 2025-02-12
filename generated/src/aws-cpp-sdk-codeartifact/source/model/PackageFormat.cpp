@@ -25,6 +25,9 @@ namespace Aws
         static const int maven_HASH = HashingUtils::HashString("maven");
         static const int nuget_HASH = HashingUtils::HashString("nuget");
         static const int generic_HASH = HashingUtils::HashString("generic");
+        static const int ruby_HASH = HashingUtils::HashString("ruby");
+        static const int swift_HASH = HashingUtils::HashString("swift");
+        static const int cargo_HASH = HashingUtils::HashString("cargo");
 
 
         PackageFormat GetPackageFormatForName(const Aws::String& name)
@@ -50,6 +53,18 @@ namespace Aws
           {
             return PackageFormat::generic;
           }
+          else if (hashCode == ruby_HASH)
+          {
+            return PackageFormat::ruby;
+          }
+          else if (hashCode == swift_HASH)
+          {
+            return PackageFormat::swift;
+          }
+          else if (hashCode == cargo_HASH)
+          {
+            return PackageFormat::cargo;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -64,6 +79,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case PackageFormat::NOT_SET:
+            return {};
           case PackageFormat::npm:
             return "npm";
           case PackageFormat::pypi:
@@ -74,6 +91,12 @@ namespace Aws
             return "nuget";
           case PackageFormat::generic:
             return "generic";
+          case PackageFormat::ruby:
+            return "ruby";
+          case PackageFormat::swift:
+            return "swift";
+          case PackageFormat::cargo:
+            return "cargo";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

@@ -30,6 +30,11 @@ namespace Aws
         static const int keyword_HASH = HashingUtils::HashString("keyword");
         static const int opted_out_number_HASH = HashingUtils::HashString("opted-out-number");
         static const int registration_HASH = HashingUtils::HashString("registration");
+        static const int registration_attachment_HASH = HashingUtils::HashString("registration-attachment");
+        static const int verified_destination_number_HASH = HashingUtils::HashString("verified-destination-number");
+        static const int protect_configuration_HASH = HashingUtils::HashString("protect-configuration");
+        static const int policy_HASH = HashingUtils::HashString("policy");
+        static const int message_HASH = HashingUtils::HashString("message");
 
 
         ResourceType GetResourceTypeForName(const Aws::String& name)
@@ -75,6 +80,26 @@ namespace Aws
           {
             return ResourceType::registration;
           }
+          else if (hashCode == registration_attachment_HASH)
+          {
+            return ResourceType::registration_attachment;
+          }
+          else if (hashCode == verified_destination_number_HASH)
+          {
+            return ResourceType::verified_destination_number;
+          }
+          else if (hashCode == protect_configuration_HASH)
+          {
+            return ResourceType::protect_configuration;
+          }
+          else if (hashCode == policy_HASH)
+          {
+            return ResourceType::policy;
+          }
+          else if (hashCode == message_HASH)
+          {
+            return ResourceType::message;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -89,6 +114,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ResourceType::NOT_SET:
+            return {};
           case ResourceType::account:
             return "account";
           case ResourceType::phone_number:
@@ -109,6 +136,16 @@ namespace Aws
             return "opted-out-number";
           case ResourceType::registration:
             return "registration";
+          case ResourceType::registration_attachment:
+            return "registration-attachment";
+          case ResourceType::verified_destination_number:
+            return "verified-destination-number";
+          case ResourceType::protect_configuration:
+            return "protect-configuration";
+          case ResourceType::policy:
+            return "policy";
+          case ResourceType::message:
+            return "message";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

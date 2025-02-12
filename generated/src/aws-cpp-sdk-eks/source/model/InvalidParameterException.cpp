@@ -23,16 +23,13 @@ InvalidParameterException::InvalidParameterException() :
     m_nodegroupNameHasBeenSet(false),
     m_fargateProfileNameHasBeenSet(false),
     m_addonNameHasBeenSet(false),
+    m_subscriptionIdHasBeenSet(false),
     m_messageHasBeenSet(false)
 {
 }
 
-InvalidParameterException::InvalidParameterException(JsonView jsonValue) : 
-    m_clusterNameHasBeenSet(false),
-    m_nodegroupNameHasBeenSet(false),
-    m_fargateProfileNameHasBeenSet(false),
-    m_addonNameHasBeenSet(false),
-    m_messageHasBeenSet(false)
+InvalidParameterException::InvalidParameterException(JsonView jsonValue)
+  : InvalidParameterException()
 {
   *this = jsonValue;
 }
@@ -65,6 +62,13 @@ InvalidParameterException& InvalidParameterException::operator =(JsonView jsonVa
     m_addonName = jsonValue.GetString("addonName");
 
     m_addonNameHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("subscriptionId"))
+  {
+    m_subscriptionId = jsonValue.GetString("subscriptionId");
+
+    m_subscriptionIdHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("message"))
@@ -102,6 +106,12 @@ JsonValue InvalidParameterException::Jsonize() const
   if(m_addonNameHasBeenSet)
   {
    payload.WithString("addonName", m_addonName);
+
+  }
+
+  if(m_subscriptionIdHasBeenSet)
+  {
+   payload.WithString("subscriptionId", m_subscriptionId);
 
   }
 

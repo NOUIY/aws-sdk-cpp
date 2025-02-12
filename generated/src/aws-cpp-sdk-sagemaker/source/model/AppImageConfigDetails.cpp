@@ -23,16 +23,14 @@ AppImageConfigDetails::AppImageConfigDetails() :
     m_appImageConfigNameHasBeenSet(false),
     m_creationTimeHasBeenSet(false),
     m_lastModifiedTimeHasBeenSet(false),
-    m_kernelGatewayImageConfigHasBeenSet(false)
+    m_kernelGatewayImageConfigHasBeenSet(false),
+    m_jupyterLabAppImageConfigHasBeenSet(false),
+    m_codeEditorAppImageConfigHasBeenSet(false)
 {
 }
 
-AppImageConfigDetails::AppImageConfigDetails(JsonView jsonValue) : 
-    m_appImageConfigArnHasBeenSet(false),
-    m_appImageConfigNameHasBeenSet(false),
-    m_creationTimeHasBeenSet(false),
-    m_lastModifiedTimeHasBeenSet(false),
-    m_kernelGatewayImageConfigHasBeenSet(false)
+AppImageConfigDetails::AppImageConfigDetails(JsonView jsonValue)
+  : AppImageConfigDetails()
 {
   *this = jsonValue;
 }
@@ -74,6 +72,20 @@ AppImageConfigDetails& AppImageConfigDetails::operator =(JsonView jsonValue)
     m_kernelGatewayImageConfigHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("JupyterLabAppImageConfig"))
+  {
+    m_jupyterLabAppImageConfig = jsonValue.GetObject("JupyterLabAppImageConfig");
+
+    m_jupyterLabAppImageConfigHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("CodeEditorAppImageConfig"))
+  {
+    m_codeEditorAppImageConfig = jsonValue.GetObject("CodeEditorAppImageConfig");
+
+    m_codeEditorAppImageConfigHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -106,6 +118,18 @@ JsonValue AppImageConfigDetails::Jsonize() const
   if(m_kernelGatewayImageConfigHasBeenSet)
   {
    payload.WithObject("KernelGatewayImageConfig", m_kernelGatewayImageConfig.Jsonize());
+
+  }
+
+  if(m_jupyterLabAppImageConfigHasBeenSet)
+  {
+   payload.WithObject("JupyterLabAppImageConfig", m_jupyterLabAppImageConfig.Jsonize());
+
+  }
+
+  if(m_codeEditorAppImageConfigHasBeenSet)
+  {
+   payload.WithObject("CodeEditorAppImageConfig", m_codeEditorAppImageConfig.Jsonize());
 
   }
 

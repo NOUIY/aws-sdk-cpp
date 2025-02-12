@@ -22,15 +22,13 @@ WordCloudChartConfiguration::WordCloudChartConfiguration() :
     m_fieldWellsHasBeenSet(false),
     m_sortConfigurationHasBeenSet(false),
     m_categoryLabelOptionsHasBeenSet(false),
-    m_wordCloudOptionsHasBeenSet(false)
+    m_wordCloudOptionsHasBeenSet(false),
+    m_interactionsHasBeenSet(false)
 {
 }
 
-WordCloudChartConfiguration::WordCloudChartConfiguration(JsonView jsonValue) : 
-    m_fieldWellsHasBeenSet(false),
-    m_sortConfigurationHasBeenSet(false),
-    m_categoryLabelOptionsHasBeenSet(false),
-    m_wordCloudOptionsHasBeenSet(false)
+WordCloudChartConfiguration::WordCloudChartConfiguration(JsonView jsonValue)
+  : WordCloudChartConfiguration()
 {
   *this = jsonValue;
 }
@@ -65,6 +63,13 @@ WordCloudChartConfiguration& WordCloudChartConfiguration::operator =(JsonView js
     m_wordCloudOptionsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Interactions"))
+  {
+    m_interactions = jsonValue.GetObject("Interactions");
+
+    m_interactionsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -93,6 +98,12 @@ JsonValue WordCloudChartConfiguration::Jsonize() const
   if(m_wordCloudOptionsHasBeenSet)
   {
    payload.WithObject("WordCloudOptions", m_wordCloudOptions.Jsonize());
+
+  }
+
+  if(m_interactionsHasBeenSet)
+  {
+   payload.WithObject("Interactions", m_interactions.Jsonize());
 
   }
 

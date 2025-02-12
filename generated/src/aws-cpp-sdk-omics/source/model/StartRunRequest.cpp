@@ -19,6 +19,9 @@ StartRunRequest::StartRunRequest() :
     m_runIdHasBeenSet(false),
     m_roleArnHasBeenSet(false),
     m_nameHasBeenSet(false),
+    m_cacheIdHasBeenSet(false),
+    m_cacheBehavior(CacheBehavior::NOT_SET),
+    m_cacheBehaviorHasBeenSet(false),
     m_runGroupIdHasBeenSet(false),
     m_priority(0),
     m_priorityHasBeenSet(false),
@@ -30,7 +33,12 @@ StartRunRequest::StartRunRequest() :
     m_logLevelHasBeenSet(false),
     m_tagsHasBeenSet(false),
     m_requestId(Aws::Utils::UUID::PseudoRandomUUID()),
-    m_requestIdHasBeenSet(true)
+    m_requestIdHasBeenSet(true),
+    m_retentionMode(RunRetentionMode::NOT_SET),
+    m_retentionModeHasBeenSet(false),
+    m_storageType(StorageType::NOT_SET),
+    m_storageTypeHasBeenSet(false),
+    m_workflowOwnerIdHasBeenSet(false)
 {
 }
 
@@ -65,6 +73,17 @@ Aws::String StartRunRequest::SerializePayload() const
   {
    payload.WithString("name", m_name);
 
+  }
+
+  if(m_cacheIdHasBeenSet)
+  {
+   payload.WithString("cacheId", m_cacheId);
+
+  }
+
+  if(m_cacheBehaviorHasBeenSet)
+  {
+   payload.WithString("cacheBehavior", CacheBehaviorMapper::GetNameForCacheBehavior(m_cacheBehavior));
   }
 
   if(m_runGroupIdHasBeenSet)
@@ -118,6 +137,22 @@ Aws::String StartRunRequest::SerializePayload() const
   if(m_requestIdHasBeenSet)
   {
    payload.WithString("requestId", m_requestId);
+
+  }
+
+  if(m_retentionModeHasBeenSet)
+  {
+   payload.WithString("retentionMode", RunRetentionModeMapper::GetNameForRunRetentionMode(m_retentionMode));
+  }
+
+  if(m_storageTypeHasBeenSet)
+  {
+   payload.WithString("storageType", StorageTypeMapper::GetNameForStorageType(m_storageType));
+  }
+
+  if(m_workflowOwnerIdHasBeenSet)
+  {
+   payload.WithString("workflowOwnerId", m_workflowOwnerId);
 
   }
 

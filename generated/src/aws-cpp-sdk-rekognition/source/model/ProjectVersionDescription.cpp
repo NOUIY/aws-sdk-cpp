@@ -37,30 +37,17 @@ ProjectVersionDescription::ProjectVersionDescription() :
     m_kmsKeyIdHasBeenSet(false),
     m_maxInferenceUnits(0),
     m_maxInferenceUnitsHasBeenSet(false),
-    m_sourceProjectVersionArnHasBeenSet(false)
+    m_sourceProjectVersionArnHasBeenSet(false),
+    m_versionDescriptionHasBeenSet(false),
+    m_feature(CustomizationFeature::NOT_SET),
+    m_featureHasBeenSet(false),
+    m_baseModelVersionHasBeenSet(false),
+    m_featureConfigHasBeenSet(false)
 {
 }
 
-ProjectVersionDescription::ProjectVersionDescription(JsonView jsonValue) : 
-    m_projectVersionArnHasBeenSet(false),
-    m_creationTimestampHasBeenSet(false),
-    m_minInferenceUnits(0),
-    m_minInferenceUnitsHasBeenSet(false),
-    m_status(ProjectVersionStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_statusMessageHasBeenSet(false),
-    m_billableTrainingTimeInSeconds(0),
-    m_billableTrainingTimeInSecondsHasBeenSet(false),
-    m_trainingEndTimestampHasBeenSet(false),
-    m_outputConfigHasBeenSet(false),
-    m_trainingDataResultHasBeenSet(false),
-    m_testingDataResultHasBeenSet(false),
-    m_evaluationResultHasBeenSet(false),
-    m_manifestSummaryHasBeenSet(false),
-    m_kmsKeyIdHasBeenSet(false),
-    m_maxInferenceUnits(0),
-    m_maxInferenceUnitsHasBeenSet(false),
-    m_sourceProjectVersionArnHasBeenSet(false)
+ProjectVersionDescription::ProjectVersionDescription(JsonView jsonValue)
+  : ProjectVersionDescription()
 {
   *this = jsonValue;
 }
@@ -172,6 +159,34 @@ ProjectVersionDescription& ProjectVersionDescription::operator =(JsonView jsonVa
     m_sourceProjectVersionArnHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("VersionDescription"))
+  {
+    m_versionDescription = jsonValue.GetString("VersionDescription");
+
+    m_versionDescriptionHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Feature"))
+  {
+    m_feature = CustomizationFeatureMapper::GetCustomizationFeatureForName(jsonValue.GetString("Feature"));
+
+    m_featureHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("BaseModelVersion"))
+  {
+    m_baseModelVersion = jsonValue.GetString("BaseModelVersion");
+
+    m_baseModelVersionHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("FeatureConfig"))
+  {
+    m_featureConfig = jsonValue.GetObject("FeatureConfig");
+
+    m_featureConfigHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -263,6 +278,29 @@ JsonValue ProjectVersionDescription::Jsonize() const
   if(m_sourceProjectVersionArnHasBeenSet)
   {
    payload.WithString("SourceProjectVersionArn", m_sourceProjectVersionArn);
+
+  }
+
+  if(m_versionDescriptionHasBeenSet)
+  {
+   payload.WithString("VersionDescription", m_versionDescription);
+
+  }
+
+  if(m_featureHasBeenSet)
+  {
+   payload.WithString("Feature", CustomizationFeatureMapper::GetNameForCustomizationFeature(m_feature));
+  }
+
+  if(m_baseModelVersionHasBeenSet)
+  {
+   payload.WithString("BaseModelVersion", m_baseModelVersion);
+
+  }
+
+  if(m_featureConfigHasBeenSet)
+  {
+   payload.WithObject("FeatureConfig", m_featureConfig.Jsonize());
 
   }
 

@@ -53,7 +53,13 @@ RestoreFromClusterSnapshotRequest::RestoreFromClusterSnapshotRequest() :
     m_reservedNodeIdHasBeenSet(false),
     m_targetReservedNodeOfferingIdHasBeenSet(false),
     m_encrypted(false),
-    m_encryptedHasBeenSet(false)
+    m_encryptedHasBeenSet(false),
+    m_manageMasterPassword(false),
+    m_manageMasterPasswordHasBeenSet(false),
+    m_masterPasswordSecretKmsKeyIdHasBeenSet(false),
+    m_ipAddressTypeHasBeenSet(false),
+    m_multiAZ(false),
+    m_multiAZHasBeenSet(false)
 {
 }
 
@@ -133,23 +139,37 @@ Aws::String RestoreFromClusterSnapshotRequest::SerializePayload() const
 
   if(m_clusterSecurityGroupsHasBeenSet)
   {
-    unsigned clusterSecurityGroupsCount = 1;
-    for(auto& item : m_clusterSecurityGroups)
+    if (m_clusterSecurityGroups.empty())
     {
-      ss << "ClusterSecurityGroups.member." << clusterSecurityGroupsCount << "="
-          << StringUtils::URLEncode(item.c_str()) << "&";
-      clusterSecurityGroupsCount++;
+      ss << "ClusterSecurityGroups=&";
+    }
+    else
+    {
+      unsigned clusterSecurityGroupsCount = 1;
+      for(auto& item : m_clusterSecurityGroups)
+      {
+        ss << "ClusterSecurityGroups.ClusterSecurityGroupName." << clusterSecurityGroupsCount << "="
+            << StringUtils::URLEncode(item.c_str()) << "&";
+        clusterSecurityGroupsCount++;
+      }
     }
   }
 
   if(m_vpcSecurityGroupIdsHasBeenSet)
   {
-    unsigned vpcSecurityGroupIdsCount = 1;
-    for(auto& item : m_vpcSecurityGroupIds)
+    if (m_vpcSecurityGroupIds.empty())
     {
-      ss << "VpcSecurityGroupIds.member." << vpcSecurityGroupIdsCount << "="
-          << StringUtils::URLEncode(item.c_str()) << "&";
-      vpcSecurityGroupIdsCount++;
+      ss << "VpcSecurityGroupIds=&";
+    }
+    else
+    {
+      unsigned vpcSecurityGroupIdsCount = 1;
+      for(auto& item : m_vpcSecurityGroupIds)
+      {
+        ss << "VpcSecurityGroupIds.VpcSecurityGroupId." << vpcSecurityGroupIdsCount << "="
+            << StringUtils::URLEncode(item.c_str()) << "&";
+        vpcSecurityGroupIdsCount++;
+      }
     }
   }
 
@@ -190,12 +210,19 @@ Aws::String RestoreFromClusterSnapshotRequest::SerializePayload() const
 
   if(m_iamRolesHasBeenSet)
   {
-    unsigned iamRolesCount = 1;
-    for(auto& item : m_iamRoles)
+    if (m_iamRoles.empty())
     {
-      ss << "IamRoles.member." << iamRolesCount << "="
-          << StringUtils::URLEncode(item.c_str()) << "&";
-      iamRolesCount++;
+      ss << "IamRoles=&";
+    }
+    else
+    {
+      unsigned iamRolesCount = 1;
+      for(auto& item : m_iamRoles)
+      {
+        ss << "IamRoles.IamRoleArn." << iamRolesCount << "="
+            << StringUtils::URLEncode(item.c_str()) << "&";
+        iamRolesCount++;
+      }
     }
   }
 
@@ -242,6 +269,26 @@ Aws::String RestoreFromClusterSnapshotRequest::SerializePayload() const
   if(m_encryptedHasBeenSet)
   {
     ss << "Encrypted=" << std::boolalpha << m_encrypted << "&";
+  }
+
+  if(m_manageMasterPasswordHasBeenSet)
+  {
+    ss << "ManageMasterPassword=" << std::boolalpha << m_manageMasterPassword << "&";
+  }
+
+  if(m_masterPasswordSecretKmsKeyIdHasBeenSet)
+  {
+    ss << "MasterPasswordSecretKmsKeyId=" << StringUtils::URLEncode(m_masterPasswordSecretKmsKeyId.c_str()) << "&";
+  }
+
+  if(m_ipAddressTypeHasBeenSet)
+  {
+    ss << "IpAddressType=" << StringUtils::URLEncode(m_ipAddressType.c_str()) << "&";
+  }
+
+  if(m_multiAZHasBeenSet)
+  {
+    ss << "MultiAZ=" << std::boolalpha << m_multiAZ << "&";
   }
 
   ss << "Version=2012-12-01";

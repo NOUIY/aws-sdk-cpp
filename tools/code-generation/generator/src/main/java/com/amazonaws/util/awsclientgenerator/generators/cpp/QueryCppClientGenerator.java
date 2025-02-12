@@ -15,7 +15,9 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class QueryCppClientGenerator extends CppClientGenerator {
@@ -116,7 +118,7 @@ public class QueryCppClientGenerator extends CppClientGenerator {
     }
 
     @Override
-    protected SdkFileEntry generateModelSourceFile(ServiceModel serviceModel, Map.Entry<String, Shape> shapeEntry) throws Exception {
+    protected SdkFileEntry generateModelSourceFile(ServiceModel serviceModel, Map.Entry<String, Shape> shapeEntry) {
         Shape shape = shapeEntry.getValue();
         if (shape.isException() && !shape.isXmlModeledException())
             return null;
@@ -155,6 +157,7 @@ public class QueryCppClientGenerator extends CppClientGenerator {
 
         VelocityContext context = createContext(serviceModel);
         context.put("CppViewHelper", CppViewHelper.class);
+        context.put("RequestlessOperations", requestlessOperations);
 
         String fileName = String.format("include/aws/%s/%sClient.h", serviceModel.getMetadata().getProjectName(),
                 serviceModel.getMetadata().getClassNamePrefix());
@@ -163,15 +166,26 @@ public class QueryCppClientGenerator extends CppClientGenerator {
     }
 
     @Override
-    protected SdkFileEntry generateClientSourceFile(final ServiceModel serviceModel) throws Exception {
-        Template template = velocityEngine.getTemplate("/com/amazonaws/util/awsclientgenerator/velocity/cpp/queryxml/QueryXmlServiceClientSource.vm", StandardCharsets.UTF_8.name());
+    protected List<SdkFileEntry> generateClientSourceFile(final List<ServiceModel> serviceModels) throws Exception {
+        List<SdkFileEntry> sourceFiles = new ArrayList<>();
+        for (int i = 0; i < serviceModels.size(); i++) {
+            Template template = velocityEngine.getTemplate("/com/amazonaws/util/awsclientgenerator/velocity/cpp/queryxml/QueryXmlServiceClientSource.vm", StandardCharsets.UTF_8.name());
 
-        VelocityContext context = createContext(serviceModel);
-        context.put("CppViewHelper", CppViewHelper.class);
+            VelocityContext context = createContext(serviceModels.get(i));
+            context.put("CppViewHelper", CppViewHelper.class);
 
-        String fileName = String.format("source/%sClient.cpp", serviceModel.getMetadata().getClassNamePrefix());
+            final String fileName;
+            if (i == 0) {
+                context.put("onlyGeneratedOperations", false);
+                fileName = String.format("source/%sClient.cpp", serviceModels.get(i).getMetadata().getClassNamePrefix());
+            } else {
+                context.put("onlyGeneratedOperations", true);
+                fileName = String.format("source/%sClient%d.cpp", serviceModels.get(i).getMetadata().getClassNamePrefix(), i);
+            }
 
-        return makeFile(template, context, fileName, true);
+            sourceFiles.add(makeFile(template, context, fileName, true));
+        }
+        return sourceFiles;
     }
 
     @Override

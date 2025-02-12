@@ -24,6 +24,8 @@ TargetGroupSummary::TargetGroupSummary() :
     m_idHasBeenSet(false),
     m_ipAddressType(IpAddressType::NOT_SET),
     m_ipAddressTypeHasBeenSet(false),
+    m_lambdaEventStructureVersion(LambdaEventStructureVersion::NOT_SET),
+    m_lambdaEventStructureVersionHasBeenSet(false),
     m_lastUpdatedAtHasBeenSet(false),
     m_nameHasBeenSet(false),
     m_port(0),
@@ -39,24 +41,8 @@ TargetGroupSummary::TargetGroupSummary() :
 {
 }
 
-TargetGroupSummary::TargetGroupSummary(JsonView jsonValue) : 
-    m_arnHasBeenSet(false),
-    m_createdAtHasBeenSet(false),
-    m_idHasBeenSet(false),
-    m_ipAddressType(IpAddressType::NOT_SET),
-    m_ipAddressTypeHasBeenSet(false),
-    m_lastUpdatedAtHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_port(0),
-    m_portHasBeenSet(false),
-    m_protocol(TargetGroupProtocol::NOT_SET),
-    m_protocolHasBeenSet(false),
-    m_serviceArnsHasBeenSet(false),
-    m_status(TargetGroupStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_type(TargetGroupType::NOT_SET),
-    m_typeHasBeenSet(false),
-    m_vpcIdentifierHasBeenSet(false)
+TargetGroupSummary::TargetGroupSummary(JsonView jsonValue)
+  : TargetGroupSummary()
 {
   *this = jsonValue;
 }
@@ -89,6 +75,13 @@ TargetGroupSummary& TargetGroupSummary::operator =(JsonView jsonValue)
     m_ipAddressType = IpAddressTypeMapper::GetIpAddressTypeForName(jsonValue.GetString("ipAddressType"));
 
     m_ipAddressTypeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("lambdaEventStructureVersion"))
+  {
+    m_lambdaEventStructureVersion = LambdaEventStructureVersionMapper::GetLambdaEventStructureVersionForName(jsonValue.GetString("lambdaEventStructureVersion"));
+
+    m_lambdaEventStructureVersionHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("lastUpdatedAt"))
@@ -177,6 +170,11 @@ JsonValue TargetGroupSummary::Jsonize() const
   if(m_ipAddressTypeHasBeenSet)
   {
    payload.WithString("ipAddressType", IpAddressTypeMapper::GetNameForIpAddressType(m_ipAddressType));
+  }
+
+  if(m_lambdaEventStructureVersionHasBeenSet)
+  {
+   payload.WithString("lambdaEventStructureVersion", LambdaEventStructureVersionMapper::GetNameForLambdaEventStructureVersion(m_lambdaEventStructureVersion));
   }
 
   if(m_lastUpdatedAtHasBeenSet)

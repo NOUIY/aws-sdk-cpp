@@ -20,6 +20,7 @@ namespace Aws
       namespace MessageSystemAttributeNameMapper
       {
 
+        static const int All_HASH = HashingUtils::HashString("All");
         static const int SenderId_HASH = HashingUtils::HashString("SenderId");
         static const int SentTimestamp_HASH = HashingUtils::HashString("SentTimestamp");
         static const int ApproximateReceiveCount_HASH = HashingUtils::HashString("ApproximateReceiveCount");
@@ -28,12 +29,17 @@ namespace Aws
         static const int MessageDeduplicationId_HASH = HashingUtils::HashString("MessageDeduplicationId");
         static const int MessageGroupId_HASH = HashingUtils::HashString("MessageGroupId");
         static const int AWSTraceHeader_HASH = HashingUtils::HashString("AWSTraceHeader");
+        static const int DeadLetterQueueSourceArn_HASH = HashingUtils::HashString("DeadLetterQueueSourceArn");
 
 
         MessageSystemAttributeName GetMessageSystemAttributeNameForName(const Aws::String& name)
         {
           int hashCode = HashingUtils::HashString(name.c_str());
-          if (hashCode == SenderId_HASH)
+          if (hashCode == All_HASH)
+          {
+            return MessageSystemAttributeName::All;
+          }
+          else if (hashCode == SenderId_HASH)
           {
             return MessageSystemAttributeName::SenderId;
           }
@@ -65,6 +71,10 @@ namespace Aws
           {
             return MessageSystemAttributeName::AWSTraceHeader;
           }
+          else if (hashCode == DeadLetterQueueSourceArn_HASH)
+          {
+            return MessageSystemAttributeName::DeadLetterQueueSourceArn;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -79,6 +89,10 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case MessageSystemAttributeName::NOT_SET:
+            return {};
+          case MessageSystemAttributeName::All:
+            return "All";
           case MessageSystemAttributeName::SenderId:
             return "SenderId";
           case MessageSystemAttributeName::SentTimestamp:
@@ -95,6 +109,8 @@ namespace Aws
             return "MessageGroupId";
           case MessageSystemAttributeName::AWSTraceHeader:
             return "AWSTraceHeader";
+          case MessageSystemAttributeName::DeadLetterQueueSourceArn:
+            return "DeadLetterQueueSourceArn";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

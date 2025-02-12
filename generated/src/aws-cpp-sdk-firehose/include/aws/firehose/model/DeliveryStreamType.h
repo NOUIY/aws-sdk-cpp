@@ -17,7 +17,9 @@ namespace Model
   {
     NOT_SET,
     DirectPut,
-    KinesisStreamAsSource
+    KinesisStreamAsSource,
+    MSKAsSource,
+    DatabaseAsSource
   };
 
 namespace DeliveryStreamTypeMapper

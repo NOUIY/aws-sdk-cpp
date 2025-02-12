@@ -29,22 +29,14 @@ LifecyclePolicy::LifecyclePolicy() :
     m_dateModifiedHasBeenSet(false),
     m_policyDetailsHasBeenSet(false),
     m_tagsHasBeenSet(false),
-    m_policyArnHasBeenSet(false)
+    m_policyArnHasBeenSet(false),
+    m_defaultPolicy(false),
+    m_defaultPolicyHasBeenSet(false)
 {
 }
 
-LifecyclePolicy::LifecyclePolicy(JsonView jsonValue) : 
-    m_policyIdHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_state(GettablePolicyStateValues::NOT_SET),
-    m_stateHasBeenSet(false),
-    m_statusMessageHasBeenSet(false),
-    m_executionRoleArnHasBeenSet(false),
-    m_dateCreatedHasBeenSet(false),
-    m_dateModifiedHasBeenSet(false),
-    m_policyDetailsHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_policyArnHasBeenSet(false)
+LifecyclePolicy::LifecyclePolicy(JsonView jsonValue)
+  : LifecyclePolicy()
 {
   *this = jsonValue;
 }
@@ -124,6 +116,13 @@ LifecyclePolicy& LifecyclePolicy::operator =(JsonView jsonValue)
     m_policyArnHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("DefaultPolicy"))
+  {
+    m_defaultPolicy = jsonValue.GetBool("DefaultPolicy");
+
+    m_defaultPolicyHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -190,6 +189,12 @@ JsonValue LifecyclePolicy::Jsonize() const
   if(m_policyArnHasBeenSet)
   {
    payload.WithString("PolicyArn", m_policyArn);
+
+  }
+
+  if(m_defaultPolicyHasBeenSet)
+  {
+   payload.WithBool("DefaultPolicy", m_defaultPolicy);
 
   }
 

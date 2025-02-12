@@ -19,6 +19,8 @@ PutPlaybackConfigurationRequest::PutPlaybackConfigurationRequest() :
     m_cdnConfigurationHasBeenSet(false),
     m_configurationAliasesHasBeenSet(false),
     m_dashConfigurationHasBeenSet(false),
+    m_insertionMode(InsertionMode::NOT_SET),
+    m_insertionModeHasBeenSet(false),
     m_livePreRollConfigurationHasBeenSet(false),
     m_manifestProcessingRulesHasBeenSet(false),
     m_nameHasBeenSet(false),
@@ -27,7 +29,8 @@ PutPlaybackConfigurationRequest::PutPlaybackConfigurationRequest() :
     m_slateAdUrlHasBeenSet(false),
     m_tagsHasBeenSet(false),
     m_transcodeProfileNameHasBeenSet(false),
-    m_videoContentSourceUrlHasBeenSet(false)
+    m_videoContentSourceUrlHasBeenSet(false),
+    m_adConditioningConfigurationHasBeenSet(false)
 {
 }
 
@@ -81,6 +84,11 @@ Aws::String PutPlaybackConfigurationRequest::SerializePayload() const
 
   }
 
+  if(m_insertionModeHasBeenSet)
+  {
+   payload.WithString("InsertionMode", InsertionModeMapper::GetNameForInsertionMode(m_insertionMode));
+  }
+
   if(m_livePreRollConfigurationHasBeenSet)
   {
    payload.WithObject("LivePreRollConfiguration", m_livePreRollConfiguration.Jsonize());
@@ -131,6 +139,12 @@ Aws::String PutPlaybackConfigurationRequest::SerializePayload() const
   if(m_videoContentSourceUrlHasBeenSet)
   {
    payload.WithString("VideoContentSourceUrl", m_videoContentSourceUrl);
+
+  }
+
+  if(m_adConditioningConfigurationHasBeenSet)
+  {
+   payload.WithObject("AdConditioningConfiguration", m_adConditioningConfiguration.Jsonize());
 
   }
 

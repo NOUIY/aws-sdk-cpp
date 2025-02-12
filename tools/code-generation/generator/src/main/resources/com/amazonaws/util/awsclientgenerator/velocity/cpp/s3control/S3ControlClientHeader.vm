@@ -51,8 +51,8 @@ namespace ${metadata.namespace}
     {
     public:
         typedef Aws::Client::AWSXMLClient BASECLASS;
-        static const char* SERVICE_NAME;
-        static const char* ALLOCATION_TAG;
+        static const char* GetServiceName();
+        static const char* GetAllocationTag();
 
 #parse("com/amazonaws/util/awsclientgenerator/velocity/cpp/ServiceClientHeaderConfigTypeDeclarations.vm")
 #parse("com/amazonaws/util/awsclientgenerator/velocity/cpp/ServiceClientHeaderConstructors.vm")
@@ -96,7 +96,6 @@ namespace ${metadata.namespace}
 #if($serviceModel.endpointRules)
         ${metadata.classNamePrefix}ClientConfiguration m_clientConfiguration;
 #end
-        std::shared_ptr<Utils::Threading::Executor> m_executor;
 #if(!$serviceModel.endpointRules)
         bool m_useDualStack = false;
         bool m_useArnRegion = false;

@@ -20,14 +20,13 @@ using namespace Aws;
 RestoreSnapshotFromRecycleBinResponse::RestoreSnapshotFromRecycleBinResponse() : 
     m_encrypted(false),
     m_state(SnapshotState::NOT_SET),
-    m_volumeSize(0)
+    m_volumeSize(0),
+    m_sseType(SSEType::NOT_SET)
 {
 }
 
-RestoreSnapshotFromRecycleBinResponse::RestoreSnapshotFromRecycleBinResponse(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
-    m_encrypted(false),
-    m_state(SnapshotState::NOT_SET),
-    m_volumeSize(0)
+RestoreSnapshotFromRecycleBinResponse::RestoreSnapshotFromRecycleBinResponse(const Aws::AmazonWebServiceResult<XmlDocument>& result)
+  : RestoreSnapshotFromRecycleBinResponse()
 {
   *this = result;
 }
@@ -93,6 +92,11 @@ RestoreSnapshotFromRecycleBinResponse& RestoreSnapshotFromRecycleBinResponse::op
     if(!volumeSizeNode.IsNull())
     {
       m_volumeSize = StringUtils::ConvertToInt32(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(volumeSizeNode.GetText()).c_str()).c_str());
+    }
+    XmlNode sseTypeNode = resultNode.FirstChild("sseType");
+    if(!sseTypeNode.IsNull())
+    {
+      m_sseType = SSETypeMapper::GetSSETypeForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(sseTypeNode.GetText()).c_str()).c_str());
     }
   }
 

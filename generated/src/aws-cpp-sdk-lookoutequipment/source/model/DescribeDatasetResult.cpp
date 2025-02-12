@@ -22,8 +22,8 @@ DescribeDatasetResult::DescribeDatasetResult() :
 {
 }
 
-DescribeDatasetResult::DescribeDatasetResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(DatasetStatus::NOT_SET)
+DescribeDatasetResult::DescribeDatasetResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeDatasetResult()
 {
   *this = result;
 }
@@ -106,6 +106,12 @@ DescribeDatasetResult& DescribeDatasetResult::operator =(const Aws::AmazonWebSer
   if(jsonValue.ValueExists("DataEndTime"))
   {
     m_dataEndTime = jsonValue.GetDouble("DataEndTime");
+
+  }
+
+  if(jsonValue.ValueExists("SourceDatasetArn"))
+  {
+    m_sourceDatasetArn = jsonValue.GetString("SourceDatasetArn");
 
   }
 

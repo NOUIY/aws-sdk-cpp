@@ -33,8 +33,8 @@ namespace CloudSearch
   {
     public:
       typedef Aws::Client::AWSXMLClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
 
       typedef CloudSearchClientConfiguration ClientConfigurationType;
       typedef CloudSearchEndpointProvider EndpointProviderType;
@@ -44,14 +44,14 @@ namespace CloudSearch
         * is not specified, it will be initialized to default values.
         */
         CloudSearchClient(const Aws::CloudSearch::CloudSearchClientConfiguration& clientConfiguration = Aws::CloudSearch::CloudSearchClientConfiguration(),
-                          std::shared_ptr<CloudSearchEndpointProviderBase> endpointProvider = Aws::MakeShared<CloudSearchEndpointProvider>(ALLOCATION_TAG));
+                          std::shared_ptr<CloudSearchEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         CloudSearchClient(const Aws::Auth::AWSCredentials& credentials,
-                          std::shared_ptr<CloudSearchEndpointProviderBase> endpointProvider = Aws::MakeShared<CloudSearchEndpointProvider>(ALLOCATION_TAG),
+                          std::shared_ptr<CloudSearchEndpointProviderBase> endpointProvider = nullptr,
                           const Aws::CloudSearch::CloudSearchClientConfiguration& clientConfiguration = Aws::CloudSearch::CloudSearchClientConfiguration());
 
        /**
@@ -59,7 +59,7 @@ namespace CloudSearch
         * the default http client factory will be used
         */
         CloudSearchClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                          std::shared_ptr<CloudSearchEndpointProviderBase> endpointProvider = Aws::MakeShared<CloudSearchEndpointProvider>(ALLOCATION_TAG),
+                          std::shared_ptr<CloudSearchEndpointProviderBase> endpointProvider = nullptr,
                           const Aws::CloudSearch::CloudSearchClientConfiguration& clientConfiguration = Aws::CloudSearch::CloudSearchClientConfiguration());
 
 
@@ -525,13 +525,13 @@ namespace CloudSearch
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudsearch-2013-01-01/DescribeDomains">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeDomainsOutcome DescribeDomains(const Model::DescribeDomainsRequest& request) const;
+        virtual Model::DescribeDomainsOutcome DescribeDomains(const Model::DescribeDomainsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeDomains that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeDomainsRequestT = Model::DescribeDomainsRequest>
-        Model::DescribeDomainsOutcomeCallable DescribeDomainsCallable(const DescribeDomainsRequestT& request) const
+        Model::DescribeDomainsOutcomeCallable DescribeDomainsCallable(const DescribeDomainsRequestT& request = {}) const
         {
             return SubmitCallable(&CloudSearchClient::DescribeDomains, request);
         }
@@ -540,7 +540,7 @@ namespace CloudSearch
          * An Async wrapper for DescribeDomains that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeDomainsRequestT = Model::DescribeDomainsRequest>
-        void DescribeDomainsAsync(const DescribeDomainsRequestT& request, const DescribeDomainsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeDomainsAsync(const DescribeDomainsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeDomainsRequestT& request = {}) const
         {
             return SubmitAsync(&CloudSearchClient::DescribeDomains, request, handler, context);
         }
@@ -737,13 +737,13 @@ namespace CloudSearch
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudsearch-2013-01-01/ListDomainNames">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListDomainNamesOutcome ListDomainNames(const Model::ListDomainNamesRequest& request) const;
+        virtual Model::ListDomainNamesOutcome ListDomainNames(const Model::ListDomainNamesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListDomainNames that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListDomainNamesRequestT = Model::ListDomainNamesRequest>
-        Model::ListDomainNamesOutcomeCallable ListDomainNamesCallable(const ListDomainNamesRequestT& request) const
+        Model::ListDomainNamesOutcomeCallable ListDomainNamesCallable(const ListDomainNamesRequestT& request = {}) const
         {
             return SubmitCallable(&CloudSearchClient::ListDomainNames, request);
         }
@@ -752,7 +752,7 @@ namespace CloudSearch
          * An Async wrapper for ListDomainNames that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListDomainNamesRequestT = Model::ListDomainNamesRequest>
-        void ListDomainNamesAsync(const ListDomainNamesRequestT& request, const ListDomainNamesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListDomainNamesAsync(const ListDomainNamesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListDomainNamesRequestT& request = {}) const
         {
             return SubmitAsync(&CloudSearchClient::ListDomainNames, request, handler, context);
         }
@@ -888,7 +888,6 @@ namespace CloudSearch
         void init(const CloudSearchClientConfiguration& clientConfiguration);
 
         CloudSearchClientConfiguration m_clientConfiguration;
-        std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
         std::shared_ptr<CloudSearchEndpointProviderBase> m_endpointProvider;
   };
 

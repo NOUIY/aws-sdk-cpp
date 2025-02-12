@@ -36,29 +36,13 @@ WindowsFileSystemConfiguration::WindowsFileSystemConfiguration() :
     m_copyTagsToBackups(false),
     m_copyTagsToBackupsHasBeenSet(false),
     m_aliasesHasBeenSet(false),
-    m_auditLogConfigurationHasBeenSet(false)
+    m_auditLogConfigurationHasBeenSet(false),
+    m_diskIopsConfigurationHasBeenSet(false)
 {
 }
 
-WindowsFileSystemConfiguration::WindowsFileSystemConfiguration(JsonView jsonValue) : 
-    m_activeDirectoryIdHasBeenSet(false),
-    m_selfManagedActiveDirectoryConfigurationHasBeenSet(false),
-    m_deploymentType(WindowsDeploymentType::NOT_SET),
-    m_deploymentTypeHasBeenSet(false),
-    m_remoteAdministrationEndpointHasBeenSet(false),
-    m_preferredSubnetIdHasBeenSet(false),
-    m_preferredFileServerIpHasBeenSet(false),
-    m_throughputCapacity(0),
-    m_throughputCapacityHasBeenSet(false),
-    m_maintenanceOperationsInProgressHasBeenSet(false),
-    m_weeklyMaintenanceStartTimeHasBeenSet(false),
-    m_dailyAutomaticBackupStartTimeHasBeenSet(false),
-    m_automaticBackupRetentionDays(0),
-    m_automaticBackupRetentionDaysHasBeenSet(false),
-    m_copyTagsToBackups(false),
-    m_copyTagsToBackupsHasBeenSet(false),
-    m_aliasesHasBeenSet(false),
-    m_auditLogConfigurationHasBeenSet(false)
+WindowsFileSystemConfiguration::WindowsFileSystemConfiguration(JsonView jsonValue)
+  : WindowsFileSystemConfiguration()
 {
   *this = jsonValue;
 }
@@ -169,6 +153,13 @@ WindowsFileSystemConfiguration& WindowsFileSystemConfiguration::operator =(JsonV
     m_auditLogConfigurationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("DiskIopsConfiguration"))
+  {
+    m_diskIopsConfiguration = jsonValue.GetObject("DiskIopsConfiguration");
+
+    m_diskIopsConfigurationHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -266,6 +257,12 @@ JsonValue WindowsFileSystemConfiguration::Jsonize() const
   if(m_auditLogConfigurationHasBeenSet)
   {
    payload.WithObject("AuditLogConfiguration", m_auditLogConfiguration.Jsonize());
+
+  }
+
+  if(m_diskIopsConfigurationHasBeenSet)
+  {
+   payload.WithObject("DiskIopsConfiguration", m_diskIopsConfiguration.Jsonize());
 
   }
 

@@ -24,6 +24,7 @@ namespace Aws
         static const int CRC32C_HASH = HashingUtils::HashString("CRC32C");
         static const int SHA1_HASH = HashingUtils::HashString("SHA1");
         static const int SHA256_HASH = HashingUtils::HashString("SHA256");
+        static const int CRC64NVME_HASH = HashingUtils::HashString("CRC64NVME");
 
 
         S3ChecksumAlgorithm GetS3ChecksumAlgorithmForName(const Aws::String& name)
@@ -45,6 +46,10 @@ namespace Aws
           {
             return S3ChecksumAlgorithm::SHA256;
           }
+          else if (hashCode == CRC64NVME_HASH)
+          {
+            return S3ChecksumAlgorithm::CRC64NVME;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -59,6 +64,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case S3ChecksumAlgorithm::NOT_SET:
+            return {};
           case S3ChecksumAlgorithm::CRC32:
             return "CRC32";
           case S3ChecksumAlgorithm::CRC32C:
@@ -67,6 +74,8 @@ namespace Aws
             return "SHA1";
           case S3ChecksumAlgorithm::SHA256:
             return "SHA256";
+          case S3ChecksumAlgorithm::CRC64NVME:
+            return "CRC64NVME";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

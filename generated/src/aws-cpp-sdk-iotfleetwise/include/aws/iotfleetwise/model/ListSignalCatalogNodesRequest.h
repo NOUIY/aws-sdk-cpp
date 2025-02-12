@@ -7,6 +7,7 @@
 #include <aws/iotfleetwise/IoTFleetWise_EXPORTS.h>
 #include <aws/iotfleetwise/IoTFleetWiseRequest.h>
 #include <aws/core/utils/memory/stl/AWSString.h>
+#include <aws/iotfleetwise/model/SignalNodeType.h>
 #include <utility>
 
 namespace Aws
@@ -34,47 +35,21 @@ namespace Model
     AWS_IOTFLEETWISE_API Aws::Http::HeaderValueCollection GetRequestSpecificHeaders() const override;
 
 
+    ///@{
     /**
      * <p> The name of the signal catalog to list information about. </p>
      */
     inline const Aws::String& GetName() const{ return m_name; }
-
-    /**
-     * <p> The name of the signal catalog to list information about. </p>
-     */
     inline bool NameHasBeenSet() const { return m_nameHasBeenSet; }
-
-    /**
-     * <p> The name of the signal catalog to list information about. </p>
-     */
     inline void SetName(const Aws::String& value) { m_nameHasBeenSet = true; m_name = value; }
-
-    /**
-     * <p> The name of the signal catalog to list information about. </p>
-     */
     inline void SetName(Aws::String&& value) { m_nameHasBeenSet = true; m_name = std::move(value); }
-
-    /**
-     * <p> The name of the signal catalog to list information about. </p>
-     */
     inline void SetName(const char* value) { m_nameHasBeenSet = true; m_name.assign(value); }
-
-    /**
-     * <p> The name of the signal catalog to list information about. </p>
-     */
     inline ListSignalCatalogNodesRequest& WithName(const Aws::String& value) { SetName(value); return *this;}
-
-    /**
-     * <p> The name of the signal catalog to list information about. </p>
-     */
     inline ListSignalCatalogNodesRequest& WithName(Aws::String&& value) { SetName(std::move(value)); return *this;}
-
-    /**
-     * <p> The name of the signal catalog to list information about. </p>
-     */
     inline ListSignalCatalogNodesRequest& WithName(const char* value) { SetName(value); return *this;}
+    ///@}
 
-
+    ///@{
     /**
      * <p>A pagination token for the next set of results.</p> <p>If the results of a
      * search are large, only a portion of the results are returned, and a
@@ -84,98 +59,36 @@ namespace Model
      * pagination token value. </p>
      */
     inline const Aws::String& GetNextToken() const{ return m_nextToken; }
-
-    /**
-     * <p>A pagination token for the next set of results.</p> <p>If the results of a
-     * search are large, only a portion of the results are returned, and a
-     * <code>nextToken</code> pagination token is returned in the response. To retrieve
-     * the next set of results, reissue the search request and include the returned
-     * token. When all results have been returned, the response does not contain a
-     * pagination token value. </p>
-     */
     inline bool NextTokenHasBeenSet() const { return m_nextTokenHasBeenSet; }
-
-    /**
-     * <p>A pagination token for the next set of results.</p> <p>If the results of a
-     * search are large, only a portion of the results are returned, and a
-     * <code>nextToken</code> pagination token is returned in the response. To retrieve
-     * the next set of results, reissue the search request and include the returned
-     * token. When all results have been returned, the response does not contain a
-     * pagination token value. </p>
-     */
     inline void SetNextToken(const Aws::String& value) { m_nextTokenHasBeenSet = true; m_nextToken = value; }
-
-    /**
-     * <p>A pagination token for the next set of results.</p> <p>If the results of a
-     * search are large, only a portion of the results are returned, and a
-     * <code>nextToken</code> pagination token is returned in the response. To retrieve
-     * the next set of results, reissue the search request and include the returned
-     * token. When all results have been returned, the response does not contain a
-     * pagination token value. </p>
-     */
     inline void SetNextToken(Aws::String&& value) { m_nextTokenHasBeenSet = true; m_nextToken = std::move(value); }
-
-    /**
-     * <p>A pagination token for the next set of results.</p> <p>If the results of a
-     * search are large, only a portion of the results are returned, and a
-     * <code>nextToken</code> pagination token is returned in the response. To retrieve
-     * the next set of results, reissue the search request and include the returned
-     * token. When all results have been returned, the response does not contain a
-     * pagination token value. </p>
-     */
     inline void SetNextToken(const char* value) { m_nextTokenHasBeenSet = true; m_nextToken.assign(value); }
-
-    /**
-     * <p>A pagination token for the next set of results.</p> <p>If the results of a
-     * search are large, only a portion of the results are returned, and a
-     * <code>nextToken</code> pagination token is returned in the response. To retrieve
-     * the next set of results, reissue the search request and include the returned
-     * token. When all results have been returned, the response does not contain a
-     * pagination token value. </p>
-     */
     inline ListSignalCatalogNodesRequest& WithNextToken(const Aws::String& value) { SetNextToken(value); return *this;}
-
-    /**
-     * <p>A pagination token for the next set of results.</p> <p>If the results of a
-     * search are large, only a portion of the results are returned, and a
-     * <code>nextToken</code> pagination token is returned in the response. To retrieve
-     * the next set of results, reissue the search request and include the returned
-     * token. When all results have been returned, the response does not contain a
-     * pagination token value. </p>
-     */
     inline ListSignalCatalogNodesRequest& WithNextToken(Aws::String&& value) { SetNextToken(std::move(value)); return *this;}
-
-    /**
-     * <p>A pagination token for the next set of results.</p> <p>If the results of a
-     * search are large, only a portion of the results are returned, and a
-     * <code>nextToken</code> pagination token is returned in the response. To retrieve
-     * the next set of results, reissue the search request and include the returned
-     * token. When all results have been returned, the response does not contain a
-     * pagination token value. </p>
-     */
     inline ListSignalCatalogNodesRequest& WithNextToken(const char* value) { SetNextToken(value); return *this;}
+    ///@}
 
-
+    ///@{
     /**
-     * <p> The maximum number of items to return, between 1 and 100, inclusive. </p>
+     * <p>The maximum number of items to return, between 1 and 100, inclusive.</p>
      */
     inline int GetMaxResults() const{ return m_maxResults; }
-
-    /**
-     * <p> The maximum number of items to return, between 1 and 100, inclusive. </p>
-     */
     inline bool MaxResultsHasBeenSet() const { return m_maxResultsHasBeenSet; }
-
-    /**
-     * <p> The maximum number of items to return, between 1 and 100, inclusive. </p>
-     */
     inline void SetMaxResults(int value) { m_maxResultsHasBeenSet = true; m_maxResults = value; }
-
-    /**
-     * <p> The maximum number of items to return, between 1 and 100, inclusive. </p>
-     */
     inline ListSignalCatalogNodesRequest& WithMaxResults(int value) { SetMaxResults(value); return *this;}
+    ///@}
 
+    ///@{
+    /**
+     * <p>The type of node in the signal catalog.</p>
+     */
+    inline const SignalNodeType& GetSignalNodeType() const{ return m_signalNodeType; }
+    inline bool SignalNodeTypeHasBeenSet() const { return m_signalNodeTypeHasBeenSet; }
+    inline void SetSignalNodeType(const SignalNodeType& value) { m_signalNodeTypeHasBeenSet = true; m_signalNodeType = value; }
+    inline void SetSignalNodeType(SignalNodeType&& value) { m_signalNodeTypeHasBeenSet = true; m_signalNodeType = std::move(value); }
+    inline ListSignalCatalogNodesRequest& WithSignalNodeType(const SignalNodeType& value) { SetSignalNodeType(value); return *this;}
+    inline ListSignalCatalogNodesRequest& WithSignalNodeType(SignalNodeType&& value) { SetSignalNodeType(std::move(value)); return *this;}
+    ///@}
   private:
 
     Aws::String m_name;
@@ -186,6 +99,9 @@ namespace Model
 
     int m_maxResults;
     bool m_maxResultsHasBeenSet = false;
+
+    SignalNodeType m_signalNodeType;
+    bool m_signalNodeTypeHasBeenSet = false;
   };
 
 } // namespace Model

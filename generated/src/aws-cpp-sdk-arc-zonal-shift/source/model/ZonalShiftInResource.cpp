@@ -24,21 +24,16 @@ ZonalShiftInResource::ZonalShiftInResource() :
     m_awayFromHasBeenSet(false),
     m_commentHasBeenSet(false),
     m_expiryTimeHasBeenSet(false),
+    m_practiceRunOutcome(PracticeRunOutcome::NOT_SET),
+    m_practiceRunOutcomeHasBeenSet(false),
     m_resourceIdentifierHasBeenSet(false),
     m_startTimeHasBeenSet(false),
     m_zonalShiftIdHasBeenSet(false)
 {
 }
 
-ZonalShiftInResource::ZonalShiftInResource(JsonView jsonValue) : 
-    m_appliedStatus(AppliedStatus::NOT_SET),
-    m_appliedStatusHasBeenSet(false),
-    m_awayFromHasBeenSet(false),
-    m_commentHasBeenSet(false),
-    m_expiryTimeHasBeenSet(false),
-    m_resourceIdentifierHasBeenSet(false),
-    m_startTimeHasBeenSet(false),
-    m_zonalShiftIdHasBeenSet(false)
+ZonalShiftInResource::ZonalShiftInResource(JsonView jsonValue)
+  : ZonalShiftInResource()
 {
   *this = jsonValue;
 }
@@ -71,6 +66,13 @@ ZonalShiftInResource& ZonalShiftInResource::operator =(JsonView jsonValue)
     m_expiryTime = jsonValue.GetDouble("expiryTime");
 
     m_expiryTimeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("practiceRunOutcome"))
+  {
+    m_practiceRunOutcome = PracticeRunOutcomeMapper::GetPracticeRunOutcomeForName(jsonValue.GetString("practiceRunOutcome"));
+
+    m_practiceRunOutcomeHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("resourceIdentifier"))
@@ -121,6 +123,11 @@ JsonValue ZonalShiftInResource::Jsonize() const
   if(m_expiryTimeHasBeenSet)
   {
    payload.WithDouble("expiryTime", m_expiryTime.SecondsWithMSPrecision());
+  }
+
+  if(m_practiceRunOutcomeHasBeenSet)
+  {
+   payload.WithString("practiceRunOutcome", PracticeRunOutcomeMapper::GetNameForPracticeRunOutcome(m_practiceRunOutcome));
   }
 
   if(m_resourceIdentifierHasBeenSet)

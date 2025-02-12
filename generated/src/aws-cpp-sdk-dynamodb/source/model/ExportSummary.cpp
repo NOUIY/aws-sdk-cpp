@@ -21,14 +21,14 @@ namespace Model
 ExportSummary::ExportSummary() : 
     m_exportArnHasBeenSet(false),
     m_exportStatus(ExportStatus::NOT_SET),
-    m_exportStatusHasBeenSet(false)
+    m_exportStatusHasBeenSet(false),
+    m_exportType(ExportType::NOT_SET),
+    m_exportTypeHasBeenSet(false)
 {
 }
 
-ExportSummary::ExportSummary(JsonView jsonValue) : 
-    m_exportArnHasBeenSet(false),
-    m_exportStatus(ExportStatus::NOT_SET),
-    m_exportStatusHasBeenSet(false)
+ExportSummary::ExportSummary(JsonView jsonValue)
+  : ExportSummary()
 {
   *this = jsonValue;
 }
@@ -49,6 +49,13 @@ ExportSummary& ExportSummary::operator =(JsonView jsonValue)
     m_exportStatusHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ExportType"))
+  {
+    m_exportType = ExportTypeMapper::GetExportTypeForName(jsonValue.GetString("ExportType"));
+
+    m_exportTypeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -65,6 +72,11 @@ JsonValue ExportSummary::Jsonize() const
   if(m_exportStatusHasBeenSet)
   {
    payload.WithString("ExportStatus", ExportStatusMapper::GetNameForExportStatus(m_exportStatus));
+  }
+
+  if(m_exportTypeHasBeenSet)
+  {
+   payload.WithString("ExportType", ExportTypeMapper::GetNameForExportType(m_exportType));
   }
 
   return payload;

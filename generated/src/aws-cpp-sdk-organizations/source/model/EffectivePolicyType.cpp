@@ -23,6 +23,8 @@ namespace Aws
         static const int TAG_POLICY_HASH = HashingUtils::HashString("TAG_POLICY");
         static const int BACKUP_POLICY_HASH = HashingUtils::HashString("BACKUP_POLICY");
         static const int AISERVICES_OPT_OUT_POLICY_HASH = HashingUtils::HashString("AISERVICES_OPT_OUT_POLICY");
+        static const int CHATBOT_POLICY_HASH = HashingUtils::HashString("CHATBOT_POLICY");
+        static const int DECLARATIVE_POLICY_EC2_HASH = HashingUtils::HashString("DECLARATIVE_POLICY_EC2");
 
 
         EffectivePolicyType GetEffectivePolicyTypeForName(const Aws::String& name)
@@ -40,6 +42,14 @@ namespace Aws
           {
             return EffectivePolicyType::AISERVICES_OPT_OUT_POLICY;
           }
+          else if (hashCode == CHATBOT_POLICY_HASH)
+          {
+            return EffectivePolicyType::CHATBOT_POLICY;
+          }
+          else if (hashCode == DECLARATIVE_POLICY_EC2_HASH)
+          {
+            return EffectivePolicyType::DECLARATIVE_POLICY_EC2;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -54,12 +64,18 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case EffectivePolicyType::NOT_SET:
+            return {};
           case EffectivePolicyType::TAG_POLICY:
             return "TAG_POLICY";
           case EffectivePolicyType::BACKUP_POLICY:
             return "BACKUP_POLICY";
           case EffectivePolicyType::AISERVICES_OPT_OUT_POLICY:
             return "AISERVICES_OPT_OUT_POLICY";
+          case EffectivePolicyType::CHATBOT_POLICY:
+            return "CHATBOT_POLICY";
+          case EffectivePolicyType::DECLARATIVE_POLICY_EC2:
+            return "DECLARATIVE_POLICY_EC2";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

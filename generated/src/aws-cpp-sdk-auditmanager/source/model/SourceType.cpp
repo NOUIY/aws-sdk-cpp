@@ -25,6 +25,8 @@ namespace Aws
         static const int AWS_Security_Hub_HASH = HashingUtils::HashString("AWS_Security_Hub");
         static const int AWS_API_Call_HASH = HashingUtils::HashString("AWS_API_Call");
         static const int MANUAL_HASH = HashingUtils::HashString("MANUAL");
+        static const int Common_Control_HASH = HashingUtils::HashString("Common_Control");
+        static const int Core_Control_HASH = HashingUtils::HashString("Core_Control");
 
 
         SourceType GetSourceTypeForName(const Aws::String& name)
@@ -50,6 +52,14 @@ namespace Aws
           {
             return SourceType::MANUAL;
           }
+          else if (hashCode == Common_Control_HASH)
+          {
+            return SourceType::Common_Control;
+          }
+          else if (hashCode == Core_Control_HASH)
+          {
+            return SourceType::Core_Control;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -64,6 +74,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case SourceType::NOT_SET:
+            return {};
           case SourceType::AWS_Cloudtrail:
             return "AWS_Cloudtrail";
           case SourceType::AWS_Config:
@@ -74,6 +86,10 @@ namespace Aws
             return "AWS_API_Call";
           case SourceType::MANUAL:
             return "MANUAL";
+          case SourceType::Common_Control:
+            return "Common_Control";
+          case SourceType::Core_Control:
+            return "Core_Control";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

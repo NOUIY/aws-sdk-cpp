@@ -17,17 +17,19 @@ namespace Aws
 namespace CloudFront
 {
   /**
-   * <fullname>Amazon CloudFront</fullname> <p>This is the <i>Amazon CloudFront API
-   * Reference</i>. This guide is for developers who need detailed information about
-   * CloudFront API actions, data types, and errors. For detailed information about
-   * CloudFront features, see the <i>Amazon CloudFront Developer Guide</i>.</p>
+   * <p><fullname>Amazon CloudFront</fullname> <p>This is the <i>Amazon CloudFront
+   * API Reference</i>. This guide is for developers who need detailed information
+   * about CloudFront API actions, data types, and errors. For detailed information
+   * about CloudFront features, see the <a
+   * href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html">Amazon
+   * CloudFront Developer Guide</a>.</p></p>
    */
   class AWS_CLOUDFRONT_API CloudFrontClient : public Aws::Client::AWSXMLClient, public Aws::Client::ClientWithAsyncTemplateMethods<CloudFrontClient>
   {
     public:
       typedef Aws::Client::AWSXMLClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
 
       typedef CloudFrontClientConfiguration ClientConfigurationType;
       typedef CloudFrontEndpointProvider EndpointProviderType;
@@ -37,14 +39,14 @@ namespace CloudFront
         * is not specified, it will be initialized to default values.
         */
         CloudFrontClient(const Aws::CloudFront::CloudFrontClientConfiguration& clientConfiguration = Aws::CloudFront::CloudFrontClientConfiguration(),
-                         std::shared_ptr<CloudFrontEndpointProviderBase> endpointProvider = Aws::MakeShared<CloudFrontEndpointProvider>(ALLOCATION_TAG));
+                         std::shared_ptr<CloudFrontEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         CloudFrontClient(const Aws::Auth::AWSCredentials& credentials,
-                         std::shared_ptr<CloudFrontEndpointProviderBase> endpointProvider = Aws::MakeShared<CloudFrontEndpointProvider>(ALLOCATION_TAG),
+                         std::shared_ptr<CloudFrontEndpointProviderBase> endpointProvider = nullptr,
                          const Aws::CloudFront::CloudFrontClientConfiguration& clientConfiguration = Aws::CloudFront::CloudFrontClientConfiguration());
 
        /**
@@ -52,7 +54,7 @@ namespace CloudFront
         * the default http client factory will be used
         */
         CloudFrontClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                         std::shared_ptr<CloudFrontEndpointProviderBase> endpointProvider = Aws::MakeShared<CloudFrontEndpointProvider>(ALLOCATION_TAG),
+                         std::shared_ptr<CloudFrontEndpointProviderBase> endpointProvider = nullptr,
                          const Aws::CloudFront::CloudFrontClientConfiguration& clientConfiguration = Aws::CloudFront::CloudFrontClientConfiguration());
 
 
@@ -125,8 +127,14 @@ namespace CloudFront
          * deployment workflow.</p> <p>After you create a staging distribution, you can use
          * <code>UpdateDistribution</code> to modify the staging distribution's
          * configuration. Then you can use <code>CreateContinuousDeploymentPolicy</code> to
-         * incrementally move traffic to the staging distribution.</p><p><h3>See Also:</h3>
-         * <a
+         * incrementally move traffic to the staging distribution.</p> <p>This API
+         * operation requires the following IAM permissions:</p> <ul> <li> <p> <a
+         * href="https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_GetDistribution.html">GetDistribution</a>
+         * </p> </li> <li> <p> <a
+         * href="https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CreateDistribution.html">CreateDistribution</a>
+         * </p> </li> <li> <p> <a
+         * href="https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CopyDistribution.html">CopyDistribution</a>
+         * </p> </li> </ul><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/CopyDistribution2020_05_31">AWS
          * API Reference</a></p>
          */
@@ -148,6 +156,31 @@ namespace CloudFront
         void CopyDistribution2020_05_31Async(const CopyDistribution2020_05_31RequestT& request, const CopyDistribution2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&CloudFrontClient::CopyDistribution2020_05_31, request, handler, context);
+        }
+
+        /**
+         * <p>Creates an Anycast static IP list.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/CreateAnycastIpList2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateAnycastIpList2020_05_31Outcome CreateAnycastIpList2020_05_31(const Model::CreateAnycastIpList2020_05_31Request& request) const;
+
+        /**
+         * A Callable wrapper for CreateAnycastIpList2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateAnycastIpList2020_05_31RequestT = Model::CreateAnycastIpList2020_05_31Request>
+        Model::CreateAnycastIpList2020_05_31OutcomeCallable CreateAnycastIpList2020_05_31Callable(const CreateAnycastIpList2020_05_31RequestT& request) const
+        {
+            return SubmitCallable(&CloudFrontClient::CreateAnycastIpList2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for CreateAnycastIpList2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateAnycastIpList2020_05_31RequestT = Model::CreateAnycastIpList2020_05_31Request>
+        void CreateAnycastIpList2020_05_31Async(const CreateAnycastIpList2020_05_31RequestT& request, const CreateAnycastIpList2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CloudFrontClient::CreateAnycastIpList2020_05_31, request, handler, context);
         }
 
         /**
@@ -282,7 +315,12 @@ namespace CloudFront
         }
 
         /**
-         * <p>Create a new distribution with tags.</p><p><h3>See Also:</h3>   <a
+         * <p>Create a new distribution with tags. This API operation requires the
+         * following IAM permissions:</p> <ul> <li> <p> <a
+         * href="https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CreateDistribution.html">CreateDistribution</a>
+         * </p> </li> <li> <p> <a
+         * href="https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_TagResource.html">TagResource</a>
+         * </p> </li> </ul><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/CreateDistributionWithTags2020_05_31">AWS
          * API Reference</a></p>
          */
@@ -393,7 +431,10 @@ namespace CloudFront
         }
 
         /**
-         * <p>Create a new invalidation.</p><p><h3>See Also:</h3>   <a
+         * <p>Create a new invalidation. For more information, see <a
+         * href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html">Invalidating
+         * files</a> in the <i>Amazon CloudFront Developer Guide</i>.</p><p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/CreateInvalidation2020_05_31">AWS
          * API Reference</a></p>
          */
@@ -452,6 +493,34 @@ namespace CloudFront
         void CreateKeyGroup2020_05_31Async(const CreateKeyGroup2020_05_31RequestT& request, const CreateKeyGroup2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&CloudFrontClient::CreateKeyGroup2020_05_31, request, handler, context);
+        }
+
+        /**
+         * <p>Specifies the key value store resource to add to your account. In your
+         * account, the key value store names must be unique. You can also import key value
+         * store data in JSON format from an S3 bucket by providing a valid
+         * <code>ImportSource</code> that you own.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/CreateKeyValueStore2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateKeyValueStore2020_05_31Outcome CreateKeyValueStore2020_05_31(const Model::CreateKeyValueStore2020_05_31Request& request) const;
+
+        /**
+         * A Callable wrapper for CreateKeyValueStore2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateKeyValueStore2020_05_31RequestT = Model::CreateKeyValueStore2020_05_31Request>
+        Model::CreateKeyValueStore2020_05_31OutcomeCallable CreateKeyValueStore2020_05_31Callable(const CreateKeyValueStore2020_05_31RequestT& request) const
+        {
+            return SubmitCallable(&CloudFrontClient::CreateKeyValueStore2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for CreateKeyValueStore2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateKeyValueStore2020_05_31RequestT = Model::CreateKeyValueStore2020_05_31Request>
+        void CreateKeyValueStore2020_05_31Async(const CreateKeyValueStore2020_05_31RequestT& request, const CreateKeyValueStore2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CloudFrontClient::CreateKeyValueStore2020_05_31, request, handler, context);
         }
 
         /**
@@ -716,6 +785,56 @@ namespace CloudFront
         }
 
         /**
+         * <p>Create an Amazon CloudFront VPC origin.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/CreateVpcOrigin2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateVpcOrigin2020_05_31Outcome CreateVpcOrigin2020_05_31(const Model::CreateVpcOrigin2020_05_31Request& request) const;
+
+        /**
+         * A Callable wrapper for CreateVpcOrigin2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateVpcOrigin2020_05_31RequestT = Model::CreateVpcOrigin2020_05_31Request>
+        Model::CreateVpcOrigin2020_05_31OutcomeCallable CreateVpcOrigin2020_05_31Callable(const CreateVpcOrigin2020_05_31RequestT& request) const
+        {
+            return SubmitCallable(&CloudFrontClient::CreateVpcOrigin2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for CreateVpcOrigin2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateVpcOrigin2020_05_31RequestT = Model::CreateVpcOrigin2020_05_31Request>
+        void CreateVpcOrigin2020_05_31Async(const CreateVpcOrigin2020_05_31RequestT& request, const CreateVpcOrigin2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CloudFrontClient::CreateVpcOrigin2020_05_31, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes an Anycast static IP list.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/DeleteAnycastIpList2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteAnycastIpList2020_05_31Outcome DeleteAnycastIpList2020_05_31(const Model::DeleteAnycastIpList2020_05_31Request& request) const;
+
+        /**
+         * A Callable wrapper for DeleteAnycastIpList2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteAnycastIpList2020_05_31RequestT = Model::DeleteAnycastIpList2020_05_31Request>
+        Model::DeleteAnycastIpList2020_05_31OutcomeCallable DeleteAnycastIpList2020_05_31Callable(const DeleteAnycastIpList2020_05_31RequestT& request) const
+        {
+            return SubmitCallable(&CloudFrontClient::DeleteAnycastIpList2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteAnycastIpList2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteAnycastIpList2020_05_31RequestT = Model::DeleteAnycastIpList2020_05_31Request>
+        void DeleteAnycastIpList2020_05_31Async(const DeleteAnycastIpList2020_05_31RequestT& request, const DeleteAnycastIpList2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CloudFrontClient::DeleteAnycastIpList2020_05_31, request, handler, context);
+        }
+
+        /**
          * <p>Deletes a cache policy.</p> <p>You cannot delete a cache policy if it's
          * attached to a cache behavior. First update your distributions to remove the
          * cache policy from all cache behaviors, then delete the cache policy.</p> <p>To
@@ -935,6 +1054,31 @@ namespace CloudFront
         }
 
         /**
+         * <p>Specifies the key value store to delete.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/DeleteKeyValueStore2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteKeyValueStore2020_05_31Outcome DeleteKeyValueStore2020_05_31(const Model::DeleteKeyValueStore2020_05_31Request& request) const;
+
+        /**
+         * A Callable wrapper for DeleteKeyValueStore2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteKeyValueStore2020_05_31RequestT = Model::DeleteKeyValueStore2020_05_31Request>
+        Model::DeleteKeyValueStore2020_05_31OutcomeCallable DeleteKeyValueStore2020_05_31Callable(const DeleteKeyValueStore2020_05_31RequestT& request) const
+        {
+            return SubmitCallable(&CloudFrontClient::DeleteKeyValueStore2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteKeyValueStore2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteKeyValueStore2020_05_31RequestT = Model::DeleteKeyValueStore2020_05_31Request>
+        void DeleteKeyValueStore2020_05_31Async(const DeleteKeyValueStore2020_05_31RequestT& request, const DeleteKeyValueStore2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CloudFrontClient::DeleteKeyValueStore2020_05_31, request, handler, context);
+        }
+
+        /**
          * <p>Disables additional CloudWatch metrics for the specified CloudFront
          * distribution.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/DeleteMonitoringSubscription2020_05_31">AWS
@@ -1057,13 +1201,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/DeleteRealtimeLogConfig2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::DeleteRealtimeLogConfig2020_05_31Outcome DeleteRealtimeLogConfig2020_05_31(const Model::DeleteRealtimeLogConfig2020_05_31Request& request) const;
+        virtual Model::DeleteRealtimeLogConfig2020_05_31Outcome DeleteRealtimeLogConfig2020_05_31(const Model::DeleteRealtimeLogConfig2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for DeleteRealtimeLogConfig2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DeleteRealtimeLogConfig2020_05_31RequestT = Model::DeleteRealtimeLogConfig2020_05_31Request>
-        Model::DeleteRealtimeLogConfig2020_05_31OutcomeCallable DeleteRealtimeLogConfig2020_05_31Callable(const DeleteRealtimeLogConfig2020_05_31RequestT& request) const
+        Model::DeleteRealtimeLogConfig2020_05_31OutcomeCallable DeleteRealtimeLogConfig2020_05_31Callable(const DeleteRealtimeLogConfig2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::DeleteRealtimeLogConfig2020_05_31, request);
         }
@@ -1072,7 +1216,7 @@ namespace CloudFront
          * An Async wrapper for DeleteRealtimeLogConfig2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DeleteRealtimeLogConfig2020_05_31RequestT = Model::DeleteRealtimeLogConfig2020_05_31Request>
-        void DeleteRealtimeLogConfig2020_05_31Async(const DeleteRealtimeLogConfig2020_05_31RequestT& request, const DeleteRealtimeLogConfig2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DeleteRealtimeLogConfig2020_05_31Async(const DeleteRealtimeLogConfig2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DeleteRealtimeLogConfig2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::DeleteRealtimeLogConfig2020_05_31, request, handler, context);
         }
@@ -1162,6 +1306,31 @@ namespace CloudFront
         }
 
         /**
+         * <p>Delete an Amazon CloudFront VPC origin.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/DeleteVpcOrigin2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteVpcOrigin2020_05_31Outcome DeleteVpcOrigin2020_05_31(const Model::DeleteVpcOrigin2020_05_31Request& request) const;
+
+        /**
+         * A Callable wrapper for DeleteVpcOrigin2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteVpcOrigin2020_05_31RequestT = Model::DeleteVpcOrigin2020_05_31Request>
+        Model::DeleteVpcOrigin2020_05_31OutcomeCallable DeleteVpcOrigin2020_05_31Callable(const DeleteVpcOrigin2020_05_31RequestT& request) const
+        {
+            return SubmitCallable(&CloudFrontClient::DeleteVpcOrigin2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteVpcOrigin2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteVpcOrigin2020_05_31RequestT = Model::DeleteVpcOrigin2020_05_31Request>
+        void DeleteVpcOrigin2020_05_31Async(const DeleteVpcOrigin2020_05_31RequestT& request, const DeleteVpcOrigin2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CloudFrontClient::DeleteVpcOrigin2020_05_31, request, handler, context);
+        }
+
+        /**
          * <p>Gets configuration information and metadata about a CloudFront function, but
          * not the function's code. To get a function's code, use
          * <code>GetFunction</code>.</p> <p>To get configuration information and metadata
@@ -1188,6 +1357,57 @@ namespace CloudFront
         void DescribeFunction2020_05_31Async(const DescribeFunction2020_05_31RequestT& request, const DescribeFunction2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&CloudFrontClient::DescribeFunction2020_05_31, request, handler, context);
+        }
+
+        /**
+         * <p>Specifies the key value store and its configuration.</p><p><h3>See Also:</h3>
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/DescribeKeyValueStore2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeKeyValueStore2020_05_31Outcome DescribeKeyValueStore2020_05_31(const Model::DescribeKeyValueStore2020_05_31Request& request) const;
+
+        /**
+         * A Callable wrapper for DescribeKeyValueStore2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeKeyValueStore2020_05_31RequestT = Model::DescribeKeyValueStore2020_05_31Request>
+        Model::DescribeKeyValueStore2020_05_31OutcomeCallable DescribeKeyValueStore2020_05_31Callable(const DescribeKeyValueStore2020_05_31RequestT& request) const
+        {
+            return SubmitCallable(&CloudFrontClient::DescribeKeyValueStore2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeKeyValueStore2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeKeyValueStore2020_05_31RequestT = Model::DescribeKeyValueStore2020_05_31Request>
+        void DescribeKeyValueStore2020_05_31Async(const DescribeKeyValueStore2020_05_31RequestT& request, const DescribeKeyValueStore2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CloudFrontClient::DescribeKeyValueStore2020_05_31, request, handler, context);
+        }
+
+        /**
+         * <p>Gets an Anycast static IP list.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/GetAnycastIpList2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetAnycastIpList2020_05_31Outcome GetAnycastIpList2020_05_31(const Model::GetAnycastIpList2020_05_31Request& request) const;
+
+        /**
+         * A Callable wrapper for GetAnycastIpList2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetAnycastIpList2020_05_31RequestT = Model::GetAnycastIpList2020_05_31Request>
+        Model::GetAnycastIpList2020_05_31OutcomeCallable GetAnycastIpList2020_05_31Callable(const GetAnycastIpList2020_05_31RequestT& request) const
+        {
+            return SubmitCallable(&CloudFrontClient::GetAnycastIpList2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for GetAnycastIpList2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetAnycastIpList2020_05_31RequestT = Model::GetAnycastIpList2020_05_31Request>
+        void GetAnycastIpList2020_05_31Async(const GetAnycastIpList2020_05_31RequestT& request, const GetAnycastIpList2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CloudFrontClient::GetAnycastIpList2020_05_31, request, handler, context);
         }
 
         /**
@@ -1827,13 +2047,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/GetRealtimeLogConfig2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetRealtimeLogConfig2020_05_31Outcome GetRealtimeLogConfig2020_05_31(const Model::GetRealtimeLogConfig2020_05_31Request& request) const;
+        virtual Model::GetRealtimeLogConfig2020_05_31Outcome GetRealtimeLogConfig2020_05_31(const Model::GetRealtimeLogConfig2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for GetRealtimeLogConfig2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetRealtimeLogConfig2020_05_31RequestT = Model::GetRealtimeLogConfig2020_05_31Request>
-        Model::GetRealtimeLogConfig2020_05_31OutcomeCallable GetRealtimeLogConfig2020_05_31Callable(const GetRealtimeLogConfig2020_05_31RequestT& request) const
+        Model::GetRealtimeLogConfig2020_05_31OutcomeCallable GetRealtimeLogConfig2020_05_31Callable(const GetRealtimeLogConfig2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::GetRealtimeLogConfig2020_05_31, request);
         }
@@ -1842,7 +2062,7 @@ namespace CloudFront
          * An Async wrapper for GetRealtimeLogConfig2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetRealtimeLogConfig2020_05_31RequestT = Model::GetRealtimeLogConfig2020_05_31Request>
-        void GetRealtimeLogConfig2020_05_31Async(const GetRealtimeLogConfig2020_05_31RequestT& request, const GetRealtimeLogConfig2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetRealtimeLogConfig2020_05_31Async(const GetRealtimeLogConfig2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetRealtimeLogConfig2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::GetRealtimeLogConfig2020_05_31, request, handler, context);
         }
@@ -1963,6 +2183,57 @@ namespace CloudFront
         }
 
         /**
+         * <p>Get the details of an Amazon CloudFront VPC origin.</p><p><h3>See Also:</h3> 
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/GetVpcOrigin2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetVpcOrigin2020_05_31Outcome GetVpcOrigin2020_05_31(const Model::GetVpcOrigin2020_05_31Request& request) const;
+
+        /**
+         * A Callable wrapper for GetVpcOrigin2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetVpcOrigin2020_05_31RequestT = Model::GetVpcOrigin2020_05_31Request>
+        Model::GetVpcOrigin2020_05_31OutcomeCallable GetVpcOrigin2020_05_31Callable(const GetVpcOrigin2020_05_31RequestT& request) const
+        {
+            return SubmitCallable(&CloudFrontClient::GetVpcOrigin2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for GetVpcOrigin2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetVpcOrigin2020_05_31RequestT = Model::GetVpcOrigin2020_05_31Request>
+        void GetVpcOrigin2020_05_31Async(const GetVpcOrigin2020_05_31RequestT& request, const GetVpcOrigin2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CloudFrontClient::GetVpcOrigin2020_05_31, request, handler, context);
+        }
+
+        /**
+         * <p>Lists your Anycast static IP lists.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListAnycastIpLists2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListAnycastIpLists2020_05_31Outcome ListAnycastIpLists2020_05_31(const Model::ListAnycastIpLists2020_05_31Request& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListAnycastIpLists2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListAnycastIpLists2020_05_31RequestT = Model::ListAnycastIpLists2020_05_31Request>
+        Model::ListAnycastIpLists2020_05_31OutcomeCallable ListAnycastIpLists2020_05_31Callable(const ListAnycastIpLists2020_05_31RequestT& request = {}) const
+        {
+            return SubmitCallable(&CloudFrontClient::ListAnycastIpLists2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for ListAnycastIpLists2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListAnycastIpLists2020_05_31RequestT = Model::ListAnycastIpLists2020_05_31Request>
+        void ListAnycastIpLists2020_05_31Async(const ListAnycastIpLists2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListAnycastIpLists2020_05_31RequestT& request = {}) const
+        {
+            return SubmitAsync(&CloudFrontClient::ListAnycastIpLists2020_05_31, request, handler, context);
+        }
+
+        /**
          * <p>Gets a list of cache policies.</p> <p>You can optionally apply a filter to
          * return only the managed policies created by Amazon Web Services, or only the
          * custom policies created in your Amazon Web Services account.</p> <p>You can
@@ -1975,13 +2246,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListCachePolicies2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListCachePolicies2020_05_31Outcome ListCachePolicies2020_05_31(const Model::ListCachePolicies2020_05_31Request& request) const;
+        virtual Model::ListCachePolicies2020_05_31Outcome ListCachePolicies2020_05_31(const Model::ListCachePolicies2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListCachePolicies2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListCachePolicies2020_05_31RequestT = Model::ListCachePolicies2020_05_31Request>
-        Model::ListCachePolicies2020_05_31OutcomeCallable ListCachePolicies2020_05_31Callable(const ListCachePolicies2020_05_31RequestT& request) const
+        Model::ListCachePolicies2020_05_31OutcomeCallable ListCachePolicies2020_05_31Callable(const ListCachePolicies2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListCachePolicies2020_05_31, request);
         }
@@ -1990,7 +2261,7 @@ namespace CloudFront
          * An Async wrapper for ListCachePolicies2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListCachePolicies2020_05_31RequestT = Model::ListCachePolicies2020_05_31Request>
-        void ListCachePolicies2020_05_31Async(const ListCachePolicies2020_05_31RequestT& request, const ListCachePolicies2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListCachePolicies2020_05_31Async(const ListCachePolicies2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListCachePolicies2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListCachePolicies2020_05_31, request, handler, context);
         }
@@ -2000,13 +2271,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListCloudFrontOriginAccessIdentities2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListCloudFrontOriginAccessIdentities2020_05_31Outcome ListCloudFrontOriginAccessIdentities2020_05_31(const Model::ListCloudFrontOriginAccessIdentities2020_05_31Request& request) const;
+        virtual Model::ListCloudFrontOriginAccessIdentities2020_05_31Outcome ListCloudFrontOriginAccessIdentities2020_05_31(const Model::ListCloudFrontOriginAccessIdentities2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListCloudFrontOriginAccessIdentities2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListCloudFrontOriginAccessIdentities2020_05_31RequestT = Model::ListCloudFrontOriginAccessIdentities2020_05_31Request>
-        Model::ListCloudFrontOriginAccessIdentities2020_05_31OutcomeCallable ListCloudFrontOriginAccessIdentities2020_05_31Callable(const ListCloudFrontOriginAccessIdentities2020_05_31RequestT& request) const
+        Model::ListCloudFrontOriginAccessIdentities2020_05_31OutcomeCallable ListCloudFrontOriginAccessIdentities2020_05_31Callable(const ListCloudFrontOriginAccessIdentities2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListCloudFrontOriginAccessIdentities2020_05_31, request);
         }
@@ -2015,7 +2286,7 @@ namespace CloudFront
          * An Async wrapper for ListCloudFrontOriginAccessIdentities2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListCloudFrontOriginAccessIdentities2020_05_31RequestT = Model::ListCloudFrontOriginAccessIdentities2020_05_31Request>
-        void ListCloudFrontOriginAccessIdentities2020_05_31Async(const ListCloudFrontOriginAccessIdentities2020_05_31RequestT& request, const ListCloudFrontOriginAccessIdentities2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListCloudFrontOriginAccessIdentities2020_05_31Async(const ListCloudFrontOriginAccessIdentities2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListCloudFrontOriginAccessIdentities2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListCloudFrontOriginAccessIdentities2020_05_31, request, handler, context);
         }
@@ -2083,13 +2354,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListContinuousDeploymentPolicies2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListContinuousDeploymentPolicies2020_05_31Outcome ListContinuousDeploymentPolicies2020_05_31(const Model::ListContinuousDeploymentPolicies2020_05_31Request& request) const;
+        virtual Model::ListContinuousDeploymentPolicies2020_05_31Outcome ListContinuousDeploymentPolicies2020_05_31(const Model::ListContinuousDeploymentPolicies2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListContinuousDeploymentPolicies2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListContinuousDeploymentPolicies2020_05_31RequestT = Model::ListContinuousDeploymentPolicies2020_05_31Request>
-        Model::ListContinuousDeploymentPolicies2020_05_31OutcomeCallable ListContinuousDeploymentPolicies2020_05_31Callable(const ListContinuousDeploymentPolicies2020_05_31RequestT& request) const
+        Model::ListContinuousDeploymentPolicies2020_05_31OutcomeCallable ListContinuousDeploymentPolicies2020_05_31Callable(const ListContinuousDeploymentPolicies2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListContinuousDeploymentPolicies2020_05_31, request);
         }
@@ -2098,7 +2369,7 @@ namespace CloudFront
          * An Async wrapper for ListContinuousDeploymentPolicies2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListContinuousDeploymentPolicies2020_05_31RequestT = Model::ListContinuousDeploymentPolicies2020_05_31Request>
-        void ListContinuousDeploymentPolicies2020_05_31Async(const ListContinuousDeploymentPolicies2020_05_31RequestT& request, const ListContinuousDeploymentPolicies2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListContinuousDeploymentPolicies2020_05_31Async(const ListContinuousDeploymentPolicies2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListContinuousDeploymentPolicies2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListContinuousDeploymentPolicies2020_05_31, request, handler, context);
         }
@@ -2108,13 +2379,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListDistributions2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListDistributions2020_05_31Outcome ListDistributions2020_05_31(const Model::ListDistributions2020_05_31Request& request) const;
+        virtual Model::ListDistributions2020_05_31Outcome ListDistributions2020_05_31(const Model::ListDistributions2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListDistributions2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListDistributions2020_05_31RequestT = Model::ListDistributions2020_05_31Request>
-        Model::ListDistributions2020_05_31OutcomeCallable ListDistributions2020_05_31Callable(const ListDistributions2020_05_31RequestT& request) const
+        Model::ListDistributions2020_05_31OutcomeCallable ListDistributions2020_05_31Callable(const ListDistributions2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListDistributions2020_05_31, request);
         }
@@ -2123,9 +2394,35 @@ namespace CloudFront
          * An Async wrapper for ListDistributions2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListDistributions2020_05_31RequestT = Model::ListDistributions2020_05_31Request>
-        void ListDistributions2020_05_31Async(const ListDistributions2020_05_31RequestT& request, const ListDistributions2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListDistributions2020_05_31Async(const ListDistributions2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListDistributions2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListDistributions2020_05_31, request, handler, context);
+        }
+
+        /**
+         * <p>Lists the distributions in your account that are associated with the
+         * specified <code>AnycastIpListId</code>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListDistributionsByAnycastIpListId2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListDistributionsByAnycastIpListId2020_05_31Outcome ListDistributionsByAnycastIpListId2020_05_31(const Model::ListDistributionsByAnycastIpListId2020_05_31Request& request) const;
+
+        /**
+         * A Callable wrapper for ListDistributionsByAnycastIpListId2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListDistributionsByAnycastIpListId2020_05_31RequestT = Model::ListDistributionsByAnycastIpListId2020_05_31Request>
+        Model::ListDistributionsByAnycastIpListId2020_05_31OutcomeCallable ListDistributionsByAnycastIpListId2020_05_31Callable(const ListDistributionsByAnycastIpListId2020_05_31RequestT& request) const
+        {
+            return SubmitCallable(&CloudFrontClient::ListDistributionsByAnycastIpListId2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for ListDistributionsByAnycastIpListId2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListDistributionsByAnycastIpListId2020_05_31RequestT = Model::ListDistributionsByAnycastIpListId2020_05_31Request>
+        void ListDistributionsByAnycastIpListId2020_05_31Async(const ListDistributionsByAnycastIpListId2020_05_31RequestT& request, const ListDistributionsByAnycastIpListId2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CloudFrontClient::ListDistributionsByAnycastIpListId2020_05_31, request, handler, context);
         }
 
         /**
@@ -2239,13 +2536,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListDistributionsByRealtimeLogConfig2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListDistributionsByRealtimeLogConfig2020_05_31Outcome ListDistributionsByRealtimeLogConfig2020_05_31(const Model::ListDistributionsByRealtimeLogConfig2020_05_31Request& request) const;
+        virtual Model::ListDistributionsByRealtimeLogConfig2020_05_31Outcome ListDistributionsByRealtimeLogConfig2020_05_31(const Model::ListDistributionsByRealtimeLogConfig2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListDistributionsByRealtimeLogConfig2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListDistributionsByRealtimeLogConfig2020_05_31RequestT = Model::ListDistributionsByRealtimeLogConfig2020_05_31Request>
-        Model::ListDistributionsByRealtimeLogConfig2020_05_31OutcomeCallable ListDistributionsByRealtimeLogConfig2020_05_31Callable(const ListDistributionsByRealtimeLogConfig2020_05_31RequestT& request) const
+        Model::ListDistributionsByRealtimeLogConfig2020_05_31OutcomeCallable ListDistributionsByRealtimeLogConfig2020_05_31Callable(const ListDistributionsByRealtimeLogConfig2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListDistributionsByRealtimeLogConfig2020_05_31, request);
         }
@@ -2254,7 +2551,7 @@ namespace CloudFront
          * An Async wrapper for ListDistributionsByRealtimeLogConfig2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListDistributionsByRealtimeLogConfig2020_05_31RequestT = Model::ListDistributionsByRealtimeLogConfig2020_05_31Request>
-        void ListDistributionsByRealtimeLogConfig2020_05_31Async(const ListDistributionsByRealtimeLogConfig2020_05_31RequestT& request, const ListDistributionsByRealtimeLogConfig2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListDistributionsByRealtimeLogConfig2020_05_31Async(const ListDistributionsByRealtimeLogConfig2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListDistributionsByRealtimeLogConfig2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListDistributionsByRealtimeLogConfig2020_05_31, request, handler, context);
         }
@@ -2292,6 +2589,32 @@ namespace CloudFront
         }
 
         /**
+         * <p>List CloudFront distributions by their VPC origin ID.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListDistributionsByVpcOriginId2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListDistributionsByVpcOriginId2020_05_31Outcome ListDistributionsByVpcOriginId2020_05_31(const Model::ListDistributionsByVpcOriginId2020_05_31Request& request) const;
+
+        /**
+         * A Callable wrapper for ListDistributionsByVpcOriginId2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListDistributionsByVpcOriginId2020_05_31RequestT = Model::ListDistributionsByVpcOriginId2020_05_31Request>
+        Model::ListDistributionsByVpcOriginId2020_05_31OutcomeCallable ListDistributionsByVpcOriginId2020_05_31Callable(const ListDistributionsByVpcOriginId2020_05_31RequestT& request) const
+        {
+            return SubmitCallable(&CloudFrontClient::ListDistributionsByVpcOriginId2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for ListDistributionsByVpcOriginId2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListDistributionsByVpcOriginId2020_05_31RequestT = Model::ListDistributionsByVpcOriginId2020_05_31Request>
+        void ListDistributionsByVpcOriginId2020_05_31Async(const ListDistributionsByVpcOriginId2020_05_31RequestT& request, const ListDistributionsByVpcOriginId2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CloudFrontClient::ListDistributionsByVpcOriginId2020_05_31, request, handler, context);
+        }
+
+        /**
          * <p>List the distributions that are associated with a specified WAF web
          * ACL.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListDistributionsByWebACLId2020_05_31">AWS
@@ -2323,13 +2646,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListFieldLevelEncryptionConfigs2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListFieldLevelEncryptionConfigs2020_05_31Outcome ListFieldLevelEncryptionConfigs2020_05_31(const Model::ListFieldLevelEncryptionConfigs2020_05_31Request& request) const;
+        virtual Model::ListFieldLevelEncryptionConfigs2020_05_31Outcome ListFieldLevelEncryptionConfigs2020_05_31(const Model::ListFieldLevelEncryptionConfigs2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListFieldLevelEncryptionConfigs2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListFieldLevelEncryptionConfigs2020_05_31RequestT = Model::ListFieldLevelEncryptionConfigs2020_05_31Request>
-        Model::ListFieldLevelEncryptionConfigs2020_05_31OutcomeCallable ListFieldLevelEncryptionConfigs2020_05_31Callable(const ListFieldLevelEncryptionConfigs2020_05_31RequestT& request) const
+        Model::ListFieldLevelEncryptionConfigs2020_05_31OutcomeCallable ListFieldLevelEncryptionConfigs2020_05_31Callable(const ListFieldLevelEncryptionConfigs2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListFieldLevelEncryptionConfigs2020_05_31, request);
         }
@@ -2338,7 +2661,7 @@ namespace CloudFront
          * An Async wrapper for ListFieldLevelEncryptionConfigs2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListFieldLevelEncryptionConfigs2020_05_31RequestT = Model::ListFieldLevelEncryptionConfigs2020_05_31Request>
-        void ListFieldLevelEncryptionConfigs2020_05_31Async(const ListFieldLevelEncryptionConfigs2020_05_31RequestT& request, const ListFieldLevelEncryptionConfigs2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListFieldLevelEncryptionConfigs2020_05_31Async(const ListFieldLevelEncryptionConfigs2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListFieldLevelEncryptionConfigs2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListFieldLevelEncryptionConfigs2020_05_31, request, handler, context);
         }
@@ -2349,13 +2672,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListFieldLevelEncryptionProfiles2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListFieldLevelEncryptionProfiles2020_05_31Outcome ListFieldLevelEncryptionProfiles2020_05_31(const Model::ListFieldLevelEncryptionProfiles2020_05_31Request& request) const;
+        virtual Model::ListFieldLevelEncryptionProfiles2020_05_31Outcome ListFieldLevelEncryptionProfiles2020_05_31(const Model::ListFieldLevelEncryptionProfiles2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListFieldLevelEncryptionProfiles2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListFieldLevelEncryptionProfiles2020_05_31RequestT = Model::ListFieldLevelEncryptionProfiles2020_05_31Request>
-        Model::ListFieldLevelEncryptionProfiles2020_05_31OutcomeCallable ListFieldLevelEncryptionProfiles2020_05_31Callable(const ListFieldLevelEncryptionProfiles2020_05_31RequestT& request) const
+        Model::ListFieldLevelEncryptionProfiles2020_05_31OutcomeCallable ListFieldLevelEncryptionProfiles2020_05_31Callable(const ListFieldLevelEncryptionProfiles2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListFieldLevelEncryptionProfiles2020_05_31, request);
         }
@@ -2364,7 +2687,7 @@ namespace CloudFront
          * An Async wrapper for ListFieldLevelEncryptionProfiles2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListFieldLevelEncryptionProfiles2020_05_31RequestT = Model::ListFieldLevelEncryptionProfiles2020_05_31Request>
-        void ListFieldLevelEncryptionProfiles2020_05_31Async(const ListFieldLevelEncryptionProfiles2020_05_31RequestT& request, const ListFieldLevelEncryptionProfiles2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListFieldLevelEncryptionProfiles2020_05_31Async(const ListFieldLevelEncryptionProfiles2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListFieldLevelEncryptionProfiles2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListFieldLevelEncryptionProfiles2020_05_31, request, handler, context);
         }
@@ -2383,13 +2706,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListFunctions2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListFunctions2020_05_31Outcome ListFunctions2020_05_31(const Model::ListFunctions2020_05_31Request& request) const;
+        virtual Model::ListFunctions2020_05_31Outcome ListFunctions2020_05_31(const Model::ListFunctions2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListFunctions2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListFunctions2020_05_31RequestT = Model::ListFunctions2020_05_31Request>
-        Model::ListFunctions2020_05_31OutcomeCallable ListFunctions2020_05_31Callable(const ListFunctions2020_05_31RequestT& request) const
+        Model::ListFunctions2020_05_31OutcomeCallable ListFunctions2020_05_31Callable(const ListFunctions2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListFunctions2020_05_31, request);
         }
@@ -2398,7 +2721,7 @@ namespace CloudFront
          * An Async wrapper for ListFunctions2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListFunctions2020_05_31RequestT = Model::ListFunctions2020_05_31Request>
-        void ListFunctions2020_05_31Async(const ListFunctions2020_05_31RequestT& request, const ListFunctions2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListFunctions2020_05_31Async(const ListFunctions2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListFunctions2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListFunctions2020_05_31, request, handler, context);
         }
@@ -2439,13 +2762,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListKeyGroups2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListKeyGroups2020_05_31Outcome ListKeyGroups2020_05_31(const Model::ListKeyGroups2020_05_31Request& request) const;
+        virtual Model::ListKeyGroups2020_05_31Outcome ListKeyGroups2020_05_31(const Model::ListKeyGroups2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListKeyGroups2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListKeyGroups2020_05_31RequestT = Model::ListKeyGroups2020_05_31Request>
-        Model::ListKeyGroups2020_05_31OutcomeCallable ListKeyGroups2020_05_31Callable(const ListKeyGroups2020_05_31RequestT& request) const
+        Model::ListKeyGroups2020_05_31OutcomeCallable ListKeyGroups2020_05_31Callable(const ListKeyGroups2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListKeyGroups2020_05_31, request);
         }
@@ -2454,29 +2777,58 @@ namespace CloudFront
          * An Async wrapper for ListKeyGroups2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListKeyGroups2020_05_31RequestT = Model::ListKeyGroups2020_05_31Request>
-        void ListKeyGroups2020_05_31Async(const ListKeyGroups2020_05_31RequestT& request, const ListKeyGroups2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListKeyGroups2020_05_31Async(const ListKeyGroups2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListKeyGroups2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListKeyGroups2020_05_31, request, handler, context);
         }
 
         /**
-         * <p>Gets the list of CloudFront origin access controls in this Amazon Web
+         * <p>Specifies the key value stores to list.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListKeyValueStores2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListKeyValueStores2020_05_31Outcome ListKeyValueStores2020_05_31(const Model::ListKeyValueStores2020_05_31Request& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListKeyValueStores2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListKeyValueStores2020_05_31RequestT = Model::ListKeyValueStores2020_05_31Request>
+        Model::ListKeyValueStores2020_05_31OutcomeCallable ListKeyValueStores2020_05_31Callable(const ListKeyValueStores2020_05_31RequestT& request = {}) const
+        {
+            return SubmitCallable(&CloudFrontClient::ListKeyValueStores2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for ListKeyValueStores2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListKeyValueStores2020_05_31RequestT = Model::ListKeyValueStores2020_05_31Request>
+        void ListKeyValueStores2020_05_31Async(const ListKeyValueStores2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListKeyValueStores2020_05_31RequestT& request = {}) const
+        {
+            return SubmitAsync(&CloudFrontClient::ListKeyValueStores2020_05_31, request, handler, context);
+        }
+
+        /**
+         * <p>Gets the list of CloudFront origin access controls (OACs) in this Amazon Web
          * Services account.</p> <p>You can optionally specify the maximum number of items
          * to receive in the response. If the total number of items in the list exceeds the
          * maximum that you specify, or the default maximum, the response is paginated. To
          * get the next page of items, send another request that specifies the
          * <code>NextMarker</code> value from the current response as the
-         * <code>Marker</code> value in the next request.</p><p><h3>See Also:</h3>   <a
+         * <code>Marker</code> value in the next request.</p>  <p>If you're not using
+         * origin access controls for your Amazon Web Services account, the
+         * <code>ListOriginAccessControls</code> operation doesn't return the
+         * <code>Items</code> element in the response.</p> <p><h3>See Also:</h3>  
+         * <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListOriginAccessControls2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListOriginAccessControls2020_05_31Outcome ListOriginAccessControls2020_05_31(const Model::ListOriginAccessControls2020_05_31Request& request) const;
+        virtual Model::ListOriginAccessControls2020_05_31Outcome ListOriginAccessControls2020_05_31(const Model::ListOriginAccessControls2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListOriginAccessControls2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListOriginAccessControls2020_05_31RequestT = Model::ListOriginAccessControls2020_05_31Request>
-        Model::ListOriginAccessControls2020_05_31OutcomeCallable ListOriginAccessControls2020_05_31Callable(const ListOriginAccessControls2020_05_31RequestT& request) const
+        Model::ListOriginAccessControls2020_05_31OutcomeCallable ListOriginAccessControls2020_05_31Callable(const ListOriginAccessControls2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListOriginAccessControls2020_05_31, request);
         }
@@ -2485,7 +2837,7 @@ namespace CloudFront
          * An Async wrapper for ListOriginAccessControls2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListOriginAccessControls2020_05_31RequestT = Model::ListOriginAccessControls2020_05_31Request>
-        void ListOriginAccessControls2020_05_31Async(const ListOriginAccessControls2020_05_31RequestT& request, const ListOriginAccessControls2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListOriginAccessControls2020_05_31Async(const ListOriginAccessControls2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListOriginAccessControls2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListOriginAccessControls2020_05_31, request, handler, context);
         }
@@ -2503,13 +2855,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListOriginRequestPolicies2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListOriginRequestPolicies2020_05_31Outcome ListOriginRequestPolicies2020_05_31(const Model::ListOriginRequestPolicies2020_05_31Request& request) const;
+        virtual Model::ListOriginRequestPolicies2020_05_31Outcome ListOriginRequestPolicies2020_05_31(const Model::ListOriginRequestPolicies2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListOriginRequestPolicies2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListOriginRequestPolicies2020_05_31RequestT = Model::ListOriginRequestPolicies2020_05_31Request>
-        Model::ListOriginRequestPolicies2020_05_31OutcomeCallable ListOriginRequestPolicies2020_05_31Callable(const ListOriginRequestPolicies2020_05_31RequestT& request) const
+        Model::ListOriginRequestPolicies2020_05_31OutcomeCallable ListOriginRequestPolicies2020_05_31Callable(const ListOriginRequestPolicies2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListOriginRequestPolicies2020_05_31, request);
         }
@@ -2518,7 +2870,7 @@ namespace CloudFront
          * An Async wrapper for ListOriginRequestPolicies2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListOriginRequestPolicies2020_05_31RequestT = Model::ListOriginRequestPolicies2020_05_31Request>
-        void ListOriginRequestPolicies2020_05_31Async(const ListOriginRequestPolicies2020_05_31RequestT& request, const ListOriginRequestPolicies2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListOriginRequestPolicies2020_05_31Async(const ListOriginRequestPolicies2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListOriginRequestPolicies2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListOriginRequestPolicies2020_05_31, request, handler, context);
         }
@@ -2529,13 +2881,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListPublicKeys2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListPublicKeys2020_05_31Outcome ListPublicKeys2020_05_31(const Model::ListPublicKeys2020_05_31Request& request) const;
+        virtual Model::ListPublicKeys2020_05_31Outcome ListPublicKeys2020_05_31(const Model::ListPublicKeys2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListPublicKeys2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListPublicKeys2020_05_31RequestT = Model::ListPublicKeys2020_05_31Request>
-        Model::ListPublicKeys2020_05_31OutcomeCallable ListPublicKeys2020_05_31Callable(const ListPublicKeys2020_05_31RequestT& request) const
+        Model::ListPublicKeys2020_05_31OutcomeCallable ListPublicKeys2020_05_31Callable(const ListPublicKeys2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListPublicKeys2020_05_31, request);
         }
@@ -2544,7 +2896,7 @@ namespace CloudFront
          * An Async wrapper for ListPublicKeys2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListPublicKeys2020_05_31RequestT = Model::ListPublicKeys2020_05_31Request>
-        void ListPublicKeys2020_05_31Async(const ListPublicKeys2020_05_31RequestT& request, const ListPublicKeys2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListPublicKeys2020_05_31Async(const ListPublicKeys2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListPublicKeys2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListPublicKeys2020_05_31, request, handler, context);
         }
@@ -2560,13 +2912,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListRealtimeLogConfigs2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListRealtimeLogConfigs2020_05_31Outcome ListRealtimeLogConfigs2020_05_31(const Model::ListRealtimeLogConfigs2020_05_31Request& request) const;
+        virtual Model::ListRealtimeLogConfigs2020_05_31Outcome ListRealtimeLogConfigs2020_05_31(const Model::ListRealtimeLogConfigs2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListRealtimeLogConfigs2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListRealtimeLogConfigs2020_05_31RequestT = Model::ListRealtimeLogConfigs2020_05_31Request>
-        Model::ListRealtimeLogConfigs2020_05_31OutcomeCallable ListRealtimeLogConfigs2020_05_31Callable(const ListRealtimeLogConfigs2020_05_31RequestT& request) const
+        Model::ListRealtimeLogConfigs2020_05_31OutcomeCallable ListRealtimeLogConfigs2020_05_31Callable(const ListRealtimeLogConfigs2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListRealtimeLogConfigs2020_05_31, request);
         }
@@ -2575,7 +2927,7 @@ namespace CloudFront
          * An Async wrapper for ListRealtimeLogConfigs2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListRealtimeLogConfigs2020_05_31RequestT = Model::ListRealtimeLogConfigs2020_05_31Request>
-        void ListRealtimeLogConfigs2020_05_31Async(const ListRealtimeLogConfigs2020_05_31RequestT& request, const ListRealtimeLogConfigs2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListRealtimeLogConfigs2020_05_31Async(const ListRealtimeLogConfigs2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListRealtimeLogConfigs2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListRealtimeLogConfigs2020_05_31, request, handler, context);
         }
@@ -2593,13 +2945,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListResponseHeadersPolicies2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListResponseHeadersPolicies2020_05_31Outcome ListResponseHeadersPolicies2020_05_31(const Model::ListResponseHeadersPolicies2020_05_31Request& request) const;
+        virtual Model::ListResponseHeadersPolicies2020_05_31Outcome ListResponseHeadersPolicies2020_05_31(const Model::ListResponseHeadersPolicies2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListResponseHeadersPolicies2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListResponseHeadersPolicies2020_05_31RequestT = Model::ListResponseHeadersPolicies2020_05_31Request>
-        Model::ListResponseHeadersPolicies2020_05_31OutcomeCallable ListResponseHeadersPolicies2020_05_31Callable(const ListResponseHeadersPolicies2020_05_31RequestT& request) const
+        Model::ListResponseHeadersPolicies2020_05_31OutcomeCallable ListResponseHeadersPolicies2020_05_31Callable(const ListResponseHeadersPolicies2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListResponseHeadersPolicies2020_05_31, request);
         }
@@ -2608,7 +2960,7 @@ namespace CloudFront
          * An Async wrapper for ListResponseHeadersPolicies2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListResponseHeadersPolicies2020_05_31RequestT = Model::ListResponseHeadersPolicies2020_05_31Request>
-        void ListResponseHeadersPolicies2020_05_31Async(const ListResponseHeadersPolicies2020_05_31RequestT& request, const ListResponseHeadersPolicies2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListResponseHeadersPolicies2020_05_31Async(const ListResponseHeadersPolicies2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListResponseHeadersPolicies2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListResponseHeadersPolicies2020_05_31, request, handler, context);
         }
@@ -2618,13 +2970,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListStreamingDistributions2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListStreamingDistributions2020_05_31Outcome ListStreamingDistributions2020_05_31(const Model::ListStreamingDistributions2020_05_31Request& request) const;
+        virtual Model::ListStreamingDistributions2020_05_31Outcome ListStreamingDistributions2020_05_31(const Model::ListStreamingDistributions2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for ListStreamingDistributions2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListStreamingDistributions2020_05_31RequestT = Model::ListStreamingDistributions2020_05_31Request>
-        Model::ListStreamingDistributions2020_05_31OutcomeCallable ListStreamingDistributions2020_05_31Callable(const ListStreamingDistributions2020_05_31RequestT& request) const
+        Model::ListStreamingDistributions2020_05_31OutcomeCallable ListStreamingDistributions2020_05_31Callable(const ListStreamingDistributions2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::ListStreamingDistributions2020_05_31, request);
         }
@@ -2633,13 +2985,16 @@ namespace CloudFront
          * An Async wrapper for ListStreamingDistributions2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListStreamingDistributions2020_05_31RequestT = Model::ListStreamingDistributions2020_05_31Request>
-        void ListStreamingDistributions2020_05_31Async(const ListStreamingDistributions2020_05_31RequestT& request, const ListStreamingDistributions2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListStreamingDistributions2020_05_31Async(const ListStreamingDistributions2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListStreamingDistributions2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::ListStreamingDistributions2020_05_31, request, handler, context);
         }
 
         /**
-         * <p>List tags for a CloudFront resource.</p><p><h3>See Also:</h3>   <a
+         * <p>List tags for a CloudFront resource. For more information, see <a
+         * href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/tagging.html">Tagging
+         * a distribution</a> in the <i>Amazon CloudFront Developer
+         * Guide</i>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListTagsForResource2020_05_31">AWS
          * API Reference</a></p>
          */
@@ -2661,6 +3016,32 @@ namespace CloudFront
         void ListTagsForResource2020_05_31Async(const ListTagsForResource2020_05_31RequestT& request, const ListTagsForResource2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&CloudFrontClient::ListTagsForResource2020_05_31, request, handler, context);
+        }
+
+        /**
+         * <p>List the CloudFront VPC origins in your account.</p><p><h3>See Also:</h3>  
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/ListVpcOrigins2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListVpcOrigins2020_05_31Outcome ListVpcOrigins2020_05_31(const Model::ListVpcOrigins2020_05_31Request& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListVpcOrigins2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListVpcOrigins2020_05_31RequestT = Model::ListVpcOrigins2020_05_31Request>
+        Model::ListVpcOrigins2020_05_31OutcomeCallable ListVpcOrigins2020_05_31Callable(const ListVpcOrigins2020_05_31RequestT& request = {}) const
+        {
+            return SubmitCallable(&CloudFrontClient::ListVpcOrigins2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for ListVpcOrigins2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListVpcOrigins2020_05_31RequestT = Model::ListVpcOrigins2020_05_31Request>
+        void ListVpcOrigins2020_05_31Async(const ListVpcOrigins2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListVpcOrigins2020_05_31RequestT& request = {}) const
+        {
+            return SubmitAsync(&CloudFrontClient::ListVpcOrigins2020_05_31, request, handler, context);
         }
 
         /**
@@ -2697,7 +3078,10 @@ namespace CloudFront
         }
 
         /**
-         * <p>Add tags to a CloudFront resource.</p><p><h3>See Also:</h3>   <a
+         * <p>Add tags to a CloudFront resource. For more information, see <a
+         * href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/tagging.html">Tagging
+         * a distribution</a> in the <i>Amazon CloudFront Developer
+         * Guide</i>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/TagResource2020_05_31">AWS
          * API Reference</a></p>
          */
@@ -2759,7 +3143,10 @@ namespace CloudFront
         }
 
         /**
-         * <p>Remove tags from a CloudFront resource.</p><p><h3>See Also:</h3>   <a
+         * <p>Remove tags from a CloudFront resource. For more information, see <a
+         * href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/tagging.html">Tagging
+         * a distribution</a> in the <i>Amazon CloudFront Developer
+         * Guide</i>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/UntagResource2020_05_31">AWS
          * API Reference</a></p>
          */
@@ -2887,12 +3274,12 @@ namespace CloudFront
          * get the current configuration, including the version identifier
          * (<code>ETag</code>).</p> </li> <li> <p>Update the distribution configuration
          * that was returned in the response. Note the following important requirements and
-         * restrictions:</p> <ul> <li> <p>You must rename the <code>ETag</code> field to
-         * <code>IfMatch</code>, leaving the value unchanged. (Set the value of
-         * <code>IfMatch</code> to the value of <code>ETag</code>, then remove the
-         * <code>ETag</code> field.)</p> </li> <li> <p>You can't change the value of
+         * restrictions:</p> <ul> <li> <p>You must copy the <code>ETag</code> field value
+         * from the response. (You'll use it for the <code>IfMatch</code> parameter in your
+         * request.) Then, remove the <code>ETag</code> field from the distribution
+         * configuration.</p> </li> <li> <p>You can't change the value of
          * <code>CallerReference</code>.</p> </li> </ul> </li> <li> <p>Submit an
-         * <code>UpdateDistribution</code> request, providing the distribution
+         * <code>UpdateDistribution</code> request, providing the updated distribution
          * configuration. The new configuration replaces the existing configuration. The
          * values that you specify in an <code>UpdateDistribution</code> request are not
          * merged into your existing configuration. Make sure to include all fields: the
@@ -2933,7 +3320,12 @@ namespace CloudFront
          * distribution and verifying that it works as intended, you can use this operation
          * to copy the staging distribution's configuration to the primary distribution.
          * This action will disable the continuous deployment policy and move your domain's
-         * traffic back to the primary distribution.</p><p><h3>See Also:</h3>   <a
+         * traffic back to the primary distribution.</p> <p>This API operation requires the
+         * following IAM permissions:</p> <ul> <li> <p> <a
+         * href="https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_GetDistribution.html">GetDistribution</a>
+         * </p> </li> <li> <p> <a
+         * href="https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html">UpdateDistribution</a>
+         * </p> </li> </ul><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/UpdateDistributionWithStagingConfig2020_05_31">AWS
          * API Reference</a></p>
          */
@@ -3071,6 +3463,31 @@ namespace CloudFront
         }
 
         /**
+         * <p>Specifies the key value store to update.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/UpdateKeyValueStore2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateKeyValueStore2020_05_31Outcome UpdateKeyValueStore2020_05_31(const Model::UpdateKeyValueStore2020_05_31Request& request) const;
+
+        /**
+         * A Callable wrapper for UpdateKeyValueStore2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateKeyValueStore2020_05_31RequestT = Model::UpdateKeyValueStore2020_05_31Request>
+        Model::UpdateKeyValueStore2020_05_31OutcomeCallable UpdateKeyValueStore2020_05_31Callable(const UpdateKeyValueStore2020_05_31RequestT& request) const
+        {
+            return SubmitCallable(&CloudFrontClient::UpdateKeyValueStore2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateKeyValueStore2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateKeyValueStore2020_05_31RequestT = Model::UpdateKeyValueStore2020_05_31Request>
+        void UpdateKeyValueStore2020_05_31Async(const UpdateKeyValueStore2020_05_31RequestT& request, const UpdateKeyValueStore2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CloudFrontClient::UpdateKeyValueStore2020_05_31, request, handler, context);
+        }
+
+        /**
          * <p>Updates a CloudFront origin access control.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/UpdateOriginAccessControl2020_05_31">AWS
          * API Reference</a></p>
@@ -3170,13 +3587,13 @@ namespace CloudFront
          * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/UpdateRealtimeLogConfig2020_05_31">AWS
          * API Reference</a></p>
          */
-        virtual Model::UpdateRealtimeLogConfig2020_05_31Outcome UpdateRealtimeLogConfig2020_05_31(const Model::UpdateRealtimeLogConfig2020_05_31Request& request) const;
+        virtual Model::UpdateRealtimeLogConfig2020_05_31Outcome UpdateRealtimeLogConfig2020_05_31(const Model::UpdateRealtimeLogConfig2020_05_31Request& request = {}) const;
 
         /**
          * A Callable wrapper for UpdateRealtimeLogConfig2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename UpdateRealtimeLogConfig2020_05_31RequestT = Model::UpdateRealtimeLogConfig2020_05_31Request>
-        Model::UpdateRealtimeLogConfig2020_05_31OutcomeCallable UpdateRealtimeLogConfig2020_05_31Callable(const UpdateRealtimeLogConfig2020_05_31RequestT& request) const
+        Model::UpdateRealtimeLogConfig2020_05_31OutcomeCallable UpdateRealtimeLogConfig2020_05_31Callable(const UpdateRealtimeLogConfig2020_05_31RequestT& request = {}) const
         {
             return SubmitCallable(&CloudFrontClient::UpdateRealtimeLogConfig2020_05_31, request);
         }
@@ -3185,7 +3602,7 @@ namespace CloudFront
          * An Async wrapper for UpdateRealtimeLogConfig2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename UpdateRealtimeLogConfig2020_05_31RequestT = Model::UpdateRealtimeLogConfig2020_05_31Request>
-        void UpdateRealtimeLogConfig2020_05_31Async(const UpdateRealtimeLogConfig2020_05_31RequestT& request, const UpdateRealtimeLogConfig2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void UpdateRealtimeLogConfig2020_05_31Async(const UpdateRealtimeLogConfig2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const UpdateRealtimeLogConfig2020_05_31RequestT& request = {}) const
         {
             return SubmitAsync(&CloudFrontClient::UpdateRealtimeLogConfig2020_05_31, request, handler, context);
         }
@@ -3248,6 +3665,32 @@ namespace CloudFront
             return SubmitAsync(&CloudFrontClient::UpdateStreamingDistribution2020_05_31, request, handler, context);
         }
 
+        /**
+         * <p>Update an Amazon CloudFront VPC origin in your account.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/cloudfront-2020-05-31/UpdateVpcOrigin2020_05_31">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateVpcOrigin2020_05_31Outcome UpdateVpcOrigin2020_05_31(const Model::UpdateVpcOrigin2020_05_31Request& request) const;
+
+        /**
+         * A Callable wrapper for UpdateVpcOrigin2020_05_31 that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateVpcOrigin2020_05_31RequestT = Model::UpdateVpcOrigin2020_05_31Request>
+        Model::UpdateVpcOrigin2020_05_31OutcomeCallable UpdateVpcOrigin2020_05_31Callable(const UpdateVpcOrigin2020_05_31RequestT& request) const
+        {
+            return SubmitCallable(&CloudFrontClient::UpdateVpcOrigin2020_05_31, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateVpcOrigin2020_05_31 that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateVpcOrigin2020_05_31RequestT = Model::UpdateVpcOrigin2020_05_31Request>
+        void UpdateVpcOrigin2020_05_31Async(const UpdateVpcOrigin2020_05_31RequestT& request, const UpdateVpcOrigin2020_05_31ResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&CloudFrontClient::UpdateVpcOrigin2020_05_31, request, handler, context);
+        }
+
 
         void OverrideEndpoint(const Aws::String& endpoint);
         std::shared_ptr<CloudFrontEndpointProviderBase>& accessEndpointProvider();
@@ -3256,7 +3699,6 @@ namespace CloudFront
         void init(const CloudFrontClientConfiguration& clientConfiguration);
 
         CloudFrontClientConfiguration m_clientConfiguration;
-        std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
         std::shared_ptr<CloudFrontEndpointProviderBase> m_endpointProvider;
   };
 

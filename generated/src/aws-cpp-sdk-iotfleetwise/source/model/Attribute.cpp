@@ -29,22 +29,14 @@ Attribute::Attribute() :
     m_minHasBeenSet(false),
     m_max(0.0),
     m_maxHasBeenSet(false),
-    m_defaultValueHasBeenSet(false)
+    m_defaultValueHasBeenSet(false),
+    m_deprecationMessageHasBeenSet(false),
+    m_commentHasBeenSet(false)
 {
 }
 
-Attribute::Attribute(JsonView jsonValue) : 
-    m_fullyQualifiedNameHasBeenSet(false),
-    m_dataType(NodeDataType::NOT_SET),
-    m_dataTypeHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_unitHasBeenSet(false),
-    m_allowedValuesHasBeenSet(false),
-    m_min(0.0),
-    m_minHasBeenSet(false),
-    m_max(0.0),
-    m_maxHasBeenSet(false),
-    m_defaultValueHasBeenSet(false)
+Attribute::Attribute(JsonView jsonValue)
+  : Attribute()
 {
   *this = jsonValue;
 }
@@ -110,6 +102,20 @@ Attribute& Attribute::operator =(JsonView jsonValue)
     m_defaultValueHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("deprecationMessage"))
+  {
+    m_deprecationMessage = jsonValue.GetString("deprecationMessage");
+
+    m_deprecationMessageHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("comment"))
+  {
+    m_comment = jsonValue.GetString("comment");
+
+    m_commentHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -166,6 +172,18 @@ JsonValue Attribute::Jsonize() const
   if(m_defaultValueHasBeenSet)
   {
    payload.WithString("defaultValue", m_defaultValue);
+
+  }
+
+  if(m_deprecationMessageHasBeenSet)
+  {
+   payload.WithString("deprecationMessage", m_deprecationMessage);
+
+  }
+
+  if(m_commentHasBeenSet)
+  {
+   payload.WithString("comment", m_comment);
 
   }
 

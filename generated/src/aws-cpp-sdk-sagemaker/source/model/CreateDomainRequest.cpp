@@ -17,6 +17,7 @@ CreateDomainRequest::CreateDomainRequest() :
     m_authMode(AuthMode::NOT_SET),
     m_authModeHasBeenSet(false),
     m_defaultUserSettingsHasBeenSet(false),
+    m_domainSettingsHasBeenSet(false),
     m_subnetIdsHasBeenSet(false),
     m_vpcIdHasBeenSet(false),
     m_tagsHasBeenSet(false),
@@ -25,7 +26,8 @@ CreateDomainRequest::CreateDomainRequest() :
     m_kmsKeyIdHasBeenSet(false),
     m_appSecurityGroupManagement(AppSecurityGroupManagement::NOT_SET),
     m_appSecurityGroupManagementHasBeenSet(false),
-    m_domainSettingsHasBeenSet(false),
+    m_tagPropagation(TagPropagation::NOT_SET),
+    m_tagPropagationHasBeenSet(false),
     m_defaultSpaceSettingsHasBeenSet(false)
 {
 }
@@ -48,6 +50,12 @@ Aws::String CreateDomainRequest::SerializePayload() const
   if(m_defaultUserSettingsHasBeenSet)
   {
    payload.WithObject("DefaultUserSettings", m_defaultUserSettings.Jsonize());
+
+  }
+
+  if(m_domainSettingsHasBeenSet)
+  {
+   payload.WithObject("DomainSettings", m_domainSettings.Jsonize());
 
   }
 
@@ -95,10 +103,9 @@ Aws::String CreateDomainRequest::SerializePayload() const
    payload.WithString("AppSecurityGroupManagement", AppSecurityGroupManagementMapper::GetNameForAppSecurityGroupManagement(m_appSecurityGroupManagement));
   }
 
-  if(m_domainSettingsHasBeenSet)
+  if(m_tagPropagationHasBeenSet)
   {
-   payload.WithObject("DomainSettings", m_domainSettings.Jsonize());
-
+   payload.WithString("TagPropagation", TagPropagationMapper::GetNameForTagPropagation(m_tagPropagation));
   }
 
   if(m_defaultSpaceSettingsHasBeenSet)

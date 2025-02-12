@@ -39,6 +39,9 @@ namespace Model
     CurrentConfigurationDesiredCapacity,
     CurrentConfigurationMinSize,
     CurrentConfigurationMaxSize,
+    CurrentConfigurationAllocationStrategy,
+    CurrentConfigurationMixedInstanceTypes,
+    CurrentConfigurationType,
     CurrentOnDemandPrice,
     CurrentStandardOneYearNoUpfrontReservedPrice,
     CurrentStandardThreeYearNoUpfrontReservedPrice,
@@ -50,6 +53,10 @@ namespace Model
     RecommendationOptionsConfigurationDesiredCapacity,
     RecommendationOptionsConfigurationMinSize,
     RecommendationOptionsConfigurationMaxSize,
+    RecommendationOptionsConfigurationEstimatedInstanceHourReductionPercentage,
+    RecommendationOptionsConfigurationAllocationStrategy,
+    RecommendationOptionsConfigurationMixedInstanceTypes,
+    RecommendationOptionsConfigurationType,
     RecommendationOptionsProjectedUtilizationMetricsCpuMaximum,
     RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum,
     RecommendationOptionsPerformanceRisk,
@@ -68,8 +75,20 @@ namespace Model
     EffectiveRecommendationPreferencesCpuVendorArchitectures,
     EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics,
     EffectiveRecommendationPreferencesInferredWorkloadTypes,
+    EffectiveRecommendationPreferencesPreferredResources,
+    EffectiveRecommendationPreferencesLookBackPeriod,
     InferredWorkloadTypes,
-    RecommendationOptionsMigrationEffort
+    RecommendationOptionsMigrationEffort,
+    CurrentInstanceGpuInfo,
+    RecommendationOptionsInstanceGpuInfo,
+    UtilizationMetricsGpuPercentageMaximum,
+    UtilizationMetricsGpuMemoryPercentageMaximum,
+    RecommendationOptionsProjectedUtilizationMetricsGpuPercentageMaximum,
+    RecommendationOptionsProjectedUtilizationMetricsGpuMemoryPercentageMaximum,
+    EffectiveRecommendationPreferencesSavingsEstimationMode,
+    RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage,
+    RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts,
+    RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts
   };
 
 namespace ExportableAutoScalingGroupFieldMapper

@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/pipes/Pipes_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/pipes/PipesServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/pipes/PipesErrorMarshaller.h>
 
 namespace Aws
 {
 namespace Pipes
 {
+  AWS_PIPES_API extern const char SERVICE_NAME[];
   /**
    * <p>Amazon EventBridge Pipes connects event sources to targets. Pipes reduces the
    * need for specialized knowledge and integration code when developing event driven
@@ -23,12 +27,20 @@ namespace Pipes
    * set up a pipe, you select the event source, add optional event filtering, define
    * optional enrichment, and select the target for the event data. </p>
    */
-  class AWS_PIPES_API PipesClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<PipesClient>
+  class AWS_PIPES_API PipesClient : smithy::client::AwsSmithyClientT<Aws::Pipes::SERVICE_NAME,
+      Aws::Pipes::PipesClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      PipesEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::PipesErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<PipesClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Pipes"; }
 
       typedef PipesClientConfiguration ClientConfigurationType;
       typedef PipesEndpointProvider EndpointProviderType;
@@ -38,14 +50,14 @@ namespace Pipes
         * is not specified, it will be initialized to default values.
         */
         PipesClient(const Aws::Pipes::PipesClientConfiguration& clientConfiguration = Aws::Pipes::PipesClientConfiguration(),
-                    std::shared_ptr<PipesEndpointProviderBase> endpointProvider = Aws::MakeShared<PipesEndpointProvider>(ALLOCATION_TAG));
+                    std::shared_ptr<PipesEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         PipesClient(const Aws::Auth::AWSCredentials& credentials,
-                    std::shared_ptr<PipesEndpointProviderBase> endpointProvider = Aws::MakeShared<PipesEndpointProvider>(ALLOCATION_TAG),
+                    std::shared_ptr<PipesEndpointProviderBase> endpointProvider = nullptr,
                     const Aws::Pipes::PipesClientConfiguration& clientConfiguration = Aws::Pipes::PipesClientConfiguration());
 
        /**
@@ -53,7 +65,7 @@ namespace Pipes
         * the default http client factory will be used
         */
         PipesClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                    std::shared_ptr<PipesEndpointProviderBase> endpointProvider = Aws::MakeShared<PipesEndpointProvider>(ALLOCATION_TAG),
+                    std::shared_ptr<PipesEndpointProviderBase> endpointProvider = nullptr,
                     const Aws::Pipes::PipesClientConfiguration& clientConfiguration = Aws::Pipes::PipesClientConfiguration());
 
 
@@ -174,13 +186,13 @@ namespace Pipes
          * href="http://docs.aws.amazon.com/goto/WebAPI/pipes-2015-10-07/ListPipes">AWS API
          * Reference</a></p>
          */
-        virtual Model::ListPipesOutcome ListPipes(const Model::ListPipesRequest& request) const;
+        virtual Model::ListPipesOutcome ListPipes(const Model::ListPipesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListPipes that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListPipesRequestT = Model::ListPipesRequest>
-        Model::ListPipesOutcomeCallable ListPipesCallable(const ListPipesRequestT& request) const
+        Model::ListPipesOutcomeCallable ListPipesCallable(const ListPipesRequestT& request = {}) const
         {
             return SubmitCallable(&PipesClient::ListPipes, request);
         }
@@ -189,7 +201,7 @@ namespace Pipes
          * An Async wrapper for ListPipes that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListPipesRequestT = Model::ListPipesRequest>
-        void ListPipesAsync(const ListPipesRequestT& request, const ListPipesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListPipesAsync(const ListPipesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListPipesRequestT& request = {}) const
         {
             return SubmitAsync(&PipesClient::ListPipes, request, handler, context);
         }
@@ -331,15 +343,18 @@ namespace Pipes
         }
 
         /**
-         * <p>Update an existing pipe. When you call <code>UpdatePipe</code>, only the
-         * fields that are included in the request are changed, the rest are unchanged. The
-         * exception to this is if you modify any Amazon Web Services-service specific
-         * fields in the <code>SourceParameters</code>, <code>EnrichmentParameters</code>,
-         * or <code>TargetParameters</code> objects. The fields in these objects are
-         * updated atomically as one and override existing values. This is by design and
-         * means that if you don't specify an optional field in one of these Parameters
-         * objects, that field will be set to its system-default value after the
-         * update.</p> <p>For more information about pipes, see <a
+         * <p>Update an existing pipe. When you call <code>UpdatePipe</code>, EventBridge
+         * only the updates fields you have specified in the request; the rest remain
+         * unchanged. The exception to this is if you modify any Amazon Web
+         * Services-service specific fields in the <code>SourceParameters</code>,
+         * <code>EnrichmentParameters</code>, or <code>TargetParameters</code> objects. For
+         * example, <code>DynamoDBStreamParameters</code> or
+         * <code>EventBridgeEventBusParameters</code>. EventBridge updates the fields in
+         * these objects atomically as one and overrides existing values. This is by
+         * design, and means that if you don't specify an optional field in one of these
+         * <code>Parameters</code> objects, EventBridge sets that field to its
+         * system-default value during the update.</p> <p>For more information about pipes,
+         * see <a
          * href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes.html">
          * Amazon EventBridge Pipes</a> in the Amazon EventBridge User Guide.</p><p><h3>See
          * Also:</h3>   <a
@@ -371,11 +386,7 @@ namespace Pipes
       std::shared_ptr<PipesEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<PipesClient>;
-      void init(const PipesClientConfiguration& clientConfiguration);
 
-      PipesClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<PipesEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace Pipes

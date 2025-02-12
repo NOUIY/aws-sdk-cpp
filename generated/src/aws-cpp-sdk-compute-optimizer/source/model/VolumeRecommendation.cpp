@@ -31,24 +31,13 @@ VolumeRecommendation::VolumeRecommendation() :
     m_lastRefreshTimestampHasBeenSet(false),
     m_currentPerformanceRisk(CurrentPerformanceRisk::NOT_SET),
     m_currentPerformanceRiskHasBeenSet(false),
+    m_effectiveRecommendationPreferencesHasBeenSet(false),
     m_tagsHasBeenSet(false)
 {
 }
 
-VolumeRecommendation::VolumeRecommendation(JsonView jsonValue) : 
-    m_volumeArnHasBeenSet(false),
-    m_accountIdHasBeenSet(false),
-    m_currentConfigurationHasBeenSet(false),
-    m_finding(EBSFinding::NOT_SET),
-    m_findingHasBeenSet(false),
-    m_utilizationMetricsHasBeenSet(false),
-    m_lookBackPeriodInDays(0.0),
-    m_lookBackPeriodInDaysHasBeenSet(false),
-    m_volumeRecommendationOptionsHasBeenSet(false),
-    m_lastRefreshTimestampHasBeenSet(false),
-    m_currentPerformanceRisk(CurrentPerformanceRisk::NOT_SET),
-    m_currentPerformanceRiskHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+VolumeRecommendation::VolumeRecommendation(JsonView jsonValue)
+  : VolumeRecommendation()
 {
   *this = jsonValue;
 }
@@ -122,6 +111,13 @@ VolumeRecommendation& VolumeRecommendation::operator =(JsonView jsonValue)
     m_currentPerformanceRisk = CurrentPerformanceRiskMapper::GetCurrentPerformanceRiskForName(jsonValue.GetString("currentPerformanceRisk"));
 
     m_currentPerformanceRiskHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("effectiveRecommendationPreferences"))
+  {
+    m_effectiveRecommendationPreferences = jsonValue.GetObject("effectiveRecommendationPreferences");
+
+    m_effectiveRecommendationPreferencesHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("tags"))
@@ -200,6 +196,12 @@ JsonValue VolumeRecommendation::Jsonize() const
   if(m_currentPerformanceRiskHasBeenSet)
   {
    payload.WithString("currentPerformanceRisk", CurrentPerformanceRiskMapper::GetNameForCurrentPerformanceRisk(m_currentPerformanceRisk));
+  }
+
+  if(m_effectiveRecommendationPreferencesHasBeenSet)
+  {
+   payload.WithObject("effectiveRecommendationPreferences", m_effectiveRecommendationPreferences.Jsonize());
+
   }
 
   if(m_tagsHasBeenSet)

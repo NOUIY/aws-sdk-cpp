@@ -20,27 +20,21 @@ namespace Model
 
 AutoScalingGroupRecommendationOption::AutoScalingGroupRecommendationOption() : 
     m_configurationHasBeenSet(false),
+    m_instanceGpuInfoHasBeenSet(false),
     m_projectedUtilizationMetricsHasBeenSet(false),
     m_performanceRisk(0.0),
     m_performanceRiskHasBeenSet(false),
     m_rank(0),
     m_rankHasBeenSet(false),
     m_savingsOpportunityHasBeenSet(false),
+    m_savingsOpportunityAfterDiscountsHasBeenSet(false),
     m_migrationEffort(MigrationEffort::NOT_SET),
     m_migrationEffortHasBeenSet(false)
 {
 }
 
-AutoScalingGroupRecommendationOption::AutoScalingGroupRecommendationOption(JsonView jsonValue) : 
-    m_configurationHasBeenSet(false),
-    m_projectedUtilizationMetricsHasBeenSet(false),
-    m_performanceRisk(0.0),
-    m_performanceRiskHasBeenSet(false),
-    m_rank(0),
-    m_rankHasBeenSet(false),
-    m_savingsOpportunityHasBeenSet(false),
-    m_migrationEffort(MigrationEffort::NOT_SET),
-    m_migrationEffortHasBeenSet(false)
+AutoScalingGroupRecommendationOption::AutoScalingGroupRecommendationOption(JsonView jsonValue)
+  : AutoScalingGroupRecommendationOption()
 {
   *this = jsonValue;
 }
@@ -52,6 +46,13 @@ AutoScalingGroupRecommendationOption& AutoScalingGroupRecommendationOption::oper
     m_configuration = jsonValue.GetObject("configuration");
 
     m_configurationHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("instanceGpuInfo"))
+  {
+    m_instanceGpuInfo = jsonValue.GetObject("instanceGpuInfo");
+
+    m_instanceGpuInfoHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("projectedUtilizationMetrics"))
@@ -85,6 +86,13 @@ AutoScalingGroupRecommendationOption& AutoScalingGroupRecommendationOption::oper
     m_savingsOpportunityHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("savingsOpportunityAfterDiscounts"))
+  {
+    m_savingsOpportunityAfterDiscounts = jsonValue.GetObject("savingsOpportunityAfterDiscounts");
+
+    m_savingsOpportunityAfterDiscountsHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("migrationEffort"))
   {
     m_migrationEffort = MigrationEffortMapper::GetMigrationEffortForName(jsonValue.GetString("migrationEffort"));
@@ -102,6 +110,12 @@ JsonValue AutoScalingGroupRecommendationOption::Jsonize() const
   if(m_configurationHasBeenSet)
   {
    payload.WithObject("configuration", m_configuration.Jsonize());
+
+  }
+
+  if(m_instanceGpuInfoHasBeenSet)
+  {
+   payload.WithObject("instanceGpuInfo", m_instanceGpuInfo.Jsonize());
 
   }
 
@@ -131,6 +145,12 @@ JsonValue AutoScalingGroupRecommendationOption::Jsonize() const
   if(m_savingsOpportunityHasBeenSet)
   {
    payload.WithObject("savingsOpportunity", m_savingsOpportunity.Jsonize());
+
+  }
+
+  if(m_savingsOpportunityAfterDiscountsHasBeenSet)
+  {
+   payload.WithObject("savingsOpportunityAfterDiscounts", m_savingsOpportunityAfterDiscounts.Jsonize());
 
   }
 

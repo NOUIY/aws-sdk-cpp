@@ -6,24 +6,36 @@
 #pragma once
 #include <aws/personalize-runtime/PersonalizeRuntime_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/personalize-runtime/PersonalizeRuntimeServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/personalize-runtime/PersonalizeRuntimeErrorMarshaller.h>
 
 namespace Aws
 {
 namespace PersonalizeRuntime
 {
+  AWS_PERSONALIZERUNTIME_API extern const char SERVICE_NAME[];
   /**
    * <p/>
    */
-  class AWS_PERSONALIZERUNTIME_API PersonalizeRuntimeClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<PersonalizeRuntimeClient>
+  class AWS_PERSONALIZERUNTIME_API PersonalizeRuntimeClient : smithy::client::AwsSmithyClientT<Aws::PersonalizeRuntime::SERVICE_NAME,
+      Aws::PersonalizeRuntime::PersonalizeRuntimeClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      PersonalizeRuntimeEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::PersonalizeRuntimeErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<PersonalizeRuntimeClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Personalize Runtime"; }
 
       typedef PersonalizeRuntimeClientConfiguration ClientConfigurationType;
       typedef PersonalizeRuntimeEndpointProvider EndpointProviderType;
@@ -33,14 +45,14 @@ namespace PersonalizeRuntime
         * is not specified, it will be initialized to default values.
         */
         PersonalizeRuntimeClient(const Aws::PersonalizeRuntime::PersonalizeRuntimeClientConfiguration& clientConfiguration = Aws::PersonalizeRuntime::PersonalizeRuntimeClientConfiguration(),
-                                 std::shared_ptr<PersonalizeRuntimeEndpointProviderBase> endpointProvider = Aws::MakeShared<PersonalizeRuntimeEndpointProvider>(ALLOCATION_TAG));
+                                 std::shared_ptr<PersonalizeRuntimeEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         PersonalizeRuntimeClient(const Aws::Auth::AWSCredentials& credentials,
-                                 std::shared_ptr<PersonalizeRuntimeEndpointProviderBase> endpointProvider = Aws::MakeShared<PersonalizeRuntimeEndpointProvider>(ALLOCATION_TAG),
+                                 std::shared_ptr<PersonalizeRuntimeEndpointProviderBase> endpointProvider = nullptr,
                                  const Aws::PersonalizeRuntime::PersonalizeRuntimeClientConfiguration& clientConfiguration = Aws::PersonalizeRuntime::PersonalizeRuntimeClientConfiguration());
 
        /**
@@ -48,7 +60,7 @@ namespace PersonalizeRuntime
         * the default http client factory will be used
         */
         PersonalizeRuntimeClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                 std::shared_ptr<PersonalizeRuntimeEndpointProviderBase> endpointProvider = Aws::MakeShared<PersonalizeRuntimeEndpointProvider>(ALLOCATION_TAG),
+                                 std::shared_ptr<PersonalizeRuntimeEndpointProviderBase> endpointProvider = nullptr,
                                  const Aws::PersonalizeRuntime::PersonalizeRuntimeClientConfiguration& clientConfiguration = Aws::PersonalizeRuntime::PersonalizeRuntimeClientConfiguration());
 
 
@@ -75,6 +87,39 @@ namespace PersonalizeRuntime
 
         /* End of legacy constructors due deprecation */
         virtual ~PersonalizeRuntimeClient();
+
+        /**
+         * <p>Returns a list of recommended actions in sorted in descending order by
+         * prediction score. Use the <code>GetActionRecommendations</code> API if you have
+         * a custom campaign that deploys a solution version trained with a
+         * PERSONALIZED_ACTIONS recipe. </p> <p>For more information about
+         * PERSONALIZED_ACTIONS recipes, see <a
+         * href="https://docs.aws.amazon.com/personalize/latest/dg/nexts-best-action-recipes.html">PERSONALIZED_ACTIONS
+         * recipes</a>. For more information about getting action recommendations, see <a
+         * href="https://docs.aws.amazon.com/personalize/latest/dg/get-action-recommendations.html">Getting
+         * action recommendations</a>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/personalize-runtime-2018-05-22/GetActionRecommendations">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetActionRecommendationsOutcome GetActionRecommendations(const Model::GetActionRecommendationsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for GetActionRecommendations that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetActionRecommendationsRequestT = Model::GetActionRecommendationsRequest>
+        Model::GetActionRecommendationsOutcomeCallable GetActionRecommendationsCallable(const GetActionRecommendationsRequestT& request = {}) const
+        {
+            return SubmitCallable(&PersonalizeRuntimeClient::GetActionRecommendations, request);
+        }
+
+        /**
+         * An Async wrapper for GetActionRecommendations that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetActionRecommendationsRequestT = Model::GetActionRecommendationsRequest>
+        void GetActionRecommendationsAsync(const GetActionRecommendationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetActionRecommendationsRequestT& request = {}) const
+        {
+            return SubmitAsync(&PersonalizeRuntimeClient::GetActionRecommendations, request, handler, context);
+        }
 
         /**
          * <p>Re-ranks a list of recommended items for the given user. The first item in
@@ -121,13 +166,13 @@ namespace PersonalizeRuntime
          * href="http://docs.aws.amazon.com/goto/WebAPI/personalize-runtime-2018-05-22/GetRecommendations">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetRecommendationsOutcome GetRecommendations(const Model::GetRecommendationsRequest& request) const;
+        virtual Model::GetRecommendationsOutcome GetRecommendations(const Model::GetRecommendationsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetRecommendations that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetRecommendationsRequestT = Model::GetRecommendationsRequest>
-        Model::GetRecommendationsOutcomeCallable GetRecommendationsCallable(const GetRecommendationsRequestT& request) const
+        Model::GetRecommendationsOutcomeCallable GetRecommendationsCallable(const GetRecommendationsRequestT& request = {}) const
         {
             return SubmitCallable(&PersonalizeRuntimeClient::GetRecommendations, request);
         }
@@ -136,7 +181,7 @@ namespace PersonalizeRuntime
          * An Async wrapper for GetRecommendations that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetRecommendationsRequestT = Model::GetRecommendationsRequest>
-        void GetRecommendationsAsync(const GetRecommendationsRequestT& request, const GetRecommendationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetRecommendationsAsync(const GetRecommendationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetRecommendationsRequestT& request = {}) const
         {
             return SubmitAsync(&PersonalizeRuntimeClient::GetRecommendations, request, handler, context);
         }
@@ -146,11 +191,7 @@ namespace PersonalizeRuntime
       std::shared_ptr<PersonalizeRuntimeEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<PersonalizeRuntimeClient>;
-      void init(const PersonalizeRuntimeClientConfiguration& clientConfiguration);
 
-      PersonalizeRuntimeClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<PersonalizeRuntimeEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace PersonalizeRuntime

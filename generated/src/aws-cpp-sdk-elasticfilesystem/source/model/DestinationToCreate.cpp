@@ -21,14 +21,14 @@ namespace Model
 DestinationToCreate::DestinationToCreate() : 
     m_regionHasBeenSet(false),
     m_availabilityZoneNameHasBeenSet(false),
-    m_kmsKeyIdHasBeenSet(false)
+    m_kmsKeyIdHasBeenSet(false),
+    m_fileSystemIdHasBeenSet(false),
+    m_roleArnHasBeenSet(false)
 {
 }
 
-DestinationToCreate::DestinationToCreate(JsonView jsonValue) : 
-    m_regionHasBeenSet(false),
-    m_availabilityZoneNameHasBeenSet(false),
-    m_kmsKeyIdHasBeenSet(false)
+DestinationToCreate::DestinationToCreate(JsonView jsonValue)
+  : DestinationToCreate()
 {
   *this = jsonValue;
 }
@@ -56,6 +56,20 @@ DestinationToCreate& DestinationToCreate::operator =(JsonView jsonValue)
     m_kmsKeyIdHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("FileSystemId"))
+  {
+    m_fileSystemId = jsonValue.GetString("FileSystemId");
+
+    m_fileSystemIdHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("RoleArn"))
+  {
+    m_roleArn = jsonValue.GetString("RoleArn");
+
+    m_roleArnHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -78,6 +92,18 @@ JsonValue DestinationToCreate::Jsonize() const
   if(m_kmsKeyIdHasBeenSet)
   {
    payload.WithString("KmsKeyId", m_kmsKeyId);
+
+  }
+
+  if(m_fileSystemIdHasBeenSet)
+  {
+   payload.WithString("FileSystemId", m_fileSystemId);
+
+  }
+
+  if(m_roleArnHasBeenSet)
+  {
+   payload.WithString("RoleArn", m_roleArn);
 
   }
 

@@ -29,6 +29,13 @@ namespace Model
 
     InvokeWithResponseStreamHandler::InvokeWithResponseStreamHandler() : EventStreamHandler()
     {
+        m_onInitialResponse = [&](const InvokeWithResponseStreamInitialResponse&, const Utils::Event::InitialResponseType eventType)
+        {
+            AWS_LOGSTREAM_TRACE(INVOKEWITHRESPONSESTREAM_HANDLER_CLASS_TAG,
+                "InvokeWithResponseStream initial response received from "
+                << (eventType == Utils::Event::InitialResponseType::ON_EVENT ? "event" : "http headers"));
+        };
+
         m_onInvokeResponseStreamUpdate = [&](const InvokeResponseStreamUpdate&)
         {
             AWS_LOGSTREAM_TRACE(INVOKEWITHRESPONSESTREAM_HANDLER_CLASS_TAG, "InvokeResponseStreamUpdate received.");
@@ -93,6 +100,14 @@ namespace Model
         }
         switch (InvokeWithResponseStreamEventMapper::GetInvokeWithResponseStreamEventTypeForName(eventTypeHeaderIter->second.GetEventHeaderValueAsString()))
         {
+
+        case InvokeWithResponseStreamEventType::INITIAL_RESPONSE:
+        {
+            InvokeWithResponseStreamInitialResponse event(GetEventHeadersAsHttpHeaders());
+            m_onInitialResponse(event, Utils::Event::InitialResponseType::ON_EVENT);
+            break;
+        }   
+
         case InvokeWithResponseStreamEventType::PAYLOADCHUNK:
         {
             InvokeResponseStreamUpdate event(GetEventPayloadWithOwnership());
@@ -203,13 +218,19 @@ namespace Model
 
 namespace InvokeWithResponseStreamEventMapper
 {
+    static const int INITIAL_RESPONSE_HASH = Aws::Utils::HashingUtils::HashString("initial-response");
     static const int PAYLOADCHUNK_HASH = Aws::Utils::HashingUtils::HashString("PayloadChunk");
     static const int INVOKECOMPLETE_HASH = Aws::Utils::HashingUtils::HashString("InvokeComplete");
 
     InvokeWithResponseStreamEventType GetInvokeWithResponseStreamEventTypeForName(const Aws::String& name)
     {
         int hashCode = Aws::Utils::HashingUtils::HashString(name.c_str());
-        if (hashCode == PAYLOADCHUNK_HASH)
+
+        if (hashCode == INITIAL_RESPONSE_HASH) 
+        {
+            return InvokeWithResponseStreamEventType::INITIAL_RESPONSE;
+        }
+        else if (hashCode == PAYLOADCHUNK_HASH)
         {
             return InvokeWithResponseStreamEventType::PAYLOADCHUNK;
         }
@@ -224,6 +245,8 @@ namespace InvokeWithResponseStreamEventMapper
     {
         switch (value)
         {
+        case InvokeWithResponseStreamEventType::INITIAL_RESPONSE:
+            return "initial-response";
         case InvokeWithResponseStreamEventType::PAYLOADCHUNK:
             return "PayloadChunk";
         case InvokeWithResponseStreamEventType::INVOKECOMPLETE:

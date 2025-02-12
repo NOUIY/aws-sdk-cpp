@@ -20,13 +20,14 @@ namespace Model
 
 MetricToRetain::MetricToRetain() : 
     m_metricHasBeenSet(false),
-    m_metricDimensionHasBeenSet(false)
+    m_metricDimensionHasBeenSet(false),
+    m_exportMetric(false),
+    m_exportMetricHasBeenSet(false)
 {
 }
 
-MetricToRetain::MetricToRetain(JsonView jsonValue) : 
-    m_metricHasBeenSet(false),
-    m_metricDimensionHasBeenSet(false)
+MetricToRetain::MetricToRetain(JsonView jsonValue)
+  : MetricToRetain()
 {
   *this = jsonValue;
 }
@@ -47,6 +48,13 @@ MetricToRetain& MetricToRetain::operator =(JsonView jsonValue)
     m_metricDimensionHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("exportMetric"))
+  {
+    m_exportMetric = jsonValue.GetBool("exportMetric");
+
+    m_exportMetricHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +71,12 @@ JsonValue MetricToRetain::Jsonize() const
   if(m_metricDimensionHasBeenSet)
   {
    payload.WithObject("metricDimension", m_metricDimension.Jsonize());
+
+  }
+
+  if(m_exportMetricHasBeenSet)
+  {
+   payload.WithBool("exportMetric", m_exportMetric);
 
   }
 

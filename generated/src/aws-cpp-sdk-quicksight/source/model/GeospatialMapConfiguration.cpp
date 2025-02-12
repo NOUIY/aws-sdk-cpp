@@ -25,18 +25,13 @@ GeospatialMapConfiguration::GeospatialMapConfiguration() :
     m_windowOptionsHasBeenSet(false),
     m_mapStyleOptionsHasBeenSet(false),
     m_pointStyleOptionsHasBeenSet(false),
-    m_visualPaletteHasBeenSet(false)
+    m_visualPaletteHasBeenSet(false),
+    m_interactionsHasBeenSet(false)
 {
 }
 
-GeospatialMapConfiguration::GeospatialMapConfiguration(JsonView jsonValue) : 
-    m_fieldWellsHasBeenSet(false),
-    m_legendHasBeenSet(false),
-    m_tooltipHasBeenSet(false),
-    m_windowOptionsHasBeenSet(false),
-    m_mapStyleOptionsHasBeenSet(false),
-    m_pointStyleOptionsHasBeenSet(false),
-    m_visualPaletteHasBeenSet(false)
+GeospatialMapConfiguration::GeospatialMapConfiguration(JsonView jsonValue)
+  : GeospatialMapConfiguration()
 {
   *this = jsonValue;
 }
@@ -92,6 +87,13 @@ GeospatialMapConfiguration& GeospatialMapConfiguration::operator =(JsonView json
     m_visualPaletteHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Interactions"))
+  {
+    m_interactions = jsonValue.GetObject("Interactions");
+
+    m_interactionsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -138,6 +140,12 @@ JsonValue GeospatialMapConfiguration::Jsonize() const
   if(m_visualPaletteHasBeenSet)
   {
    payload.WithObject("VisualPalette", m_visualPalette.Jsonize());
+
+  }
+
+  if(m_interactionsHasBeenSet)
+  {
+   payload.WithObject("Interactions", m_interactions.Jsonize());
 
   }
 

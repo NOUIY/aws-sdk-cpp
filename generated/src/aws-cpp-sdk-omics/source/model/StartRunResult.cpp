@@ -22,8 +22,8 @@ StartRunResult::StartRunResult() :
 {
 }
 
-StartRunResult::StartRunResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(RunStatus::NOT_SET)
+StartRunResult::StartRunResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : StartRunResult()
 {
   *this = result;
 }
@@ -56,6 +56,18 @@ StartRunResult& StartRunResult::operator =(const Aws::AmazonWebServiceResult<Jso
     {
       m_tags[tagsItem.first] = tagsItem.second.AsString();
     }
+  }
+
+  if(jsonValue.ValueExists("uuid"))
+  {
+    m_uuid = jsonValue.GetString("uuid");
+
+  }
+
+  if(jsonValue.ValueExists("runOutputUri"))
+  {
+    m_runOutputUri = jsonValue.GetString("runOutputUri");
+
   }
 
 

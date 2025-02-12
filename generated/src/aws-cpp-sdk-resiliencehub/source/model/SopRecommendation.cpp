@@ -25,22 +25,16 @@ SopRecommendation::SopRecommendation() :
     m_nameHasBeenSet(false),
     m_prerequisiteHasBeenSet(false),
     m_recommendationIdHasBeenSet(false),
+    m_recommendationStatus(RecommendationStatus::NOT_SET),
+    m_recommendationStatusHasBeenSet(false),
     m_referenceIdHasBeenSet(false),
     m_serviceType(SopServiceType::NOT_SET),
     m_serviceTypeHasBeenSet(false)
 {
 }
 
-SopRecommendation::SopRecommendation(JsonView jsonValue) : 
-    m_appComponentNameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_itemsHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_prerequisiteHasBeenSet(false),
-    m_recommendationIdHasBeenSet(false),
-    m_referenceIdHasBeenSet(false),
-    m_serviceType(SopServiceType::NOT_SET),
-    m_serviceTypeHasBeenSet(false)
+SopRecommendation::SopRecommendation(JsonView jsonValue)
+  : SopRecommendation()
 {
   *this = jsonValue;
 }
@@ -90,6 +84,13 @@ SopRecommendation& SopRecommendation::operator =(JsonView jsonValue)
     m_recommendationId = jsonValue.GetString("recommendationId");
 
     m_recommendationIdHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("recommendationStatus"))
+  {
+    m_recommendationStatus = RecommendationStatusMapper::GetRecommendationStatusForName(jsonValue.GetString("recommendationStatus"));
+
+    m_recommendationStatusHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("referenceId"))
@@ -152,6 +153,11 @@ JsonValue SopRecommendation::Jsonize() const
   {
    payload.WithString("recommendationId", m_recommendationId);
 
+  }
+
+  if(m_recommendationStatusHasBeenSet)
+  {
+   payload.WithString("recommendationStatus", RecommendationStatusMapper::GetNameForRecommendationStatus(m_recommendationStatus));
   }
 
   if(m_referenceIdHasBeenSet)

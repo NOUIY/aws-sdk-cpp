@@ -26,6 +26,8 @@ namespace Aws
         static const int CAN_NETWORK_INTERFACE_INFO_IS_NULL_HASH = HashingUtils::HashString("CAN_NETWORK_INTERFACE_INFO_IS_NULL");
         static const int OBD_NETWORK_INTERFACE_INFO_IS_NULL_HASH = HashingUtils::HashString("OBD_NETWORK_INTERFACE_INFO_IS_NULL");
         static const int NETWORK_INTERFACE_TO_REMOVE_ASSOCIATED_WITH_SIGNALS_HASH = HashingUtils::HashString("NETWORK_INTERFACE_TO_REMOVE_ASSOCIATED_WITH_SIGNALS");
+        static const int VEHICLE_MIDDLEWARE_NETWORK_INTERFACE_INFO_IS_NULL_HASH = HashingUtils::HashString("VEHICLE_MIDDLEWARE_NETWORK_INTERFACE_INFO_IS_NULL");
+        static const int CUSTOM_DECODING_SIGNAL_NETWORK_INTERFACE_INFO_IS_NULL_HASH = HashingUtils::HashString("CUSTOM_DECODING_SIGNAL_NETWORK_INTERFACE_INFO_IS_NULL");
 
 
         NetworkInterfaceFailureReason GetNetworkInterfaceFailureReasonForName(const Aws::String& name)
@@ -55,6 +57,14 @@ namespace Aws
           {
             return NetworkInterfaceFailureReason::NETWORK_INTERFACE_TO_REMOVE_ASSOCIATED_WITH_SIGNALS;
           }
+          else if (hashCode == VEHICLE_MIDDLEWARE_NETWORK_INTERFACE_INFO_IS_NULL_HASH)
+          {
+            return NetworkInterfaceFailureReason::VEHICLE_MIDDLEWARE_NETWORK_INTERFACE_INFO_IS_NULL;
+          }
+          else if (hashCode == CUSTOM_DECODING_SIGNAL_NETWORK_INTERFACE_INFO_IS_NULL_HASH)
+          {
+            return NetworkInterfaceFailureReason::CUSTOM_DECODING_SIGNAL_NETWORK_INTERFACE_INFO_IS_NULL;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -69,6 +79,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case NetworkInterfaceFailureReason::NOT_SET:
+            return {};
           case NetworkInterfaceFailureReason::DUPLICATE_NETWORK_INTERFACE:
             return "DUPLICATE_NETWORK_INTERFACE";
           case NetworkInterfaceFailureReason::CONFLICTING_NETWORK_INTERFACE:
@@ -81,6 +93,10 @@ namespace Aws
             return "OBD_NETWORK_INTERFACE_INFO_IS_NULL";
           case NetworkInterfaceFailureReason::NETWORK_INTERFACE_TO_REMOVE_ASSOCIATED_WITH_SIGNALS:
             return "NETWORK_INTERFACE_TO_REMOVE_ASSOCIATED_WITH_SIGNALS";
+          case NetworkInterfaceFailureReason::VEHICLE_MIDDLEWARE_NETWORK_INTERFACE_INFO_IS_NULL:
+            return "VEHICLE_MIDDLEWARE_NETWORK_INTERFACE_INFO_IS_NULL";
+          case NetworkInterfaceFailureReason::CUSTOM_DECODING_SIGNAL_NETWORK_INTERFACE_INFO_IS_NULL:
+            return "CUSTOM_DECODING_SIGNAL_NETWORK_INTERFACE_INFO_IS_NULL";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

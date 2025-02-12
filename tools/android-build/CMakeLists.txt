@@ -33,13 +33,15 @@ if(BUILD_ZLIB)
 endif()
 
 # OpenSSL
+# Download and build openssl alongside the SDK. This not recommended for use. Using your platforms libcrypto is recommended. 
+# To use a custom libcrypto please follow the instructions in the developer guide (https://docs.aws.amazon.com/sdk-for-cpp/v1/developer-guide/libcrypto.html).
 if(BUILD_OPENSSL)
     ExternalProject_Add(OPENSSL
         SOURCE_DIR ${OPENSSL_SOURCE_DIR}
         GIT_REPOSITORY https://github.com/openssl/openssl.git
         GIT_TAG e2e09d9fba1187f8d6aafaa34d4172f56f1ffb72 # 1.1.1g
         UPDATE_COMMAND ""
-        PATCH_COMMAND cd ${CMAKE_BINARY_DIR} && python ${AWS_NATIVE_SDK_ROOT}/android-build/configure_openssl_cmake.py --source ${AWS_NATIVE_SDK_ROOT} --dest ${OPENSSL_SOURCE_DIR}
+        PATCH_COMMAND cd ${CMAKE_BINARY_DIR} && python ${AWS_NATIVE_SDK_ROOT}/tools/android-build/configure_openssl_cmake.py --source ${AWS_NATIVE_SDK_ROOT} --dest ${OPENSSL_SOURCE_DIR}
         CMAKE_ARGS
         -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
         -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=${CMAKE_ANDROID_NDK_TOOLCHAIN_VERSION}
@@ -66,7 +68,7 @@ if(BUILD_CURL)
         UPDATE_COMMAND ""
         PATCH_COMMAND ""
         CMAKE_ARGS
-        -C ${AWS_NATIVE_SDK_ROOT}/android-build/CurlAndroidCrossCompile.cmake
+        -C ${AWS_NATIVE_SDK_ROOT}/tools/android-build/CurlAndroidCrossCompile.cmake
         -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
         -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=${CMAKE_ANDROID_NDK_TOOLCHAIN_VERSION}
         -DANDROID_NATIVE_API_LEVEL=${ANDROID_NATIVE_API_LEVEL}

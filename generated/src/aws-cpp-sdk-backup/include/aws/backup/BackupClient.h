@@ -6,27 +6,39 @@
 #pragma once
 #include <aws/backup/Backup_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/backup/BackupServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/backup/BackupErrorMarshaller.h>
 
 namespace Aws
 {
 namespace Backup
 {
+  AWS_BACKUP_API extern const char SERVICE_NAME[];
   /**
    * <fullname>Backup</fullname> <p>Backup is a unified backup service designed to
    * protect Amazon Web Services services and their associated data. Backup
    * simplifies the creation, migration, restoration, and deletion of backups, while
    * also providing reporting and auditing.</p>
    */
-  class AWS_BACKUP_API BackupClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<BackupClient>
+  class AWS_BACKUP_API BackupClient : smithy::client::AwsSmithyClientT<Aws::Backup::SERVICE_NAME,
+      Aws::Backup::BackupClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      BackupEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::BackupErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<BackupClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "Backup"; }
 
       typedef BackupClientConfiguration ClientConfigurationType;
       typedef BackupEndpointProvider EndpointProviderType;
@@ -36,14 +48,14 @@ namespace Backup
         * is not specified, it will be initialized to default values.
         */
         BackupClient(const Aws::Backup::BackupClientConfiguration& clientConfiguration = Aws::Backup::BackupClientConfiguration(),
-                     std::shared_ptr<BackupEndpointProviderBase> endpointProvider = Aws::MakeShared<BackupEndpointProvider>(ALLOCATION_TAG));
+                     std::shared_ptr<BackupEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         BackupClient(const Aws::Auth::AWSCredentials& credentials,
-                     std::shared_ptr<BackupEndpointProviderBase> endpointProvider = Aws::MakeShared<BackupEndpointProvider>(ALLOCATION_TAG),
+                     std::shared_ptr<BackupEndpointProviderBase> endpointProvider = nullptr,
                      const Aws::Backup::BackupClientConfiguration& clientConfiguration = Aws::Backup::BackupClientConfiguration());
 
        /**
@@ -51,7 +63,7 @@ namespace Backup
         * the default http client factory will be used
         */
         BackupClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                     std::shared_ptr<BackupEndpointProviderBase> endpointProvider = Aws::MakeShared<BackupEndpointProvider>(ALLOCATION_TAG),
+                     std::shared_ptr<BackupEndpointProviderBase> endpointProvider = nullptr,
                      const Aws::Backup::BackupClientConfiguration& clientConfiguration = Aws::Backup::BackupClientConfiguration());
 
 
@@ -80,9 +92,8 @@ namespace Backup
         virtual ~BackupClient();
 
         /**
-         * <p>This action removes the specified legal hold on a recovery point. This action
-         * can only be performed by a user with sufficient permissions.</p><p><h3>See
-         * Also:</h3>   <a
+         * <p>Removes the specified legal hold on a recovery point. This action can only be
+         * performed by a user with sufficient permissions.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/CancelLegalHold">AWS
          * API Reference</a></p>
          */
@@ -222,9 +233,9 @@ namespace Backup
         }
 
         /**
-         * <p>This action creates a legal hold on a recovery point (backup). A legal hold
-         * is a restraint on altering or deleting a backup until an authorized user cancels
-         * the legal hold. Any actions to delete or disassociate a recovery point will fail
+         * <p>Creates a legal hold on a recovery point (backup). A legal hold is a
+         * restraint on altering or deleting a backup until an authorized user cancels the
+         * legal hold. Any actions to delete or disassociate a recovery point will fail
          * with an error if one or more active legal holds are on the recovery
          * point.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/CreateLegalHold">AWS
@@ -248,6 +259,35 @@ namespace Backup
         void CreateLegalHoldAsync(const CreateLegalHoldRequestT& request, const CreateLegalHoldResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&BackupClient::CreateLegalHold, request, handler, context);
+        }
+
+        /**
+         * <p>Creates a logical container to where backups may be copied.</p> <p>This
+         * request includes a name, the Region, the maximum number of retention days, the
+         * minimum number of retention days, and optionally can include tags and a creator
+         * request ID.</p>  <p>Do not include sensitive data, such as passport
+         * numbers, in the name of a backup vault.</p> <p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/CreateLogicallyAirGappedBackupVault">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateLogicallyAirGappedBackupVaultOutcome CreateLogicallyAirGappedBackupVault(const Model::CreateLogicallyAirGappedBackupVaultRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateLogicallyAirGappedBackupVault that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateLogicallyAirGappedBackupVaultRequestT = Model::CreateLogicallyAirGappedBackupVaultRequest>
+        Model::CreateLogicallyAirGappedBackupVaultOutcomeCallable CreateLogicallyAirGappedBackupVaultCallable(const CreateLogicallyAirGappedBackupVaultRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::CreateLogicallyAirGappedBackupVault, request);
+        }
+
+        /**
+         * An Async wrapper for CreateLogicallyAirGappedBackupVault that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateLogicallyAirGappedBackupVaultRequestT = Model::CreateLogicallyAirGappedBackupVaultRequest>
+        void CreateLogicallyAirGappedBackupVaultAsync(const CreateLogicallyAirGappedBackupVaultRequestT& request, const CreateLogicallyAirGappedBackupVaultResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::CreateLogicallyAirGappedBackupVault, request, handler, context);
         }
 
         /**
@@ -276,6 +316,70 @@ namespace Backup
         void CreateReportPlanAsync(const CreateReportPlanRequestT& request, const CreateReportPlanResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&BackupClient::CreateReportPlan, request, handler, context);
+        }
+
+        /**
+         * <p>Creates a restore testing plan.</p> <p>The first of two steps to create a
+         * restore testing plan. After this request is successful, finish the procedure
+         * using CreateRestoreTestingSelection.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/CreateRestoreTestingPlan">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateRestoreTestingPlanOutcome CreateRestoreTestingPlan(const Model::CreateRestoreTestingPlanRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateRestoreTestingPlan that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateRestoreTestingPlanRequestT = Model::CreateRestoreTestingPlanRequest>
+        Model::CreateRestoreTestingPlanOutcomeCallable CreateRestoreTestingPlanCallable(const CreateRestoreTestingPlanRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::CreateRestoreTestingPlan, request);
+        }
+
+        /**
+         * An Async wrapper for CreateRestoreTestingPlan that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateRestoreTestingPlanRequestT = Model::CreateRestoreTestingPlanRequest>
+        void CreateRestoreTestingPlanAsync(const CreateRestoreTestingPlanRequestT& request, const CreateRestoreTestingPlanResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::CreateRestoreTestingPlan, request, handler, context);
+        }
+
+        /**
+         * <p>This request can be sent after CreateRestoreTestingPlan request returns
+         * successfully. This is the second part of creating a resource testing plan, and
+         * it must be completed sequentially.</p> <p>This consists of
+         * <code>RestoreTestingSelectionName</code>, <code>ProtectedResourceType</code>,
+         * and one of the following:</p> <ul> <li> <p> <code>ProtectedResourceArns</code>
+         * </p> </li> <li> <p> <code>ProtectedResourceConditions</code> </p> </li> </ul>
+         * <p>Each protected resource type can have one single value.</p> <p>A restore
+         * testing selection can include a wildcard value ("*") for
+         * <code>ProtectedResourceArns</code> along with
+         * <code>ProtectedResourceConditions</code>. Alternatively, you can include up to
+         * 30 specific protected resource ARNs in <code>ProtectedResourceArns</code>.</p>
+         * <p>Cannot select by both protected resource types AND specific ARNs. Request
+         * will fail if both are included.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/CreateRestoreTestingSelection">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateRestoreTestingSelectionOutcome CreateRestoreTestingSelection(const Model::CreateRestoreTestingSelectionRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateRestoreTestingSelection that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateRestoreTestingSelectionRequestT = Model::CreateRestoreTestingSelectionRequest>
+        Model::CreateRestoreTestingSelectionOutcomeCallable CreateRestoreTestingSelectionCallable(const CreateRestoreTestingSelectionRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::CreateRestoreTestingSelection, request);
+        }
+
+        /**
+         * An Async wrapper for CreateRestoreTestingSelection that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateRestoreTestingSelectionRequestT = Model::CreateRestoreTestingSelectionRequest>
+        void CreateRestoreTestingSelectionAsync(const CreateRestoreTestingSelectionRequestT& request, const CreateRestoreTestingSelectionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::CreateRestoreTestingSelection, request, handler, context);
         }
 
         /**
@@ -531,6 +635,60 @@ namespace Backup
         }
 
         /**
+         * <p>This request deletes the specified restore testing plan.</p> <p>Deletion can
+         * only successfully occur if all associated restore testing selections are deleted
+         * first.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/DeleteRestoreTestingPlan">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteRestoreTestingPlanOutcome DeleteRestoreTestingPlan(const Model::DeleteRestoreTestingPlanRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteRestoreTestingPlan that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteRestoreTestingPlanRequestT = Model::DeleteRestoreTestingPlanRequest>
+        Model::DeleteRestoreTestingPlanOutcomeCallable DeleteRestoreTestingPlanCallable(const DeleteRestoreTestingPlanRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::DeleteRestoreTestingPlan, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteRestoreTestingPlan that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteRestoreTestingPlanRequestT = Model::DeleteRestoreTestingPlanRequest>
+        void DeleteRestoreTestingPlanAsync(const DeleteRestoreTestingPlanRequestT& request, const DeleteRestoreTestingPlanResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::DeleteRestoreTestingPlan, request, handler, context);
+        }
+
+        /**
+         * <p>Input the Restore Testing Plan name and Restore Testing Selection name.</p>
+         * <p>All testing selections associated with a restore testing plan must be deleted
+         * before the restore testing plan can be deleted.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/DeleteRestoreTestingSelection">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteRestoreTestingSelectionOutcome DeleteRestoreTestingSelection(const Model::DeleteRestoreTestingSelectionRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteRestoreTestingSelection that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteRestoreTestingSelectionRequestT = Model::DeleteRestoreTestingSelectionRequest>
+        Model::DeleteRestoreTestingSelectionOutcomeCallable DeleteRestoreTestingSelectionCallable(const DeleteRestoreTestingSelectionRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::DeleteRestoreTestingSelection, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteRestoreTestingSelection that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteRestoreTestingSelectionRequestT = Model::DeleteRestoreTestingSelectionRequest>
+        void DeleteRestoreTestingSelectionAsync(const DeleteRestoreTestingSelectionRequestT& request, const DeleteRestoreTestingSelectionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::DeleteRestoreTestingSelection, request, handler, context);
+        }
+
+        /**
          * <p>Returns backup job details for the specified
          * <code>BackupJobId</code>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/DescribeBackupJob">AWS
@@ -642,13 +800,13 @@ namespace Backup
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/DescribeGlobalSettings">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeGlobalSettingsOutcome DescribeGlobalSettings(const Model::DescribeGlobalSettingsRequest& request) const;
+        virtual Model::DescribeGlobalSettingsOutcome DescribeGlobalSettings(const Model::DescribeGlobalSettingsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeGlobalSettings that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeGlobalSettingsRequestT = Model::DescribeGlobalSettingsRequest>
-        Model::DescribeGlobalSettingsOutcomeCallable DescribeGlobalSettingsCallable(const DescribeGlobalSettingsRequestT& request) const
+        Model::DescribeGlobalSettingsOutcomeCallable DescribeGlobalSettingsCallable(const DescribeGlobalSettingsRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::DescribeGlobalSettings, request);
         }
@@ -657,7 +815,7 @@ namespace Backup
          * An Async wrapper for DescribeGlobalSettings that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeGlobalSettingsRequestT = Model::DescribeGlobalSettingsRequest>
-        void DescribeGlobalSettingsAsync(const DescribeGlobalSettingsRequestT& request, const DescribeGlobalSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeGlobalSettingsAsync(const DescribeGlobalSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeGlobalSettingsRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::DescribeGlobalSettings, request, handler, context);
         }
@@ -724,13 +882,13 @@ namespace Backup
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/DescribeRegionSettings">AWS
          * API Reference</a></p>
          */
-        virtual Model::DescribeRegionSettingsOutcome DescribeRegionSettings(const Model::DescribeRegionSettingsRequest& request) const;
+        virtual Model::DescribeRegionSettingsOutcome DescribeRegionSettings(const Model::DescribeRegionSettingsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for DescribeRegionSettings that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename DescribeRegionSettingsRequestT = Model::DescribeRegionSettingsRequest>
-        Model::DescribeRegionSettingsOutcomeCallable DescribeRegionSettingsCallable(const DescribeRegionSettingsRequestT& request) const
+        Model::DescribeRegionSettingsOutcomeCallable DescribeRegionSettingsCallable(const DescribeRegionSettingsRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::DescribeRegionSettings, request);
         }
@@ -739,7 +897,7 @@ namespace Backup
          * An Async wrapper for DescribeRegionSettings that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename DescribeRegionSettingsRequestT = Model::DescribeRegionSettingsRequest>
-        void DescribeRegionSettingsAsync(const DescribeRegionSettingsRequestT& request, const DescribeRegionSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void DescribeRegionSettingsAsync(const DescribeRegionSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const DescribeRegionSettingsRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::DescribeRegionSettings, request, handler, context);
         }
@@ -1090,6 +1248,32 @@ namespace Backup
         }
 
         /**
+         * <p>This operation returns the metadata and details specific to the backup index
+         * associated with the specified recovery point.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/GetRecoveryPointIndexDetails">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetRecoveryPointIndexDetailsOutcome GetRecoveryPointIndexDetails(const Model::GetRecoveryPointIndexDetailsRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetRecoveryPointIndexDetails that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetRecoveryPointIndexDetailsRequestT = Model::GetRecoveryPointIndexDetailsRequest>
+        Model::GetRecoveryPointIndexDetailsOutcomeCallable GetRecoveryPointIndexDetailsCallable(const GetRecoveryPointIndexDetailsRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::GetRecoveryPointIndexDetails, request);
+        }
+
+        /**
+         * An Async wrapper for GetRecoveryPointIndexDetails that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetRecoveryPointIndexDetailsRequestT = Model::GetRecoveryPointIndexDetailsRequest>
+        void GetRecoveryPointIndexDetailsAsync(const GetRecoveryPointIndexDetailsRequestT& request, const GetRecoveryPointIndexDetailsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::GetRecoveryPointIndexDetails, request, handler, context);
+        }
+
+        /**
          * <p>Returns a set of metadata key-value pairs that were used to create the
          * backup.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/GetRecoveryPointRestoreMetadata">AWS
@@ -1116,30 +1300,170 @@ namespace Backup
         }
 
         /**
+         * <p>This request returns the metadata for the specified restore
+         * job.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/GetRestoreJobMetadata">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetRestoreJobMetadataOutcome GetRestoreJobMetadata(const Model::GetRestoreJobMetadataRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetRestoreJobMetadata that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetRestoreJobMetadataRequestT = Model::GetRestoreJobMetadataRequest>
+        Model::GetRestoreJobMetadataOutcomeCallable GetRestoreJobMetadataCallable(const GetRestoreJobMetadataRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::GetRestoreJobMetadata, request);
+        }
+
+        /**
+         * An Async wrapper for GetRestoreJobMetadata that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetRestoreJobMetadataRequestT = Model::GetRestoreJobMetadataRequest>
+        void GetRestoreJobMetadataAsync(const GetRestoreJobMetadataRequestT& request, const GetRestoreJobMetadataResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::GetRestoreJobMetadata, request, handler, context);
+        }
+
+        /**
+         * <p>This request returns the minimal required set of metadata needed to start a
+         * restore job with secure default settings. <code>BackupVaultName</code> and
+         * <code>RecoveryPointArn</code> are required parameters.
+         * <code>BackupVaultAccountId</code> is an optional parameter.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/GetRestoreTestingInferredMetadata">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetRestoreTestingInferredMetadataOutcome GetRestoreTestingInferredMetadata(const Model::GetRestoreTestingInferredMetadataRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetRestoreTestingInferredMetadata that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetRestoreTestingInferredMetadataRequestT = Model::GetRestoreTestingInferredMetadataRequest>
+        Model::GetRestoreTestingInferredMetadataOutcomeCallable GetRestoreTestingInferredMetadataCallable(const GetRestoreTestingInferredMetadataRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::GetRestoreTestingInferredMetadata, request);
+        }
+
+        /**
+         * An Async wrapper for GetRestoreTestingInferredMetadata that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetRestoreTestingInferredMetadataRequestT = Model::GetRestoreTestingInferredMetadataRequest>
+        void GetRestoreTestingInferredMetadataAsync(const GetRestoreTestingInferredMetadataRequestT& request, const GetRestoreTestingInferredMetadataResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::GetRestoreTestingInferredMetadata, request, handler, context);
+        }
+
+        /**
+         * <p>Returns <code>RestoreTestingPlan</code> details for the specified
+         * <code>RestoreTestingPlanName</code>. The details are the body of a restore
+         * testing plan in JSON format, in addition to plan metadata.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/GetRestoreTestingPlan">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetRestoreTestingPlanOutcome GetRestoreTestingPlan(const Model::GetRestoreTestingPlanRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetRestoreTestingPlan that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetRestoreTestingPlanRequestT = Model::GetRestoreTestingPlanRequest>
+        Model::GetRestoreTestingPlanOutcomeCallable GetRestoreTestingPlanCallable(const GetRestoreTestingPlanRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::GetRestoreTestingPlan, request);
+        }
+
+        /**
+         * An Async wrapper for GetRestoreTestingPlan that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetRestoreTestingPlanRequestT = Model::GetRestoreTestingPlanRequest>
+        void GetRestoreTestingPlanAsync(const GetRestoreTestingPlanRequestT& request, const GetRestoreTestingPlanResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::GetRestoreTestingPlan, request, handler, context);
+        }
+
+        /**
+         * <p>Returns RestoreTestingSelection, which displays resources and elements of the
+         * restore testing plan.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/GetRestoreTestingSelection">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::GetRestoreTestingSelectionOutcome GetRestoreTestingSelection(const Model::GetRestoreTestingSelectionRequest& request) const;
+
+        /**
+         * A Callable wrapper for GetRestoreTestingSelection that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename GetRestoreTestingSelectionRequestT = Model::GetRestoreTestingSelectionRequest>
+        Model::GetRestoreTestingSelectionOutcomeCallable GetRestoreTestingSelectionCallable(const GetRestoreTestingSelectionRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::GetRestoreTestingSelection, request);
+        }
+
+        /**
+         * An Async wrapper for GetRestoreTestingSelection that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename GetRestoreTestingSelectionRequestT = Model::GetRestoreTestingSelectionRequest>
+        void GetRestoreTestingSelectionAsync(const GetRestoreTestingSelectionRequestT& request, const GetRestoreTestingSelectionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::GetRestoreTestingSelection, request, handler, context);
+        }
+
+        /**
          * <p>Returns the Amazon Web Services resource types supported by
          * Backup.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/GetSupportedResourceTypes">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetSupportedResourceTypesOutcome GetSupportedResourceTypes() const;
+        virtual Model::GetSupportedResourceTypesOutcome GetSupportedResourceTypes(const Model::GetSupportedResourceTypesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetSupportedResourceTypes that returns a future to the operation so that it can be executed in parallel to other requests.
          */
-        template<typename = void>
-        Model::GetSupportedResourceTypesOutcomeCallable GetSupportedResourceTypesCallable() const
+        template<typename GetSupportedResourceTypesRequestT = Model::GetSupportedResourceTypesRequest>
+        Model::GetSupportedResourceTypesOutcomeCallable GetSupportedResourceTypesCallable(const GetSupportedResourceTypesRequestT& request = {}) const
         {
-            return SubmitCallable(&BackupClient::GetSupportedResourceTypes);
+            return SubmitCallable(&BackupClient::GetSupportedResourceTypes, request);
         }
 
         /**
          * An Async wrapper for GetSupportedResourceTypes that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
-        template<typename = void>
-        void GetSupportedResourceTypesAsync(const GetSupportedResourceTypesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        template<typename GetSupportedResourceTypesRequestT = Model::GetSupportedResourceTypesRequest>
+        void GetSupportedResourceTypesAsync(const GetSupportedResourceTypesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetSupportedResourceTypesRequestT& request = {}) const
         {
-            return SubmitAsync(&BackupClient::GetSupportedResourceTypes, handler, context);
+            return SubmitAsync(&BackupClient::GetSupportedResourceTypes, request, handler, context);
         }
+
+        /**
+         * <p>This is a request for a summary of backup jobs created or running within the
+         * most recent 30 days. You can include parameters AccountID, State, ResourceType,
+         * MessageCategory, AggregationPeriod, MaxResults, or NextToken to filter
+         * results.</p> <p>This request returns a summary that contains Region, Account,
+         * State, ResourceType, MessageCategory, StartTime, EndTime, and Count of included
+         * jobs.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListBackupJobSummaries">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListBackupJobSummariesOutcome ListBackupJobSummaries(const Model::ListBackupJobSummariesRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListBackupJobSummaries that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListBackupJobSummariesRequestT = Model::ListBackupJobSummariesRequest>
+        Model::ListBackupJobSummariesOutcomeCallable ListBackupJobSummariesCallable(const ListBackupJobSummariesRequestT& request = {}) const
+        {
+            return SubmitCallable(&BackupClient::ListBackupJobSummaries, request);
+        }
+
+        /**
+         * An Async wrapper for ListBackupJobSummaries that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListBackupJobSummariesRequestT = Model::ListBackupJobSummariesRequest>
+        void ListBackupJobSummariesAsync(const ListBackupJobSummariesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListBackupJobSummariesRequestT& request = {}) const
+        {
+            return SubmitAsync(&BackupClient::ListBackupJobSummaries, request, handler, context);
+        }
+
         /**
          * <p>Returns a list of existing backup jobs for an authenticated account for the
          * last 30 days. For a longer period of time, consider using these <a
@@ -1148,13 +1472,13 @@ namespace Backup
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListBackupJobs">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListBackupJobsOutcome ListBackupJobs(const Model::ListBackupJobsRequest& request) const;
+        virtual Model::ListBackupJobsOutcome ListBackupJobs(const Model::ListBackupJobsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListBackupJobs that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListBackupJobsRequestT = Model::ListBackupJobsRequest>
-        Model::ListBackupJobsOutcomeCallable ListBackupJobsCallable(const ListBackupJobsRequestT& request) const
+        Model::ListBackupJobsOutcomeCallable ListBackupJobsCallable(const ListBackupJobsRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::ListBackupJobs, request);
         }
@@ -1163,24 +1487,23 @@ namespace Backup
          * An Async wrapper for ListBackupJobs that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListBackupJobsRequestT = Model::ListBackupJobsRequest>
-        void ListBackupJobsAsync(const ListBackupJobsRequestT& request, const ListBackupJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListBackupJobsAsync(const ListBackupJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListBackupJobsRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::ListBackupJobs, request, handler, context);
         }
 
         /**
-         * <p>Returns metadata of your saved backup plan templates, including the template
-         * ID, name, and the creation and deletion dates.</p><p><h3>See Also:</h3>   <a
+         * <p>Lists the backup plan templates.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListBackupPlanTemplates">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListBackupPlanTemplatesOutcome ListBackupPlanTemplates(const Model::ListBackupPlanTemplatesRequest& request) const;
+        virtual Model::ListBackupPlanTemplatesOutcome ListBackupPlanTemplates(const Model::ListBackupPlanTemplatesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListBackupPlanTemplates that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListBackupPlanTemplatesRequestT = Model::ListBackupPlanTemplatesRequest>
-        Model::ListBackupPlanTemplatesOutcomeCallable ListBackupPlanTemplatesCallable(const ListBackupPlanTemplatesRequestT& request) const
+        Model::ListBackupPlanTemplatesOutcomeCallable ListBackupPlanTemplatesCallable(const ListBackupPlanTemplatesRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::ListBackupPlanTemplates, request);
         }
@@ -1189,7 +1512,7 @@ namespace Backup
          * An Async wrapper for ListBackupPlanTemplates that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListBackupPlanTemplatesRequestT = Model::ListBackupPlanTemplatesRequest>
-        void ListBackupPlanTemplatesAsync(const ListBackupPlanTemplatesRequestT& request, const ListBackupPlanTemplatesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListBackupPlanTemplatesAsync(const ListBackupPlanTemplatesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListBackupPlanTemplatesRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::ListBackupPlanTemplates, request, handler, context);
         }
@@ -1222,20 +1545,17 @@ namespace Backup
         }
 
         /**
-         * <p>Returns a list of all active backup plans for an authenticated account. The
-         * list contains information such as Amazon Resource Names (ARNs), plan IDs,
-         * creation and deletion dates, version IDs, plan names, and creator request
-         * IDs.</p><p><h3>See Also:</h3>   <a
+         * <p>Lists the active backup plans for the account.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListBackupPlans">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListBackupPlansOutcome ListBackupPlans(const Model::ListBackupPlansRequest& request) const;
+        virtual Model::ListBackupPlansOutcome ListBackupPlans(const Model::ListBackupPlansRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListBackupPlans that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListBackupPlansRequestT = Model::ListBackupPlansRequest>
-        Model::ListBackupPlansOutcomeCallable ListBackupPlansCallable(const ListBackupPlansRequestT& request) const
+        Model::ListBackupPlansOutcomeCallable ListBackupPlansCallable(const ListBackupPlansRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::ListBackupPlans, request);
         }
@@ -1244,7 +1564,7 @@ namespace Backup
          * An Async wrapper for ListBackupPlans that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListBackupPlansRequestT = Model::ListBackupPlansRequest>
-        void ListBackupPlansAsync(const ListBackupPlansRequestT& request, const ListBackupPlansResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListBackupPlansAsync(const ListBackupPlansResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListBackupPlansRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::ListBackupPlans, request, handler, context);
         }
@@ -1281,13 +1601,13 @@ namespace Backup
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListBackupVaults">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListBackupVaultsOutcome ListBackupVaults(const Model::ListBackupVaultsRequest& request) const;
+        virtual Model::ListBackupVaultsOutcome ListBackupVaults(const Model::ListBackupVaultsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListBackupVaults that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListBackupVaultsRequestT = Model::ListBackupVaultsRequest>
-        Model::ListBackupVaultsOutcomeCallable ListBackupVaultsCallable(const ListBackupVaultsRequestT& request) const
+        Model::ListBackupVaultsOutcomeCallable ListBackupVaultsCallable(const ListBackupVaultsRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::ListBackupVaults, request);
         }
@@ -1296,9 +1616,39 @@ namespace Backup
          * An Async wrapper for ListBackupVaults that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListBackupVaultsRequestT = Model::ListBackupVaultsRequest>
-        void ListBackupVaultsAsync(const ListBackupVaultsRequestT& request, const ListBackupVaultsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListBackupVaultsAsync(const ListBackupVaultsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListBackupVaultsRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::ListBackupVaults, request, handler, context);
+        }
+
+        /**
+         * <p>This request obtains a list of copy jobs created or running within the the
+         * most recent 30 days. You can include parameters AccountID, State, ResourceType,
+         * MessageCategory, AggregationPeriod, MaxResults, or NextToken to filter
+         * results.</p> <p>This request returns a summary that contains Region, Account,
+         * State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included
+         * jobs.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListCopyJobSummaries">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListCopyJobSummariesOutcome ListCopyJobSummaries(const Model::ListCopyJobSummariesRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListCopyJobSummaries that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListCopyJobSummariesRequestT = Model::ListCopyJobSummariesRequest>
+        Model::ListCopyJobSummariesOutcomeCallable ListCopyJobSummariesCallable(const ListCopyJobSummariesRequestT& request = {}) const
+        {
+            return SubmitCallable(&BackupClient::ListCopyJobSummaries, request);
+        }
+
+        /**
+         * An Async wrapper for ListCopyJobSummaries that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListCopyJobSummariesRequestT = Model::ListCopyJobSummariesRequest>
+        void ListCopyJobSummariesAsync(const ListCopyJobSummariesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListCopyJobSummariesRequestT& request = {}) const
+        {
+            return SubmitAsync(&BackupClient::ListCopyJobSummaries, request, handler, context);
         }
 
         /**
@@ -1306,13 +1656,13 @@ namespace Backup
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListCopyJobs">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListCopyJobsOutcome ListCopyJobs(const Model::ListCopyJobsRequest& request) const;
+        virtual Model::ListCopyJobsOutcome ListCopyJobs(const Model::ListCopyJobsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListCopyJobs that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListCopyJobsRequestT = Model::ListCopyJobsRequest>
-        Model::ListCopyJobsOutcomeCallable ListCopyJobsCallable(const ListCopyJobsRequestT& request) const
+        Model::ListCopyJobsOutcomeCallable ListCopyJobsCallable(const ListCopyJobsRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::ListCopyJobs, request);
         }
@@ -1321,7 +1671,7 @@ namespace Backup
          * An Async wrapper for ListCopyJobs that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListCopyJobsRequestT = Model::ListCopyJobsRequest>
-        void ListCopyJobsAsync(const ListCopyJobsRequestT& request, const ListCopyJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListCopyJobsAsync(const ListCopyJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListCopyJobsRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::ListCopyJobs, request, handler, context);
         }
@@ -1332,13 +1682,13 @@ namespace Backup
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListFrameworks">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListFrameworksOutcome ListFrameworks(const Model::ListFrameworksRequest& request) const;
+        virtual Model::ListFrameworksOutcome ListFrameworks(const Model::ListFrameworksRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListFrameworks that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListFrameworksRequestT = Model::ListFrameworksRequest>
-        Model::ListFrameworksOutcomeCallable ListFrameworksCallable(const ListFrameworksRequestT& request) const
+        Model::ListFrameworksOutcomeCallable ListFrameworksCallable(const ListFrameworksRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::ListFrameworks, request);
         }
@@ -1347,9 +1697,37 @@ namespace Backup
          * An Async wrapper for ListFrameworks that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListFrameworksRequestT = Model::ListFrameworksRequest>
-        void ListFrameworksAsync(const ListFrameworksRequestT& request, const ListFrameworksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListFrameworksAsync(const ListFrameworksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListFrameworksRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::ListFrameworks, request, handler, context);
+        }
+
+        /**
+         * <p>This operation returns a list of recovery points that have an associated
+         * index, belonging to the specified account.</p> <p>Optional parameters you can
+         * include are: MaxResults; NextToken; SourceResourceArns; CreatedBefore;
+         * CreatedAfter; and ResourceType.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListIndexedRecoveryPoints">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListIndexedRecoveryPointsOutcome ListIndexedRecoveryPoints(const Model::ListIndexedRecoveryPointsRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListIndexedRecoveryPoints that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListIndexedRecoveryPointsRequestT = Model::ListIndexedRecoveryPointsRequest>
+        Model::ListIndexedRecoveryPointsOutcomeCallable ListIndexedRecoveryPointsCallable(const ListIndexedRecoveryPointsRequestT& request = {}) const
+        {
+            return SubmitCallable(&BackupClient::ListIndexedRecoveryPoints, request);
+        }
+
+        /**
+         * An Async wrapper for ListIndexedRecoveryPoints that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListIndexedRecoveryPointsRequestT = Model::ListIndexedRecoveryPointsRequest>
+        void ListIndexedRecoveryPointsAsync(const ListIndexedRecoveryPointsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListIndexedRecoveryPointsRequestT& request = {}) const
+        {
+            return SubmitAsync(&BackupClient::ListIndexedRecoveryPoints, request, handler, context);
         }
 
         /**
@@ -1358,13 +1736,13 @@ namespace Backup
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListLegalHolds">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListLegalHoldsOutcome ListLegalHolds(const Model::ListLegalHoldsRequest& request) const;
+        virtual Model::ListLegalHoldsOutcome ListLegalHolds(const Model::ListLegalHoldsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListLegalHolds that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListLegalHoldsRequestT = Model::ListLegalHoldsRequest>
-        Model::ListLegalHoldsOutcomeCallable ListLegalHoldsCallable(const ListLegalHoldsRequestT& request) const
+        Model::ListLegalHoldsOutcomeCallable ListLegalHoldsCallable(const ListLegalHoldsRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::ListLegalHolds, request);
         }
@@ -1373,7 +1751,7 @@ namespace Backup
          * An Async wrapper for ListLegalHolds that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListLegalHoldsRequestT = Model::ListLegalHoldsRequest>
-        void ListLegalHoldsAsync(const ListLegalHoldsRequestT& request, const ListLegalHoldsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListLegalHoldsAsync(const ListLegalHoldsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListLegalHoldsRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::ListLegalHolds, request, handler, context);
         }
@@ -1385,13 +1763,13 @@ namespace Backup
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListProtectedResources">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListProtectedResourcesOutcome ListProtectedResources(const Model::ListProtectedResourcesRequest& request) const;
+        virtual Model::ListProtectedResourcesOutcome ListProtectedResources(const Model::ListProtectedResourcesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListProtectedResources that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListProtectedResourcesRequestT = Model::ListProtectedResourcesRequest>
-        Model::ListProtectedResourcesOutcomeCallable ListProtectedResourcesCallable(const ListProtectedResourcesRequestT& request) const
+        Model::ListProtectedResourcesOutcomeCallable ListProtectedResourcesCallable(const ListProtectedResourcesRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::ListProtectedResources, request);
         }
@@ -1400,9 +1778,35 @@ namespace Backup
          * An Async wrapper for ListProtectedResources that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListProtectedResourcesRequestT = Model::ListProtectedResourcesRequest>
-        void ListProtectedResourcesAsync(const ListProtectedResourcesRequestT& request, const ListProtectedResourcesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListProtectedResourcesAsync(const ListProtectedResourcesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListProtectedResourcesRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::ListProtectedResources, request, handler, context);
+        }
+
+        /**
+         * <p>This request lists the protected resources corresponding to each backup
+         * vault.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListProtectedResourcesByBackupVault">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListProtectedResourcesByBackupVaultOutcome ListProtectedResourcesByBackupVault(const Model::ListProtectedResourcesByBackupVaultRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListProtectedResourcesByBackupVault that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListProtectedResourcesByBackupVaultRequestT = Model::ListProtectedResourcesByBackupVaultRequest>
+        Model::ListProtectedResourcesByBackupVaultOutcomeCallable ListProtectedResourcesByBackupVaultCallable(const ListProtectedResourcesByBackupVaultRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::ListProtectedResourcesByBackupVault, request);
+        }
+
+        /**
+         * An Async wrapper for ListProtectedResourcesByBackupVault that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListProtectedResourcesByBackupVaultRequestT = Model::ListProtectedResourcesByBackupVaultRequest>
+        void ListProtectedResourcesByBackupVaultAsync(const ListProtectedResourcesByBackupVaultRequestT& request, const ListProtectedResourcesByBackupVaultResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::ListProtectedResourcesByBackupVault, request, handler, context);
         }
 
         /**
@@ -1458,10 +1862,10 @@ namespace Backup
         }
 
         /**
-         * <p>Returns detailed information about all the recovery points of the type
-         * specified by a resource Amazon Resource Name (ARN).</p>  <p>For Amazon EFS
-         * and Amazon EC2, this action only lists recovery points created by Backup.</p>
-         * <p><h3>See Also:</h3>   <a
+         * <p>The information about the recovery points of the type specified by a resource
+         * Amazon Resource Name (ARN).</p>  <p>For Amazon EFS and Amazon EC2, this
+         * action only lists recovery points created by Backup.</p> <p><h3>See
+         * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListRecoveryPointsByResource">AWS
          * API Reference</a></p>
          */
@@ -1490,13 +1894,13 @@ namespace Backup
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListReportJobs">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListReportJobsOutcome ListReportJobs(const Model::ListReportJobsRequest& request) const;
+        virtual Model::ListReportJobsOutcome ListReportJobs(const Model::ListReportJobsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListReportJobs that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListReportJobsRequestT = Model::ListReportJobsRequest>
-        Model::ListReportJobsOutcomeCallable ListReportJobsCallable(const ListReportJobsRequestT& request) const
+        Model::ListReportJobsOutcomeCallable ListReportJobsCallable(const ListReportJobsRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::ListReportJobs, request);
         }
@@ -1505,7 +1909,7 @@ namespace Backup
          * An Async wrapper for ListReportJobs that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListReportJobsRequestT = Model::ListReportJobsRequest>
-        void ListReportJobsAsync(const ListReportJobsRequestT& request, const ListReportJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListReportJobsAsync(const ListReportJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListReportJobsRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::ListReportJobs, request, handler, context);
         }
@@ -1516,13 +1920,13 @@ namespace Backup
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListReportPlans">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListReportPlansOutcome ListReportPlans(const Model::ListReportPlansRequest& request) const;
+        virtual Model::ListReportPlansOutcome ListReportPlans(const Model::ListReportPlansRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListReportPlans that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListReportPlansRequestT = Model::ListReportPlansRequest>
-        Model::ListReportPlansOutcomeCallable ListReportPlansCallable(const ListReportPlansRequestT& request) const
+        Model::ListReportPlansOutcomeCallable ListReportPlansCallable(const ListReportPlansRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::ListReportPlans, request);
         }
@@ -1531,9 +1935,39 @@ namespace Backup
          * An Async wrapper for ListReportPlans that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListReportPlansRequestT = Model::ListReportPlansRequest>
-        void ListReportPlansAsync(const ListReportPlansRequestT& request, const ListReportPlansResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListReportPlansAsync(const ListReportPlansResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListReportPlansRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::ListReportPlans, request, handler, context);
+        }
+
+        /**
+         * <p>This request obtains a summary of restore jobs created or running within the
+         * the most recent 30 days. You can include parameters AccountID, State,
+         * ResourceType, AggregationPeriod, MaxResults, or NextToken to filter results.</p>
+         * <p>This request returns a summary that contains Region, Account, State,
+         * RestourceType, MessageCategory, StartTime, EndTime, and Count of included
+         * jobs.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListRestoreJobSummaries">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListRestoreJobSummariesOutcome ListRestoreJobSummaries(const Model::ListRestoreJobSummariesRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListRestoreJobSummaries that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListRestoreJobSummariesRequestT = Model::ListRestoreJobSummariesRequest>
+        Model::ListRestoreJobSummariesOutcomeCallable ListRestoreJobSummariesCallable(const ListRestoreJobSummariesRequestT& request = {}) const
+        {
+            return SubmitCallable(&BackupClient::ListRestoreJobSummaries, request);
+        }
+
+        /**
+         * An Async wrapper for ListRestoreJobSummaries that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListRestoreJobSummariesRequestT = Model::ListRestoreJobSummariesRequest>
+        void ListRestoreJobSummariesAsync(const ListRestoreJobSummariesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListRestoreJobSummariesRequestT& request = {}) const
+        {
+            return SubmitAsync(&BackupClient::ListRestoreJobSummaries, request, handler, context);
         }
 
         /**
@@ -1542,13 +1976,13 @@ namespace Backup
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListRestoreJobs">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListRestoreJobsOutcome ListRestoreJobs(const Model::ListRestoreJobsRequest& request) const;
+        virtual Model::ListRestoreJobsOutcome ListRestoreJobs(const Model::ListRestoreJobsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListRestoreJobs that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListRestoreJobsRequestT = Model::ListRestoreJobsRequest>
-        Model::ListRestoreJobsOutcomeCallable ListRestoreJobsCallable(const ListRestoreJobsRequestT& request) const
+        Model::ListRestoreJobsOutcomeCallable ListRestoreJobsCallable(const ListRestoreJobsRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::ListRestoreJobs, request);
         }
@@ -1557,18 +1991,95 @@ namespace Backup
          * An Async wrapper for ListRestoreJobs that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListRestoreJobsRequestT = Model::ListRestoreJobsRequest>
-        void ListRestoreJobsAsync(const ListRestoreJobsRequestT& request, const ListRestoreJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListRestoreJobsAsync(const ListRestoreJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListRestoreJobsRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::ListRestoreJobs, request, handler, context);
         }
 
         /**
-         * <p>Returns a list of key-value pairs assigned to a target recovery point, backup
-         * plan, or backup vault.</p> <p> <code>ListTags</code> only works for resource
-         * types that support full Backup management of their backups. Those resource types
-         * are listed in the "Full Backup management" section of the <a
-         * href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource">
-         * Feature availability by resource</a> table.</p><p><h3>See Also:</h3>   <a
+         * <p>This returns restore jobs that contain the specified protected resource.</p>
+         * <p>You must include <code>ResourceArn</code>. You can optionally include
+         * <code>NextToken</code>, <code>ByStatus</code>, <code>MaxResults</code>,
+         * <code>ByRecoveryPointCreationDateAfter</code> , and
+         * <code>ByRecoveryPointCreationDateBefore</code>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListRestoreJobsByProtectedResource">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListRestoreJobsByProtectedResourceOutcome ListRestoreJobsByProtectedResource(const Model::ListRestoreJobsByProtectedResourceRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListRestoreJobsByProtectedResource that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListRestoreJobsByProtectedResourceRequestT = Model::ListRestoreJobsByProtectedResourceRequest>
+        Model::ListRestoreJobsByProtectedResourceOutcomeCallable ListRestoreJobsByProtectedResourceCallable(const ListRestoreJobsByProtectedResourceRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::ListRestoreJobsByProtectedResource, request);
+        }
+
+        /**
+         * An Async wrapper for ListRestoreJobsByProtectedResource that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListRestoreJobsByProtectedResourceRequestT = Model::ListRestoreJobsByProtectedResourceRequest>
+        void ListRestoreJobsByProtectedResourceAsync(const ListRestoreJobsByProtectedResourceRequestT& request, const ListRestoreJobsByProtectedResourceResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::ListRestoreJobsByProtectedResource, request, handler, context);
+        }
+
+        /**
+         * <p>Returns a list of restore testing plans.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListRestoreTestingPlans">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListRestoreTestingPlansOutcome ListRestoreTestingPlans(const Model::ListRestoreTestingPlansRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListRestoreTestingPlans that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListRestoreTestingPlansRequestT = Model::ListRestoreTestingPlansRequest>
+        Model::ListRestoreTestingPlansOutcomeCallable ListRestoreTestingPlansCallable(const ListRestoreTestingPlansRequestT& request = {}) const
+        {
+            return SubmitCallable(&BackupClient::ListRestoreTestingPlans, request);
+        }
+
+        /**
+         * An Async wrapper for ListRestoreTestingPlans that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListRestoreTestingPlansRequestT = Model::ListRestoreTestingPlansRequest>
+        void ListRestoreTestingPlansAsync(const ListRestoreTestingPlansResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListRestoreTestingPlansRequestT& request = {}) const
+        {
+            return SubmitAsync(&BackupClient::ListRestoreTestingPlans, request, handler, context);
+        }
+
+        /**
+         * <p>Returns a list of restore testing selections. Can be filtered by
+         * <code>MaxResults</code> and <code>RestoreTestingPlanName</code>.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListRestoreTestingSelections">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListRestoreTestingSelectionsOutcome ListRestoreTestingSelections(const Model::ListRestoreTestingSelectionsRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListRestoreTestingSelections that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListRestoreTestingSelectionsRequestT = Model::ListRestoreTestingSelectionsRequest>
+        Model::ListRestoreTestingSelectionsOutcomeCallable ListRestoreTestingSelectionsCallable(const ListRestoreTestingSelectionsRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::ListRestoreTestingSelections, request);
+        }
+
+        /**
+         * An Async wrapper for ListRestoreTestingSelections that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListRestoreTestingSelectionsRequestT = Model::ListRestoreTestingSelectionsRequest>
+        void ListRestoreTestingSelectionsAsync(const ListRestoreTestingSelectionsRequestT& request, const ListRestoreTestingSelectionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::ListRestoreTestingSelections, request, handler, context);
+        }
+
+        /**
+         * <p>Returns the tags assigned to the resource, such as a target recovery point,
+         * backup plan, or backup vault.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/ListTags">AWS API
          * Reference</a></p>
          */
@@ -1629,8 +2140,11 @@ namespace Backup
          * assessed by Cohasset Associates for use in environments that are subject to SEC
          * 17a-4, CFTC, and FINRA regulations. For more information about how Backup Vault
          * Lock relates to these regulations, see the <a
-         * href="samples/cohassetreport.zip">Cohasset Associates Compliance Assessment.</a>
-         * </p> <p><h3>See Also:</h3>   <a
+         * href="https://docs.aws.amazon.com/aws-backup/latest/devguide/samples/cohassetreport.zip">Cohasset
+         * Associates Compliance Assessment.</a> </p>  <p>For more information, see
+         * <a
+         * href="https://docs.aws.amazon.com/aws-backup/latest/devguide/vault-lock.html">Backup
+         * Vault Lock</a>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/PutBackupVaultLockConfiguration">AWS
          * API Reference</a></p>
          */
@@ -1678,6 +2192,34 @@ namespace Backup
         void PutBackupVaultNotificationsAsync(const PutBackupVaultNotificationsRequestT& request, const PutBackupVaultNotificationsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&BackupClient::PutBackupVaultNotifications, request, handler, context);
+        }
+
+        /**
+         * <p>This request allows you to send your independent self-run restore test
+         * validation results. <code>RestoreJobId</code> and <code>ValidationStatus</code>
+         * are required. Optionally, you can input a
+         * <code>ValidationStatusMessage</code>.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/PutRestoreValidationResult">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::PutRestoreValidationResultOutcome PutRestoreValidationResult(const Model::PutRestoreValidationResultRequest& request) const;
+
+        /**
+         * A Callable wrapper for PutRestoreValidationResult that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename PutRestoreValidationResultRequestT = Model::PutRestoreValidationResultRequest>
+        Model::PutRestoreValidationResultOutcomeCallable PutRestoreValidationResultCallable(const PutRestoreValidationResultRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::PutRestoreValidationResult, request);
+        }
+
+        /**
+         * An Async wrapper for PutRestoreValidationResult that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename PutRestoreValidationResultRequestT = Model::PutRestoreValidationResultRequest>
+        void PutRestoreValidationResultAsync(const PutRestoreValidationResultRequestT& request, const PutRestoreValidationResultResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::PutRestoreValidationResult, request, handler, context);
         }
 
         /**
@@ -1787,9 +2329,9 @@ namespace Backup
         /**
          * <p>Attempts to cancel a job to create a one-time backup of a resource.</p>
          * <p>This action is not supported for the following services: Amazon FSx for
-         * Windows File Server, Amazon FSx for Lustre, FSx for ONTAP , Amazon FSx for
-         * OpenZFS, Amazon DocumentDB (with MongoDB compatibility), Amazon RDS, Amazon
-         * Aurora, and Amazon Neptune.</p><p><h3>See Also:</h3>   <a
+         * Windows File Server, Amazon FSx for Lustre, Amazon FSx for NetApp ONTAP, Amazon
+         * FSx for OpenZFS, Amazon DocumentDB (with MongoDB compatibility), Amazon RDS,
+         * Amazon Aurora, and Amazon Neptune.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/StopBackupJob">AWS
          * API Reference</a></p>
          */
@@ -1815,7 +2357,9 @@ namespace Backup
 
         /**
          * <p>Assigns a set of key-value pairs to a recovery point, backup plan, or backup
-         * vault identified by an Amazon Resource Name (ARN).</p><p><h3>See Also:</h3>   <a
+         * vault identified by an Amazon Resource Name (ARN).</p> <p>This API is supported
+         * for recovery points for resource types including Aurora, Amazon DocumentDB.
+         * Amazon EBS, Amazon FSx, Neptune, and Amazon RDS.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/TagResource">AWS
          * API Reference</a></p>
          */
@@ -1841,7 +2385,9 @@ namespace Backup
 
         /**
          * <p>Removes a set of key-value pairs from a recovery point, backup plan, or
-         * backup vault identified by an Amazon Resource Name (ARN)</p><p><h3>See
+         * backup vault identified by an Amazon Resource Name (ARN)</p> <p>This API is not
+         * supported for recovery points for resource types including Aurora, Amazon
+         * DocumentDB. Amazon EBS, Amazon FSx, Neptune, and Amazon RDS.</p><p><h3>See
          * Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/UntagResource">AWS
          * API Reference</a></p>
@@ -1867,9 +2413,8 @@ namespace Backup
         }
 
         /**
-         * <p>Updates an existing backup plan identified by its <code>backupPlanId</code>
-         * with the input document in JSON format. The new version is uniquely identified
-         * by a <code>VersionId</code>.</p><p><h3>See Also:</h3>   <a
+         * <p>Updates the specified backup plan. The new version is uniquely identified by
+         * its ID.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/UpdateBackupPlan">AWS
          * API Reference</a></p>
          */
@@ -1894,8 +2439,7 @@ namespace Backup
         }
 
         /**
-         * <p>Updates an existing framework identified by its <code>FrameworkName</code>
-         * with the input document in JSON format.</p><p><h3>See Also:</h3>   <a
+         * <p>Updates the specified framework.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/UpdateFramework">AWS
          * API Reference</a></p>
          */
@@ -1927,13 +2471,13 @@ namespace Backup
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/UpdateGlobalSettings">AWS
          * API Reference</a></p>
          */
-        virtual Model::UpdateGlobalSettingsOutcome UpdateGlobalSettings(const Model::UpdateGlobalSettingsRequest& request) const;
+        virtual Model::UpdateGlobalSettingsOutcome UpdateGlobalSettings(const Model::UpdateGlobalSettingsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for UpdateGlobalSettings that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename UpdateGlobalSettingsRequestT = Model::UpdateGlobalSettingsRequest>
-        Model::UpdateGlobalSettingsOutcomeCallable UpdateGlobalSettingsCallable(const UpdateGlobalSettingsRequestT& request) const
+        Model::UpdateGlobalSettingsOutcomeCallable UpdateGlobalSettingsCallable(const UpdateGlobalSettingsRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::UpdateGlobalSettings, request);
         }
@@ -1942,26 +2486,56 @@ namespace Backup
          * An Async wrapper for UpdateGlobalSettings that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename UpdateGlobalSettingsRequestT = Model::UpdateGlobalSettingsRequest>
-        void UpdateGlobalSettingsAsync(const UpdateGlobalSettingsRequestT& request, const UpdateGlobalSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void UpdateGlobalSettingsAsync(const UpdateGlobalSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const UpdateGlobalSettingsRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::UpdateGlobalSettings, request, handler, context);
+        }
+
+        /**
+         * <p>This operation updates the settings of a recovery point index.</p>
+         * <p>Required: BackupVaultName, RecoveryPointArn, and IAMRoleArn</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/UpdateRecoveryPointIndexSettings">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateRecoveryPointIndexSettingsOutcome UpdateRecoveryPointIndexSettings(const Model::UpdateRecoveryPointIndexSettingsRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateRecoveryPointIndexSettings that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateRecoveryPointIndexSettingsRequestT = Model::UpdateRecoveryPointIndexSettingsRequest>
+        Model::UpdateRecoveryPointIndexSettingsOutcomeCallable UpdateRecoveryPointIndexSettingsCallable(const UpdateRecoveryPointIndexSettingsRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::UpdateRecoveryPointIndexSettings, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateRecoveryPointIndexSettings that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateRecoveryPointIndexSettingsRequestT = Model::UpdateRecoveryPointIndexSettingsRequest>
+        void UpdateRecoveryPointIndexSettingsAsync(const UpdateRecoveryPointIndexSettingsRequestT& request, const UpdateRecoveryPointIndexSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::UpdateRecoveryPointIndexSettings, request, handler, context);
         }
 
         /**
          * <p>Sets the transition lifecycle of a recovery point.</p> <p>The lifecycle
          * defines when a protected resource is transitioned to cold storage and when it
          * expires. Backup transitions and expires backups automatically according to the
-         * lifecycle that you define.</p> <p>Backups transitioned to cold storage must be
-         * stored in cold storage for a minimum of 90 days. Therefore, the “retention”
-         * setting must be 90 days greater than the “transition to cold after days”
-         * setting. The “transition to cold after days” setting cannot be changed after a
-         * backup has been transitioned to cold.</p> <p>Resource types that are able to be
-         * transitioned to cold storage are listed in the "Lifecycle to cold storage"
-         * section of the <a
-         * href="https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource">
-         * Feature availability by resource</a> table. Backup ignores this expression for
-         * other resource types.</p> <p>This operation does not support continuous
-         * backups.</p><p><h3>See Also:</h3>   <a
+         * lifecycle that you define.</p> <p>Resource types that can transition to cold
+         * storage are listed in the <a
+         * href="https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource">Feature
+         * availability by resource</a> table. Backup ignores this expression for other
+         * resource types.</p> <p>Backups transitioned to cold storage must be stored in
+         * cold storage for a minimum of 90 days. Therefore, the “retention” setting must
+         * be 90 days greater than the “transition to cold after days” setting. The
+         * “transition to cold after days” setting cannot be changed after a backup has
+         * been transitioned to cold.</p>  <p>If your lifecycle currently uses
+         * the parameters <code>DeleteAfterDays</code> and
+         * <code>MoveToColdStorageAfterDays</code>, include these parameters and their
+         * values when you call this operation. Not including them may result in your plan
+         * updating with null values.</p>  <p>This operation does not support
+         * continuous backups.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/UpdateRecoveryPointLifecycle">AWS
          * API Reference</a></p>
          */
@@ -1986,22 +2560,19 @@ namespace Backup
         }
 
         /**
-         * <p>Updates the current service opt-in settings for the Region. If service-opt-in
-         * is enabled for a service, Backup tries to protect that service's resources in
-         * this Region, when the resource is included in an on-demand backup or scheduled
-         * backup plan. Otherwise, Backup does not try to protect that service's resources
-         * in this Region. Use the <code>DescribeRegionSettings</code> API to determine the
-         * resource types that are supported.</p><p><h3>See Also:</h3>   <a
+         * <p>Updates the current service opt-in settings for the Region.</p> <p>Use the
+         * <code>DescribeRegionSettings</code> API to determine the resource types that are
+         * supported.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/UpdateRegionSettings">AWS
          * API Reference</a></p>
          */
-        virtual Model::UpdateRegionSettingsOutcome UpdateRegionSettings(const Model::UpdateRegionSettingsRequest& request) const;
+        virtual Model::UpdateRegionSettingsOutcome UpdateRegionSettings(const Model::UpdateRegionSettingsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for UpdateRegionSettings that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename UpdateRegionSettingsRequestT = Model::UpdateRegionSettingsRequest>
-        Model::UpdateRegionSettingsOutcomeCallable UpdateRegionSettingsCallable(const UpdateRegionSettingsRequestT& request) const
+        Model::UpdateRegionSettingsOutcomeCallable UpdateRegionSettingsCallable(const UpdateRegionSettingsRequestT& request = {}) const
         {
             return SubmitCallable(&BackupClient::UpdateRegionSettings, request);
         }
@@ -2010,14 +2581,13 @@ namespace Backup
          * An Async wrapper for UpdateRegionSettings that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename UpdateRegionSettingsRequestT = Model::UpdateRegionSettingsRequest>
-        void UpdateRegionSettingsAsync(const UpdateRegionSettingsRequestT& request, const UpdateRegionSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void UpdateRegionSettingsAsync(const UpdateRegionSettingsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const UpdateRegionSettingsRequestT& request = {}) const
         {
             return SubmitAsync(&BackupClient::UpdateRegionSettings, request, handler, context);
         }
 
         /**
-         * <p>Updates an existing report plan identified by its <code>ReportPlanName</code>
-         * with the input document in JSON format.</p><p><h3>See Also:</h3>   <a
+         * <p>Updates the specified report plan.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/UpdateReportPlan">AWS
          * API Reference</a></p>
          */
@@ -2041,16 +2611,71 @@ namespace Backup
             return SubmitAsync(&BackupClient::UpdateReportPlan, request, handler, context);
         }
 
+        /**
+         * <p>This request will send changes to your specified restore testing plan.
+         * <code>RestoreTestingPlanName</code> cannot be updated after it is created.</p>
+         * <p> <code>RecoveryPointSelection</code> can contain:</p> <ul> <li> <p>
+         * <code>Algorithm</code> </p> </li> <li> <p> <code>ExcludeVaults</code> </p> </li>
+         * <li> <p> <code>IncludeVaults</code> </p> </li> <li> <p>
+         * <code>RecoveryPointTypes</code> </p> </li> <li> <p>
+         * <code>SelectionWindowDays</code> </p> </li> </ul><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/UpdateRestoreTestingPlan">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateRestoreTestingPlanOutcome UpdateRestoreTestingPlan(const Model::UpdateRestoreTestingPlanRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateRestoreTestingPlan that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateRestoreTestingPlanRequestT = Model::UpdateRestoreTestingPlanRequest>
+        Model::UpdateRestoreTestingPlanOutcomeCallable UpdateRestoreTestingPlanCallable(const UpdateRestoreTestingPlanRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::UpdateRestoreTestingPlan, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateRestoreTestingPlan that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateRestoreTestingPlanRequestT = Model::UpdateRestoreTestingPlanRequest>
+        void UpdateRestoreTestingPlanAsync(const UpdateRestoreTestingPlanRequestT& request, const UpdateRestoreTestingPlanResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::UpdateRestoreTestingPlan, request, handler, context);
+        }
+
+        /**
+         * <p>Updates the specified restore testing selection.</p> <p>Most elements except
+         * the <code>RestoreTestingSelectionName</code> can be updated with this
+         * request.</p> <p>You can use either protected resource ARNs or conditions, but
+         * not both.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/backup-2018-11-15/UpdateRestoreTestingSelection">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateRestoreTestingSelectionOutcome UpdateRestoreTestingSelection(const Model::UpdateRestoreTestingSelectionRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateRestoreTestingSelection that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateRestoreTestingSelectionRequestT = Model::UpdateRestoreTestingSelectionRequest>
+        Model::UpdateRestoreTestingSelectionOutcomeCallable UpdateRestoreTestingSelectionCallable(const UpdateRestoreTestingSelectionRequestT& request) const
+        {
+            return SubmitCallable(&BackupClient::UpdateRestoreTestingSelection, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateRestoreTestingSelection that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateRestoreTestingSelectionRequestT = Model::UpdateRestoreTestingSelectionRequest>
+        void UpdateRestoreTestingSelectionAsync(const UpdateRestoreTestingSelectionRequestT& request, const UpdateRestoreTestingSelectionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&BackupClient::UpdateRestoreTestingSelection, request, handler, context);
+        }
+
 
       void OverrideEndpoint(const Aws::String& endpoint);
       std::shared_ptr<BackupEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<BackupClient>;
-      void init(const BackupClientConfiguration& clientConfiguration);
 
-      BackupClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<BackupEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace Backup

@@ -24,7 +24,7 @@ namespace Model
 {
 
   /**
-   * <p>A response to a <code>PollForThirdPartyJobs</code> request returned by AWS
+   * <p>A response to a <code>PollForThirdPartyJobs</code> request returned by
    * CodePipeline when there is a job to be worked on by a partner
    * action.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/codepipeline-2015-07-09/ThirdPartyJob">AWS
@@ -39,103 +39,35 @@ namespace Model
     AWS_CODEPIPELINE_API Aws::Utils::Json::JsonValue Jsonize() const;
 
 
+    ///@{
     /**
      * <p>The <code>clientToken</code> portion of the <code>clientId</code> and
      * <code>clientToken</code> pair used to verify that the calling entity is allowed
      * access to the job and its details.</p>
      */
     inline const Aws::String& GetClientId() const{ return m_clientId; }
-
-    /**
-     * <p>The <code>clientToken</code> portion of the <code>clientId</code> and
-     * <code>clientToken</code> pair used to verify that the calling entity is allowed
-     * access to the job and its details.</p>
-     */
     inline bool ClientIdHasBeenSet() const { return m_clientIdHasBeenSet; }
-
-    /**
-     * <p>The <code>clientToken</code> portion of the <code>clientId</code> and
-     * <code>clientToken</code> pair used to verify that the calling entity is allowed
-     * access to the job and its details.</p>
-     */
     inline void SetClientId(const Aws::String& value) { m_clientIdHasBeenSet = true; m_clientId = value; }
-
-    /**
-     * <p>The <code>clientToken</code> portion of the <code>clientId</code> and
-     * <code>clientToken</code> pair used to verify that the calling entity is allowed
-     * access to the job and its details.</p>
-     */
     inline void SetClientId(Aws::String&& value) { m_clientIdHasBeenSet = true; m_clientId = std::move(value); }
-
-    /**
-     * <p>The <code>clientToken</code> portion of the <code>clientId</code> and
-     * <code>clientToken</code> pair used to verify that the calling entity is allowed
-     * access to the job and its details.</p>
-     */
     inline void SetClientId(const char* value) { m_clientIdHasBeenSet = true; m_clientId.assign(value); }
-
-    /**
-     * <p>The <code>clientToken</code> portion of the <code>clientId</code> and
-     * <code>clientToken</code> pair used to verify that the calling entity is allowed
-     * access to the job and its details.</p>
-     */
     inline ThirdPartyJob& WithClientId(const Aws::String& value) { SetClientId(value); return *this;}
-
-    /**
-     * <p>The <code>clientToken</code> portion of the <code>clientId</code> and
-     * <code>clientToken</code> pair used to verify that the calling entity is allowed
-     * access to the job and its details.</p>
-     */
     inline ThirdPartyJob& WithClientId(Aws::String&& value) { SetClientId(std::move(value)); return *this;}
-
-    /**
-     * <p>The <code>clientToken</code> portion of the <code>clientId</code> and
-     * <code>clientToken</code> pair used to verify that the calling entity is allowed
-     * access to the job and its details.</p>
-     */
     inline ThirdPartyJob& WithClientId(const char* value) { SetClientId(value); return *this;}
+    ///@}
 
-
+    ///@{
     /**
-     * <p>The identifier used to identify the job in AWS CodePipeline.</p>
+     * <p>The identifier used to identify the job in CodePipeline.</p>
      */
     inline const Aws::String& GetJobId() const{ return m_jobId; }
-
-    /**
-     * <p>The identifier used to identify the job in AWS CodePipeline.</p>
-     */
     inline bool JobIdHasBeenSet() const { return m_jobIdHasBeenSet; }
-
-    /**
-     * <p>The identifier used to identify the job in AWS CodePipeline.</p>
-     */
     inline void SetJobId(const Aws::String& value) { m_jobIdHasBeenSet = true; m_jobId = value; }
-
-    /**
-     * <p>The identifier used to identify the job in AWS CodePipeline.</p>
-     */
     inline void SetJobId(Aws::String&& value) { m_jobIdHasBeenSet = true; m_jobId = std::move(value); }
-
-    /**
-     * <p>The identifier used to identify the job in AWS CodePipeline.</p>
-     */
     inline void SetJobId(const char* value) { m_jobIdHasBeenSet = true; m_jobId.assign(value); }
-
-    /**
-     * <p>The identifier used to identify the job in AWS CodePipeline.</p>
-     */
     inline ThirdPartyJob& WithJobId(const Aws::String& value) { SetJobId(value); return *this;}
-
-    /**
-     * <p>The identifier used to identify the job in AWS CodePipeline.</p>
-     */
     inline ThirdPartyJob& WithJobId(Aws::String&& value) { SetJobId(std::move(value)); return *this;}
-
-    /**
-     * <p>The identifier used to identify the job in AWS CodePipeline.</p>
-     */
     inline ThirdPartyJob& WithJobId(const char* value) { SetJobId(value); return *this;}
-
+    ///@}
   private:
 
     Aws::String m_clientId;

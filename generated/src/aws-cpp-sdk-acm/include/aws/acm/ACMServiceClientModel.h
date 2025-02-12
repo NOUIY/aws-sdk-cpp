@@ -26,6 +26,8 @@
 #include <aws/acm/model/ListCertificatesResult.h>
 #include <aws/acm/model/ListTagsForCertificateResult.h>
 #include <aws/acm/model/RequestCertificateResult.h>
+#include <aws/acm/model/GetAccountConfigurationRequest.h>
+#include <aws/acm/model/ListCertificatesRequest.h>
 #include <aws/core/NoResult.h>
 /* End of service model headers required in ACMClient header */
 
@@ -60,7 +62,7 @@ namespace Aws
 
   namespace ACM
   {
-    using ACMClientConfiguration = Aws::Client::GenericClientConfiguration<false>;
+    using ACMClientConfiguration = Aws::Client::GenericClientConfiguration;
     using ACMEndpointProviderBase = Aws::ACM::Endpoint::ACMEndpointProviderBase;
     using ACMEndpointProvider = Aws::ACM::Endpoint::ACMEndpointProvider;
 
@@ -71,6 +73,7 @@ namespace Aws
       class DeleteCertificateRequest;
       class DescribeCertificateRequest;
       class ExportCertificateRequest;
+      class GetAccountConfigurationRequest;
       class GetCertificateRequest;
       class ImportCertificateRequest;
       class ListCertificatesRequest;
@@ -127,7 +130,7 @@ namespace Aws
     typedef std::function<void(const ACMClient*, const Model::DeleteCertificateRequest&, const Model::DeleteCertificateOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteCertificateResponseReceivedHandler;
     typedef std::function<void(const ACMClient*, const Model::DescribeCertificateRequest&, const Model::DescribeCertificateOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DescribeCertificateResponseReceivedHandler;
     typedef std::function<void(const ACMClient*, const Model::ExportCertificateRequest&, const Model::ExportCertificateOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ExportCertificateResponseReceivedHandler;
-    typedef std::function<void(const ACMClient*, const Model::GetAccountConfigurationOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetAccountConfigurationResponseReceivedHandler;
+    typedef std::function<void(const ACMClient*, const Model::GetAccountConfigurationRequest&, const Model::GetAccountConfigurationOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetAccountConfigurationResponseReceivedHandler;
     typedef std::function<void(const ACMClient*, const Model::GetCertificateRequest&, const Model::GetCertificateOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > GetCertificateResponseReceivedHandler;
     typedef std::function<void(const ACMClient*, const Model::ImportCertificateRequest&, const Model::ImportCertificateOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ImportCertificateResponseReceivedHandler;
     typedef std::function<void(const ACMClient*, const Model::ListCertificatesRequest&, const Model::ListCertificatesOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > ListCertificatesResponseReceivedHandler;

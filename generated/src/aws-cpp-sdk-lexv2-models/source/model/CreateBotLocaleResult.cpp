@@ -23,9 +23,8 @@ CreateBotLocaleResult::CreateBotLocaleResult() :
 {
 }
 
-CreateBotLocaleResult::CreateBotLocaleResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_nluIntentConfidenceThreshold(0.0),
-    m_botLocaleStatus(BotLocaleStatus::NOT_SET)
+CreateBotLocaleResult::CreateBotLocaleResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : CreateBotLocaleResult()
 {
   *this = result;
 }
@@ -84,6 +83,12 @@ CreateBotLocaleResult& CreateBotLocaleResult::operator =(const Aws::AmazonWebSer
   if(jsonValue.ValueExists("creationDateTime"))
   {
     m_creationDateTime = jsonValue.GetDouble("creationDateTime");
+
+  }
+
+  if(jsonValue.ValueExists("generativeAISettings"))
+  {
+    m_generativeAISettings = jsonValue.GetObject("generativeAISettings");
 
   }
 

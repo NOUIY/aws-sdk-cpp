@@ -20,13 +20,13 @@ namespace Model
 
 DataPathValue::DataPathValue() : 
     m_fieldIdHasBeenSet(false),
-    m_fieldValueHasBeenSet(false)
+    m_fieldValueHasBeenSet(false),
+    m_dataPathTypeHasBeenSet(false)
 {
 }
 
-DataPathValue::DataPathValue(JsonView jsonValue) : 
-    m_fieldIdHasBeenSet(false),
-    m_fieldValueHasBeenSet(false)
+DataPathValue::DataPathValue(JsonView jsonValue)
+  : DataPathValue()
 {
   *this = jsonValue;
 }
@@ -47,6 +47,13 @@ DataPathValue& DataPathValue::operator =(JsonView jsonValue)
     m_fieldValueHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("DataPathType"))
+  {
+    m_dataPathType = jsonValue.GetObject("DataPathType");
+
+    m_dataPathTypeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +70,12 @@ JsonValue DataPathValue::Jsonize() const
   if(m_fieldValueHasBeenSet)
   {
    payload.WithString("FieldValue", m_fieldValue);
+
+  }
+
+  if(m_dataPathTypeHasBeenSet)
+  {
+   payload.WithObject("DataPathType", m_dataPathType.Jsonize());
 
   }
 

@@ -25,18 +25,18 @@ SequenceStoreDetail::SequenceStoreDetail() :
     m_descriptionHasBeenSet(false),
     m_sseConfigHasBeenSet(false),
     m_creationTimeHasBeenSet(false),
-    m_fallbackLocationHasBeenSet(false)
+    m_fallbackLocationHasBeenSet(false),
+    m_eTagAlgorithmFamily(ETagAlgorithmFamily::NOT_SET),
+    m_eTagAlgorithmFamilyHasBeenSet(false),
+    m_status(SequenceStoreStatus::NOT_SET),
+    m_statusHasBeenSet(false),
+    m_statusMessageHasBeenSet(false),
+    m_updateTimeHasBeenSet(false)
 {
 }
 
-SequenceStoreDetail::SequenceStoreDetail(JsonView jsonValue) : 
-    m_arnHasBeenSet(false),
-    m_idHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_sseConfigHasBeenSet(false),
-    m_creationTimeHasBeenSet(false),
-    m_fallbackLocationHasBeenSet(false)
+SequenceStoreDetail::SequenceStoreDetail(JsonView jsonValue)
+  : SequenceStoreDetail()
 {
   *this = jsonValue;
 }
@@ -92,6 +92,34 @@ SequenceStoreDetail& SequenceStoreDetail::operator =(JsonView jsonValue)
     m_fallbackLocationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("eTagAlgorithmFamily"))
+  {
+    m_eTagAlgorithmFamily = ETagAlgorithmFamilyMapper::GetETagAlgorithmFamilyForName(jsonValue.GetString("eTagAlgorithmFamily"));
+
+    m_eTagAlgorithmFamilyHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("status"))
+  {
+    m_status = SequenceStoreStatusMapper::GetSequenceStoreStatusForName(jsonValue.GetString("status"));
+
+    m_statusHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("statusMessage"))
+  {
+    m_statusMessage = jsonValue.GetString("statusMessage");
+
+    m_statusMessageHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("updateTime"))
+  {
+    m_updateTime = jsonValue.GetString("updateTime");
+
+    m_updateTimeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -138,6 +166,27 @@ JsonValue SequenceStoreDetail::Jsonize() const
   {
    payload.WithString("fallbackLocation", m_fallbackLocation);
 
+  }
+
+  if(m_eTagAlgorithmFamilyHasBeenSet)
+  {
+   payload.WithString("eTagAlgorithmFamily", ETagAlgorithmFamilyMapper::GetNameForETagAlgorithmFamily(m_eTagAlgorithmFamily));
+  }
+
+  if(m_statusHasBeenSet)
+  {
+   payload.WithString("status", SequenceStoreStatusMapper::GetNameForSequenceStoreStatus(m_status));
+  }
+
+  if(m_statusMessageHasBeenSet)
+  {
+   payload.WithString("statusMessage", m_statusMessage);
+
+  }
+
+  if(m_updateTimeHasBeenSet)
+  {
+   payload.WithString("updateTime", m_updateTime.ToGmtString(Aws::Utils::DateFormat::ISO_8601));
   }
 
   return payload;

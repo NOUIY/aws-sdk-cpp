@@ -30,23 +30,13 @@ ElasticsearchDestinationUpdate::ElasticsearchDestinationUpdate() :
     m_retryOptionsHasBeenSet(false),
     m_s3UpdateHasBeenSet(false),
     m_processingConfigurationHasBeenSet(false),
-    m_cloudWatchLoggingOptionsHasBeenSet(false)
+    m_cloudWatchLoggingOptionsHasBeenSet(false),
+    m_documentIdOptionsHasBeenSet(false)
 {
 }
 
-ElasticsearchDestinationUpdate::ElasticsearchDestinationUpdate(JsonView jsonValue) : 
-    m_roleARNHasBeenSet(false),
-    m_domainARNHasBeenSet(false),
-    m_clusterEndpointHasBeenSet(false),
-    m_indexNameHasBeenSet(false),
-    m_typeNameHasBeenSet(false),
-    m_indexRotationPeriod(ElasticsearchIndexRotationPeriod::NOT_SET),
-    m_indexRotationPeriodHasBeenSet(false),
-    m_bufferingHintsHasBeenSet(false),
-    m_retryOptionsHasBeenSet(false),
-    m_s3UpdateHasBeenSet(false),
-    m_processingConfigurationHasBeenSet(false),
-    m_cloudWatchLoggingOptionsHasBeenSet(false)
+ElasticsearchDestinationUpdate::ElasticsearchDestinationUpdate(JsonView jsonValue)
+  : ElasticsearchDestinationUpdate()
 {
   *this = jsonValue;
 }
@@ -130,6 +120,13 @@ ElasticsearchDestinationUpdate& ElasticsearchDestinationUpdate::operator =(JsonV
     m_cloudWatchLoggingOptionsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("DocumentIdOptions"))
+  {
+    m_documentIdOptions = jsonValue.GetObject("DocumentIdOptions");
+
+    m_documentIdOptionsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -199,6 +196,12 @@ JsonValue ElasticsearchDestinationUpdate::Jsonize() const
   if(m_cloudWatchLoggingOptionsHasBeenSet)
   {
    payload.WithObject("CloudWatchLoggingOptions", m_cloudWatchLoggingOptions.Jsonize());
+
+  }
+
+  if(m_documentIdOptionsHasBeenSet)
+  {
+   payload.WithObject("DocumentIdOptions", m_documentIdOptions.Jsonize());
 
   }
 

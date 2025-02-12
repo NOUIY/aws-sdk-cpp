@@ -24,10 +24,8 @@ DescribeAssetBundleImportJobResult::DescribeAssetBundleImportJobResult() :
 {
 }
 
-DescribeAssetBundleImportJobResult::DescribeAssetBundleImportJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_jobStatus(AssetBundleImportJobStatus::NOT_SET),
-    m_failureAction(AssetBundleImportFailureAction::NOT_SET),
-    m_status(0)
+DescribeAssetBundleImportJobResult::DescribeAssetBundleImportJobResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeAssetBundleImportJobResult()
 {
   *this = result;
 }
@@ -99,6 +97,33 @@ DescribeAssetBundleImportJobResult& DescribeAssetBundleImportJobResult::operator
   {
     m_failureAction = AssetBundleImportFailureActionMapper::GetAssetBundleImportFailureActionForName(jsonValue.GetString("FailureAction"));
 
+  }
+
+  if(jsonValue.ValueExists("OverridePermissions"))
+  {
+    m_overridePermissions = jsonValue.GetObject("OverridePermissions");
+
+  }
+
+  if(jsonValue.ValueExists("OverrideTags"))
+  {
+    m_overrideTags = jsonValue.GetObject("OverrideTags");
+
+  }
+
+  if(jsonValue.ValueExists("OverrideValidationStrategy"))
+  {
+    m_overrideValidationStrategy = jsonValue.GetObject("OverrideValidationStrategy");
+
+  }
+
+  if(jsonValue.ValueExists("Warnings"))
+  {
+    Aws::Utils::Array<JsonView> warningsJsonList = jsonValue.GetArray("Warnings");
+    for(unsigned warningsIndex = 0; warningsIndex < warningsJsonList.GetLength(); ++warningsIndex)
+    {
+      m_warnings.push_back(warningsJsonList[warningsIndex].AsObject());
+    }
   }
 
 

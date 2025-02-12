@@ -29,6 +29,7 @@ HyperParameterTrainingJobDefinition::HyperParameterTrainingJobDefinition() :
     m_vpcConfigHasBeenSet(false),
     m_outputDataConfigHasBeenSet(false),
     m_resourceConfigHasBeenSet(false),
+    m_hyperParameterTuningResourceConfigHasBeenSet(false),
     m_stoppingConditionHasBeenSet(false),
     m_enableNetworkIsolation(false),
     m_enableNetworkIsolationHasBeenSet(false),
@@ -38,33 +39,12 @@ HyperParameterTrainingJobDefinition::HyperParameterTrainingJobDefinition() :
     m_enableManagedSpotTrainingHasBeenSet(false),
     m_checkpointConfigHasBeenSet(false),
     m_retryStrategyHasBeenSet(false),
-    m_hyperParameterTuningResourceConfigHasBeenSet(false),
     m_environmentHasBeenSet(false)
 {
 }
 
-HyperParameterTrainingJobDefinition::HyperParameterTrainingJobDefinition(JsonView jsonValue) : 
-    m_definitionNameHasBeenSet(false),
-    m_tuningObjectiveHasBeenSet(false),
-    m_hyperParameterRangesHasBeenSet(false),
-    m_staticHyperParametersHasBeenSet(false),
-    m_algorithmSpecificationHasBeenSet(false),
-    m_roleArnHasBeenSet(false),
-    m_inputDataConfigHasBeenSet(false),
-    m_vpcConfigHasBeenSet(false),
-    m_outputDataConfigHasBeenSet(false),
-    m_resourceConfigHasBeenSet(false),
-    m_stoppingConditionHasBeenSet(false),
-    m_enableNetworkIsolation(false),
-    m_enableNetworkIsolationHasBeenSet(false),
-    m_enableInterContainerTrafficEncryption(false),
-    m_enableInterContainerTrafficEncryptionHasBeenSet(false),
-    m_enableManagedSpotTraining(false),
-    m_enableManagedSpotTrainingHasBeenSet(false),
-    m_checkpointConfigHasBeenSet(false),
-    m_retryStrategyHasBeenSet(false),
-    m_hyperParameterTuningResourceConfigHasBeenSet(false),
-    m_environmentHasBeenSet(false)
+HyperParameterTrainingJobDefinition::HyperParameterTrainingJobDefinition(JsonView jsonValue)
+  : HyperParameterTrainingJobDefinition()
 {
   *this = jsonValue;
 }
@@ -147,6 +127,13 @@ HyperParameterTrainingJobDefinition& HyperParameterTrainingJobDefinition::operat
     m_resourceConfigHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("HyperParameterTuningResourceConfig"))
+  {
+    m_hyperParameterTuningResourceConfig = jsonValue.GetObject("HyperParameterTuningResourceConfig");
+
+    m_hyperParameterTuningResourceConfigHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("StoppingCondition"))
   {
     m_stoppingCondition = jsonValue.GetObject("StoppingCondition");
@@ -187,13 +174,6 @@ HyperParameterTrainingJobDefinition& HyperParameterTrainingJobDefinition::operat
     m_retryStrategy = jsonValue.GetObject("RetryStrategy");
 
     m_retryStrategyHasBeenSet = true;
-  }
-
-  if(jsonValue.ValueExists("HyperParameterTuningResourceConfig"))
-  {
-    m_hyperParameterTuningResourceConfig = jsonValue.GetObject("HyperParameterTuningResourceConfig");
-
-    m_hyperParameterTuningResourceConfigHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("Environment"))
@@ -283,6 +263,12 @@ JsonValue HyperParameterTrainingJobDefinition::Jsonize() const
 
   }
 
+  if(m_hyperParameterTuningResourceConfigHasBeenSet)
+  {
+   payload.WithObject("HyperParameterTuningResourceConfig", m_hyperParameterTuningResourceConfig.Jsonize());
+
+  }
+
   if(m_stoppingConditionHasBeenSet)
   {
    payload.WithObject("StoppingCondition", m_stoppingCondition.Jsonize());
@@ -316,12 +302,6 @@ JsonValue HyperParameterTrainingJobDefinition::Jsonize() const
   if(m_retryStrategyHasBeenSet)
   {
    payload.WithObject("RetryStrategy", m_retryStrategy.Jsonize());
-
-  }
-
-  if(m_hyperParameterTuningResourceConfigHasBeenSet)
-  {
-   payload.WithObject("HyperParameterTuningResourceConfig", m_hyperParameterTuningResourceConfig.Jsonize());
 
   }
 

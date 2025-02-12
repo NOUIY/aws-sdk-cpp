@@ -22,21 +22,17 @@ CreateHlsManifestConfiguration::CreateHlsManifestConfiguration() :
     m_manifestNameHasBeenSet(false),
     m_childManifestNameHasBeenSet(false),
     m_scteHlsHasBeenSet(false),
+    m_startTagHasBeenSet(false),
     m_manifestWindowSeconds(0),
     m_manifestWindowSecondsHasBeenSet(false),
     m_programDateTimeIntervalSeconds(0),
-    m_programDateTimeIntervalSecondsHasBeenSet(false)
+    m_programDateTimeIntervalSecondsHasBeenSet(false),
+    m_filterConfigurationHasBeenSet(false)
 {
 }
 
-CreateHlsManifestConfiguration::CreateHlsManifestConfiguration(JsonView jsonValue) : 
-    m_manifestNameHasBeenSet(false),
-    m_childManifestNameHasBeenSet(false),
-    m_scteHlsHasBeenSet(false),
-    m_manifestWindowSeconds(0),
-    m_manifestWindowSecondsHasBeenSet(false),
-    m_programDateTimeIntervalSeconds(0),
-    m_programDateTimeIntervalSecondsHasBeenSet(false)
+CreateHlsManifestConfiguration::CreateHlsManifestConfiguration(JsonView jsonValue)
+  : CreateHlsManifestConfiguration()
 {
   *this = jsonValue;
 }
@@ -64,6 +60,13 @@ CreateHlsManifestConfiguration& CreateHlsManifestConfiguration::operator =(JsonV
     m_scteHlsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("StartTag"))
+  {
+    m_startTag = jsonValue.GetObject("StartTag");
+
+    m_startTagHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("ManifestWindowSeconds"))
   {
     m_manifestWindowSeconds = jsonValue.GetInteger("ManifestWindowSeconds");
@@ -76,6 +79,13 @@ CreateHlsManifestConfiguration& CreateHlsManifestConfiguration::operator =(JsonV
     m_programDateTimeIntervalSeconds = jsonValue.GetInteger("ProgramDateTimeIntervalSeconds");
 
     m_programDateTimeIntervalSecondsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("FilterConfiguration"))
+  {
+    m_filterConfiguration = jsonValue.GetObject("FilterConfiguration");
+
+    m_filterConfigurationHasBeenSet = true;
   }
 
   return *this;
@@ -103,6 +113,12 @@ JsonValue CreateHlsManifestConfiguration::Jsonize() const
 
   }
 
+  if(m_startTagHasBeenSet)
+  {
+   payload.WithObject("StartTag", m_startTag.Jsonize());
+
+  }
+
   if(m_manifestWindowSecondsHasBeenSet)
   {
    payload.WithInteger("ManifestWindowSeconds", m_manifestWindowSeconds);
@@ -112,6 +128,12 @@ JsonValue CreateHlsManifestConfiguration::Jsonize() const
   if(m_programDateTimeIntervalSecondsHasBeenSet)
   {
    payload.WithInteger("ProgramDateTimeIntervalSeconds", m_programDateTimeIntervalSeconds);
+
+  }
+
+  if(m_filterConfigurationHasBeenSet)
+  {
+   payload.WithObject("FilterConfiguration", m_filterConfiguration.Jsonize());
 
   }
 

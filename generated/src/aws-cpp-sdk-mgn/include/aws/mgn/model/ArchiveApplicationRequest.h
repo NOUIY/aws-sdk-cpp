@@ -32,47 +32,37 @@ namespace Model
     AWS_MGN_API Aws::String SerializePayload() const override;
 
 
+    ///@{
+    /**
+     * <p>Account ID.</p>
+     */
+    inline const Aws::String& GetAccountID() const{ return m_accountID; }
+    inline bool AccountIDHasBeenSet() const { return m_accountIDHasBeenSet; }
+    inline void SetAccountID(const Aws::String& value) { m_accountIDHasBeenSet = true; m_accountID = value; }
+    inline void SetAccountID(Aws::String&& value) { m_accountIDHasBeenSet = true; m_accountID = std::move(value); }
+    inline void SetAccountID(const char* value) { m_accountIDHasBeenSet = true; m_accountID.assign(value); }
+    inline ArchiveApplicationRequest& WithAccountID(const Aws::String& value) { SetAccountID(value); return *this;}
+    inline ArchiveApplicationRequest& WithAccountID(Aws::String&& value) { SetAccountID(std::move(value)); return *this;}
+    inline ArchiveApplicationRequest& WithAccountID(const char* value) { SetAccountID(value); return *this;}
+    ///@}
+
+    ///@{
     /**
      * <p>Application ID.</p>
      */
     inline const Aws::String& GetApplicationID() const{ return m_applicationID; }
-
-    /**
-     * <p>Application ID.</p>
-     */
     inline bool ApplicationIDHasBeenSet() const { return m_applicationIDHasBeenSet; }
-
-    /**
-     * <p>Application ID.</p>
-     */
     inline void SetApplicationID(const Aws::String& value) { m_applicationIDHasBeenSet = true; m_applicationID = value; }
-
-    /**
-     * <p>Application ID.</p>
-     */
     inline void SetApplicationID(Aws::String&& value) { m_applicationIDHasBeenSet = true; m_applicationID = std::move(value); }
-
-    /**
-     * <p>Application ID.</p>
-     */
     inline void SetApplicationID(const char* value) { m_applicationIDHasBeenSet = true; m_applicationID.assign(value); }
-
-    /**
-     * <p>Application ID.</p>
-     */
     inline ArchiveApplicationRequest& WithApplicationID(const Aws::String& value) { SetApplicationID(value); return *this;}
-
-    /**
-     * <p>Application ID.</p>
-     */
     inline ArchiveApplicationRequest& WithApplicationID(Aws::String&& value) { SetApplicationID(std::move(value)); return *this;}
-
-    /**
-     * <p>Application ID.</p>
-     */
     inline ArchiveApplicationRequest& WithApplicationID(const char* value) { SetApplicationID(value); return *this;}
-
+    ///@}
   private:
+
+    Aws::String m_accountID;
+    bool m_accountIDHasBeenSet = false;
 
     Aws::String m_applicationID;
     bool m_applicationIDHasBeenSet = false;

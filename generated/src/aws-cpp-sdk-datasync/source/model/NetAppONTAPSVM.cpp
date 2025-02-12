@@ -38,31 +38,14 @@ NetAppONTAPSVM::NetAppONTAPSVM() :
     m_recommendationStatus(RecommendationStatus::NOT_SET),
     m_recommendationStatusHasBeenSet(false),
     m_totalSnapshotCapacityUsed(0),
-    m_totalSnapshotCapacityUsedHasBeenSet(false)
+    m_totalSnapshotCapacityUsedHasBeenSet(false),
+    m_lunCount(0),
+    m_lunCountHasBeenSet(false)
 {
 }
 
-NetAppONTAPSVM::NetAppONTAPSVM(JsonView jsonValue) : 
-    m_clusterUuidHasBeenSet(false),
-    m_resourceIdHasBeenSet(false),
-    m_svmNameHasBeenSet(false),
-    m_cifsShareCount(0),
-    m_cifsShareCountHasBeenSet(false),
-    m_enabledProtocolsHasBeenSet(false),
-    m_totalCapacityUsed(0),
-    m_totalCapacityUsedHasBeenSet(false),
-    m_totalCapacityProvisioned(0),
-    m_totalCapacityProvisionedHasBeenSet(false),
-    m_totalLogicalCapacityUsed(0),
-    m_totalLogicalCapacityUsedHasBeenSet(false),
-    m_maxP95PerformanceHasBeenSet(false),
-    m_recommendationsHasBeenSet(false),
-    m_nfsExportedVolumes(0),
-    m_nfsExportedVolumesHasBeenSet(false),
-    m_recommendationStatus(RecommendationStatus::NOT_SET),
-    m_recommendationStatusHasBeenSet(false),
-    m_totalSnapshotCapacityUsed(0),
-    m_totalSnapshotCapacityUsedHasBeenSet(false)
+NetAppONTAPSVM::NetAppONTAPSVM(JsonView jsonValue)
+  : NetAppONTAPSVM()
 {
   *this = jsonValue;
 }
@@ -166,6 +149,13 @@ NetAppONTAPSVM& NetAppONTAPSVM::operator =(JsonView jsonValue)
     m_totalSnapshotCapacityUsedHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("LunCount"))
+  {
+    m_lunCount = jsonValue.GetInt64("LunCount");
+
+    m_lunCountHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -257,6 +247,12 @@ JsonValue NetAppONTAPSVM::Jsonize() const
   if(m_totalSnapshotCapacityUsedHasBeenSet)
   {
    payload.WithInt64("TotalSnapshotCapacityUsed", m_totalSnapshotCapacityUsed);
+
+  }
+
+  if(m_lunCountHasBeenSet)
+  {
+   payload.WithInt64("LunCount", m_lunCount);
 
   }
 

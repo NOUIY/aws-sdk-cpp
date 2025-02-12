@@ -21,6 +21,7 @@
 #include <aws/es/model/AcceptInboundCrossClusterSearchConnectionResult.h>
 #include <aws/es/model/AssociatePackageResult.h>
 #include <aws/es/model/AuthorizeVpcEndpointAccessResult.h>
+#include <aws/es/model/CancelDomainConfigChangeResult.h>
 #include <aws/es/model/CancelElasticsearchServiceSoftwareUpdateResult.h>
 #include <aws/es/model/CreateElasticsearchDomainResult.h>
 #include <aws/es/model/CreateOutboundCrossClusterSearchConnectionResult.h>
@@ -65,6 +66,16 @@
 #include <aws/es/model/UpdatePackageResult.h>
 #include <aws/es/model/UpdateVpcEndpointResult.h>
 #include <aws/es/model/UpgradeElasticsearchDomainResult.h>
+#include <aws/es/model/DescribeReservedElasticsearchInstancesRequest.h>
+#include <aws/es/model/DescribeOutboundCrossClusterSearchConnectionsRequest.h>
+#include <aws/es/model/DescribeReservedElasticsearchInstanceOfferingsRequest.h>
+#include <aws/es/model/GetCompatibleElasticsearchVersionsRequest.h>
+#include <aws/es/model/DescribeInboundCrossClusterSearchConnectionsRequest.h>
+#include <aws/es/model/DescribePackagesRequest.h>
+#include <aws/es/model/ListDomainNamesRequest.h>
+#include <aws/es/model/ListElasticsearchVersionsRequest.h>
+#include <aws/es/model/DeleteElasticsearchServiceRoleRequest.h>
+#include <aws/es/model/ListVpcEndpointsRequest.h>
 #include <aws/core/NoResult.h>
 /* End of service model headers required in ElasticsearchServiceClient header */
 
@@ -99,7 +110,7 @@ namespace Aws
 
   namespace ElasticsearchService
   {
-    using ElasticsearchServiceClientConfiguration = Aws::Client::GenericClientConfiguration<false>;
+    using ElasticsearchServiceClientConfiguration = Aws::Client::GenericClientConfiguration;
     using ElasticsearchServiceEndpointProviderBase = Aws::ElasticsearchService::Endpoint::ElasticsearchServiceEndpointProviderBase;
     using ElasticsearchServiceEndpointProvider = Aws::ElasticsearchService::Endpoint::ElasticsearchServiceEndpointProvider;
 
@@ -110,12 +121,14 @@ namespace Aws
       class AddTagsRequest;
       class AssociatePackageRequest;
       class AuthorizeVpcEndpointAccessRequest;
+      class CancelDomainConfigChangeRequest;
       class CancelElasticsearchServiceSoftwareUpdateRequest;
       class CreateElasticsearchDomainRequest;
       class CreateOutboundCrossClusterSearchConnectionRequest;
       class CreatePackageRequest;
       class CreateVpcEndpointRequest;
       class DeleteElasticsearchDomainRequest;
+      class DeleteElasticsearchServiceRoleRequest;
       class DeleteInboundCrossClusterSearchConnectionRequest;
       class DeleteOutboundCrossClusterSearchConnectionRequest;
       class DeletePackageRequest;
@@ -162,6 +175,7 @@ namespace Aws
       typedef Aws::Utils::Outcome<Aws::NoResult, ElasticsearchServiceError> AddTagsOutcome;
       typedef Aws::Utils::Outcome<AssociatePackageResult, ElasticsearchServiceError> AssociatePackageOutcome;
       typedef Aws::Utils::Outcome<AuthorizeVpcEndpointAccessResult, ElasticsearchServiceError> AuthorizeVpcEndpointAccessOutcome;
+      typedef Aws::Utils::Outcome<CancelDomainConfigChangeResult, ElasticsearchServiceError> CancelDomainConfigChangeOutcome;
       typedef Aws::Utils::Outcome<CancelElasticsearchServiceSoftwareUpdateResult, ElasticsearchServiceError> CancelElasticsearchServiceSoftwareUpdateOutcome;
       typedef Aws::Utils::Outcome<CreateElasticsearchDomainResult, ElasticsearchServiceError> CreateElasticsearchDomainOutcome;
       typedef Aws::Utils::Outcome<CreateOutboundCrossClusterSearchConnectionResult, ElasticsearchServiceError> CreateOutboundCrossClusterSearchConnectionOutcome;
@@ -215,6 +229,7 @@ namespace Aws
       typedef std::future<AddTagsOutcome> AddTagsOutcomeCallable;
       typedef std::future<AssociatePackageOutcome> AssociatePackageOutcomeCallable;
       typedef std::future<AuthorizeVpcEndpointAccessOutcome> AuthorizeVpcEndpointAccessOutcomeCallable;
+      typedef std::future<CancelDomainConfigChangeOutcome> CancelDomainConfigChangeOutcomeCallable;
       typedef std::future<CancelElasticsearchServiceSoftwareUpdateOutcome> CancelElasticsearchServiceSoftwareUpdateOutcomeCallable;
       typedef std::future<CreateElasticsearchDomainOutcome> CreateElasticsearchDomainOutcomeCallable;
       typedef std::future<CreateOutboundCrossClusterSearchConnectionOutcome> CreateOutboundCrossClusterSearchConnectionOutcomeCallable;
@@ -271,13 +286,14 @@ namespace Aws
     typedef std::function<void(const ElasticsearchServiceClient*, const Model::AddTagsRequest&, const Model::AddTagsOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > AddTagsResponseReceivedHandler;
     typedef std::function<void(const ElasticsearchServiceClient*, const Model::AssociatePackageRequest&, const Model::AssociatePackageOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > AssociatePackageResponseReceivedHandler;
     typedef std::function<void(const ElasticsearchServiceClient*, const Model::AuthorizeVpcEndpointAccessRequest&, const Model::AuthorizeVpcEndpointAccessOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > AuthorizeVpcEndpointAccessResponseReceivedHandler;
+    typedef std::function<void(const ElasticsearchServiceClient*, const Model::CancelDomainConfigChangeRequest&, const Model::CancelDomainConfigChangeOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CancelDomainConfigChangeResponseReceivedHandler;
     typedef std::function<void(const ElasticsearchServiceClient*, const Model::CancelElasticsearchServiceSoftwareUpdateRequest&, const Model::CancelElasticsearchServiceSoftwareUpdateOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CancelElasticsearchServiceSoftwareUpdateResponseReceivedHandler;
     typedef std::function<void(const ElasticsearchServiceClient*, const Model::CreateElasticsearchDomainRequest&, const Model::CreateElasticsearchDomainOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CreateElasticsearchDomainResponseReceivedHandler;
     typedef std::function<void(const ElasticsearchServiceClient*, const Model::CreateOutboundCrossClusterSearchConnectionRequest&, const Model::CreateOutboundCrossClusterSearchConnectionOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CreateOutboundCrossClusterSearchConnectionResponseReceivedHandler;
     typedef std::function<void(const ElasticsearchServiceClient*, const Model::CreatePackageRequest&, const Model::CreatePackageOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CreatePackageResponseReceivedHandler;
     typedef std::function<void(const ElasticsearchServiceClient*, const Model::CreateVpcEndpointRequest&, const Model::CreateVpcEndpointOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > CreateVpcEndpointResponseReceivedHandler;
     typedef std::function<void(const ElasticsearchServiceClient*, const Model::DeleteElasticsearchDomainRequest&, const Model::DeleteElasticsearchDomainOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteElasticsearchDomainResponseReceivedHandler;
-    typedef std::function<void(const ElasticsearchServiceClient*, const Model::DeleteElasticsearchServiceRoleOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteElasticsearchServiceRoleResponseReceivedHandler;
+    typedef std::function<void(const ElasticsearchServiceClient*, const Model::DeleteElasticsearchServiceRoleRequest&, const Model::DeleteElasticsearchServiceRoleOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteElasticsearchServiceRoleResponseReceivedHandler;
     typedef std::function<void(const ElasticsearchServiceClient*, const Model::DeleteInboundCrossClusterSearchConnectionRequest&, const Model::DeleteInboundCrossClusterSearchConnectionOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteInboundCrossClusterSearchConnectionResponseReceivedHandler;
     typedef std::function<void(const ElasticsearchServiceClient*, const Model::DeleteOutboundCrossClusterSearchConnectionRequest&, const Model::DeleteOutboundCrossClusterSearchConnectionOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeleteOutboundCrossClusterSearchConnectionResponseReceivedHandler;
     typedef std::function<void(const ElasticsearchServiceClient*, const Model::DeletePackageRequest&, const Model::DeletePackageOutcome&, const std::shared_ptr<const Aws::Client::AsyncCallerContext>&) > DeletePackageResponseReceivedHandler;

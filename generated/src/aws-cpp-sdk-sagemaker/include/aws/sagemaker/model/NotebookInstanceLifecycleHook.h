@@ -27,8 +27,8 @@ namespace Model
    * <p>Contains the notebook instance lifecycle configuration script.</p> <p>Each
    * lifecycle configuration script has a limit of 16384 characters.</p> <p>The value
    * of the <code>$PATH</code> environment variable that is available to both scripts
-   * is <code>/sbin:bin:/usr/sbin:/usr/bin</code>.</p> <p>View CloudWatch Logs for
-   * notebook instance lifecycle configurations in log group
+   * is <code>/sbin:bin:/usr/sbin:/usr/bin</code>.</p> <p>View Amazon CloudWatch Logs
+   * for notebook instance lifecycle configurations in log group
    * <code>/aws/sagemaker/NotebookInstances</code> in log stream
    * <code>[notebook-instance-name]/[LifecycleConfigHook]</code>.</p> <p>Lifecycle
    * configuration scripts cannot run for longer than 5 minutes. If a script runs for
@@ -49,54 +49,20 @@ namespace Model
     AWS_SAGEMAKER_API Aws::Utils::Json::JsonValue Jsonize() const;
 
 
+    ///@{
     /**
      * <p>A base64-encoded string that contains a shell script for a notebook instance
      * lifecycle configuration.</p>
      */
     inline const Aws::String& GetContent() const{ return m_content; }
-
-    /**
-     * <p>A base64-encoded string that contains a shell script for a notebook instance
-     * lifecycle configuration.</p>
-     */
     inline bool ContentHasBeenSet() const { return m_contentHasBeenSet; }
-
-    /**
-     * <p>A base64-encoded string that contains a shell script for a notebook instance
-     * lifecycle configuration.</p>
-     */
     inline void SetContent(const Aws::String& value) { m_contentHasBeenSet = true; m_content = value; }
-
-    /**
-     * <p>A base64-encoded string that contains a shell script for a notebook instance
-     * lifecycle configuration.</p>
-     */
     inline void SetContent(Aws::String&& value) { m_contentHasBeenSet = true; m_content = std::move(value); }
-
-    /**
-     * <p>A base64-encoded string that contains a shell script for a notebook instance
-     * lifecycle configuration.</p>
-     */
     inline void SetContent(const char* value) { m_contentHasBeenSet = true; m_content.assign(value); }
-
-    /**
-     * <p>A base64-encoded string that contains a shell script for a notebook instance
-     * lifecycle configuration.</p>
-     */
     inline NotebookInstanceLifecycleHook& WithContent(const Aws::String& value) { SetContent(value); return *this;}
-
-    /**
-     * <p>A base64-encoded string that contains a shell script for a notebook instance
-     * lifecycle configuration.</p>
-     */
     inline NotebookInstanceLifecycleHook& WithContent(Aws::String&& value) { SetContent(std::move(value)); return *this;}
-
-    /**
-     * <p>A base64-encoded string that contains a shell script for a notebook instance
-     * lifecycle configuration.</p>
-     */
     inline NotebookInstanceLifecycleHook& WithContent(const char* value) { SetContent(value); return *this;}
-
+    ///@}
   private:
 
     Aws::String m_content;

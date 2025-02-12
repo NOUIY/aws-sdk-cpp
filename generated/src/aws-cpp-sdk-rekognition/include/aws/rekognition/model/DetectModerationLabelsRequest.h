@@ -8,6 +8,7 @@
 #include <aws/rekognition/RekognitionRequest.h>
 #include <aws/rekognition/model/Image.h>
 #include <aws/rekognition/model/HumanLoopConfig.h>
+#include <aws/core/utils/memory/stl/AWSString.h>
 #include <utility>
 
 namespace Aws
@@ -35,6 +36,7 @@ namespace Model
     AWS_REKOGNITION_API Aws::Http::HeaderValueCollection GetRequestSpecificHeaders() const override;
 
 
+    ///@{
     /**
      * <p>The input image as base64-encoded bytes or an S3 object. If you use the AWS
      * CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is
@@ -44,58 +46,14 @@ namespace Model
      * Rekognition developer guide.</p>
      */
     inline const Image& GetImage() const{ return m_image; }
-
-    /**
-     * <p>The input image as base64-encoded bytes or an S3 object. If you use the AWS
-     * CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is
-     * not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition,
-     * you might not need to base64-encode image bytes passed using the
-     * <code>Bytes</code> field. For more information, see Images in the Amazon
-     * Rekognition developer guide.</p>
-     */
     inline bool ImageHasBeenSet() const { return m_imageHasBeenSet; }
-
-    /**
-     * <p>The input image as base64-encoded bytes or an S3 object. If you use the AWS
-     * CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is
-     * not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition,
-     * you might not need to base64-encode image bytes passed using the
-     * <code>Bytes</code> field. For more information, see Images in the Amazon
-     * Rekognition developer guide.</p>
-     */
     inline void SetImage(const Image& value) { m_imageHasBeenSet = true; m_image = value; }
-
-    /**
-     * <p>The input image as base64-encoded bytes or an S3 object. If you use the AWS
-     * CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is
-     * not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition,
-     * you might not need to base64-encode image bytes passed using the
-     * <code>Bytes</code> field. For more information, see Images in the Amazon
-     * Rekognition developer guide.</p>
-     */
     inline void SetImage(Image&& value) { m_imageHasBeenSet = true; m_image = std::move(value); }
-
-    /**
-     * <p>The input image as base64-encoded bytes or an S3 object. If you use the AWS
-     * CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is
-     * not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition,
-     * you might not need to base64-encode image bytes passed using the
-     * <code>Bytes</code> field. For more information, see Images in the Amazon
-     * Rekognition developer guide.</p>
-     */
     inline DetectModerationLabelsRequest& WithImage(const Image& value) { SetImage(value); return *this;}
-
-    /**
-     * <p>The input image as base64-encoded bytes or an S3 object. If you use the AWS
-     * CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is
-     * not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition,
-     * you might not need to base64-encode image bytes passed using the
-     * <code>Bytes</code> field. For more information, see Images in the Amazon
-     * Rekognition developer guide.</p>
-     */
     inline DetectModerationLabelsRequest& WithImage(Image&& value) { SetImage(std::move(value)); return *this;}
+    ///@}
 
-
+    ///@{
     /**
      * <p>Specifies the minimum confidence level for the labels to return. Amazon
      * Rekognition doesn't return any labels with a confidence level lower than this
@@ -104,71 +62,39 @@ namespace Model
      * percent.</p>
      */
     inline double GetMinConfidence() const{ return m_minConfidence; }
-
-    /**
-     * <p>Specifies the minimum confidence level for the labels to return. Amazon
-     * Rekognition doesn't return any labels with a confidence level lower than this
-     * specified value.</p> <p>If you don't specify <code>MinConfidence</code>, the
-     * operation returns labels with confidence values greater than or equal to 50
-     * percent.</p>
-     */
     inline bool MinConfidenceHasBeenSet() const { return m_minConfidenceHasBeenSet; }
-
-    /**
-     * <p>Specifies the minimum confidence level for the labels to return. Amazon
-     * Rekognition doesn't return any labels with a confidence level lower than this
-     * specified value.</p> <p>If you don't specify <code>MinConfidence</code>, the
-     * operation returns labels with confidence values greater than or equal to 50
-     * percent.</p>
-     */
     inline void SetMinConfidence(double value) { m_minConfidenceHasBeenSet = true; m_minConfidence = value; }
-
-    /**
-     * <p>Specifies the minimum confidence level for the labels to return. Amazon
-     * Rekognition doesn't return any labels with a confidence level lower than this
-     * specified value.</p> <p>If you don't specify <code>MinConfidence</code>, the
-     * operation returns labels with confidence values greater than or equal to 50
-     * percent.</p>
-     */
     inline DetectModerationLabelsRequest& WithMinConfidence(double value) { SetMinConfidence(value); return *this;}
+    ///@}
 
-
+    ///@{
     /**
      * <p>Sets up the configuration for human evaluation, including the FlowDefinition
      * the image will be sent to.</p>
      */
     inline const HumanLoopConfig& GetHumanLoopConfig() const{ return m_humanLoopConfig; }
-
-    /**
-     * <p>Sets up the configuration for human evaluation, including the FlowDefinition
-     * the image will be sent to.</p>
-     */
     inline bool HumanLoopConfigHasBeenSet() const { return m_humanLoopConfigHasBeenSet; }
-
-    /**
-     * <p>Sets up the configuration for human evaluation, including the FlowDefinition
-     * the image will be sent to.</p>
-     */
     inline void SetHumanLoopConfig(const HumanLoopConfig& value) { m_humanLoopConfigHasBeenSet = true; m_humanLoopConfig = value; }
-
-    /**
-     * <p>Sets up the configuration for human evaluation, including the FlowDefinition
-     * the image will be sent to.</p>
-     */
     inline void SetHumanLoopConfig(HumanLoopConfig&& value) { m_humanLoopConfigHasBeenSet = true; m_humanLoopConfig = std::move(value); }
-
-    /**
-     * <p>Sets up the configuration for human evaluation, including the FlowDefinition
-     * the image will be sent to.</p>
-     */
     inline DetectModerationLabelsRequest& WithHumanLoopConfig(const HumanLoopConfig& value) { SetHumanLoopConfig(value); return *this;}
-
-    /**
-     * <p>Sets up the configuration for human evaluation, including the FlowDefinition
-     * the image will be sent to.</p>
-     */
     inline DetectModerationLabelsRequest& WithHumanLoopConfig(HumanLoopConfig&& value) { SetHumanLoopConfig(std::move(value)); return *this;}
+    ///@}
 
+    ///@{
+    /**
+     * <p>Identifier for the custom adapter. Expects the ProjectVersionArn as a value.
+     * Use the CreateProject or CreateProjectVersion APIs to create a custom
+     * adapter.</p>
+     */
+    inline const Aws::String& GetProjectVersion() const{ return m_projectVersion; }
+    inline bool ProjectVersionHasBeenSet() const { return m_projectVersionHasBeenSet; }
+    inline void SetProjectVersion(const Aws::String& value) { m_projectVersionHasBeenSet = true; m_projectVersion = value; }
+    inline void SetProjectVersion(Aws::String&& value) { m_projectVersionHasBeenSet = true; m_projectVersion = std::move(value); }
+    inline void SetProjectVersion(const char* value) { m_projectVersionHasBeenSet = true; m_projectVersion.assign(value); }
+    inline DetectModerationLabelsRequest& WithProjectVersion(const Aws::String& value) { SetProjectVersion(value); return *this;}
+    inline DetectModerationLabelsRequest& WithProjectVersion(Aws::String&& value) { SetProjectVersion(std::move(value)); return *this;}
+    inline DetectModerationLabelsRequest& WithProjectVersion(const char* value) { SetProjectVersion(value); return *this;}
+    ///@}
   private:
 
     Image m_image;
@@ -179,6 +105,9 @@ namespace Model
 
     HumanLoopConfig m_humanLoopConfig;
     bool m_humanLoopConfigHasBeenSet = false;
+
+    Aws::String m_projectVersion;
+    bool m_projectVersionHasBeenSet = false;
   };
 
 } // namespace Model

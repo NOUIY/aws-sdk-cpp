@@ -24,18 +24,18 @@ DescribeTaskExecutionResult::DescribeTaskExecutionResult() :
     m_filesTransferred(0),
     m_bytesWritten(0),
     m_bytesTransferred(0),
-    m_bytesCompressed(0)
+    m_bytesCompressed(0),
+    m_filesDeleted(0),
+    m_filesSkipped(0),
+    m_filesVerified(0),
+    m_estimatedFilesToDelete(0),
+    m_taskMode(TaskMode::NOT_SET),
+    m_filesPrepared(0)
 {
 }
 
-DescribeTaskExecutionResult::DescribeTaskExecutionResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(TaskExecutionStatus::NOT_SET),
-    m_estimatedFilesToTransfer(0),
-    m_estimatedBytesToTransfer(0),
-    m_filesTransferred(0),
-    m_bytesWritten(0),
-    m_bytesTransferred(0),
-    m_bytesCompressed(0)
+DescribeTaskExecutionResult::DescribeTaskExecutionResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeTaskExecutionResult()
 {
   *this = result;
 }
@@ -79,6 +79,12 @@ DescribeTaskExecutionResult& DescribeTaskExecutionResult::operator =(const Aws::
     }
   }
 
+  if(jsonValue.ValueExists("ManifestConfig"))
+  {
+    m_manifestConfig = jsonValue.GetObject("ManifestConfig");
+
+  }
+
   if(jsonValue.ValueExists("StartTime"))
   {
     m_startTime = jsonValue.GetDouble("StartTime");
@@ -115,15 +121,75 @@ DescribeTaskExecutionResult& DescribeTaskExecutionResult::operator =(const Aws::
 
   }
 
+  if(jsonValue.ValueExists("BytesCompressed"))
+  {
+    m_bytesCompressed = jsonValue.GetInt64("BytesCompressed");
+
+  }
+
   if(jsonValue.ValueExists("Result"))
   {
     m_result = jsonValue.GetObject("Result");
 
   }
 
-  if(jsonValue.ValueExists("BytesCompressed"))
+  if(jsonValue.ValueExists("TaskReportConfig"))
   {
-    m_bytesCompressed = jsonValue.GetInt64("BytesCompressed");
+    m_taskReportConfig = jsonValue.GetObject("TaskReportConfig");
+
+  }
+
+  if(jsonValue.ValueExists("FilesDeleted"))
+  {
+    m_filesDeleted = jsonValue.GetInt64("FilesDeleted");
+
+  }
+
+  if(jsonValue.ValueExists("FilesSkipped"))
+  {
+    m_filesSkipped = jsonValue.GetInt64("FilesSkipped");
+
+  }
+
+  if(jsonValue.ValueExists("FilesVerified"))
+  {
+    m_filesVerified = jsonValue.GetInt64("FilesVerified");
+
+  }
+
+  if(jsonValue.ValueExists("ReportResult"))
+  {
+    m_reportResult = jsonValue.GetObject("ReportResult");
+
+  }
+
+  if(jsonValue.ValueExists("EstimatedFilesToDelete"))
+  {
+    m_estimatedFilesToDelete = jsonValue.GetInt64("EstimatedFilesToDelete");
+
+  }
+
+  if(jsonValue.ValueExists("TaskMode"))
+  {
+    m_taskMode = TaskModeMapper::GetTaskModeForName(jsonValue.GetString("TaskMode"));
+
+  }
+
+  if(jsonValue.ValueExists("FilesPrepared"))
+  {
+    m_filesPrepared = jsonValue.GetInt64("FilesPrepared");
+
+  }
+
+  if(jsonValue.ValueExists("FilesListed"))
+  {
+    m_filesListed = jsonValue.GetObject("FilesListed");
+
+  }
+
+  if(jsonValue.ValueExists("FilesFailed"))
+  {
+    m_filesFailed = jsonValue.GetObject("FilesFailed");
 
   }
 

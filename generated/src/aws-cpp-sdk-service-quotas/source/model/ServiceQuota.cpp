@@ -33,26 +33,15 @@ ServiceQuota::ServiceQuota() :
     m_globalQuotaHasBeenSet(false),
     m_usageMetricHasBeenSet(false),
     m_periodHasBeenSet(false),
-    m_errorReasonHasBeenSet(false)
+    m_errorReasonHasBeenSet(false),
+    m_quotaAppliedAtLevel(AppliedLevelEnum::NOT_SET),
+    m_quotaAppliedAtLevelHasBeenSet(false),
+    m_quotaContextHasBeenSet(false)
 {
 }
 
-ServiceQuota::ServiceQuota(JsonView jsonValue) : 
-    m_serviceCodeHasBeenSet(false),
-    m_serviceNameHasBeenSet(false),
-    m_quotaArnHasBeenSet(false),
-    m_quotaCodeHasBeenSet(false),
-    m_quotaNameHasBeenSet(false),
-    m_value(0.0),
-    m_valueHasBeenSet(false),
-    m_unitHasBeenSet(false),
-    m_adjustable(false),
-    m_adjustableHasBeenSet(false),
-    m_globalQuota(false),
-    m_globalQuotaHasBeenSet(false),
-    m_usageMetricHasBeenSet(false),
-    m_periodHasBeenSet(false),
-    m_errorReasonHasBeenSet(false)
+ServiceQuota::ServiceQuota(JsonView jsonValue)
+  : ServiceQuota()
 {
   *this = jsonValue;
 }
@@ -143,6 +132,20 @@ ServiceQuota& ServiceQuota::operator =(JsonView jsonValue)
     m_errorReasonHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("QuotaAppliedAtLevel"))
+  {
+    m_quotaAppliedAtLevel = AppliedLevelEnumMapper::GetAppliedLevelEnumForName(jsonValue.GetString("QuotaAppliedAtLevel"));
+
+    m_quotaAppliedAtLevelHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("QuotaContext"))
+  {
+    m_quotaContext = jsonValue.GetObject("QuotaContext");
+
+    m_quotaContextHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -219,6 +222,17 @@ JsonValue ServiceQuota::Jsonize() const
   if(m_errorReasonHasBeenSet)
   {
    payload.WithObject("ErrorReason", m_errorReason.Jsonize());
+
+  }
+
+  if(m_quotaAppliedAtLevelHasBeenSet)
+  {
+   payload.WithString("QuotaAppliedAtLevel", AppliedLevelEnumMapper::GetNameForAppliedLevelEnum(m_quotaAppliedAtLevel));
+  }
+
+  if(m_quotaContextHasBeenSet)
+  {
+   payload.WithObject("QuotaContext", m_quotaContext.Jsonize());
 
   }
 

@@ -28,21 +28,13 @@ RepositoryMetadata::RepositoryMetadata() :
     m_creationDateHasBeenSet(false),
     m_cloneUrlHttpHasBeenSet(false),
     m_cloneUrlSshHasBeenSet(false),
-    m_arnHasBeenSet(false)
+    m_arnHasBeenSet(false),
+    m_kmsKeyIdHasBeenSet(false)
 {
 }
 
-RepositoryMetadata::RepositoryMetadata(JsonView jsonValue) : 
-    m_accountIdHasBeenSet(false),
-    m_repositoryIdHasBeenSet(false),
-    m_repositoryNameHasBeenSet(false),
-    m_repositoryDescriptionHasBeenSet(false),
-    m_defaultBranchHasBeenSet(false),
-    m_lastModifiedDateHasBeenSet(false),
-    m_creationDateHasBeenSet(false),
-    m_cloneUrlHttpHasBeenSet(false),
-    m_cloneUrlSshHasBeenSet(false),
-    m_arnHasBeenSet(false)
+RepositoryMetadata::RepositoryMetadata(JsonView jsonValue)
+  : RepositoryMetadata()
 {
   *this = jsonValue;
 }
@@ -119,6 +111,13 @@ RepositoryMetadata& RepositoryMetadata::operator =(JsonView jsonValue)
     m_arnHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("kmsKeyId"))
+  {
+    m_kmsKeyId = jsonValue.GetString("kmsKeyId");
+
+    m_kmsKeyIdHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -181,6 +180,12 @@ JsonValue RepositoryMetadata::Jsonize() const
   if(m_arnHasBeenSet)
   {
    payload.WithString("Arn", m_arn);
+
+  }
+
+  if(m_kmsKeyIdHasBeenSet)
+  {
+   payload.WithString("kmsKeyId", m_kmsKeyId);
 
   }
 

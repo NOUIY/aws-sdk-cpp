@@ -35,30 +35,12 @@ DataSourceConfiguration::DataSourceConfiguration() :
     m_quipConfigurationHasBeenSet(false),
     m_jiraConfigurationHasBeenSet(false),
     m_gitHubConfigurationHasBeenSet(false),
-    m_alfrescoConfigurationHasBeenSet(false),
     m_templateConfigurationHasBeenSet(false)
 {
 }
 
-DataSourceConfiguration::DataSourceConfiguration(JsonView jsonValue) : 
-    m_s3ConfigurationHasBeenSet(false),
-    m_sharePointConfigurationHasBeenSet(false),
-    m_databaseConfigurationHasBeenSet(false),
-    m_salesforceConfigurationHasBeenSet(false),
-    m_oneDriveConfigurationHasBeenSet(false),
-    m_serviceNowConfigurationHasBeenSet(false),
-    m_confluenceConfigurationHasBeenSet(false),
-    m_googleDriveConfigurationHasBeenSet(false),
-    m_webCrawlerConfigurationHasBeenSet(false),
-    m_workDocsConfigurationHasBeenSet(false),
-    m_fsxConfigurationHasBeenSet(false),
-    m_slackConfigurationHasBeenSet(false),
-    m_boxConfigurationHasBeenSet(false),
-    m_quipConfigurationHasBeenSet(false),
-    m_jiraConfigurationHasBeenSet(false),
-    m_gitHubConfigurationHasBeenSet(false),
-    m_alfrescoConfigurationHasBeenSet(false),
-    m_templateConfigurationHasBeenSet(false)
+DataSourceConfiguration::DataSourceConfiguration(JsonView jsonValue)
+  : DataSourceConfiguration()
 {
   *this = jsonValue;
 }
@@ -177,13 +159,6 @@ DataSourceConfiguration& DataSourceConfiguration::operator =(JsonView jsonValue)
     m_gitHubConfigurationHasBeenSet = true;
   }
 
-  if(jsonValue.ValueExists("AlfrescoConfiguration"))
-  {
-    m_alfrescoConfiguration = jsonValue.GetObject("AlfrescoConfiguration");
-
-    m_alfrescoConfigurationHasBeenSet = true;
-  }
-
   if(jsonValue.ValueExists("TemplateConfiguration"))
   {
     m_templateConfiguration = jsonValue.GetObject("TemplateConfiguration");
@@ -291,12 +266,6 @@ JsonValue DataSourceConfiguration::Jsonize() const
   if(m_gitHubConfigurationHasBeenSet)
   {
    payload.WithObject("GitHubConfiguration", m_gitHubConfiguration.Jsonize());
-
-  }
-
-  if(m_alfrescoConfigurationHasBeenSet)
-  {
-   payload.WithObject("AlfrescoConfiguration", m_alfrescoConfiguration.Jsonize());
 
   }
 

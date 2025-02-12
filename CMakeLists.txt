@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 option(LEGACY_BUILD "If enabled, the SDK will use 1.11.0 version of CMake files to build" ON)
 if (LEGACY_BUILD)
     message(WARNING "In 1.11 releases, we are releasing experimental alternative building mode."
-            "By setting -DLEGACY_MODE=OFF you can test our advances in modern CMake building and "
+            "By setting -DLEGACY_BUILD=OFF you can test our advances in modern CMake building and "
             "provide early feedback. "
             "The legacy support is set by default in 1.11, when you complete build updating scripts please "
             "update the build flags as mentioned in README.md and set -DLEGACY_BUILD=OFF. "
@@ -50,7 +50,6 @@ if (LEGACY_BUILD)
     option(USE_OPENSSL "Set this if you want to use your system's OpenSSL 1.0.2/1.1.1 compatible libcrypto" ON)
     option(ENABLE_CURL_LOGGING "If enabled, Curl's internal log will be piped to SDK's logger" ON)
     option(ENABLE_HTTP_CLIENT_TESTING "If enabled, corresponding http client test suites will be built and run" OFF)
-    option(ENABLE_FUNCTIONAL_TESTING "If enabled, clients might be generated based on dummy models, and run functional tests as part of unit tests: aws-cpp-sdk-core-tests" OFF)
     option(CUSTOM_MEMORY_MANAGEMENT "If set to ON, generates the sdk project files with custom memory management enabled, otherwise disables it" OFF)
     option(REGENERATE_CLIENTS "If set to ON, all clients being built on this run will be regenerated from the api definitions, this option involves some setup of python, java 8+, and maven" OFF)
     option(ENABLE_VIRTUAL_OPERATIONS "This option usually works with REGENERATE_CLIENTS. \
@@ -62,6 +61,15 @@ if (LEGACY_BUILD)
     option(ENABLE_ZLIB_REQUEST_COMPRESSION "For services that support it, request content will be compressed. On by default if dependency available" ON)
     option(DISABLE_INTERNAL_IMDSV1_CALLS "Disables IMDSv1 internal client calls" OFF)
     option(BUILD_BENCHMARKS "Enables building the benchmark executable" OFF)
+    option(BUILD_OPTEL "Enables building the open telemetry implementation of tracing" OFF)
+    option(AWS_SDK_WARNINGS_ARE_ERRORS "Compiler warning is treated as an error. Try turning this off when observing errors on a new or uncommon compiler" ON)
+    option(BUILD_OPTEL_OTLP_BENCHMARKS "Enables building the benchmark tests with open telemetry OTLP clients" OFF)
+    option(USE_TLS_V1_2 "Set http client to enforce TLS 1.2" ON)
+    option(USE_TLS_V1_3 "Set http client to enforce TLS 1.3" OFF)
+    option(ENABLE_SMOKE_TESTS "Enable smoke tests" OFF)
+    option(ENABLE_PROTOCOL_TESTS "Enable protocol tests" OFF)
+    option(DISABLE_DNS_REQUIRED_TESTS "Disable unit tests that require DNS lookup to succeed, useful when using a http client that does not perform DNS lookup" OFF)
+
 
     set(AWS_USER_AGENT_CUSTOMIZATION "" CACHE STRING "User agent extension")
     set(AWS_TEST_REGION "US_EAST_1" CACHE STRING "Region to target integration tests against")
@@ -75,6 +83,16 @@ if (LEGACY_BUILD)
     endif ()
     if (DISABLE_INTERNAL_IMDSV1_CALLS)
         add_definitions(-DDISABLE_IMDSV1)
+    endif ()
+    if (USE_TLS_V1_2)
+        add_definitions(-DENFORCE_TLS_V1_2)
+    endif ()
+    if (USE_TLS_V1_3)
+        add_definitions(-DENFORCE_TLS_V1_3)
+    endif ()
+
+    if (DISABLE_DNS_REQUIRED_TESTS)
+        add_definitions(-DDISABLE_DNS_REQUIRED_TESTS)
     endif ()
 
     #From https://stackoverflow.com/questions/18968979/how-to-get-colorized-output-with-cmake
@@ -96,10 +114,6 @@ if (LEGACY_BUILD)
         set(BoldMagenta "${Esc}[1;35m")
         set(BoldCyan "${Esc}[1;36m")
         set(BoldWhite "${Esc}[1;37m")
-    endif ()
-
-    if (NOT USE_OPENSSL)
-        message(WARNING "Turning off USE_OPENSSL will install AWS-LC as replacement of OpenSSL in the system default directory. This is an experimental feature. Do not use if you have an OpenSSL installation in your system already.")
     endif ()
 
     # backwards compatibility with old command line params
@@ -149,14 +163,10 @@ if (LEGACY_BUILD)
         set(STATIC_CRT ON)
     endif ()
 
-    # Add Linker search paths to RPATH so as to fix the problem where some linkers can't find cross-compiled dependent libraries in customer paths when linking executables.
-    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH true)
-
     # build the sdk targets
     project("aws-cpp-sdk-all" VERSION "${PROJECT_VERSION}" LANGUAGES CXX)
 
-    set(Python_ADDITIONAL_VERSIONS 3.7 3.8 3.9 3.10)
-    find_package(PythonInterp)
+    find_package(Python3 COMPONENTS Interpreter Development)
     set(PYTHON3_CMD ${PYTHON_EXECUTABLE})
 
     # ENABLE_ZLIB_REQUEST_COMPRESSION should be ON by default if ZLIB is available
@@ -213,9 +223,7 @@ if (LEGACY_BUILD)
     if (BUILD_DEPS)
         set(CMAKE_INSTALL_RPATH "$ORIGIN")
         list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/crt/aws-crt-cpp/crt/aws-c-common/cmake")
-
         include(AwsFindPackage)
-
         set(IN_SOURCE_BUILD ON)
         set(BUILD_TESTING_PREV ${BUILD_TESTING})
         set(BUILD_TESTING OFF CACHE BOOL "Disable all tests in dependencies.")
@@ -232,10 +240,23 @@ if (LEGACY_BUILD)
             set(BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_PREV})
         endif ()
     else ()
+        find_package(aws-c-common REQUIRED)
         include(AwsFindPackage)
         set(IN_SOURCE_BUILD OFF)
     endif ()
-    set(AWS_COMMON_RUNTIME_LIBS "aws-crt-cpp;aws-c-auth;aws-c-cal;aws-c-common;aws-c-compression;aws-c-event-stream;aws-c-http;aws-c-io;aws-c-mqtt;aws-c-s3;aws-checksums;aws-c-sdkutils")
+    aws_use_package(aws-crt-cpp)
+    aws_use_package(aws-c-http)
+    aws_use_package(aws-c-mqtt)
+    aws_use_package(aws-c-cal)
+    aws_use_package(aws-c-auth)
+    aws_use_package(aws-c-common)
+    aws_use_package(aws-c-io)
+    aws_use_package(aws-checksums)
+    aws_use_package(aws-c-event-stream)
+    aws_use_package(aws-c-s3)
+    aws_use_package(aws-c-compression)
+    aws_use_package(aws-c-sdkutils)
+    set(AWS_COMMON_RUNTIME_LIBS ${DEP_AWS_LIBS})
 
     include(compiler_settings)
     # Instead of calling functions/macros inside included cmake scripts, we should call them in our main CMakeList.txt
@@ -243,13 +264,9 @@ if (LEGACY_BUILD)
     set_msvc_warnings()
 
     include(sdks)
-
     include(utilities)
 
-    if (ENABLE_BCRYPT_ENCRYPTION)
-        set(CRYPTO_LIBS Bcrypt)
-        set(CRYPTO_LIBS_ABSTRACT_NAME Bcrypt)
-    elseif (ENABLE_OPENSSL_ENCRYPTION)
+    if (ENABLE_OPENSSL_ENCRYPTION)
         set(CRYPTO_LIBS ${OPENSSL_LIBRARIES} ${ZLIB_LIBRARIES})
         set(CRYPTO_LIBS_ABSTRACT_NAME crypto ssl z)
     endif ()
@@ -317,6 +334,7 @@ if (LEGACY_BUILD)
     add_definitions("-DAWS_TEST_REGION=${AWS_TEST_REGION}")
 
     add_sdks()
+    include(tests)
 
     # for user friendly cmake usage
     include(setup_cmake_find_module)

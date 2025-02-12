@@ -34,27 +34,14 @@ Service::Service() :
     m_additionalInfoHasBeenSet(false),
     m_featureNameHasBeenSet(false),
     m_ebsVolumeScanDetailsHasBeenSet(false),
-    m_runtimeDetailsHasBeenSet(false)
+    m_runtimeDetailsHasBeenSet(false),
+    m_detectionHasBeenSet(false),
+    m_malwareScanDetailsHasBeenSet(false)
 {
 }
 
-Service::Service(JsonView jsonValue) : 
-    m_actionHasBeenSet(false),
-    m_evidenceHasBeenSet(false),
-    m_archived(false),
-    m_archivedHasBeenSet(false),
-    m_count(0),
-    m_countHasBeenSet(false),
-    m_detectorIdHasBeenSet(false),
-    m_eventFirstSeenHasBeenSet(false),
-    m_eventLastSeenHasBeenSet(false),
-    m_resourceRoleHasBeenSet(false),
-    m_serviceNameHasBeenSet(false),
-    m_userFeedbackHasBeenSet(false),
-    m_additionalInfoHasBeenSet(false),
-    m_featureNameHasBeenSet(false),
-    m_ebsVolumeScanDetailsHasBeenSet(false),
-    m_runtimeDetailsHasBeenSet(false)
+Service::Service(JsonView jsonValue)
+  : Service()
 {
   *this = jsonValue;
 }
@@ -159,6 +146,20 @@ Service& Service::operator =(JsonView jsonValue)
     m_runtimeDetailsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("detection"))
+  {
+    m_detection = jsonValue.GetObject("detection");
+
+    m_detectionHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("malwareScanDetails"))
+  {
+    m_malwareScanDetails = jsonValue.GetObject("malwareScanDetails");
+
+    m_malwareScanDetailsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -247,6 +248,18 @@ JsonValue Service::Jsonize() const
   if(m_runtimeDetailsHasBeenSet)
   {
    payload.WithObject("runtimeDetails", m_runtimeDetails.Jsonize());
+
+  }
+
+  if(m_detectionHasBeenSet)
+  {
+   payload.WithObject("detection", m_detection.Jsonize());
+
+  }
+
+  if(m_malwareScanDetailsHasBeenSet)
+  {
+   payload.WithObject("malwareScanDetails", m_malwareScanDetails.Jsonize());
 
   }
 

@@ -26,6 +26,7 @@ static const int SERIAL_CONSOLE_ACCESS_DISABLED_HASH = HashingUtils::HashString(
 static const int E_C2_INSTANCE_UNAVAILABLE_HASH = HashingUtils::HashString("EC2InstanceUnavailableException");
 static const int E_C2_INSTANCE_TYPE_INVALID_HASH = HashingUtils::HashString("EC2InstanceTypeInvalidException");
 static const int SERVICE_HASH = HashingUtils::HashString("ServiceException");
+static const int SERIAL_CONSOLE_SESSION_UNSUPPORTED_HASH = HashingUtils::HashString("SerialConsoleSessionUnsupportedException");
 static const int AUTH_HASH = HashingUtils::HashString("AuthException");
 static const int E_C2_INSTANCE_NOT_FOUND_HASH = HashingUtils::HashString("EC2InstanceNotFoundException");
 
@@ -36,43 +37,47 @@ AWSError<CoreErrors> GetErrorForName(const char* errorName)
 
   if (hashCode == INVALID_ARGS_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::INVALID_ARGS), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::INVALID_ARGS), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == E_C2_INSTANCE_STATE_INVALID_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::E_C2_INSTANCE_STATE_INVALID), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::E_C2_INSTANCE_STATE_INVALID), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == SERIAL_CONSOLE_SESSION_LIMIT_EXCEEDED_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::SERIAL_CONSOLE_SESSION_LIMIT_EXCEEDED), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::SERIAL_CONSOLE_SESSION_LIMIT_EXCEEDED), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == SERIAL_CONSOLE_SESSION_UNAVAILABLE_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::SERIAL_CONSOLE_SESSION_UNAVAILABLE), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::SERIAL_CONSOLE_SESSION_UNAVAILABLE), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == SERIAL_CONSOLE_ACCESS_DISABLED_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::SERIAL_CONSOLE_ACCESS_DISABLED), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::SERIAL_CONSOLE_ACCESS_DISABLED), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == E_C2_INSTANCE_UNAVAILABLE_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::E_C2_INSTANCE_UNAVAILABLE), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::E_C2_INSTANCE_UNAVAILABLE), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == E_C2_INSTANCE_TYPE_INVALID_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::E_C2_INSTANCE_TYPE_INVALID), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::E_C2_INSTANCE_TYPE_INVALID), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == SERVICE_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::SERVICE), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::SERVICE), RetryableType::NOT_RETRYABLE);
+  }
+  else if (hashCode == SERIAL_CONSOLE_SESSION_UNSUPPORTED_HASH)
+  {
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::SERIAL_CONSOLE_SESSION_UNSUPPORTED), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == AUTH_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::AUTH), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::AUTH), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == E_C2_INSTANCE_NOT_FOUND_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::E_C2_INSTANCE_NOT_FOUND), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(EC2InstanceConnectErrors::E_C2_INSTANCE_NOT_FOUND), RetryableType::NOT_RETRYABLE);
   }
   return AWSError<CoreErrors>(CoreErrors::UNKNOWN, false);
 }

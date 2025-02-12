@@ -28,7 +28,10 @@ CreateVerifiedAccessEndpointRequest::CreateVerifiedAccessEndpointRequest() :
     m_clientToken(Aws::Utils::UUID::PseudoRandomUUID()),
     m_clientTokenHasBeenSet(true),
     m_dryRun(false),
-    m_dryRunHasBeenSet(false)
+    m_dryRunHasBeenSet(false),
+    m_sseSpecificationHasBeenSet(false),
+    m_rdsOptionsHasBeenSet(false),
+    m_cidrOptionsHasBeenSet(false)
 {
 }
 
@@ -115,6 +118,21 @@ Aws::String CreateVerifiedAccessEndpointRequest::SerializePayload() const
   if(m_dryRunHasBeenSet)
   {
     ss << "DryRun=" << std::boolalpha << m_dryRun << "&";
+  }
+
+  if(m_sseSpecificationHasBeenSet)
+  {
+    m_sseSpecification.OutputToStream(ss, "SseSpecification");
+  }
+
+  if(m_rdsOptionsHasBeenSet)
+  {
+    m_rdsOptions.OutputToStream(ss, "RdsOptions");
+  }
+
+  if(m_cidrOptionsHasBeenSet)
+  {
+    m_cidrOptions.OutputToStream(ss, "CidrOptions");
   }
 
   ss << "Version=2016-11-15";

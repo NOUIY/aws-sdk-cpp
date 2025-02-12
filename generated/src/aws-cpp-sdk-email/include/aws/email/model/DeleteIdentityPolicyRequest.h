@@ -20,7 +20,7 @@ namespace Model
    * <p>Represents a request to delete a sending authorization policy for an
    * identity. Sending authorization is an Amazon SES feature that enables you to
    * authorize other senders to use your identities. For information, see the <a
-   * href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon
+   * href="https://docs.aws.amazon.com/ses/latest/dg/sending-authorization.html">Amazon
    * SES Developer Guide</a>.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/email-2010-12-01/DeleteIdentityPolicyRequest">AWS
    * API Reference</a></p>
@@ -43,119 +43,37 @@ namespace Model
 
   public:
 
+    ///@{
     /**
-     * <p>The identity that is associated with the policy that you want to delete. You
-     * can specify the identity by using its name or by using its Amazon Resource Name
-     * (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>,
+     * <p>The identity that is associated with the policy to delete. You can specify
+     * the identity by using its name or by using its Amazon Resource Name (ARN).
+     * Examples: <code>user@example.com</code>, <code>example.com</code>,
      * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To
-     * successfully call this API, you must own the identity.</p>
+     * successfully call this operation, you must own the identity.</p>
      */
     inline const Aws::String& GetIdentity() const{ return m_identity; }
-
-    /**
-     * <p>The identity that is associated with the policy that you want to delete. You
-     * can specify the identity by using its name or by using its Amazon Resource Name
-     * (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To
-     * successfully call this API, you must own the identity.</p>
-     */
     inline bool IdentityHasBeenSet() const { return m_identityHasBeenSet; }
-
-    /**
-     * <p>The identity that is associated with the policy that you want to delete. You
-     * can specify the identity by using its name or by using its Amazon Resource Name
-     * (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To
-     * successfully call this API, you must own the identity.</p>
-     */
     inline void SetIdentity(const Aws::String& value) { m_identityHasBeenSet = true; m_identity = value; }
-
-    /**
-     * <p>The identity that is associated with the policy that you want to delete. You
-     * can specify the identity by using its name or by using its Amazon Resource Name
-     * (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To
-     * successfully call this API, you must own the identity.</p>
-     */
     inline void SetIdentity(Aws::String&& value) { m_identityHasBeenSet = true; m_identity = std::move(value); }
-
-    /**
-     * <p>The identity that is associated with the policy that you want to delete. You
-     * can specify the identity by using its name or by using its Amazon Resource Name
-     * (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To
-     * successfully call this API, you must own the identity.</p>
-     */
     inline void SetIdentity(const char* value) { m_identityHasBeenSet = true; m_identity.assign(value); }
-
-    /**
-     * <p>The identity that is associated with the policy that you want to delete. You
-     * can specify the identity by using its name or by using its Amazon Resource Name
-     * (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To
-     * successfully call this API, you must own the identity.</p>
-     */
     inline DeleteIdentityPolicyRequest& WithIdentity(const Aws::String& value) { SetIdentity(value); return *this;}
-
-    /**
-     * <p>The identity that is associated with the policy that you want to delete. You
-     * can specify the identity by using its name or by using its Amazon Resource Name
-     * (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To
-     * successfully call this API, you must own the identity.</p>
-     */
     inline DeleteIdentityPolicyRequest& WithIdentity(Aws::String&& value) { SetIdentity(std::move(value)); return *this;}
-
-    /**
-     * <p>The identity that is associated with the policy that you want to delete. You
-     * can specify the identity by using its name or by using its Amazon Resource Name
-     * (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>,
-     * <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To
-     * successfully call this API, you must own the identity.</p>
-     */
     inline DeleteIdentityPolicyRequest& WithIdentity(const char* value) { SetIdentity(value); return *this;}
+    ///@}
 
-
+    ///@{
     /**
      * <p>The name of the policy to be deleted.</p>
      */
     inline const Aws::String& GetPolicyName() const{ return m_policyName; }
-
-    /**
-     * <p>The name of the policy to be deleted.</p>
-     */
     inline bool PolicyNameHasBeenSet() const { return m_policyNameHasBeenSet; }
-
-    /**
-     * <p>The name of the policy to be deleted.</p>
-     */
     inline void SetPolicyName(const Aws::String& value) { m_policyNameHasBeenSet = true; m_policyName = value; }
-
-    /**
-     * <p>The name of the policy to be deleted.</p>
-     */
     inline void SetPolicyName(Aws::String&& value) { m_policyNameHasBeenSet = true; m_policyName = std::move(value); }
-
-    /**
-     * <p>The name of the policy to be deleted.</p>
-     */
     inline void SetPolicyName(const char* value) { m_policyNameHasBeenSet = true; m_policyName.assign(value); }
-
-    /**
-     * <p>The name of the policy to be deleted.</p>
-     */
     inline DeleteIdentityPolicyRequest& WithPolicyName(const Aws::String& value) { SetPolicyName(value); return *this;}
-
-    /**
-     * <p>The name of the policy to be deleted.</p>
-     */
     inline DeleteIdentityPolicyRequest& WithPolicyName(Aws::String&& value) { SetPolicyName(std::move(value)); return *this;}
-
-    /**
-     * <p>The name of the policy to be deleted.</p>
-     */
     inline DeleteIdentityPolicyRequest& WithPolicyName(const char* value) { SetPolicyName(value); return *this;}
-
+    ///@}
   private:
 
     Aws::String m_identity;

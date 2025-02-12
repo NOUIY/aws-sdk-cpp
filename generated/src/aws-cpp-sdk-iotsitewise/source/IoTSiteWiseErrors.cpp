@@ -7,6 +7,7 @@
 #include <aws/core/utils/HashingUtils.h>
 #include <aws/iotsitewise/IoTSiteWiseErrors.h>
 #include <aws/iotsitewise/model/ResourceAlreadyExistsException.h>
+#include <aws/iotsitewise/model/PreconditionFailedException.h>
 #include <aws/iotsitewise/model/TooManyTagsException.h>
 #include <aws/iotsitewise/model/ConflictingOperationException.h>
 
@@ -25,6 +26,12 @@ template<> AWS_IOTSITEWISE_API ResourceAlreadyExistsException IoTSiteWiseError::
   return ResourceAlreadyExistsException(this->GetJsonPayload().View());
 }
 
+template<> AWS_IOTSITEWISE_API PreconditionFailedException IoTSiteWiseError::GetModeledError()
+{
+  assert(this->GetErrorType() == IoTSiteWiseErrors::PRECONDITION_FAILED);
+  return PreconditionFailedException(this->GetJsonPayload().View());
+}
+
 template<> AWS_IOTSITEWISE_API TooManyTagsException IoTSiteWiseError::GetModeledError()
 {
   assert(this->GetErrorType() == IoTSiteWiseErrors::TOO_MANY_TAGS);
@@ -41,7 +48,9 @@ namespace IoTSiteWiseErrorMapper
 {
 
 static const int RESOURCE_ALREADY_EXISTS_HASH = HashingUtils::HashString("ResourceAlreadyExistsException");
+static const int PRECONDITION_FAILED_HASH = HashingUtils::HashString("PreconditionFailedException");
 static const int UNAUTHORIZED_HASH = HashingUtils::HashString("UnauthorizedException");
+static const int QUERY_TIMEOUT_HASH = HashingUtils::HashString("QueryTimeoutException");
 static const int LIMIT_EXCEEDED_HASH = HashingUtils::HashString("LimitExceededException");
 static const int TOO_MANY_TAGS_HASH = HashingUtils::HashString("TooManyTagsException");
 static const int CONFLICTING_OPERATION_HASH = HashingUtils::HashString("ConflictingOperationException");
@@ -54,27 +63,35 @@ AWSError<CoreErrors> GetErrorForName(const char* errorName)
 
   if (hashCode == RESOURCE_ALREADY_EXISTS_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::RESOURCE_ALREADY_EXISTS), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::RESOURCE_ALREADY_EXISTS), RetryableType::NOT_RETRYABLE);
+  }
+  else if (hashCode == PRECONDITION_FAILED_HASH)
+  {
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::PRECONDITION_FAILED), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == UNAUTHORIZED_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::UNAUTHORIZED), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::UNAUTHORIZED), RetryableType::NOT_RETRYABLE);
+  }
+  else if (hashCode == QUERY_TIMEOUT_HASH)
+  {
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::QUERY_TIMEOUT), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == LIMIT_EXCEEDED_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::LIMIT_EXCEEDED), true);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::LIMIT_EXCEEDED), RetryableType::RETRYABLE);
   }
   else if (hashCode == TOO_MANY_TAGS_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::TOO_MANY_TAGS), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::TOO_MANY_TAGS), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == CONFLICTING_OPERATION_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::CONFLICTING_OPERATION), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::CONFLICTING_OPERATION), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == INVALID_REQUEST_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::INVALID_REQUEST), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(IoTSiteWiseErrors::INVALID_REQUEST), RetryableType::NOT_RETRYABLE);
   }
   return AWSError<CoreErrors>(CoreErrors::UNKNOWN, false);
 }

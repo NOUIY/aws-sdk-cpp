@@ -36,8 +36,8 @@ namespace SimpleDB
   {
     public:
       typedef Aws::Client::AWSXMLClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
 
       typedef SimpleDBClientConfiguration ClientConfigurationType;
       typedef SimpleDBEndpointProvider EndpointProviderType;
@@ -47,14 +47,14 @@ namespace SimpleDB
         * is not specified, it will be initialized to default values.
         */
         SimpleDBClient(const Aws::SimpleDB::SimpleDBClientConfiguration& clientConfiguration = Aws::SimpleDB::SimpleDBClientConfiguration(),
-                       std::shared_ptr<SimpleDBEndpointProviderBase> endpointProvider = Aws::MakeShared<SimpleDBEndpointProvider>(ALLOCATION_TAG));
+                       std::shared_ptr<SimpleDBEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         SimpleDBClient(const Aws::Auth::AWSCredentials& credentials,
-                       std::shared_ptr<SimpleDBEndpointProviderBase> endpointProvider = Aws::MakeShared<SimpleDBEndpointProvider>(ALLOCATION_TAG),
+                       std::shared_ptr<SimpleDBEndpointProviderBase> endpointProvider = nullptr,
                        const Aws::SimpleDB::SimpleDBClientConfiguration& clientConfiguration = Aws::SimpleDB::SimpleDBClientConfiguration());
 
        /**
@@ -62,7 +62,7 @@ namespace SimpleDB
         * the default http client factory will be used
         */
         SimpleDBClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                       std::shared_ptr<SimpleDBEndpointProviderBase> endpointProvider = Aws::MakeShared<SimpleDBEndpointProvider>(ALLOCATION_TAG),
+                       std::shared_ptr<SimpleDBEndpointProviderBase> endpointProvider = nullptr,
                        const Aws::SimpleDB::SimpleDBClientConfiguration& clientConfiguration = Aws::SimpleDB::SimpleDBClientConfiguration());
 
 
@@ -351,13 +351,13 @@ namespace SimpleDB
          * href="http://docs.aws.amazon.com/goto/WebAPI/sdb-2009-04-15/ListDomains">AWS API
          * Reference</a></p>
          */
-        virtual Model::ListDomainsOutcome ListDomains(const Model::ListDomainsRequest& request) const;
+        virtual Model::ListDomainsOutcome ListDomains(const Model::ListDomainsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListDomains that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListDomainsRequestT = Model::ListDomainsRequest>
-        Model::ListDomainsOutcomeCallable ListDomainsCallable(const ListDomainsRequestT& request) const
+        Model::ListDomainsOutcomeCallable ListDomainsCallable(const ListDomainsRequestT& request = {}) const
         {
             return SubmitCallable(&SimpleDBClient::ListDomains, request);
         }
@@ -366,7 +366,7 @@ namespace SimpleDB
          * An Async wrapper for ListDomains that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListDomainsRequestT = Model::ListDomainsRequest>
-        void ListDomainsAsync(const ListDomainsRequestT& request, const ListDomainsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListDomainsAsync(const ListDomainsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListDomainsRequestT& request = {}) const
         {
             return SubmitAsync(&SimpleDBClient::ListDomains, request, handler, context);
         }
@@ -466,7 +466,6 @@ namespace SimpleDB
         void init(const SimpleDBClientConfiguration& clientConfiguration);
 
         SimpleDBClientConfiguration m_clientConfiguration;
-        std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
         std::shared_ptr<SimpleDBEndpointProviderBase> m_endpointProvider;
   };
 

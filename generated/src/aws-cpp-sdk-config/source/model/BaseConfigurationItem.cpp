@@ -34,27 +34,15 @@ BaseConfigurationItem::BaseConfigurationItem() :
     m_availabilityZoneHasBeenSet(false),
     m_resourceCreationTimeHasBeenSet(false),
     m_configurationHasBeenSet(false),
-    m_supplementaryConfigurationHasBeenSet(false)
+    m_supplementaryConfigurationHasBeenSet(false),
+    m_recordingFrequency(RecordingFrequency::NOT_SET),
+    m_recordingFrequencyHasBeenSet(false),
+    m_configurationItemDeliveryTimeHasBeenSet(false)
 {
 }
 
-BaseConfigurationItem::BaseConfigurationItem(JsonView jsonValue) : 
-    m_versionHasBeenSet(false),
-    m_accountIdHasBeenSet(false),
-    m_configurationItemCaptureTimeHasBeenSet(false),
-    m_configurationItemStatus(ConfigurationItemStatus::NOT_SET),
-    m_configurationItemStatusHasBeenSet(false),
-    m_configurationStateIdHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_resourceType(ResourceType::NOT_SET),
-    m_resourceTypeHasBeenSet(false),
-    m_resourceIdHasBeenSet(false),
-    m_resourceNameHasBeenSet(false),
-    m_awsRegionHasBeenSet(false),
-    m_availabilityZoneHasBeenSet(false),
-    m_resourceCreationTimeHasBeenSet(false),
-    m_configurationHasBeenSet(false),
-    m_supplementaryConfigurationHasBeenSet(false)
+BaseConfigurationItem::BaseConfigurationItem(JsonView jsonValue)
+  : BaseConfigurationItem()
 {
   *this = jsonValue;
 }
@@ -162,6 +150,20 @@ BaseConfigurationItem& BaseConfigurationItem::operator =(JsonView jsonValue)
     m_supplementaryConfigurationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("recordingFrequency"))
+  {
+    m_recordingFrequency = RecordingFrequencyMapper::GetRecordingFrequencyForName(jsonValue.GetString("recordingFrequency"));
+
+    m_recordingFrequencyHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("configurationItemDeliveryTime"))
+  {
+    m_configurationItemDeliveryTime = jsonValue.GetDouble("configurationItemDeliveryTime");
+
+    m_configurationItemDeliveryTimeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -252,6 +254,16 @@ JsonValue BaseConfigurationItem::Jsonize() const
    }
    payload.WithObject("supplementaryConfiguration", std::move(supplementaryConfigurationJsonMap));
 
+  }
+
+  if(m_recordingFrequencyHasBeenSet)
+  {
+   payload.WithString("recordingFrequency", RecordingFrequencyMapper::GetNameForRecordingFrequency(m_recordingFrequency));
+  }
+
+  if(m_configurationItemDeliveryTimeHasBeenSet)
+  {
+   payload.WithDouble("configurationItemDeliveryTime", m_configurationItemDeliveryTime.SecondsWithMSPrecision());
   }
 
   return payload;

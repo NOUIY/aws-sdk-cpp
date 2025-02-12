@@ -33,26 +33,15 @@ ReadSetListItem::ReadSetListItem() :
     m_fileTypeHasBeenSet(false),
     m_sequenceInformationHasBeenSet(false),
     m_creationTimeHasBeenSet(false),
-    m_statusMessageHasBeenSet(false)
+    m_statusMessageHasBeenSet(false),
+    m_creationType(CreationType::NOT_SET),
+    m_creationTypeHasBeenSet(false),
+    m_etagHasBeenSet(false)
 {
 }
 
-ReadSetListItem::ReadSetListItem(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_sequenceStoreIdHasBeenSet(false),
-    m_subjectIdHasBeenSet(false),
-    m_sampleIdHasBeenSet(false),
-    m_status(ReadSetStatus::NOT_SET),
-    m_statusHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_referenceArnHasBeenSet(false),
-    m_fileType(FileType::NOT_SET),
-    m_fileTypeHasBeenSet(false),
-    m_sequenceInformationHasBeenSet(false),
-    m_creationTimeHasBeenSet(false),
-    m_statusMessageHasBeenSet(false)
+ReadSetListItem::ReadSetListItem(JsonView jsonValue)
+  : ReadSetListItem()
 {
   *this = jsonValue;
 }
@@ -150,6 +139,20 @@ ReadSetListItem& ReadSetListItem::operator =(JsonView jsonValue)
     m_statusMessageHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("creationType"))
+  {
+    m_creationType = CreationTypeMapper::GetCreationTypeForName(jsonValue.GetString("creationType"));
+
+    m_creationTypeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("etag"))
+  {
+    m_etag = jsonValue.GetObject("etag");
+
+    m_etagHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -229,6 +232,17 @@ JsonValue ReadSetListItem::Jsonize() const
   if(m_statusMessageHasBeenSet)
   {
    payload.WithString("statusMessage", m_statusMessage);
+
+  }
+
+  if(m_creationTypeHasBeenSet)
+  {
+   payload.WithString("creationType", CreationTypeMapper::GetNameForCreationType(m_creationType));
+  }
+
+  if(m_etagHasBeenSet)
+  {
+   payload.WithObject("etag", m_etag.Jsonize());
 
   }
 

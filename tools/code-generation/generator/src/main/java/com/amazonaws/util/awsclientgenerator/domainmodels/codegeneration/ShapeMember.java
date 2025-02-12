@@ -5,11 +5,18 @@
 
 package com.amazonaws.util.awsclientgenerator.domainmodels.codegeneration;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Map;
 
 @Data
+@Builder(toBuilder=true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class ShapeMember {
     Shape shape;
     boolean idempotencyToken;
@@ -33,6 +40,8 @@ public class ShapeMember {
     boolean hostLabel;
     boolean endpointDiscoveryId;
     boolean xmlAttribute;
+    boolean checksumMember = false;
+    String checksumEnumMember;
 
     public boolean isUsedForHeader() {
         return "header".equals(location) || "headers".equals(location);

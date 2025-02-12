@@ -6,26 +6,38 @@
 #pragma once
 #include <aws/lookoutequipment/LookoutEquipment_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/lookoutequipment/LookoutEquipmentServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/lookoutequipment/LookoutEquipmentErrorMarshaller.h>
 
 namespace Aws
 {
 namespace LookoutEquipment
 {
+  AWS_LOOKOUTEQUIPMENT_API extern const char SERVICE_NAME[];
   /**
    * <p>Amazon Lookout for Equipment is a machine learning service that uses advanced
    * analytics to identify anomalies in machines from sensor data for use in
    * predictive maintenance. </p>
    */
-  class AWS_LOOKOUTEQUIPMENT_API LookoutEquipmentClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<LookoutEquipmentClient>
+  class AWS_LOOKOUTEQUIPMENT_API LookoutEquipmentClient : smithy::client::AwsSmithyClientT<Aws::LookoutEquipment::SERVICE_NAME,
+      Aws::LookoutEquipment::LookoutEquipmentClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      LookoutEquipmentEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::LookoutEquipmentErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<LookoutEquipmentClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "LookoutEquipment"; }
 
       typedef LookoutEquipmentClientConfiguration ClientConfigurationType;
       typedef LookoutEquipmentEndpointProvider EndpointProviderType;
@@ -35,14 +47,14 @@ namespace LookoutEquipment
         * is not specified, it will be initialized to default values.
         */
         LookoutEquipmentClient(const Aws::LookoutEquipment::LookoutEquipmentClientConfiguration& clientConfiguration = Aws::LookoutEquipment::LookoutEquipmentClientConfiguration(),
-                               std::shared_ptr<LookoutEquipmentEndpointProviderBase> endpointProvider = Aws::MakeShared<LookoutEquipmentEndpointProvider>(ALLOCATION_TAG));
+                               std::shared_ptr<LookoutEquipmentEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         LookoutEquipmentClient(const Aws::Auth::AWSCredentials& credentials,
-                               std::shared_ptr<LookoutEquipmentEndpointProviderBase> endpointProvider = Aws::MakeShared<LookoutEquipmentEndpointProvider>(ALLOCATION_TAG),
+                               std::shared_ptr<LookoutEquipmentEndpointProviderBase> endpointProvider = nullptr,
                                const Aws::LookoutEquipment::LookoutEquipmentClientConfiguration& clientConfiguration = Aws::LookoutEquipment::LookoutEquipmentClientConfiguration());
 
        /**
@@ -50,7 +62,7 @@ namespace LookoutEquipment
         * the default http client factory will be used
         */
         LookoutEquipmentClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                               std::shared_ptr<LookoutEquipmentEndpointProviderBase> endpointProvider = Aws::MakeShared<LookoutEquipmentEndpointProvider>(ALLOCATION_TAG),
+                               std::shared_ptr<LookoutEquipmentEndpointProviderBase> endpointProvider = nullptr,
                                const Aws::LookoutEquipment::LookoutEquipmentClientConfiguration& clientConfiguration = Aws::LookoutEquipment::LookoutEquipmentClientConfiguration());
 
 
@@ -81,8 +93,8 @@ namespace LookoutEquipment
         /**
          * <p>Creates a container for a collection of data being ingested for analysis. The
          * dataset contains the metadata describing where the data is and what the data
-         * actually looks like. In other words, it contains the location of the data
-         * source, the data schema, and other information. A dataset also contains any tags
+         * actually looks like. For example, it contains the location of the data source,
+         * the data schema, and other information. A dataset also contains any tags
          * associated with the ingested data. </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/CreateDataset">AWS
          * API Reference</a></p>
@@ -188,15 +200,16 @@ namespace LookoutEquipment
         }
 
         /**
-         * <p>Creates an ML model for data inference. </p> <p>A machine-learning (ML) model
-         * is a mathematical model that finds patterns in your data. In Amazon Lookout for
-         * Equipment, the model learns the patterns of normal behavior and detects abnormal
-         * behavior that could be potential equipment failure (or maintenance events). The
-         * models are made by analyzing normal data and abnormalities in machine behavior
-         * that have already occurred.</p> <p>Your model is trained using a portion of the
-         * data from your dataset and uses that data to learn patterns of normal behavior
-         * and abnormal patterns that lead to equipment failure. Another portion of the
-         * data is used to evaluate the model's accuracy. </p><p><h3>See Also:</h3>   <a
+         * <p>Creates a machine learning model for data inference. </p> <p>A
+         * machine-learning (ML) model is a mathematical model that finds patterns in your
+         * data. In Amazon Lookout for Equipment, the model learns the patterns of normal
+         * behavior and detects abnormal behavior that could be potential equipment failure
+         * (or maintenance events). The models are made by analyzing normal data and
+         * abnormalities in machine behavior that have already occurred.</p> <p>Your model
+         * is trained using a portion of the data from your dataset and uses that data to
+         * learn patterns of normal behavior and abnormal patterns that lead to equipment
+         * failure. Another portion of the data is used to evaluate the model's accuracy.
+         * </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/CreateModel">AWS
          * API Reference</a></p>
          */
@@ -218,6 +231,32 @@ namespace LookoutEquipment
         void CreateModelAsync(const CreateModelRequestT& request, const CreateModelResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&LookoutEquipmentClient::CreateModel, request, handler, context);
+        }
+
+        /**
+         * <p>Creates a retraining scheduler on the specified model. </p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/CreateRetrainingScheduler">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::CreateRetrainingSchedulerOutcome CreateRetrainingScheduler(const Model::CreateRetrainingSchedulerRequest& request) const;
+
+        /**
+         * A Callable wrapper for CreateRetrainingScheduler that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename CreateRetrainingSchedulerRequestT = Model::CreateRetrainingSchedulerRequest>
+        Model::CreateRetrainingSchedulerOutcomeCallable CreateRetrainingSchedulerCallable(const CreateRetrainingSchedulerRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::CreateRetrainingScheduler, request);
+        }
+
+        /**
+         * An Async wrapper for CreateRetrainingScheduler that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename CreateRetrainingSchedulerRequestT = Model::CreateRetrainingSchedulerRequest>
+        void CreateRetrainingSchedulerAsync(const CreateRetrainingSchedulerRequestT& request, const CreateRetrainingSchedulerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::CreateRetrainingScheduler, request, handler, context);
         }
 
         /**
@@ -251,8 +290,8 @@ namespace LookoutEquipment
         }
 
         /**
-         * <p>Deletes an inference scheduler that has been set up. Already processed output
-         * results are not affected. </p><p><h3>See Also:</h3>   <a
+         * <p>Deletes an inference scheduler that has been set up. Prior inference results
+         * will not be deleted.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/DeleteInferenceScheduler">AWS
          * API Reference</a></p>
          */
@@ -327,9 +366,9 @@ namespace LookoutEquipment
         }
 
         /**
-         * <p>Deletes an ML model currently available for Amazon Lookout for Equipment.
-         * This will prevent it from being used with an inference scheduler, even one that
-         * is already set up. </p><p><h3>See Also:</h3>   <a
+         * <p>Deletes a machine learning model currently available for Amazon Lookout for
+         * Equipment. This will prevent it from being used with an inference scheduler,
+         * even one that is already set up. </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/DeleteModel">AWS
          * API Reference</a></p>
          */
@@ -351,6 +390,58 @@ namespace LookoutEquipment
         void DeleteModelAsync(const DeleteModelRequestT& request, const DeleteModelResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&LookoutEquipmentClient::DeleteModel, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes the resource policy attached to the resource.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/DeleteResourcePolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteResourcePolicyOutcome DeleteResourcePolicy(const Model::DeleteResourcePolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteResourcePolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteResourcePolicyRequestT = Model::DeleteResourcePolicyRequest>
+        Model::DeleteResourcePolicyOutcomeCallable DeleteResourcePolicyCallable(const DeleteResourcePolicyRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::DeleteResourcePolicy, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteResourcePolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteResourcePolicyRequestT = Model::DeleteResourcePolicyRequest>
+        void DeleteResourcePolicyAsync(const DeleteResourcePolicyRequestT& request, const DeleteResourcePolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::DeleteResourcePolicy, request, handler, context);
+        }
+
+        /**
+         * <p>Deletes a retraining scheduler from a model. The retraining scheduler must be
+         * in the <code>STOPPED</code> status. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/DeleteRetrainingScheduler">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DeleteRetrainingSchedulerOutcome DeleteRetrainingScheduler(const Model::DeleteRetrainingSchedulerRequest& request) const;
+
+        /**
+         * A Callable wrapper for DeleteRetrainingScheduler that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DeleteRetrainingSchedulerRequestT = Model::DeleteRetrainingSchedulerRequest>
+        Model::DeleteRetrainingSchedulerOutcomeCallable DeleteRetrainingSchedulerCallable(const DeleteRetrainingSchedulerRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::DeleteRetrainingScheduler, request);
+        }
+
+        /**
+         * An Async wrapper for DeleteRetrainingScheduler that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DeleteRetrainingSchedulerRequestT = Model::DeleteRetrainingSchedulerRequest>
+        void DeleteRetrainingSchedulerAsync(const DeleteRetrainingSchedulerRequestT& request, const DeleteRetrainingSchedulerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::DeleteRetrainingScheduler, request, handler, context);
         }
 
         /**
@@ -482,9 +573,9 @@ namespace LookoutEquipment
         }
 
         /**
-         * <p>Provides a JSON containing the overall information about a specific ML model,
-         * including model name and ARN, dataset, training and evaluation information,
-         * status, and so on. </p><p><h3>See Also:</h3>   <a
+         * <p>Provides a JSON containing the overall information about a specific machine
+         * learning model, including model name and ARN, dataset, training and evaluation
+         * information, status, and so on. </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/DescribeModel">AWS
          * API Reference</a></p>
          */
@@ -509,18 +600,147 @@ namespace LookoutEquipment
         }
 
         /**
+         * <p>Retrieves information about a specific machine learning model
+         * version.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/DescribeModelVersion">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeModelVersionOutcome DescribeModelVersion(const Model::DescribeModelVersionRequest& request) const;
+
+        /**
+         * A Callable wrapper for DescribeModelVersion that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeModelVersionRequestT = Model::DescribeModelVersionRequest>
+        Model::DescribeModelVersionOutcomeCallable DescribeModelVersionCallable(const DescribeModelVersionRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::DescribeModelVersion, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeModelVersion that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeModelVersionRequestT = Model::DescribeModelVersionRequest>
+        void DescribeModelVersionAsync(const DescribeModelVersionRequestT& request, const DescribeModelVersionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::DescribeModelVersion, request, handler, context);
+        }
+
+        /**
+         * <p>Provides the details of a resource policy attached to a
+         * resource.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/DescribeResourcePolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeResourcePolicyOutcome DescribeResourcePolicy(const Model::DescribeResourcePolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for DescribeResourcePolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeResourcePolicyRequestT = Model::DescribeResourcePolicyRequest>
+        Model::DescribeResourcePolicyOutcomeCallable DescribeResourcePolicyCallable(const DescribeResourcePolicyRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::DescribeResourcePolicy, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeResourcePolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeResourcePolicyRequestT = Model::DescribeResourcePolicyRequest>
+        void DescribeResourcePolicyAsync(const DescribeResourcePolicyRequestT& request, const DescribeResourcePolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::DescribeResourcePolicy, request, handler, context);
+        }
+
+        /**
+         * <p>Provides a description of the retraining scheduler, including information
+         * such as the model name and retraining parameters. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/DescribeRetrainingScheduler">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::DescribeRetrainingSchedulerOutcome DescribeRetrainingScheduler(const Model::DescribeRetrainingSchedulerRequest& request) const;
+
+        /**
+         * A Callable wrapper for DescribeRetrainingScheduler that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename DescribeRetrainingSchedulerRequestT = Model::DescribeRetrainingSchedulerRequest>
+        Model::DescribeRetrainingSchedulerOutcomeCallable DescribeRetrainingSchedulerCallable(const DescribeRetrainingSchedulerRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::DescribeRetrainingScheduler, request);
+        }
+
+        /**
+         * An Async wrapper for DescribeRetrainingScheduler that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename DescribeRetrainingSchedulerRequestT = Model::DescribeRetrainingSchedulerRequest>
+        void DescribeRetrainingSchedulerAsync(const DescribeRetrainingSchedulerRequestT& request, const DescribeRetrainingSchedulerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::DescribeRetrainingScheduler, request, handler, context);
+        }
+
+        /**
+         * <p>Imports a dataset.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/ImportDataset">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ImportDatasetOutcome ImportDataset(const Model::ImportDatasetRequest& request) const;
+
+        /**
+         * A Callable wrapper for ImportDataset that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ImportDatasetRequestT = Model::ImportDatasetRequest>
+        Model::ImportDatasetOutcomeCallable ImportDatasetCallable(const ImportDatasetRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::ImportDataset, request);
+        }
+
+        /**
+         * An Async wrapper for ImportDataset that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ImportDatasetRequestT = Model::ImportDatasetRequest>
+        void ImportDatasetAsync(const ImportDatasetRequestT& request, const ImportDatasetResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::ImportDataset, request, handler, context);
+        }
+
+        /**
+         * <p>Imports a model that has been trained successfully.</p><p><h3>See Also:</h3> 
+         * <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/ImportModelVersion">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ImportModelVersionOutcome ImportModelVersion(const Model::ImportModelVersionRequest& request) const;
+
+        /**
+         * A Callable wrapper for ImportModelVersion that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ImportModelVersionRequestT = Model::ImportModelVersionRequest>
+        Model::ImportModelVersionOutcomeCallable ImportModelVersionCallable(const ImportModelVersionRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::ImportModelVersion, request);
+        }
+
+        /**
+         * An Async wrapper for ImportModelVersion that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ImportModelVersionRequestT = Model::ImportModelVersionRequest>
+        void ImportModelVersionAsync(const ImportModelVersionRequestT& request, const ImportModelVersionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::ImportModelVersion, request, handler, context);
+        }
+
+        /**
          * <p>Provides a list of all data ingestion jobs, including dataset name and ARN,
          * S3 location of the input data, status, and so on. </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/ListDataIngestionJobs">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListDataIngestionJobsOutcome ListDataIngestionJobs(const Model::ListDataIngestionJobsRequest& request) const;
+        virtual Model::ListDataIngestionJobsOutcome ListDataIngestionJobs(const Model::ListDataIngestionJobsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListDataIngestionJobs that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListDataIngestionJobsRequestT = Model::ListDataIngestionJobsRequest>
-        Model::ListDataIngestionJobsOutcomeCallable ListDataIngestionJobsCallable(const ListDataIngestionJobsRequestT& request) const
+        Model::ListDataIngestionJobsOutcomeCallable ListDataIngestionJobsCallable(const ListDataIngestionJobsRequestT& request = {}) const
         {
             return SubmitCallable(&LookoutEquipmentClient::ListDataIngestionJobs, request);
         }
@@ -529,7 +749,7 @@ namespace LookoutEquipment
          * An Async wrapper for ListDataIngestionJobs that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListDataIngestionJobsRequestT = Model::ListDataIngestionJobsRequest>
-        void ListDataIngestionJobsAsync(const ListDataIngestionJobsRequestT& request, const ListDataIngestionJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListDataIngestionJobsAsync(const ListDataIngestionJobsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListDataIngestionJobsRequestT& request = {}) const
         {
             return SubmitAsync(&LookoutEquipmentClient::ListDataIngestionJobs, request, handler, context);
         }
@@ -540,13 +760,13 @@ namespace LookoutEquipment
          * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/ListDatasets">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListDatasetsOutcome ListDatasets(const Model::ListDatasetsRequest& request) const;
+        virtual Model::ListDatasetsOutcome ListDatasets(const Model::ListDatasetsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListDatasets that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListDatasetsRequestT = Model::ListDatasetsRequest>
-        Model::ListDatasetsOutcomeCallable ListDatasetsCallable(const ListDatasetsRequestT& request) const
+        Model::ListDatasetsOutcomeCallable ListDatasetsCallable(const ListDatasetsRequestT& request = {}) const
         {
             return SubmitCallable(&LookoutEquipmentClient::ListDatasets, request);
         }
@@ -555,7 +775,7 @@ namespace LookoutEquipment
          * An Async wrapper for ListDatasets that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListDatasetsRequestT = Model::ListDatasetsRequest>
-        void ListDatasetsAsync(const ListDatasetsRequestT& request, const ListDatasetsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListDatasetsAsync(const ListDatasetsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListDatasetsRequestT& request = {}) const
         {
             return SubmitAsync(&LookoutEquipmentClient::ListDatasets, request, handler, context);
         }
@@ -618,13 +838,13 @@ namespace LookoutEquipment
          * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/ListInferenceSchedulers">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListInferenceSchedulersOutcome ListInferenceSchedulers(const Model::ListInferenceSchedulersRequest& request) const;
+        virtual Model::ListInferenceSchedulersOutcome ListInferenceSchedulers(const Model::ListInferenceSchedulersRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListInferenceSchedulers that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListInferenceSchedulersRequestT = Model::ListInferenceSchedulersRequest>
-        Model::ListInferenceSchedulersOutcomeCallable ListInferenceSchedulersCallable(const ListInferenceSchedulersRequestT& request) const
+        Model::ListInferenceSchedulersOutcomeCallable ListInferenceSchedulersCallable(const ListInferenceSchedulersRequestT& request = {}) const
         {
             return SubmitCallable(&LookoutEquipmentClient::ListInferenceSchedulers, request);
         }
@@ -633,7 +853,7 @@ namespace LookoutEquipment
          * An Async wrapper for ListInferenceSchedulers that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListInferenceSchedulersRequestT = Model::ListInferenceSchedulersRequest>
-        void ListInferenceSchedulersAsync(const ListInferenceSchedulersRequestT& request, const ListInferenceSchedulersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListInferenceSchedulersAsync(const ListInferenceSchedulersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListInferenceSchedulersRequestT& request = {}) const
         {
             return SubmitAsync(&LookoutEquipmentClient::ListInferenceSchedulers, request, handler, context);
         }
@@ -643,13 +863,13 @@ namespace LookoutEquipment
          * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/ListLabelGroups">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListLabelGroupsOutcome ListLabelGroups(const Model::ListLabelGroupsRequest& request) const;
+        virtual Model::ListLabelGroupsOutcome ListLabelGroups(const Model::ListLabelGroupsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListLabelGroups that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListLabelGroupsRequestT = Model::ListLabelGroupsRequest>
-        Model::ListLabelGroupsOutcomeCallable ListLabelGroupsCallable(const ListLabelGroupsRequestT& request) const
+        Model::ListLabelGroupsOutcomeCallable ListLabelGroupsCallable(const ListLabelGroupsRequestT& request = {}) const
         {
             return SubmitCallable(&LookoutEquipmentClient::ListLabelGroups, request);
         }
@@ -658,7 +878,7 @@ namespace LookoutEquipment
          * An Async wrapper for ListLabelGroups that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListLabelGroupsRequestT = Model::ListLabelGroupsRequest>
-        void ListLabelGroupsAsync(const ListLabelGroupsRequestT& request, const ListLabelGroupsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListLabelGroupsAsync(const ListLabelGroupsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListLabelGroupsRequestT& request = {}) const
         {
             return SubmitAsync(&LookoutEquipmentClient::ListLabelGroups, request, handler, context);
         }
@@ -689,18 +909,46 @@ namespace LookoutEquipment
         }
 
         /**
+         * <p>Generates a list of all model versions for a given model, including the model
+         * version, model version ARN, and status. To list a subset of versions, use the
+         * <code>MaxModelVersion</code> and <code>MinModelVersion</code>
+         * fields.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/ListModelVersions">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListModelVersionsOutcome ListModelVersions(const Model::ListModelVersionsRequest& request) const;
+
+        /**
+         * A Callable wrapper for ListModelVersions that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListModelVersionsRequestT = Model::ListModelVersionsRequest>
+        Model::ListModelVersionsOutcomeCallable ListModelVersionsCallable(const ListModelVersionsRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::ListModelVersions, request);
+        }
+
+        /**
+         * An Async wrapper for ListModelVersions that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListModelVersionsRequestT = Model::ListModelVersionsRequest>
+        void ListModelVersionsAsync(const ListModelVersionsRequestT& request, const ListModelVersionsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::ListModelVersions, request, handler, context);
+        }
+
+        /**
          * <p>Generates a list of all models in the account, including model name and ARN,
          * dataset, and status. </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/ListModels">AWS
          * API Reference</a></p>
          */
-        virtual Model::ListModelsOutcome ListModels(const Model::ListModelsRequest& request) const;
+        virtual Model::ListModelsOutcome ListModels(const Model::ListModelsRequest& request = {}) const;
 
         /**
          * A Callable wrapper for ListModels that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename ListModelsRequestT = Model::ListModelsRequest>
-        Model::ListModelsOutcomeCallable ListModelsCallable(const ListModelsRequestT& request) const
+        Model::ListModelsOutcomeCallable ListModelsCallable(const ListModelsRequestT& request = {}) const
         {
             return SubmitCallable(&LookoutEquipmentClient::ListModels, request);
         }
@@ -709,9 +957,35 @@ namespace LookoutEquipment
          * An Async wrapper for ListModels that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename ListModelsRequestT = Model::ListModelsRequest>
-        void ListModelsAsync(const ListModelsRequestT& request, const ListModelsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void ListModelsAsync(const ListModelsResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListModelsRequestT& request = {}) const
         {
             return SubmitAsync(&LookoutEquipmentClient::ListModels, request, handler, context);
+        }
+
+        /**
+         * <p>Lists all retraining schedulers in your account, filtering by model name
+         * prefix and status. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/ListRetrainingSchedulers">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ListRetrainingSchedulersOutcome ListRetrainingSchedulers(const Model::ListRetrainingSchedulersRequest& request = {}) const;
+
+        /**
+         * A Callable wrapper for ListRetrainingSchedulers that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ListRetrainingSchedulersRequestT = Model::ListRetrainingSchedulersRequest>
+        Model::ListRetrainingSchedulersOutcomeCallable ListRetrainingSchedulersCallable(const ListRetrainingSchedulersRequestT& request = {}) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::ListRetrainingSchedulers, request);
+        }
+
+        /**
+         * An Async wrapper for ListRetrainingSchedulers that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ListRetrainingSchedulersRequestT = Model::ListRetrainingSchedulersRequest>
+        void ListRetrainingSchedulersAsync(const ListRetrainingSchedulersResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const ListRetrainingSchedulersRequestT& request = {}) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::ListRetrainingSchedulers, request, handler, context);
         }
 
         /**
@@ -769,6 +1043,32 @@ namespace LookoutEquipment
         }
 
         /**
+         * <p>Creates a resource control policy for a given resource.</p><p><h3>See
+         * Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/PutResourcePolicy">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::PutResourcePolicyOutcome PutResourcePolicy(const Model::PutResourcePolicyRequest& request) const;
+
+        /**
+         * A Callable wrapper for PutResourcePolicy that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename PutResourcePolicyRequestT = Model::PutResourcePolicyRequest>
+        Model::PutResourcePolicyOutcomeCallable PutResourcePolicyCallable(const PutResourcePolicyRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::PutResourcePolicy, request);
+        }
+
+        /**
+         * An Async wrapper for PutResourcePolicy that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename PutResourcePolicyRequestT = Model::PutResourcePolicyRequest>
+        void PutResourcePolicyAsync(const PutResourcePolicyRequestT& request, const PutResourcePolicyResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::PutResourcePolicy, request, handler, context);
+        }
+
+        /**
          * <p>Starts a data ingestion job. Amazon Lookout for Equipment returns the job
          * status. </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/StartDataIngestionJob">AWS
@@ -820,6 +1120,31 @@ namespace LookoutEquipment
         }
 
         /**
+         * <p>Starts a retraining scheduler. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/StartRetrainingScheduler">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::StartRetrainingSchedulerOutcome StartRetrainingScheduler(const Model::StartRetrainingSchedulerRequest& request) const;
+
+        /**
+         * A Callable wrapper for StartRetrainingScheduler that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename StartRetrainingSchedulerRequestT = Model::StartRetrainingSchedulerRequest>
+        Model::StartRetrainingSchedulerOutcomeCallable StartRetrainingSchedulerCallable(const StartRetrainingSchedulerRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::StartRetrainingScheduler, request);
+        }
+
+        /**
+         * An Async wrapper for StartRetrainingScheduler that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename StartRetrainingSchedulerRequestT = Model::StartRetrainingSchedulerRequest>
+        void StartRetrainingSchedulerAsync(const StartRetrainingSchedulerRequestT& request, const StartRetrainingSchedulerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::StartRetrainingScheduler, request, handler, context);
+        }
+
+        /**
          * <p>Stops an inference scheduler. </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/StopInferenceScheduler">AWS
          * API Reference</a></p>
@@ -842,6 +1167,31 @@ namespace LookoutEquipment
         void StopInferenceSchedulerAsync(const StopInferenceSchedulerRequestT& request, const StopInferenceSchedulerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&LookoutEquipmentClient::StopInferenceScheduler, request, handler, context);
+        }
+
+        /**
+         * <p>Stops a retraining scheduler. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/StopRetrainingScheduler">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::StopRetrainingSchedulerOutcome StopRetrainingScheduler(const Model::StopRetrainingSchedulerRequest& request) const;
+
+        /**
+         * A Callable wrapper for StopRetrainingScheduler that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename StopRetrainingSchedulerRequestT = Model::StopRetrainingSchedulerRequest>
+        Model::StopRetrainingSchedulerOutcomeCallable StopRetrainingSchedulerCallable(const StopRetrainingSchedulerRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::StopRetrainingScheduler, request);
+        }
+
+        /**
+         * An Async wrapper for StopRetrainingScheduler that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename StopRetrainingSchedulerRequestT = Model::StopRetrainingSchedulerRequest>
+        void StopRetrainingSchedulerAsync(const StopRetrainingSchedulerRequestT& request, const StopRetrainingSchedulerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::StopRetrainingScheduler, request, handler, context);
         }
 
         /**
@@ -901,6 +1251,32 @@ namespace LookoutEquipment
         }
 
         /**
+         * <p>Sets the active model version for a given machine learning
+         * model.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/UpdateActiveModelVersion">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateActiveModelVersionOutcome UpdateActiveModelVersion(const Model::UpdateActiveModelVersionRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateActiveModelVersion that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateActiveModelVersionRequestT = Model::UpdateActiveModelVersionRequest>
+        Model::UpdateActiveModelVersionOutcomeCallable UpdateActiveModelVersionCallable(const UpdateActiveModelVersionRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::UpdateActiveModelVersion, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateActiveModelVersion that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateActiveModelVersionRequestT = Model::UpdateActiveModelVersionRequest>
+        void UpdateActiveModelVersionAsync(const UpdateActiveModelVersionRequestT& request, const UpdateActiveModelVersionResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::UpdateActiveModelVersion, request, handler, context);
+        }
+
+        /**
          * <p>Updates an inference scheduler. </p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/UpdateInferenceScheduler">AWS
          * API Reference</a></p>
@@ -950,16 +1326,62 @@ namespace LookoutEquipment
             return SubmitAsync(&LookoutEquipmentClient::UpdateLabelGroup, request, handler, context);
         }
 
+        /**
+         * <p>Updates a model in the account.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/UpdateModel">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateModelOutcome UpdateModel(const Model::UpdateModelRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateModel that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateModelRequestT = Model::UpdateModelRequest>
+        Model::UpdateModelOutcomeCallable UpdateModelCallable(const UpdateModelRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::UpdateModel, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateModel that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateModelRequestT = Model::UpdateModelRequest>
+        void UpdateModelAsync(const UpdateModelRequestT& request, const UpdateModelResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::UpdateModel, request, handler, context);
+        }
+
+        /**
+         * <p>Updates a retraining scheduler. </p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/lookoutequipment-2020-12-15/UpdateRetrainingScheduler">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::UpdateRetrainingSchedulerOutcome UpdateRetrainingScheduler(const Model::UpdateRetrainingSchedulerRequest& request) const;
+
+        /**
+         * A Callable wrapper for UpdateRetrainingScheduler that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename UpdateRetrainingSchedulerRequestT = Model::UpdateRetrainingSchedulerRequest>
+        Model::UpdateRetrainingSchedulerOutcomeCallable UpdateRetrainingSchedulerCallable(const UpdateRetrainingSchedulerRequestT& request) const
+        {
+            return SubmitCallable(&LookoutEquipmentClient::UpdateRetrainingScheduler, request);
+        }
+
+        /**
+         * An Async wrapper for UpdateRetrainingScheduler that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename UpdateRetrainingSchedulerRequestT = Model::UpdateRetrainingSchedulerRequest>
+        void UpdateRetrainingSchedulerAsync(const UpdateRetrainingSchedulerRequestT& request, const UpdateRetrainingSchedulerResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&LookoutEquipmentClient::UpdateRetrainingScheduler, request, handler, context);
+        }
+
 
       void OverrideEndpoint(const Aws::String& endpoint);
       std::shared_ptr<LookoutEquipmentEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<LookoutEquipmentClient>;
-      void init(const LookoutEquipmentClientConfiguration& clientConfiguration);
 
-      LookoutEquipmentClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<LookoutEquipmentEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace LookoutEquipment

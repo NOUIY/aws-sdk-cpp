@@ -23,7 +23,11 @@ namespace Model
     CALLBACK,
     API,
     DISCONNECT,
-    MONITOR
+    MONITOR,
+    EXTERNAL_OUTBOUND,
+    WEBRTC_API,
+    AGENT_REPLY,
+    FLOW
   };
 
 namespace ContactInitiationMethodMapper

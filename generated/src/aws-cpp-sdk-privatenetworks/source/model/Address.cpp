@@ -22,6 +22,7 @@ Address::Address() :
     m_cityHasBeenSet(false),
     m_companyHasBeenSet(false),
     m_countryHasBeenSet(false),
+    m_emailAddressHasBeenSet(false),
     m_nameHasBeenSet(false),
     m_phoneNumberHasBeenSet(false),
     m_postalCodeHasBeenSet(false),
@@ -32,17 +33,8 @@ Address::Address() :
 {
 }
 
-Address::Address(JsonView jsonValue) : 
-    m_cityHasBeenSet(false),
-    m_companyHasBeenSet(false),
-    m_countryHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_phoneNumberHasBeenSet(false),
-    m_postalCodeHasBeenSet(false),
-    m_stateOrProvinceHasBeenSet(false),
-    m_street1HasBeenSet(false),
-    m_street2HasBeenSet(false),
-    m_street3HasBeenSet(false)
+Address::Address(JsonView jsonValue)
+  : Address()
 {
   *this = jsonValue;
 }
@@ -68,6 +60,13 @@ Address& Address::operator =(JsonView jsonValue)
     m_country = jsonValue.GetString("country");
 
     m_countryHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("emailAddress"))
+  {
+    m_emailAddress = jsonValue.GetString("emailAddress");
+
+    m_emailAddressHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("name"))
@@ -141,6 +140,12 @@ JsonValue Address::Jsonize() const
   if(m_countryHasBeenSet)
   {
    payload.WithString("country", m_country);
+
+  }
+
+  if(m_emailAddressHasBeenSet)
+  {
+   payload.WithString("emailAddress", m_emailAddress);
 
   }
 

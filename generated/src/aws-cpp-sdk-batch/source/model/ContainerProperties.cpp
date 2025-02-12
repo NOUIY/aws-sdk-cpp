@@ -39,32 +39,14 @@ ContainerProperties::ContainerProperties() :
     m_secretsHasBeenSet(false),
     m_networkConfigurationHasBeenSet(false),
     m_fargatePlatformConfigurationHasBeenSet(false),
-    m_ephemeralStorageHasBeenSet(false)
+    m_ephemeralStorageHasBeenSet(false),
+    m_runtimePlatformHasBeenSet(false),
+    m_repositoryCredentialsHasBeenSet(false)
 {
 }
 
-ContainerProperties::ContainerProperties(JsonView jsonValue) : 
-    m_imageHasBeenSet(false),
-    m_commandHasBeenSet(false),
-    m_jobRoleArnHasBeenSet(false),
-    m_executionRoleArnHasBeenSet(false),
-    m_volumesHasBeenSet(false),
-    m_environmentHasBeenSet(false),
-    m_mountPointsHasBeenSet(false),
-    m_readonlyRootFilesystem(false),
-    m_readonlyRootFilesystemHasBeenSet(false),
-    m_privileged(false),
-    m_privilegedHasBeenSet(false),
-    m_ulimitsHasBeenSet(false),
-    m_userHasBeenSet(false),
-    m_instanceTypeHasBeenSet(false),
-    m_resourceRequirementsHasBeenSet(false),
-    m_linuxParametersHasBeenSet(false),
-    m_logConfigurationHasBeenSet(false),
-    m_secretsHasBeenSet(false),
-    m_networkConfigurationHasBeenSet(false),
-    m_fargatePlatformConfigurationHasBeenSet(false),
-    m_ephemeralStorageHasBeenSet(false)
+ContainerProperties::ContainerProperties(JsonView jsonValue)
+  : ContainerProperties()
 {
   *this = jsonValue;
 }
@@ -225,6 +207,20 @@ ContainerProperties& ContainerProperties::operator =(JsonView jsonValue)
     m_ephemeralStorageHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("runtimePlatform"))
+  {
+    m_runtimePlatform = jsonValue.GetObject("runtimePlatform");
+
+    m_runtimePlatformHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("repositoryCredentials"))
+  {
+    m_repositoryCredentials = jsonValue.GetObject("repositoryCredentials");
+
+    m_repositoryCredentialsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -378,6 +374,18 @@ JsonValue ContainerProperties::Jsonize() const
   if(m_ephemeralStorageHasBeenSet)
   {
    payload.WithObject("ephemeralStorage", m_ephemeralStorage.Jsonize());
+
+  }
+
+  if(m_runtimePlatformHasBeenSet)
+  {
+   payload.WithObject("runtimePlatform", m_runtimePlatform.Jsonize());
+
+  }
+
+  if(m_repositoryCredentialsHasBeenSet)
+  {
+   payload.WithObject("repositoryCredentials", m_repositoryCredentials.Jsonize());
 
   }
 

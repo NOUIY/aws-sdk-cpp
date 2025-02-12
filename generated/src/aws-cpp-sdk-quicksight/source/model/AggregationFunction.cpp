@@ -23,16 +23,13 @@ AggregationFunction::AggregationFunction() :
     m_categoricalAggregationFunction(CategoricalAggregationFunction::NOT_SET),
     m_categoricalAggregationFunctionHasBeenSet(false),
     m_dateAggregationFunction(DateAggregationFunction::NOT_SET),
-    m_dateAggregationFunctionHasBeenSet(false)
+    m_dateAggregationFunctionHasBeenSet(false),
+    m_attributeAggregationFunctionHasBeenSet(false)
 {
 }
 
-AggregationFunction::AggregationFunction(JsonView jsonValue) : 
-    m_numericalAggregationFunctionHasBeenSet(false),
-    m_categoricalAggregationFunction(CategoricalAggregationFunction::NOT_SET),
-    m_categoricalAggregationFunctionHasBeenSet(false),
-    m_dateAggregationFunction(DateAggregationFunction::NOT_SET),
-    m_dateAggregationFunctionHasBeenSet(false)
+AggregationFunction::AggregationFunction(JsonView jsonValue)
+  : AggregationFunction()
 {
   *this = jsonValue;
 }
@@ -60,6 +57,13 @@ AggregationFunction& AggregationFunction::operator =(JsonView jsonValue)
     m_dateAggregationFunctionHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("AttributeAggregationFunction"))
+  {
+    m_attributeAggregationFunction = jsonValue.GetObject("AttributeAggregationFunction");
+
+    m_attributeAggregationFunctionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -81,6 +85,12 @@ JsonValue AggregationFunction::Jsonize() const
   if(m_dateAggregationFunctionHasBeenSet)
   {
    payload.WithString("DateAggregationFunction", DateAggregationFunctionMapper::GetNameForDateAggregationFunction(m_dateAggregationFunction));
+  }
+
+  if(m_attributeAggregationFunctionHasBeenSet)
+  {
+   payload.WithObject("AttributeAggregationFunction", m_attributeAggregationFunction.Jsonize());
+
   }
 
   return payload;

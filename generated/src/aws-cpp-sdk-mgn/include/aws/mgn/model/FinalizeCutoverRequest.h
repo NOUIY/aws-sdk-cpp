@@ -32,47 +32,37 @@ namespace Model
     AWS_MGN_API Aws::String SerializePayload() const override;
 
 
+    ///@{
+    /**
+     * <p>Request to finalize Cutover by Source Account ID.</p>
+     */
+    inline const Aws::String& GetAccountID() const{ return m_accountID; }
+    inline bool AccountIDHasBeenSet() const { return m_accountIDHasBeenSet; }
+    inline void SetAccountID(const Aws::String& value) { m_accountIDHasBeenSet = true; m_accountID = value; }
+    inline void SetAccountID(Aws::String&& value) { m_accountIDHasBeenSet = true; m_accountID = std::move(value); }
+    inline void SetAccountID(const char* value) { m_accountIDHasBeenSet = true; m_accountID.assign(value); }
+    inline FinalizeCutoverRequest& WithAccountID(const Aws::String& value) { SetAccountID(value); return *this;}
+    inline FinalizeCutoverRequest& WithAccountID(Aws::String&& value) { SetAccountID(std::move(value)); return *this;}
+    inline FinalizeCutoverRequest& WithAccountID(const char* value) { SetAccountID(value); return *this;}
+    ///@}
+
+    ///@{
     /**
      * <p>Request to finalize Cutover by Source Server ID.</p>
      */
     inline const Aws::String& GetSourceServerID() const{ return m_sourceServerID; }
-
-    /**
-     * <p>Request to finalize Cutover by Source Server ID.</p>
-     */
     inline bool SourceServerIDHasBeenSet() const { return m_sourceServerIDHasBeenSet; }
-
-    /**
-     * <p>Request to finalize Cutover by Source Server ID.</p>
-     */
     inline void SetSourceServerID(const Aws::String& value) { m_sourceServerIDHasBeenSet = true; m_sourceServerID = value; }
-
-    /**
-     * <p>Request to finalize Cutover by Source Server ID.</p>
-     */
     inline void SetSourceServerID(Aws::String&& value) { m_sourceServerIDHasBeenSet = true; m_sourceServerID = std::move(value); }
-
-    /**
-     * <p>Request to finalize Cutover by Source Server ID.</p>
-     */
     inline void SetSourceServerID(const char* value) { m_sourceServerIDHasBeenSet = true; m_sourceServerID.assign(value); }
-
-    /**
-     * <p>Request to finalize Cutover by Source Server ID.</p>
-     */
     inline FinalizeCutoverRequest& WithSourceServerID(const Aws::String& value) { SetSourceServerID(value); return *this;}
-
-    /**
-     * <p>Request to finalize Cutover by Source Server ID.</p>
-     */
     inline FinalizeCutoverRequest& WithSourceServerID(Aws::String&& value) { SetSourceServerID(std::move(value)); return *this;}
-
-    /**
-     * <p>Request to finalize Cutover by Source Server ID.</p>
-     */
     inline FinalizeCutoverRequest& WithSourceServerID(const char* value) { SetSourceServerID(value); return *this;}
-
+    ///@}
   private:
+
+    Aws::String m_accountID;
+    bool m_accountIDHasBeenSet = false;
 
     Aws::String m_sourceServerID;
     bool m_sourceServerIDHasBeenSet = false;

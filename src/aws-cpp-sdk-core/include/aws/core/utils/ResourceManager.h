@@ -42,12 +42,64 @@ namespace Aws
                     m_semaphore.wait(locker, [&](){ return m_shutdown.load() || m_resources.size() > 0; });
                 }
 
-                assert(!m_shutdown.load());
+                assert(!m_shutdown);
 
                 RESOURCE_TYPE resource = m_resources.back();
                 m_resources.pop_back();
 
                 return resource;
+            }
+
+            /**
+             * Returns a resource with exclusive ownership. You must call Release on the resource when you are finished or other
+             * threads will block waiting to acquire it.
+             *
+             * @return instance of RESOURCE_TYPE, nullptr if the resource manager is being shutdown
+             */
+            RESOURCE_TYPE TryAcquire(typename std::enable_if<std::is_pointer<RESOURCE_TYPE>::value >::type* = 0)
+            {
+                std::unique_lock<std::mutex> locker(m_queueLock);
+                while(!m_shutdown.load() && m_resources.size() == 0)
+                {
+                    m_semaphore.wait(locker, [&](){ return m_shutdown.load() || m_resources.size() > 0; });
+                }
+
+                if (m_shutdown) {
+                    return nullptr;
+                }
+
+                RESOURCE_TYPE resource = m_resources.back();
+                m_resources.pop_back();
+
+                return resource;
+            }
+
+            /**
+             * Returns a resource with exclusive ownership or a nullptr.
+             * If resource is available within the wait timeout then the resource is returned.
+             * otherwise (if the timeout has expired or container is shutdown) the nullptr is returned.
+             * You must call Release on the resource when you are finished.
+             * This method is enabled only for pointer RESOURCE_TYPE type.
+             *
+             * @return instance of RESOURCE_TYPE, nullptr if the resource manager is being shutdown
+             */
+            template <typename std::enable_if<std::is_pointer<RESOURCE_TYPE>::value>::type* = nullptr>
+            RESOURCE_TYPE TryAcquire(const uint64_t timeoutMs) {
+              std::unique_lock<std::mutex> locker(m_queueLock);
+              bool hasResource = m_shutdown.load() || !m_resources.empty();
+              if (!hasResource) {
+                hasResource = m_semaphore.wait_for(locker, std::chrono::milliseconds(timeoutMs),
+                                                   [&]() { return m_shutdown.load() || !m_resources.empty(); });
+              }
+
+              if (m_shutdown || !hasResource) {
+                return nullptr;
+              }
+
+              RESOURCE_TYPE resource = m_resources.back();
+              m_resources.pop_back();
+
+              return resource;
             }
 
             /**
@@ -98,6 +150,7 @@ namespace Aws
             {
                 std::unique_lock<std::mutex> locker(m_queueLock);
                 m_shutdown = true;
+                m_semaphore.notify_all();
 
                 //wait for all acquired resources to be released.
                 while (m_resources.size() < resourceCount)
@@ -106,7 +159,7 @@ namespace Aws
                 }
 
                 Aws::Vector<RESOURCE_TYPE> resources{std::move(m_resources)};
-
+                m_semaphore.notify_one();
                 return resources;
             }
 

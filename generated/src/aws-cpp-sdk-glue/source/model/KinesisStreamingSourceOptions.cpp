@@ -49,42 +49,13 @@ KinesisStreamingSourceOptions::KinesisStreamingSourceOptions() :
     m_roleArnHasBeenSet(false),
     m_roleSessionNameHasBeenSet(false),
     m_addRecordTimestampHasBeenSet(false),
-    m_emitConsumerLagMetricsHasBeenSet(false)
+    m_emitConsumerLagMetricsHasBeenSet(false),
+    m_startingTimestampHasBeenSet(false)
 {
 }
 
-KinesisStreamingSourceOptions::KinesisStreamingSourceOptions(JsonView jsonValue) : 
-    m_endpointUrlHasBeenSet(false),
-    m_streamNameHasBeenSet(false),
-    m_classificationHasBeenSet(false),
-    m_delimiterHasBeenSet(false),
-    m_startingPosition(StartingPosition::NOT_SET),
-    m_startingPositionHasBeenSet(false),
-    m_maxFetchTimeInMs(0),
-    m_maxFetchTimeInMsHasBeenSet(false),
-    m_maxFetchRecordsPerShard(0),
-    m_maxFetchRecordsPerShardHasBeenSet(false),
-    m_maxRecordPerRead(0),
-    m_maxRecordPerReadHasBeenSet(false),
-    m_addIdleTimeBetweenReads(false),
-    m_addIdleTimeBetweenReadsHasBeenSet(false),
-    m_idleTimeBetweenReadsInMs(0),
-    m_idleTimeBetweenReadsInMsHasBeenSet(false),
-    m_describeShardInterval(0),
-    m_describeShardIntervalHasBeenSet(false),
-    m_numRetries(0),
-    m_numRetriesHasBeenSet(false),
-    m_retryIntervalMs(0),
-    m_retryIntervalMsHasBeenSet(false),
-    m_maxRetryIntervalMs(0),
-    m_maxRetryIntervalMsHasBeenSet(false),
-    m_avoidEmptyBatches(false),
-    m_avoidEmptyBatchesHasBeenSet(false),
-    m_streamArnHasBeenSet(false),
-    m_roleArnHasBeenSet(false),
-    m_roleSessionNameHasBeenSet(false),
-    m_addRecordTimestampHasBeenSet(false),
-    m_emitConsumerLagMetricsHasBeenSet(false)
+KinesisStreamingSourceOptions::KinesisStreamingSourceOptions(JsonView jsonValue)
+  : KinesisStreamingSourceOptions()
 {
   *this = jsonValue;
 }
@@ -231,6 +202,13 @@ KinesisStreamingSourceOptions& KinesisStreamingSourceOptions::operator =(JsonVie
     m_emitConsumerLagMetricsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("StartingTimestamp"))
+  {
+    m_startingTimestamp = jsonValue.GetString("StartingTimestamp");
+
+    m_startingTimestampHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -355,6 +333,11 @@ JsonValue KinesisStreamingSourceOptions::Jsonize() const
   {
    payload.WithString("EmitConsumerLagMetrics", m_emitConsumerLagMetrics);
 
+  }
+
+  if(m_startingTimestampHasBeenSet)
+  {
+   payload.WithString("StartingTimestamp", m_startingTimestamp.ToGmtString(Aws::Utils::DateFormat::ISO_8601));
   }
 
   return payload;

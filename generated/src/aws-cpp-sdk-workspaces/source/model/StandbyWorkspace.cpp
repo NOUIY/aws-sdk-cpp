@@ -22,15 +22,14 @@ StandbyWorkspace::StandbyWorkspace() :
     m_primaryWorkspaceIdHasBeenSet(false),
     m_volumeEncryptionKeyHasBeenSet(false),
     m_directoryIdHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+    m_tagsHasBeenSet(false),
+    m_dataReplication(DataReplication::NOT_SET),
+    m_dataReplicationHasBeenSet(false)
 {
 }
 
-StandbyWorkspace::StandbyWorkspace(JsonView jsonValue) : 
-    m_primaryWorkspaceIdHasBeenSet(false),
-    m_volumeEncryptionKeyHasBeenSet(false),
-    m_directoryIdHasBeenSet(false),
-    m_tagsHasBeenSet(false)
+StandbyWorkspace::StandbyWorkspace(JsonView jsonValue)
+  : StandbyWorkspace()
 {
   *this = jsonValue;
 }
@@ -68,6 +67,13 @@ StandbyWorkspace& StandbyWorkspace::operator =(JsonView jsonValue)
     m_tagsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("DataReplication"))
+  {
+    m_dataReplication = DataReplicationMapper::GetDataReplicationForName(jsonValue.GetString("DataReplication"));
+
+    m_dataReplicationHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -102,6 +108,11 @@ JsonValue StandbyWorkspace::Jsonize() const
    }
    payload.WithArray("Tags", std::move(tagsJsonList));
 
+  }
+
+  if(m_dataReplicationHasBeenSet)
+  {
+   payload.WithString("DataReplication", DataReplicationMapper::GetNameForDataReplication(m_dataReplication));
   }
 
   return payload;

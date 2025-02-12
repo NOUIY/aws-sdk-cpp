@@ -28,6 +28,7 @@ namespace Aws
         static const int CANCELLED_HASH = HashingUtils::HashString("CANCELLED");
         static const int PREPARING_HASH = HashingUtils::HashString("PREPARING");
         static const int IN_PROGRESS_HASH = HashingUtils::HashString("IN_PROGRESS");
+        static const int DELIVERED_HASH = HashingUtils::HashString("DELIVERED");
         static const int COMPLETED_HASH = HashingUtils::HashString("COMPLETED");
         static const int ERROR__HASH = HashingUtils::HashString("ERROR");
 
@@ -67,6 +68,10 @@ namespace Aws
           {
             return OrderStatus::IN_PROGRESS;
           }
+          else if (hashCode == DELIVERED_HASH)
+          {
+            return OrderStatus::DELIVERED;
+          }
           else if (hashCode == COMPLETED_HASH)
           {
             return OrderStatus::COMPLETED;
@@ -89,6 +94,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case OrderStatus::NOT_SET:
+            return {};
           case OrderStatus::RECEIVED:
             return "RECEIVED";
           case OrderStatus::PENDING:
@@ -105,6 +112,8 @@ namespace Aws
             return "PREPARING";
           case OrderStatus::IN_PROGRESS:
             return "IN_PROGRESS";
+          case OrderStatus::DELIVERED:
+            return "DELIVERED";
           case OrderStatus::COMPLETED:
             return "COMPLETED";
           case OrderStatus::ERROR_:

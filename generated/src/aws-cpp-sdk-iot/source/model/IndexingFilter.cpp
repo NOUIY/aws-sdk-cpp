@@ -19,12 +19,13 @@ namespace Model
 {
 
 IndexingFilter::IndexingFilter() : 
-    m_namedShadowNamesHasBeenSet(false)
+    m_namedShadowNamesHasBeenSet(false),
+    m_geoLocationsHasBeenSet(false)
 {
 }
 
-IndexingFilter::IndexingFilter(JsonView jsonValue) : 
-    m_namedShadowNamesHasBeenSet(false)
+IndexingFilter::IndexingFilter(JsonView jsonValue)
+  : IndexingFilter()
 {
   *this = jsonValue;
 }
@@ -39,6 +40,16 @@ IndexingFilter& IndexingFilter::operator =(JsonView jsonValue)
       m_namedShadowNames.push_back(namedShadowNamesJsonList[namedShadowNamesIndex].AsString());
     }
     m_namedShadowNamesHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("geoLocations"))
+  {
+    Aws::Utils::Array<JsonView> geoLocationsJsonList = jsonValue.GetArray("geoLocations");
+    for(unsigned geoLocationsIndex = 0; geoLocationsIndex < geoLocationsJsonList.GetLength(); ++geoLocationsIndex)
+    {
+      m_geoLocations.push_back(geoLocationsJsonList[geoLocationsIndex].AsObject());
+    }
+    m_geoLocationsHasBeenSet = true;
   }
 
   return *this;
@@ -56,6 +67,17 @@ JsonValue IndexingFilter::Jsonize() const
      namedShadowNamesJsonList[namedShadowNamesIndex].AsString(m_namedShadowNames[namedShadowNamesIndex]);
    }
    payload.WithArray("namedShadowNames", std::move(namedShadowNamesJsonList));
+
+  }
+
+  if(m_geoLocationsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> geoLocationsJsonList(m_geoLocations.size());
+   for(unsigned geoLocationsIndex = 0; geoLocationsIndex < geoLocationsJsonList.GetLength(); ++geoLocationsIndex)
+   {
+     geoLocationsJsonList[geoLocationsIndex].AsObject(m_geoLocations[geoLocationsIndex].Jsonize());
+   }
+   payload.WithArray("geoLocations", std::move(geoLocationsJsonList));
 
   }
 

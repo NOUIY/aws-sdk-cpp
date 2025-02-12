@@ -15,11 +15,17 @@ using namespace Aws::Utils;
 CreateChannelRequest::CreateChannelRequest() : 
     m_authorized(false),
     m_authorizedHasBeenSet(false),
+    m_containerFormat(ContainerFormat::NOT_SET),
+    m_containerFormatHasBeenSet(false),
     m_insecureIngest(false),
     m_insecureIngestHasBeenSet(false),
     m_latencyMode(ChannelLatencyMode::NOT_SET),
     m_latencyModeHasBeenSet(false),
+    m_multitrackInputConfigurationHasBeenSet(false),
     m_nameHasBeenSet(false),
+    m_playbackRestrictionPolicyArnHasBeenSet(false),
+    m_preset(TranscodePreset::NOT_SET),
+    m_presetHasBeenSet(false),
     m_recordingConfigurationArnHasBeenSet(false),
     m_tagsHasBeenSet(false),
     m_type(ChannelType::NOT_SET),
@@ -37,6 +43,11 @@ Aws::String CreateChannelRequest::SerializePayload() const
 
   }
 
+  if(m_containerFormatHasBeenSet)
+  {
+   payload.WithString("containerFormat", ContainerFormatMapper::GetNameForContainerFormat(m_containerFormat));
+  }
+
   if(m_insecureIngestHasBeenSet)
   {
    payload.WithBool("insecureIngest", m_insecureIngest);
@@ -48,10 +59,27 @@ Aws::String CreateChannelRequest::SerializePayload() const
    payload.WithString("latencyMode", ChannelLatencyModeMapper::GetNameForChannelLatencyMode(m_latencyMode));
   }
 
+  if(m_multitrackInputConfigurationHasBeenSet)
+  {
+   payload.WithObject("multitrackInputConfiguration", m_multitrackInputConfiguration.Jsonize());
+
+  }
+
   if(m_nameHasBeenSet)
   {
    payload.WithString("name", m_name);
 
+  }
+
+  if(m_playbackRestrictionPolicyArnHasBeenSet)
+  {
+   payload.WithString("playbackRestrictionPolicyArn", m_playbackRestrictionPolicyArn);
+
+  }
+
+  if(m_presetHasBeenSet)
+  {
+   payload.WithString("preset", TranscodePresetMapper::GetNameForTranscodePreset(m_preset));
   }
 
   if(m_recordingConfigurationArnHasBeenSet)

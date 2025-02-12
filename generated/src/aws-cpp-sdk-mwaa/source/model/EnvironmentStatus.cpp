@@ -28,6 +28,10 @@ namespace Aws
         static const int DELETED_HASH = HashingUtils::HashString("DELETED");
         static const int UNAVAILABLE_HASH = HashingUtils::HashString("UNAVAILABLE");
         static const int UPDATE_FAILED_HASH = HashingUtils::HashString("UPDATE_FAILED");
+        static const int ROLLING_BACK_HASH = HashingUtils::HashString("ROLLING_BACK");
+        static const int CREATING_SNAPSHOT_HASH = HashingUtils::HashString("CREATING_SNAPSHOT");
+        static const int PENDING_HASH = HashingUtils::HashString("PENDING");
+        static const int MAINTENANCE_HASH = HashingUtils::HashString("MAINTENANCE");
 
 
         EnvironmentStatus GetEnvironmentStatusForName(const Aws::String& name)
@@ -65,6 +69,22 @@ namespace Aws
           {
             return EnvironmentStatus::UPDATE_FAILED;
           }
+          else if (hashCode == ROLLING_BACK_HASH)
+          {
+            return EnvironmentStatus::ROLLING_BACK;
+          }
+          else if (hashCode == CREATING_SNAPSHOT_HASH)
+          {
+            return EnvironmentStatus::CREATING_SNAPSHOT;
+          }
+          else if (hashCode == PENDING_HASH)
+          {
+            return EnvironmentStatus::PENDING;
+          }
+          else if (hashCode == MAINTENANCE_HASH)
+          {
+            return EnvironmentStatus::MAINTENANCE;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -79,6 +99,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case EnvironmentStatus::NOT_SET:
+            return {};
           case EnvironmentStatus::CREATING:
             return "CREATING";
           case EnvironmentStatus::CREATE_FAILED:
@@ -95,6 +117,14 @@ namespace Aws
             return "UNAVAILABLE";
           case EnvironmentStatus::UPDATE_FAILED:
             return "UPDATE_FAILED";
+          case EnvironmentStatus::ROLLING_BACK:
+            return "ROLLING_BACK";
+          case EnvironmentStatus::CREATING_SNAPSHOT:
+            return "CREATING_SNAPSHOT";
+          case EnvironmentStatus::PENDING:
+            return "PENDING";
+          case EnvironmentStatus::MAINTENANCE:
+            return "MAINTENANCE";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

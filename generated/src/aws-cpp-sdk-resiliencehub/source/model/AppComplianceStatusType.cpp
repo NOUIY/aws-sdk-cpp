@@ -24,6 +24,8 @@ namespace Aws
         static const int PolicyMet_HASH = HashingUtils::HashString("PolicyMet");
         static const int NotAssessed_HASH = HashingUtils::HashString("NotAssessed");
         static const int ChangesDetected_HASH = HashingUtils::HashString("ChangesDetected");
+        static const int NotApplicable_HASH = HashingUtils::HashString("NotApplicable");
+        static const int MissingPolicy_HASH = HashingUtils::HashString("MissingPolicy");
 
 
         AppComplianceStatusType GetAppComplianceStatusTypeForName(const Aws::String& name)
@@ -45,6 +47,14 @@ namespace Aws
           {
             return AppComplianceStatusType::ChangesDetected;
           }
+          else if (hashCode == NotApplicable_HASH)
+          {
+            return AppComplianceStatusType::NotApplicable;
+          }
+          else if (hashCode == MissingPolicy_HASH)
+          {
+            return AppComplianceStatusType::MissingPolicy;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -59,6 +69,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case AppComplianceStatusType::NOT_SET:
+            return {};
           case AppComplianceStatusType::PolicyBreached:
             return "PolicyBreached";
           case AppComplianceStatusType::PolicyMet:
@@ -67,6 +79,10 @@ namespace Aws
             return "NotAssessed";
           case AppComplianceStatusType::ChangesDetected:
             return "ChangesDetected";
+          case AppComplianceStatusType::NotApplicable:
+            return "NotApplicable";
+          case AppComplianceStatusType::MissingPolicy:
+            return "MissingPolicy";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

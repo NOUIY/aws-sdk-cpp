@@ -1,5 +1,7 @@
+#if(!${onlyGeneratedOperations})
 #set($additionalCtorSignatureArgs = {})
 #set($ctorMemberInitList = [])
+#set($addArgDummy = $ctorMemberInitList.add("m_clientConfiguration(clientConfiguration)"))
 #set($signerCtorArgs = [])
 #set($additionalCtorArgs = {})
 #if($signPayloadsOptional)
@@ -37,7 +39,8 @@
 #set($virtualAddressingInit = "")
 #end
 #if($serviceModel.endpointRules)
-#set($addArgDummy = $ctorMemberInitList.add("m_endpointProvider(std::move(endpointProvider))"))
+#set($endpointsProviderDefaultCtorCall = "m_endpointProvider(endpointProvider ? std::move(endpointProvider) : Aws::MakeShared<" + ${metadata.classNamePrefix} + "EndpointProvider>(ALLOCATION_TAG))")
+#set($addArgDummy = $ctorMemberInitList.add($endpointsProviderDefaultCtorCall))
 #end
 #if(!$USEast1RegionalEndpointArgString)
 #set($USEast1RegionalEndpointArgString = "")
@@ -61,13 +64,16 @@
 #end
 #set($clientConfigurationNamespace = "Client")
 #set($defaultCredentialsProviderChainParam = "Aws::MakeShared<DefaultAWSCredentialsProviderChain>(ALLOCATION_TAG)")
+#set($s3ExpressIdentityProviderParam = "clientConfiguration.identityProviderSupplier(*this)")
 #set($simpleCredentialsProviderParam = "Aws::MakeShared<SimpleAWSCredentialsProvider>(ALLOCATION_TAG, credentials)")
 #set($hasEventStreamInputOperation = $serviceModel.hasStreamingRequestShapes())
 #set($signerToMake = "AWSAuthV4Signer")
-#if($serviceModel.hasOnlyBearerAuth())
-    #set($signerToMake = "Aws::Auth::BearerTokenAuthSignerProvider")
+#if($metadata.projectName == "s3")
+#set($signerToMake = "Aws::Auth::S3ExpressSignerProvider")
+#elseif($serviceModel.hasOnlyBearerAuth())
+#set($signerToMake = "Aws::Auth::BearerTokenAuthSignerProvider")
 #elseif($hasEventStreamInputOperation || $multiRegionAccessPointSupported)
-    #set($signerToMake = "Aws::Auth::DefaultAuthSignerProvider")
+#set($signerToMake = "Aws::Auth::DefaultAuthSignerProvider")
 #end
 #if($serviceModel.endpointRules)
 #set($clientConfigurationCls = ${serviceNamespace} + "::" + ${metadata.classNamePrefix} + "ClientConfiguration")
@@ -76,6 +82,72 @@
 #end
 #set($clsWSpace = $className.replaceAll(".", " "))
 #set($signerWSpace = $signerToMake.replaceAll(".", " "))
+#if($serviceNamespace == "S3")
+${className}::${className}(const ${className} &rhs) :
+    BASECLASS(rhs.m_clientConfiguration,
+        Aws::MakeShared<${signerToMake}>(ALLOCATION_TAG,
+            rhs.GetCredentialsProvider(),
+            rhs.m_clientConfiguration.identityProviderSupplier(*this),
+            SERVICE_NAME,
+            Aws::Region::ComputeSignerRegion(rhs.m_clientConfiguration.region),
+            rhs.m_clientConfiguration.payloadSigningPolicy,
+            /*doubleEncodeValue*/ false),
+            Aws::MakeShared<${metadata.classNamePrefix}ErrorMarshaller>(ALLOCATION_TAG)),
+            Aws::Client::ClientWithAsyncTemplateMethods<${className}>(),
+    m_clientConfiguration(rhs.m_clientConfiguration),
+    m_endpointProvider(rhs.m_endpointProvider) {}
+
+${className}& ${className}::operator=(const ${className} &rhs) {
+    if (&rhs == this) {
+      return *this;
+    }
+    BASECLASS::operator=(rhs);
+    m_signerProvider = Aws::MakeShared<Aws::Auth::S3ExpressSignerProvider>(ALLOCATION_TAG,
+          rhs.GetCredentialsProvider(),
+          rhs.m_clientConfiguration.identityProviderSupplier(*this),
+          SERVICE_NAME,
+          Aws::Region::ComputeSignerRegion(rhs.m_clientConfiguration.region),
+          rhs.m_clientConfiguration.payloadSigningPolicy,
+          /*doubleEncodeValue*/ false);
+    m_clientConfiguration = rhs.m_clientConfiguration;
+    m_endpointProvider = rhs.m_endpointProvider;
+    init(m_clientConfiguration);
+    return *this;
+}
+
+S3Client::S3Client(${className} &&rhs) noexcept :
+    BASECLASS(rhs.m_clientConfiguration,
+        Aws::MakeShared<Aws::Auth::S3ExpressSignerProvider>(ALLOCATION_TAG,
+            rhs.GetCredentialsProvider(),
+            rhs.m_clientConfiguration.identityProviderSupplier(*this),
+            SERVICE_NAME,
+            Aws::Region::ComputeSignerRegion(rhs.m_clientConfiguration.region),
+            rhs.m_clientConfiguration.payloadSigningPolicy,
+            /*doubleEncodeValue*/ false),
+            Aws::MakeShared<S3ErrorMarshaller>(ALLOCATION_TAG)),
+            Aws::Client::ClientWithAsyncTemplateMethods<S3Client>(),
+    m_clientConfiguration(std::move(rhs.m_clientConfiguration)),
+    m_endpointProvider(std::move(rhs.m_endpointProvider)) {}
+
+${className}& ${className}::operator=(${className} &&rhs) noexcept {
+  if (&rhs == this) {
+    return *this;
+  }
+  BASECLASS::operator=(std::move(rhs));
+  m_signerProvider = Aws::MakeShared<Aws::Auth::S3ExpressSignerProvider>(ALLOCATION_TAG,
+        rhs.GetCredentialsProvider(),
+        rhs.m_clientConfiguration.identityProviderSupplier(*this),
+        SERVICE_NAME,
+        Aws::Region::ComputeSignerRegion(rhs.m_clientConfiguration.region),
+        rhs.m_clientConfiguration.payloadSigningPolicy,
+        /*doubleEncodeValue*/ false);
+  m_clientConfiguration = std::move(rhs.m_clientConfiguration);
+  m_endpointProvider = std::move(rhs.m_endpointProvider);
+  init(m_clientConfiguration);
+  return *this;
+}
+
+#end
 #if($serviceModel.hasOnlyBearerAuth())
 ##BEARER TOKEN AUTH PROVIDER C-TOR
 #set($bearerAddCtorArgs = {})
@@ -94,11 +166,6 @@
   BASECLASS(clientConfiguration,
             Aws::MakeShared<${signerToMake}>(ALLOCATION_TAG, bearerTokenProvider),
             Aws::MakeShared<${metadata.classNamePrefix}ErrorMarshaller>(ALLOCATION_TAG)),
-#if($serviceModel.endpointRules)
-  m_clientConfiguration(clientConfiguration),
-#end
-  m_executor(clientConfiguration.executor)#if($ctorMemberInitList.isEmpty())
-#else,#end
 #foreach($ctorMemberInit in $ctorMemberInitList)
   ${ctorMemberInit}#if( $foreach.hasNext ),
 
@@ -128,6 +195,9 @@ ${clsWSpace}  ${clsWSpace} ${ctorArgument}#if( $foreach.hasNext ),#else) :#end
   BASECLASS(clientConfiguration,
             Aws::MakeShared<${signerToMake}>(ALLOCATION_TAG,
                             ${signerWSpace}  ${defaultCredentialsProviderChainParam},
+#if($metadata.projectName == "s3")
+                            ${signerWSpace}  ${s3ExpressIdentityProviderParam},
+#end
                             ${signerWSpace}  SERVICE_NAME,
                             ${signerWSpace}  Aws::Region::ComputeSignerRegion(clientConfiguration.region)#if($signerCtorArgs.isEmpty())#else,
 #end
@@ -136,11 +206,6 @@ ${clsWSpace}  ${clsWSpace} ${ctorArgument}#if( $foreach.hasNext ),#else) :#end
 #else#end
 #end),
             Aws::MakeShared<${metadata.classNamePrefix}ErrorMarshaller>(ALLOCATION_TAG)),
-#if($serviceModel.endpointRules)
-  m_clientConfiguration(clientConfiguration),
-#end
-  m_executor(clientConfiguration.executor)#if($ctorMemberInitList.isEmpty())#else,
-#end
 #foreach($ctorMemberInit in $ctorMemberInitList)
   ${ctorMemberInit}#if( $foreach.hasNext ),
 #else#end
@@ -169,6 +234,9 @@ ${clsWSpace}  ${clsWSpace} ${ctorArgument}#if( $foreach.hasNext ),#else) :#end
   BASECLASS(clientConfiguration,
             Aws::MakeShared<${signerToMake}>(ALLOCATION_TAG,
                             ${signerWSpace}  ${simpleCredentialsProviderParam},
+#if($metadata.projectName == "s3")
+                            ${signerWSpace}  ${s3ExpressIdentityProviderParam},
+#end
                             ${signerWSpace}  SERVICE_NAME,
                             ${signerWSpace}  Aws::Region::ComputeSignerRegion(clientConfiguration.region)#if($signerCtorArgs.isEmpty())#else,
 #end
@@ -177,11 +245,6 @@ ${clsWSpace}  ${clsWSpace} ${ctorArgument}#if( $foreach.hasNext ),#else) :#end
 #else#end
 #end),
             Aws::MakeShared<${metadata.classNamePrefix}ErrorMarshaller>(ALLOCATION_TAG)),
-#if($serviceModel.endpointRules)
-    m_clientConfiguration(clientConfiguration),
-#end
-    m_executor(clientConfiguration.executor)#if($ctorMemberInitList.isEmpty())#else,
-#end
 #foreach($ctorMemberInit in $ctorMemberInitList)
     ${ctorMemberInit}#if( $foreach.hasNext ),
 #else#end
@@ -210,6 +273,9 @@ ${clsWSpace}  ${clsWSpace} ${ctorArgument}#if( $foreach.hasNext ),#else) :#end
   BASECLASS(clientConfiguration,
             Aws::MakeShared<${signerToMake}>(ALLOCATION_TAG,
                             ${signerWSpace}  credentialsProvider,
+#if($metadata.projectName == "s3")
+                            ${signerWSpace}  ${s3ExpressIdentityProviderParam},
+#end
                             ${signerWSpace}  SERVICE_NAME,
                             ${signerWSpace}  Aws::Region::ComputeSignerRegion(clientConfiguration.region)#if($signerCtorArgs.isEmpty())#else,
 #end
@@ -218,11 +284,6 @@ ${clsWSpace}  ${clsWSpace} ${ctorArgument}#if( $foreach.hasNext ),#else) :#end
 #else#end
 #end),
             Aws::MakeShared<${metadata.classNamePrefix}ErrorMarshaller>(ALLOCATION_TAG)),
-#if($serviceModel.endpointRules)
-    m_clientConfiguration(clientConfiguration),
-#end
-    m_executor(clientConfiguration.executor)#if($ctorMemberInitList.isEmpty())#else,
-#end
 #foreach($ctorMemberInit in $ctorMemberInitList)
     ${ctorMemberInit}#if( $foreach.hasNext ),
 #else#end
@@ -249,10 +310,7 @@ ${clsWSpace}  ${clsWSpace} ${ctorArgument}#if( $foreach.hasNext ),#else) :#end
   BASECLASS(clientConfiguration,
             signerProvider,
             Aws::MakeShared<${metadata.classNamePrefix}ErrorMarshaller>(ALLOCATION_TAG)),
-#if($serviceModel.endpointRules)
-  m_clientConfiguration(clientConfiguration),
-#end
-  m_executor(clientConfiguration.executor)${virtualAddressingInit}
+${virtualAddressingInit}
 {
   init(m_clientConfiguration);
 }
@@ -265,6 +323,7 @@ ${clsWSpace}  ${clsWSpace} ${ctorArgument}#if( $foreach.hasNext ),#else) :#end
 #end
 ${className}::~${className}()
 {
+  ShutdownSdkClient(this, -1);
 }
 
 #if($serviceModel.endpointRules)
@@ -277,6 +336,14 @@ std::shared_ptr<${metadata.classNamePrefix}EndpointProviderBase>& ${className}::
 void ${className}::init(const ${clientConfigurationCls}& config)
 {
   AWSClient::SetServiceClientName("${metadata.serviceId}");
+  if (!m_clientConfiguration.executor) {
+    if (!m_clientConfiguration.configFactories.executorCreateFn()) {
+      AWS_LOGSTREAM_FATAL(ALLOCATION_TAG, "Failed to initialize client: config is missing Executor or executorCreateFn");
+      m_isInitialized = false;
+      return;
+    }
+    m_clientConfiguration.executor = m_clientConfiguration.configFactories.executorCreateFn();
+  }
 #if($serviceModel.endpointRules)
   AWS_CHECK_PTR(SERVICE_NAME, m_endpointProvider);
   m_endpointProvider->InitBuiltInParameters(config);
@@ -415,3 +482,4 @@ void ${className}::OverrideEndpoint(const Aws::String& endpoint)
 #end
 #end##-#if($serviceModel.endpointRules)
 }
+#end

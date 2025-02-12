@@ -22,8 +22,8 @@ DescribeFolderResolvedPermissionsResult::DescribeFolderResolvedPermissionsResult
 {
 }
 
-DescribeFolderResolvedPermissionsResult::DescribeFolderResolvedPermissionsResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_status(0)
+DescribeFolderResolvedPermissionsResult::DescribeFolderResolvedPermissionsResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeFolderResolvedPermissionsResult()
 {
   *this = result;
 }
@@ -50,6 +50,12 @@ DescribeFolderResolvedPermissionsResult& DescribeFolderResolvedPermissionsResult
     {
       m_permissions.push_back(permissionsJsonList[permissionsIndex].AsObject());
     }
+  }
+
+  if(jsonValue.ValueExists("NextToken"))
+  {
+    m_nextToken = jsonValue.GetString("NextToken");
+
   }
 
 

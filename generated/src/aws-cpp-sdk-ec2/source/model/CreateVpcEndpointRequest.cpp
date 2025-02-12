@@ -27,7 +27,11 @@ CreateVpcEndpointRequest::CreateVpcEndpointRequest() :
     m_clientTokenHasBeenSet(false),
     m_privateDnsEnabled(false),
     m_privateDnsEnabledHasBeenSet(false),
-    m_tagSpecificationsHasBeenSet(false)
+    m_tagSpecificationsHasBeenSet(false),
+    m_subnetConfigurationsHasBeenSet(false),
+    m_serviceNetworkArnHasBeenSet(false),
+    m_resourceConfigurationArnHasBeenSet(false),
+    m_serviceRegionHasBeenSet(false)
 {
 }
 
@@ -121,6 +125,31 @@ Aws::String CreateVpcEndpointRequest::SerializePayload() const
       item.OutputToStream(ss, "TagSpecification.", tagSpecificationsCount, "");
       tagSpecificationsCount++;
     }
+  }
+
+  if(m_subnetConfigurationsHasBeenSet)
+  {
+    unsigned subnetConfigurationsCount = 1;
+    for(auto& item : m_subnetConfigurations)
+    {
+      item.OutputToStream(ss, "SubnetConfiguration.", subnetConfigurationsCount, "");
+      subnetConfigurationsCount++;
+    }
+  }
+
+  if(m_serviceNetworkArnHasBeenSet)
+  {
+    ss << "ServiceNetworkArn=" << StringUtils::URLEncode(m_serviceNetworkArn.c_str()) << "&";
+  }
+
+  if(m_resourceConfigurationArnHasBeenSet)
+  {
+    ss << "ResourceConfigurationArn=" << StringUtils::URLEncode(m_resourceConfigurationArn.c_str()) << "&";
+  }
+
+  if(m_serviceRegionHasBeenSet)
+  {
+    ss << "ServiceRegion=" << StringUtils::URLEncode(m_serviceRegion.c_str()) << "&";
   }
 
   ss << "Version=2016-11-15";

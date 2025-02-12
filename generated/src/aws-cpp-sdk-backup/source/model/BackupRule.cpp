@@ -31,24 +31,14 @@ BackupRule::BackupRule() :
     m_ruleIdHasBeenSet(false),
     m_copyActionsHasBeenSet(false),
     m_enableContinuousBackup(false),
-    m_enableContinuousBackupHasBeenSet(false)
+    m_enableContinuousBackupHasBeenSet(false),
+    m_scheduleExpressionTimezoneHasBeenSet(false),
+    m_indexActionsHasBeenSet(false)
 {
 }
 
-BackupRule::BackupRule(JsonView jsonValue) : 
-    m_ruleNameHasBeenSet(false),
-    m_targetBackupVaultNameHasBeenSet(false),
-    m_scheduleExpressionHasBeenSet(false),
-    m_startWindowMinutes(0),
-    m_startWindowMinutesHasBeenSet(false),
-    m_completionWindowMinutes(0),
-    m_completionWindowMinutesHasBeenSet(false),
-    m_lifecycleHasBeenSet(false),
-    m_recoveryPointTagsHasBeenSet(false),
-    m_ruleIdHasBeenSet(false),
-    m_copyActionsHasBeenSet(false),
-    m_enableContinuousBackup(false),
-    m_enableContinuousBackupHasBeenSet(false)
+BackupRule::BackupRule(JsonView jsonValue)
+  : BackupRule()
 {
   *this = jsonValue;
 }
@@ -131,6 +121,23 @@ BackupRule& BackupRule::operator =(JsonView jsonValue)
     m_enableContinuousBackupHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ScheduleExpressionTimezone"))
+  {
+    m_scheduleExpressionTimezone = jsonValue.GetString("ScheduleExpressionTimezone");
+
+    m_scheduleExpressionTimezoneHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("IndexActions"))
+  {
+    Aws::Utils::Array<JsonView> indexActionsJsonList = jsonValue.GetArray("IndexActions");
+    for(unsigned indexActionsIndex = 0; indexActionsIndex < indexActionsJsonList.GetLength(); ++indexActionsIndex)
+    {
+      m_indexActions.push_back(indexActionsJsonList[indexActionsIndex].AsObject());
+    }
+    m_indexActionsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -205,6 +212,23 @@ JsonValue BackupRule::Jsonize() const
   if(m_enableContinuousBackupHasBeenSet)
   {
    payload.WithBool("EnableContinuousBackup", m_enableContinuousBackup);
+
+  }
+
+  if(m_scheduleExpressionTimezoneHasBeenSet)
+  {
+   payload.WithString("ScheduleExpressionTimezone", m_scheduleExpressionTimezone);
+
+  }
+
+  if(m_indexActionsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> indexActionsJsonList(m_indexActions.size());
+   for(unsigned indexActionsIndex = 0; indexActionsIndex < indexActionsJsonList.GetLength(); ++indexActionsIndex)
+   {
+     indexActionsJsonList[indexActionsIndex].AsObject(m_indexActions[indexActionsIndex].Jsonize());
+   }
+   payload.WithArray("IndexActions", std::move(indexActionsJsonList));
 
   }
 

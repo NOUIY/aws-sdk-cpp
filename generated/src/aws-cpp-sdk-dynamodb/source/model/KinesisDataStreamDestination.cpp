@@ -22,15 +22,14 @@ KinesisDataStreamDestination::KinesisDataStreamDestination() :
     m_streamArnHasBeenSet(false),
     m_destinationStatus(DestinationStatus::NOT_SET),
     m_destinationStatusHasBeenSet(false),
-    m_destinationStatusDescriptionHasBeenSet(false)
+    m_destinationStatusDescriptionHasBeenSet(false),
+    m_approximateCreationDateTimePrecision(ApproximateCreationDateTimePrecision::NOT_SET),
+    m_approximateCreationDateTimePrecisionHasBeenSet(false)
 {
 }
 
-KinesisDataStreamDestination::KinesisDataStreamDestination(JsonView jsonValue) : 
-    m_streamArnHasBeenSet(false),
-    m_destinationStatus(DestinationStatus::NOT_SET),
-    m_destinationStatusHasBeenSet(false),
-    m_destinationStatusDescriptionHasBeenSet(false)
+KinesisDataStreamDestination::KinesisDataStreamDestination(JsonView jsonValue)
+  : KinesisDataStreamDestination()
 {
   *this = jsonValue;
 }
@@ -58,6 +57,13 @@ KinesisDataStreamDestination& KinesisDataStreamDestination::operator =(JsonView 
     m_destinationStatusDescriptionHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ApproximateCreationDateTimePrecision"))
+  {
+    m_approximateCreationDateTimePrecision = ApproximateCreationDateTimePrecisionMapper::GetApproximateCreationDateTimePrecisionForName(jsonValue.GetString("ApproximateCreationDateTimePrecision"));
+
+    m_approximateCreationDateTimePrecisionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -80,6 +86,11 @@ JsonValue KinesisDataStreamDestination::Jsonize() const
   {
    payload.WithString("DestinationStatusDescription", m_destinationStatusDescription);
 
+  }
+
+  if(m_approximateCreationDateTimePrecisionHasBeenSet)
+  {
+   payload.WithString("ApproximateCreationDateTimePrecision", ApproximateCreationDateTimePrecisionMapper::GetNameForApproximateCreationDateTimePrecision(m_approximateCreationDateTimePrecision));
   }
 
   return payload;

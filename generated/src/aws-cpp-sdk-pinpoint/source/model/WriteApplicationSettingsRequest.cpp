@@ -25,18 +25,13 @@ WriteApplicationSettingsRequest::WriteApplicationSettingsRequest() :
     m_eventTaggingEnabled(false),
     m_eventTaggingEnabledHasBeenSet(false),
     m_limitsHasBeenSet(false),
-    m_quietTimeHasBeenSet(false)
+    m_quietTimeHasBeenSet(false),
+    m_journeyLimitsHasBeenSet(false)
 {
 }
 
-WriteApplicationSettingsRequest::WriteApplicationSettingsRequest(JsonView jsonValue) : 
-    m_campaignHookHasBeenSet(false),
-    m_cloudWatchMetricsEnabled(false),
-    m_cloudWatchMetricsEnabledHasBeenSet(false),
-    m_eventTaggingEnabled(false),
-    m_eventTaggingEnabledHasBeenSet(false),
-    m_limitsHasBeenSet(false),
-    m_quietTimeHasBeenSet(false)
+WriteApplicationSettingsRequest::WriteApplicationSettingsRequest(JsonView jsonValue)
+  : WriteApplicationSettingsRequest()
 {
   *this = jsonValue;
 }
@@ -78,6 +73,13 @@ WriteApplicationSettingsRequest& WriteApplicationSettingsRequest::operator =(Jso
     m_quietTimeHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("JourneyLimits"))
+  {
+    m_journeyLimits = jsonValue.GetObject("JourneyLimits");
+
+    m_journeyLimitsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -112,6 +114,12 @@ JsonValue WriteApplicationSettingsRequest::Jsonize() const
   if(m_quietTimeHasBeenSet)
   {
    payload.WithObject("QuietTime", m_quietTime.Jsonize());
+
+  }
+
+  if(m_journeyLimitsHasBeenSet)
+  {
+   payload.WithObject("JourneyLimits", m_journeyLimits.Jsonize());
 
   }
 

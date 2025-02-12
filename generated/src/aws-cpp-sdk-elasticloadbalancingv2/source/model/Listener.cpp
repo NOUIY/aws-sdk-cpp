@@ -30,21 +30,13 @@ Listener::Listener() :
     m_certificatesHasBeenSet(false),
     m_sslPolicyHasBeenSet(false),
     m_defaultActionsHasBeenSet(false),
-    m_alpnPolicyHasBeenSet(false)
+    m_alpnPolicyHasBeenSet(false),
+    m_mutualAuthenticationHasBeenSet(false)
 {
 }
 
-Listener::Listener(const XmlNode& xmlNode) : 
-    m_listenerArnHasBeenSet(false),
-    m_loadBalancerArnHasBeenSet(false),
-    m_port(0),
-    m_portHasBeenSet(false),
-    m_protocol(ProtocolEnum::NOT_SET),
-    m_protocolHasBeenSet(false),
-    m_certificatesHasBeenSet(false),
-    m_sslPolicyHasBeenSet(false),
-    m_defaultActionsHasBeenSet(false),
-    m_alpnPolicyHasBeenSet(false)
+Listener::Listener(const XmlNode& xmlNode)
+  : Listener()
 {
   *this = xmlNode;
 }
@@ -121,6 +113,12 @@ Listener& Listener::operator =(const XmlNode& xmlNode)
 
       m_alpnPolicyHasBeenSet = true;
     }
+    XmlNode mutualAuthenticationNode = resultNode.FirstChild("MutualAuthentication");
+    if(!mutualAuthenticationNode.IsNull())
+    {
+      m_mutualAuthentication = mutualAuthenticationNode;
+      m_mutualAuthenticationHasBeenSet = true;
+    }
   }
 
   return *this;
@@ -184,6 +182,13 @@ void Listener::OutputToStream(Aws::OStream& oStream, const char* location, unsig
       }
   }
 
+  if(m_mutualAuthenticationHasBeenSet)
+  {
+      Aws::StringStream mutualAuthenticationLocationAndMemberSs;
+      mutualAuthenticationLocationAndMemberSs << location << index << locationValue << ".MutualAuthentication";
+      m_mutualAuthentication.OutputToStream(oStream, mutualAuthenticationLocationAndMemberSs.str().c_str());
+  }
+
 }
 
 void Listener::OutputToStream(Aws::OStream& oStream, const char* location) const
@@ -235,6 +240,12 @@ void Listener::OutputToStream(Aws::OStream& oStream, const char* location) const
       {
         oStream << location << ".AlpnPolicy.member." << alpnPolicyIdx++ << "=" << StringUtils::URLEncode(item.c_str()) << "&";
       }
+  }
+  if(m_mutualAuthenticationHasBeenSet)
+  {
+      Aws::String mutualAuthenticationLocationAndMember(location);
+      mutualAuthenticationLocationAndMember += ".MutualAuthentication";
+      m_mutualAuthentication.OutputToStream(oStream, mutualAuthenticationLocationAndMember.c_str());
   }
 }
 

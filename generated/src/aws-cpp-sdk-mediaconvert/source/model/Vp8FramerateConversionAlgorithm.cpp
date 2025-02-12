@@ -23,6 +23,7 @@ namespace Aws
         static const int DUPLICATE_DROP_HASH = HashingUtils::HashString("DUPLICATE_DROP");
         static const int INTERPOLATE_HASH = HashingUtils::HashString("INTERPOLATE");
         static const int FRAMEFORMER_HASH = HashingUtils::HashString("FRAMEFORMER");
+        static const int MAINTAIN_FRAME_COUNT_HASH = HashingUtils::HashString("MAINTAIN_FRAME_COUNT");
 
 
         Vp8FramerateConversionAlgorithm GetVp8FramerateConversionAlgorithmForName(const Aws::String& name)
@@ -40,6 +41,10 @@ namespace Aws
           {
             return Vp8FramerateConversionAlgorithm::FRAMEFORMER;
           }
+          else if (hashCode == MAINTAIN_FRAME_COUNT_HASH)
+          {
+            return Vp8FramerateConversionAlgorithm::MAINTAIN_FRAME_COUNT;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -54,12 +59,16 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case Vp8FramerateConversionAlgorithm::NOT_SET:
+            return {};
           case Vp8FramerateConversionAlgorithm::DUPLICATE_DROP:
             return "DUPLICATE_DROP";
           case Vp8FramerateConversionAlgorithm::INTERPOLATE:
             return "INTERPOLATE";
           case Vp8FramerateConversionAlgorithm::FRAMEFORMER:
             return "FRAMEFORMER";
+          case Vp8FramerateConversionAlgorithm::MAINTAIN_FRAME_COUNT:
+            return "MAINTAIN_FRAME_COUNT";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

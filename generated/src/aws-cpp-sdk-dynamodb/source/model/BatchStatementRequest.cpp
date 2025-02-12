@@ -22,15 +22,14 @@ BatchStatementRequest::BatchStatementRequest() :
     m_statementHasBeenSet(false),
     m_parametersHasBeenSet(false),
     m_consistentRead(false),
-    m_consistentReadHasBeenSet(false)
+    m_consistentReadHasBeenSet(false),
+    m_returnValuesOnConditionCheckFailure(ReturnValuesOnConditionCheckFailure::NOT_SET),
+    m_returnValuesOnConditionCheckFailureHasBeenSet(false)
 {
 }
 
-BatchStatementRequest::BatchStatementRequest(JsonView jsonValue) : 
-    m_statementHasBeenSet(false),
-    m_parametersHasBeenSet(false),
-    m_consistentRead(false),
-    m_consistentReadHasBeenSet(false)
+BatchStatementRequest::BatchStatementRequest(JsonView jsonValue)
+  : BatchStatementRequest()
 {
   *this = jsonValue;
 }
@@ -61,6 +60,13 @@ BatchStatementRequest& BatchStatementRequest::operator =(JsonView jsonValue)
     m_consistentReadHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("ReturnValuesOnConditionCheckFailure"))
+  {
+    m_returnValuesOnConditionCheckFailure = ReturnValuesOnConditionCheckFailureMapper::GetReturnValuesOnConditionCheckFailureForName(jsonValue.GetString("ReturnValuesOnConditionCheckFailure"));
+
+    m_returnValuesOnConditionCheckFailureHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -89,6 +95,11 @@ JsonValue BatchStatementRequest::Jsonize() const
   {
    payload.WithBool("ConsistentRead", m_consistentRead);
 
+  }
+
+  if(m_returnValuesOnConditionCheckFailureHasBeenSet)
+  {
+   payload.WithString("ReturnValuesOnConditionCheckFailure", ReturnValuesOnConditionCheckFailureMapper::GetNameForReturnValuesOnConditionCheckFailure(m_returnValuesOnConditionCheckFailure));
   }
 
   return payload;

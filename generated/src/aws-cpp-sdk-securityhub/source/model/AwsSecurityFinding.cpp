@@ -65,58 +65,16 @@ AwsSecurityFinding::AwsSecurityFinding() :
     m_actionHasBeenSet(false),
     m_findingProviderFieldsHasBeenSet(false),
     m_sample(false),
-    m_sampleHasBeenSet(false)
+    m_sampleHasBeenSet(false),
+    m_generatorDetailsHasBeenSet(false),
+    m_processedAtHasBeenSet(false),
+    m_awsAccountNameHasBeenSet(false),
+    m_detectionHasBeenSet(false)
 {
 }
 
-AwsSecurityFinding::AwsSecurityFinding(JsonView jsonValue) : 
-    m_schemaVersionHasBeenSet(false),
-    m_idHasBeenSet(false),
-    m_productArnHasBeenSet(false),
-    m_productNameHasBeenSet(false),
-    m_companyNameHasBeenSet(false),
-    m_regionHasBeenSet(false),
-    m_generatorIdHasBeenSet(false),
-    m_awsAccountIdHasBeenSet(false),
-    m_typesHasBeenSet(false),
-    m_firstObservedAtHasBeenSet(false),
-    m_lastObservedAtHasBeenSet(false),
-    m_createdAtHasBeenSet(false),
-    m_updatedAtHasBeenSet(false),
-    m_severityHasBeenSet(false),
-    m_confidence(0),
-    m_confidenceHasBeenSet(false),
-    m_criticality(0),
-    m_criticalityHasBeenSet(false),
-    m_titleHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_remediationHasBeenSet(false),
-    m_sourceUrlHasBeenSet(false),
-    m_productFieldsHasBeenSet(false),
-    m_userDefinedFieldsHasBeenSet(false),
-    m_malwareHasBeenSet(false),
-    m_networkHasBeenSet(false),
-    m_networkPathHasBeenSet(false),
-    m_processHasBeenSet(false),
-    m_threatsHasBeenSet(false),
-    m_threatIntelIndicatorsHasBeenSet(false),
-    m_resourcesHasBeenSet(false),
-    m_complianceHasBeenSet(false),
-    m_verificationState(VerificationState::NOT_SET),
-    m_verificationStateHasBeenSet(false),
-    m_workflowState(WorkflowState::NOT_SET),
-    m_workflowStateHasBeenSet(false),
-    m_workflowHasBeenSet(false),
-    m_recordState(RecordState::NOT_SET),
-    m_recordStateHasBeenSet(false),
-    m_relatedFindingsHasBeenSet(false),
-    m_noteHasBeenSet(false),
-    m_vulnerabilitiesHasBeenSet(false),
-    m_patchSummaryHasBeenSet(false),
-    m_actionHasBeenSet(false),
-    m_findingProviderFieldsHasBeenSet(false),
-    m_sample(false),
-    m_sampleHasBeenSet(false)
+AwsSecurityFinding::AwsSecurityFinding(JsonView jsonValue)
+  : AwsSecurityFinding()
 {
   *this = jsonValue;
 }
@@ -440,6 +398,34 @@ AwsSecurityFinding& AwsSecurityFinding::operator =(JsonView jsonValue)
     m_sampleHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("GeneratorDetails"))
+  {
+    m_generatorDetails = jsonValue.GetObject("GeneratorDetails");
+
+    m_generatorDetailsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("ProcessedAt"))
+  {
+    m_processedAt = jsonValue.GetString("ProcessedAt");
+
+    m_processedAtHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("AwsAccountName"))
+  {
+    m_awsAccountName = jsonValue.GetString("AwsAccountName");
+
+    m_awsAccountNameHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Detection"))
+  {
+    m_detection = jsonValue.GetObject("Detection");
+
+    m_detectionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -737,6 +723,30 @@ JsonValue AwsSecurityFinding::Jsonize() const
   if(m_sampleHasBeenSet)
   {
    payload.WithBool("Sample", m_sample);
+
+  }
+
+  if(m_generatorDetailsHasBeenSet)
+  {
+   payload.WithObject("GeneratorDetails", m_generatorDetails.Jsonize());
+
+  }
+
+  if(m_processedAtHasBeenSet)
+  {
+   payload.WithString("ProcessedAt", m_processedAt);
+
+  }
+
+  if(m_awsAccountNameHasBeenSet)
+  {
+   payload.WithString("AwsAccountName", m_awsAccountName);
+
+  }
+
+  if(m_detectionHasBeenSet)
+  {
+   payload.WithObject("Detection", m_detection.Jsonize());
 
   }
 

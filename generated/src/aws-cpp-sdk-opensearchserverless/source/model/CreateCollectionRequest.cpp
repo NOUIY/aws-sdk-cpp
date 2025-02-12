@@ -13,13 +13,15 @@ using namespace Aws::Utils::Json;
 using namespace Aws::Utils;
 
 CreateCollectionRequest::CreateCollectionRequest() : 
-    m_clientToken(Aws::Utils::UUID::PseudoRandomUUID()),
-    m_clientTokenHasBeenSet(true),
-    m_descriptionHasBeenSet(false),
     m_nameHasBeenSet(false),
-    m_tagsHasBeenSet(false),
     m_type(CollectionType::NOT_SET),
-    m_typeHasBeenSet(false)
+    m_typeHasBeenSet(false),
+    m_descriptionHasBeenSet(false),
+    m_tagsHasBeenSet(false),
+    m_standbyReplicas(StandbyReplicas::NOT_SET),
+    m_standbyReplicasHasBeenSet(false),
+    m_clientToken(Aws::Utils::UUID::PseudoRandomUUID()),
+    m_clientTokenHasBeenSet(true)
 {
 }
 
@@ -27,21 +29,20 @@ Aws::String CreateCollectionRequest::SerializePayload() const
 {
   JsonValue payload;
 
-  if(m_clientTokenHasBeenSet)
+  if(m_nameHasBeenSet)
   {
-   payload.WithString("clientToken", m_clientToken);
+   payload.WithString("name", m_name);
 
+  }
+
+  if(m_typeHasBeenSet)
+  {
+   payload.WithString("type", CollectionTypeMapper::GetNameForCollectionType(m_type));
   }
 
   if(m_descriptionHasBeenSet)
   {
    payload.WithString("description", m_description);
-
-  }
-
-  if(m_nameHasBeenSet)
-  {
-   payload.WithString("name", m_name);
 
   }
 
@@ -56,9 +57,15 @@ Aws::String CreateCollectionRequest::SerializePayload() const
 
   }
 
-  if(m_typeHasBeenSet)
+  if(m_standbyReplicasHasBeenSet)
   {
-   payload.WithString("type", CollectionTypeMapper::GetNameForCollectionType(m_type));
+   payload.WithString("standbyReplicas", StandbyReplicasMapper::GetNameForStandbyReplicas(m_standbyReplicas));
+  }
+
+  if(m_clientTokenHasBeenSet)
+  {
+   payload.WithString("clientToken", m_clientToken);
+
   }
 
   return payload.View().WriteReadable();

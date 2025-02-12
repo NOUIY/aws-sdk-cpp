@@ -29,6 +29,18 @@ namespace Aws
         static const int INVALID_SECURITY_GROUP_ID_HASH = HashingUtils::HashString("INVALID_SECURITY_GROUP_ID");
         static const int INVALID_SUBNET_ID_HASH = HashingUtils::HashString("INVALID_SUBNET_ID");
         static const int INACCESSIBLE_ENCRYPTION_CREDS_HASH = HashingUtils::HashString("INACCESSIBLE_ENCRYPTION_CREDS");
+        static const int INACCESSIBLE_SECRET_ARN_HASH = HashingUtils::HashString("INACCESSIBLE_SECRET_ARN");
+        static const int INACCESSIBLE_VPC_ENDPOINT_HASH = HashingUtils::HashString("INACCESSIBLE_VPC_ENDPOINT");
+        static const int INCOMPATIBLE_NETWORK_HASH = HashingUtils::HashString("INCOMPATIBLE_NETWORK");
+        static const int MERGING_HASH = HashingUtils::HashString("MERGING");
+        static const int MODIFYING_HASH = HashingUtils::HashString("MODIFYING");
+        static const int SPLITTING_HASH = HashingUtils::HashString("SPLITTING");
+        static const int COPYING_HASH = HashingUtils::HashString("COPYING");
+        static const int STARTING_HASH = HashingUtils::HashString("STARTING");
+        static const int STOPPING_HASH = HashingUtils::HashString("STOPPING");
+        static const int STOPPED_HASH = HashingUtils::HashString("STOPPED");
+        static const int MAINTENANCE_HASH = HashingUtils::HashString("MAINTENANCE");
+        static const int INACCESSIBLE_ENCRYPTION_CREDENTIALS_RECOVERABLE_HASH = HashingUtils::HashString("INACCESSIBLE_ENCRYPTION_CREDENTIALS_RECOVERABLE");
 
 
         Status GetStatusForName(const Aws::String& name)
@@ -70,6 +82,54 @@ namespace Aws
           {
             return Status::INACCESSIBLE_ENCRYPTION_CREDS;
           }
+          else if (hashCode == INACCESSIBLE_SECRET_ARN_HASH)
+          {
+            return Status::INACCESSIBLE_SECRET_ARN;
+          }
+          else if (hashCode == INACCESSIBLE_VPC_ENDPOINT_HASH)
+          {
+            return Status::INACCESSIBLE_VPC_ENDPOINT;
+          }
+          else if (hashCode == INCOMPATIBLE_NETWORK_HASH)
+          {
+            return Status::INCOMPATIBLE_NETWORK;
+          }
+          else if (hashCode == MERGING_HASH)
+          {
+            return Status::MERGING;
+          }
+          else if (hashCode == MODIFYING_HASH)
+          {
+            return Status::MODIFYING;
+          }
+          else if (hashCode == SPLITTING_HASH)
+          {
+            return Status::SPLITTING;
+          }
+          else if (hashCode == COPYING_HASH)
+          {
+            return Status::COPYING;
+          }
+          else if (hashCode == STARTING_HASH)
+          {
+            return Status::STARTING;
+          }
+          else if (hashCode == STOPPING_HASH)
+          {
+            return Status::STOPPING;
+          }
+          else if (hashCode == STOPPED_HASH)
+          {
+            return Status::STOPPED;
+          }
+          else if (hashCode == MAINTENANCE_HASH)
+          {
+            return Status::MAINTENANCE;
+          }
+          else if (hashCode == INACCESSIBLE_ENCRYPTION_CREDENTIALS_RECOVERABLE_HASH)
+          {
+            return Status::INACCESSIBLE_ENCRYPTION_CREDENTIALS_RECOVERABLE;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -84,6 +144,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case Status::NOT_SET:
+            return {};
           case Status::CREATING:
             return "CREATING";
           case Status::ACTIVE:
@@ -102,6 +164,30 @@ namespace Aws
             return "INVALID_SUBNET_ID";
           case Status::INACCESSIBLE_ENCRYPTION_CREDS:
             return "INACCESSIBLE_ENCRYPTION_CREDS";
+          case Status::INACCESSIBLE_SECRET_ARN:
+            return "INACCESSIBLE_SECRET_ARN";
+          case Status::INACCESSIBLE_VPC_ENDPOINT:
+            return "INACCESSIBLE_VPC_ENDPOINT";
+          case Status::INCOMPATIBLE_NETWORK:
+            return "INCOMPATIBLE_NETWORK";
+          case Status::MERGING:
+            return "MERGING";
+          case Status::MODIFYING:
+            return "MODIFYING";
+          case Status::SPLITTING:
+            return "SPLITTING";
+          case Status::COPYING:
+            return "COPYING";
+          case Status::STARTING:
+            return "STARTING";
+          case Status::STOPPING:
+            return "STOPPING";
+          case Status::STOPPED:
+            return "STOPPED";
+          case Status::MAINTENANCE:
+            return "MAINTENANCE";
+          case Status::INACCESSIBLE_ENCRYPTION_CREDENTIALS_RECOVERABLE:
+            return "INACCESSIBLE_ENCRYPTION_CREDENTIALS_RECOVERABLE";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

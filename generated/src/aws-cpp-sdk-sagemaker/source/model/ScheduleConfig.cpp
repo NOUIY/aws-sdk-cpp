@@ -19,12 +19,14 @@ namespace Model
 {
 
 ScheduleConfig::ScheduleConfig() : 
-    m_scheduleExpressionHasBeenSet(false)
+    m_scheduleExpressionHasBeenSet(false),
+    m_dataAnalysisStartTimeHasBeenSet(false),
+    m_dataAnalysisEndTimeHasBeenSet(false)
 {
 }
 
-ScheduleConfig::ScheduleConfig(JsonView jsonValue) : 
-    m_scheduleExpressionHasBeenSet(false)
+ScheduleConfig::ScheduleConfig(JsonView jsonValue)
+  : ScheduleConfig()
 {
   *this = jsonValue;
 }
@@ -38,6 +40,20 @@ ScheduleConfig& ScheduleConfig::operator =(JsonView jsonValue)
     m_scheduleExpressionHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("DataAnalysisStartTime"))
+  {
+    m_dataAnalysisStartTime = jsonValue.GetString("DataAnalysisStartTime");
+
+    m_dataAnalysisStartTimeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("DataAnalysisEndTime"))
+  {
+    m_dataAnalysisEndTime = jsonValue.GetString("DataAnalysisEndTime");
+
+    m_dataAnalysisEndTimeHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -48,6 +64,18 @@ JsonValue ScheduleConfig::Jsonize() const
   if(m_scheduleExpressionHasBeenSet)
   {
    payload.WithString("ScheduleExpression", m_scheduleExpression);
+
+  }
+
+  if(m_dataAnalysisStartTimeHasBeenSet)
+  {
+   payload.WithString("DataAnalysisStartTime", m_dataAnalysisStartTime);
+
+  }
+
+  if(m_dataAnalysisEndTimeHasBeenSet)
+  {
+   payload.WithString("DataAnalysisEndTime", m_dataAnalysisEndTime);
 
   }
 

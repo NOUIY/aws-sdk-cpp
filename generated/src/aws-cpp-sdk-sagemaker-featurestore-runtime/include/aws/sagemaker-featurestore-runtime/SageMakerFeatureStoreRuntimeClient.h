@@ -6,15 +6,19 @@
 #pragma once
 #include <aws/sagemaker-featurestore-runtime/SageMakerFeatureStoreRuntime_EXPORTS.h>
 #include <aws/core/client/ClientConfiguration.h>
-#include <aws/core/client/AWSClient.h>
 #include <aws/core/client/AWSClientAsyncCRTP.h>
-#include <aws/core/utils/json/JsonSerializer.h>
 #include <aws/sagemaker-featurestore-runtime/SageMakerFeatureStoreRuntimeServiceClientModel.h>
+#include <smithy/client/AwsSmithyClient.h>
+#include <smithy/identity/auth/built-in/SigV4AuthSchemeResolver.h>
+#include <smithy/identity/auth/built-in/SigV4AuthScheme.h>
+#include <smithy/client/serializer/JsonOutcomeSerializer.h>
+#include <aws/sagemaker-featurestore-runtime/SageMakerFeatureStoreRuntimeErrorMarshaller.h>
 
 namespace Aws
 {
 namespace SageMakerFeatureStoreRuntime
 {
+  AWS_SAGEMAKERFEATURESTORERUNTIME_API extern const char SERVICE_NAME[];
   /**
    * <p>Contains all data plane API operations and data types for the Amazon
    * SageMaker Feature Store. Use this API to put, delete, and retrieve (get)
@@ -30,12 +34,20 @@ namespace SageMakerFeatureStoreRuntime
    * href="https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ListFeatureGroups.html">ListFeatureGroups</a>
    * </p> </li> </ul>
    */
-  class AWS_SAGEMAKERFEATURESTORERUNTIME_API SageMakerFeatureStoreRuntimeClient : public Aws::Client::AWSJsonClient, public Aws::Client::ClientWithAsyncTemplateMethods<SageMakerFeatureStoreRuntimeClient>
+  class AWS_SAGEMAKERFEATURESTORERUNTIME_API SageMakerFeatureStoreRuntimeClient : smithy::client::AwsSmithyClientT<Aws::SageMakerFeatureStoreRuntime::SERVICE_NAME,
+      Aws::SageMakerFeatureStoreRuntime::SageMakerFeatureStoreRuntimeClientConfiguration,
+      smithy::SigV4AuthSchemeResolver<>,
+      Aws::Crt::Variant<smithy::SigV4AuthScheme>,
+      SageMakerFeatureStoreRuntimeEndpointProviderBase,
+      smithy::client::JsonOutcomeSerializer,
+      smithy::client::JsonOutcome,
+      Aws::Client::SageMakerFeatureStoreRuntimeErrorMarshaller>,
+    Aws::Client::ClientWithAsyncTemplateMethods<SageMakerFeatureStoreRuntimeClient>
   {
     public:
-      typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
+      inline const char* GetServiceClientName() const override { return "SageMaker FeatureStore Runtime"; }
 
       typedef SageMakerFeatureStoreRuntimeClientConfiguration ClientConfigurationType;
       typedef SageMakerFeatureStoreRuntimeEndpointProvider EndpointProviderType;
@@ -45,14 +57,14 @@ namespace SageMakerFeatureStoreRuntime
         * is not specified, it will be initialized to default values.
         */
         SageMakerFeatureStoreRuntimeClient(const Aws::SageMakerFeatureStoreRuntime::SageMakerFeatureStoreRuntimeClientConfiguration& clientConfiguration = Aws::SageMakerFeatureStoreRuntime::SageMakerFeatureStoreRuntimeClientConfiguration(),
-                                           std::shared_ptr<SageMakerFeatureStoreRuntimeEndpointProviderBase> endpointProvider = Aws::MakeShared<SageMakerFeatureStoreRuntimeEndpointProvider>(ALLOCATION_TAG));
+                                           std::shared_ptr<SageMakerFeatureStoreRuntimeEndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         SageMakerFeatureStoreRuntimeClient(const Aws::Auth::AWSCredentials& credentials,
-                                           std::shared_ptr<SageMakerFeatureStoreRuntimeEndpointProviderBase> endpointProvider = Aws::MakeShared<SageMakerFeatureStoreRuntimeEndpointProvider>(ALLOCATION_TAG),
+                                           std::shared_ptr<SageMakerFeatureStoreRuntimeEndpointProviderBase> endpointProvider = nullptr,
                                            const Aws::SageMakerFeatureStoreRuntime::SageMakerFeatureStoreRuntimeClientConfiguration& clientConfiguration = Aws::SageMakerFeatureStoreRuntime::SageMakerFeatureStoreRuntimeClientConfiguration());
 
        /**
@@ -60,7 +72,7 @@ namespace SageMakerFeatureStoreRuntime
         * the default http client factory will be used
         */
         SageMakerFeatureStoreRuntimeClient(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                                           std::shared_ptr<SageMakerFeatureStoreRuntimeEndpointProviderBase> endpointProvider = Aws::MakeShared<SageMakerFeatureStoreRuntimeEndpointProvider>(ALLOCATION_TAG),
+                                           std::shared_ptr<SageMakerFeatureStoreRuntimeEndpointProviderBase> endpointProvider = nullptr,
                                            const Aws::SageMakerFeatureStoreRuntime::SageMakerFeatureStoreRuntimeClientConfiguration& clientConfiguration = Aws::SageMakerFeatureStoreRuntime::SageMakerFeatureStoreRuntimeClientConfiguration());
 
 
@@ -116,25 +128,34 @@ namespace SageMakerFeatureStoreRuntime
 
         /**
          * <p>Deletes a <code>Record</code> from a <code>FeatureGroup</code> in the
-         * <code>OnlineStore</code>. Feature Store supports both <code>SOFT_DELETE</code>
-         * and <code>HARD_DELETE</code>. For <code>SOFT_DELETE</code> (default), feature
+         * <code>OnlineStore</code>. Feature Store supports both <code>SoftDelete</code>
+         * and <code>HardDelete</code>. For <code>SoftDelete</code> (default), feature
          * columns are set to <code>null</code> and the record is no longer retrievable by
-         * <code>GetRecord</code> or <code>BatchGetRecord</code>. For<code>
-         * HARD_DELETE</code>, the complete <code>Record</code> is removed from the
+         * <code>GetRecord</code> or <code>BatchGetRecord</code>. For
+         * <code>HardDelete</code>, the complete <code>Record</code> is removed from the
          * <code>OnlineStore</code>. In both cases, Feature Store appends the deleted
-         * record marker to the <code>OfflineStore</code> with feature values set to
-         * <code>null</code>, <code>is_deleted</code> value set to <code>True</code>, and
-         * <code>EventTime</code> set to the delete input <code>EventTime</code>.</p>
-         * <p>Note that the <code>EventTime</code> specified in <code>DeleteRecord</code>
-         * should be set later than the <code>EventTime</code> of the existing record in
-         * the <code>OnlineStore</code> for that <code>RecordIdentifer</code>. If it is
-         * not, the deletion does not occur:</p> <ul> <li> <p>For <code>SOFT_DELETE</code>,
-         * the existing (undeleted) record remains in the <code>OnlineStore</code>, though
-         * the delete record marker is still written to the <code>OfflineStore</code>.</p>
-         * </li> <li> <p> <code>HARD_DELETE</code> returns <code>EventTime</code>:
-         * <code>400 ValidationException</code> to indicate that the delete operation
-         * failed. No delete record marker is written to the <code>OfflineStore</code>.</p>
-         * </li> </ul><p><h3>See Also:</h3>   <a
+         * record marker to the <code>OfflineStore</code>. The deleted record marker is a
+         * record with the same <code>RecordIdentifer</code> as the original, but with
+         * <code>is_deleted</code> value set to <code>True</code>, <code>EventTime</code>
+         * set to the delete input <code>EventTime</code>, and other feature values set to
+         * <code>null</code>.</p> <p>Note that the <code>EventTime</code> specified in
+         * <code>DeleteRecord</code> should be set later than the <code>EventTime</code> of
+         * the existing record in the <code>OnlineStore</code> for that
+         * <code>RecordIdentifer</code>. If it is not, the deletion does not occur:</p>
+         * <ul> <li> <p>For <code>SoftDelete</code>, the existing (not deleted) record
+         * remains in the <code>OnlineStore</code>, though the delete record marker is
+         * still written to the <code>OfflineStore</code>.</p> </li> <li> <p>
+         * <code>HardDelete</code> returns <code>EventTime</code>: <code>400
+         * ValidationException</code> to indicate that the delete operation failed. No
+         * delete record marker is written to the <code>OfflineStore</code>.</p> </li>
+         * </ul> <p>When a record is deleted from the <code>OnlineStore</code>, the deleted
+         * record marker is appended to the <code>OfflineStore</code>. If you have the
+         * Iceberg table format enabled for your <code>OfflineStore</code>, you can remove
+         * all history of a record from the <code>OfflineStore</code> using Amazon Athena
+         * or Apache Spark. For information on how to hard delete a record from the
+         * <code>OfflineStore</code> with the Iceberg table format enabled, see <a
+         * href="https://docs.aws.amazon.com/sagemaker/latest/dg/feature-store-delete-records-offline-store.html#feature-store-delete-records-offline-store">Delete
+         * records from the offline store</a>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/sagemaker-featurestore-runtime-2020-07-01/DeleteRecord">AWS
          * API Reference</a></p>
          */
@@ -187,13 +208,23 @@ namespace SageMakerFeatureStoreRuntime
         }
 
         /**
-         * <p>Used for data ingestion into the <code>FeatureStore</code>. The
-         * <code>PutRecord</code> API writes to both the <code>OnlineStore</code> and
-         * <code>OfflineStore</code>. If the record is the latest record for the
-         * <code>recordIdentifier</code>, the record is written to both the
-         * <code>OnlineStore</code> and <code>OfflineStore</code>. If the record is a
-         * historic record, it is written only to the
-         * <code>OfflineStore</code>.</p><p><h3>See Also:</h3>   <a
+         * <p>The <code>PutRecord</code> API is used to ingest a list of
+         * <code>Records</code> into your feature group. </p> <p>If a new record’s
+         * <code>EventTime</code> is greater, the new record is written to both the
+         * <code>OnlineStore</code> and <code>OfflineStore</code>. Otherwise, the record is
+         * a historic record and it is written only to the <code>OfflineStore</code>. </p>
+         * <p>You can specify the ingestion to be applied to the <code>OnlineStore</code>,
+         * <code>OfflineStore</code>, or both by using the <code>TargetStores</code>
+         * request parameter. </p> <p>You can set the ingested record to expire at a given
+         * time to live (TTL) duration after the record’s event time,
+         * <code>ExpiresAt</code> = <code>EventTime</code> + <code>TtlDuration</code>, by
+         * specifying the <code>TtlDuration</code> parameter. A record level
+         * <code>TtlDuration</code> is set when specifying the <code>TtlDuration</code>
+         * parameter using the <code>PutRecord</code> API call. If the input
+         * <code>TtlDuration</code> is <code>null</code> or unspecified,
+         * <code>TtlDuration</code> is set to the default feature group level
+         * <code>TtlDuration</code>. A record level <code>TtlDuration</code> supersedes the
+         * group level <code>TtlDuration</code>.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/sagemaker-featurestore-runtime-2020-07-01/PutRecord">AWS
          * API Reference</a></p>
          */
@@ -222,11 +253,7 @@ namespace SageMakerFeatureStoreRuntime
       std::shared_ptr<SageMakerFeatureStoreRuntimeEndpointProviderBase>& accessEndpointProvider();
     private:
       friend class Aws::Client::ClientWithAsyncTemplateMethods<SageMakerFeatureStoreRuntimeClient>;
-      void init(const SageMakerFeatureStoreRuntimeClientConfiguration& clientConfiguration);
 
-      SageMakerFeatureStoreRuntimeClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
-      std::shared_ptr<SageMakerFeatureStoreRuntimeEndpointProviderBase> m_endpointProvider;
   };
 
 } // namespace SageMakerFeatureStoreRuntime

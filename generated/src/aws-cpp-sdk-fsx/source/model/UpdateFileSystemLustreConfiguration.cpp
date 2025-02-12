@@ -28,21 +28,15 @@ UpdateFileSystemLustreConfiguration::UpdateFileSystemLustreConfiguration() :
     m_dataCompressionType(DataCompressionType::NOT_SET),
     m_dataCompressionTypeHasBeenSet(false),
     m_logConfigurationHasBeenSet(false),
-    m_rootSquashConfigurationHasBeenSet(false)
+    m_rootSquashConfigurationHasBeenSet(false),
+    m_perUnitStorageThroughput(0),
+    m_perUnitStorageThroughputHasBeenSet(false),
+    m_metadataConfigurationHasBeenSet(false)
 {
 }
 
-UpdateFileSystemLustreConfiguration::UpdateFileSystemLustreConfiguration(JsonView jsonValue) : 
-    m_weeklyMaintenanceStartTimeHasBeenSet(false),
-    m_dailyAutomaticBackupStartTimeHasBeenSet(false),
-    m_automaticBackupRetentionDays(0),
-    m_automaticBackupRetentionDaysHasBeenSet(false),
-    m_autoImportPolicy(AutoImportPolicyType::NOT_SET),
-    m_autoImportPolicyHasBeenSet(false),
-    m_dataCompressionType(DataCompressionType::NOT_SET),
-    m_dataCompressionTypeHasBeenSet(false),
-    m_logConfigurationHasBeenSet(false),
-    m_rootSquashConfigurationHasBeenSet(false)
+UpdateFileSystemLustreConfiguration::UpdateFileSystemLustreConfiguration(JsonView jsonValue)
+  : UpdateFileSystemLustreConfiguration()
 {
   *this = jsonValue;
 }
@@ -98,6 +92,20 @@ UpdateFileSystemLustreConfiguration& UpdateFileSystemLustreConfiguration::operat
     m_rootSquashConfigurationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("PerUnitStorageThroughput"))
+  {
+    m_perUnitStorageThroughput = jsonValue.GetInteger("PerUnitStorageThroughput");
+
+    m_perUnitStorageThroughputHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("MetadataConfiguration"))
+  {
+    m_metadataConfiguration = jsonValue.GetObject("MetadataConfiguration");
+
+    m_metadataConfigurationHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -142,6 +150,18 @@ JsonValue UpdateFileSystemLustreConfiguration::Jsonize() const
   if(m_rootSquashConfigurationHasBeenSet)
   {
    payload.WithObject("RootSquashConfiguration", m_rootSquashConfiguration.Jsonize());
+
+  }
+
+  if(m_perUnitStorageThroughputHasBeenSet)
+  {
+   payload.WithInteger("PerUnitStorageThroughput", m_perUnitStorageThroughput);
+
+  }
+
+  if(m_metadataConfigurationHasBeenSet)
+  {
+   payload.WithObject("MetadataConfiguration", m_metadataConfiguration.Jsonize());
 
   }
 

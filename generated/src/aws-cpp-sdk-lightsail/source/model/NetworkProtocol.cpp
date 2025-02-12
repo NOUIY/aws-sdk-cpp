@@ -24,6 +24,7 @@ namespace Aws
         static const int all_HASH = HashingUtils::HashString("all");
         static const int udp_HASH = HashingUtils::HashString("udp");
         static const int icmp_HASH = HashingUtils::HashString("icmp");
+        static const int icmpv6_HASH = HashingUtils::HashString("icmpv6");
 
 
         NetworkProtocol GetNetworkProtocolForName(const Aws::String& name)
@@ -45,6 +46,10 @@ namespace Aws
           {
             return NetworkProtocol::icmp;
           }
+          else if (hashCode == icmpv6_HASH)
+          {
+            return NetworkProtocol::icmpv6;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -59,6 +64,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case NetworkProtocol::NOT_SET:
+            return {};
           case NetworkProtocol::tcp:
             return "tcp";
           case NetworkProtocol::all:
@@ -67,6 +74,8 @@ namespace Aws
             return "udp";
           case NetworkProtocol::icmp:
             return "icmp";
+          case NetworkProtocol::icmpv6:
+            return "icmpv6";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

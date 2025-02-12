@@ -24,10 +24,12 @@ void S3ControlClientConfiguration::LoadS3ControlSpecificConfig(const Aws::String
   {
     useArnRegion = true;
   }
+  // accountId is intentionally not set here: AWS_ACCOUNT_ID env variable may not match the provided credentials.
+  // it must be set by an auth provider / identity resolver or by an SDK user.
 }
 
-S3ControlClientConfiguration::S3ControlClientConfiguration()
-: BaseClientConfigClass()
+S3ControlClientConfiguration::S3ControlClientConfiguration(const Client::ClientConfigurationInitValues &configuration)
+: BaseClientConfigClass(configuration)
 {
   LoadS3ControlSpecificConfig(this->profileName);
 }

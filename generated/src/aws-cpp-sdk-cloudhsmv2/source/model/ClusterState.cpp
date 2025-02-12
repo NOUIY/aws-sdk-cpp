@@ -26,6 +26,8 @@ namespace Aws
         static const int INITIALIZED_HASH = HashingUtils::HashString("INITIALIZED");
         static const int ACTIVE_HASH = HashingUtils::HashString("ACTIVE");
         static const int UPDATE_IN_PROGRESS_HASH = HashingUtils::HashString("UPDATE_IN_PROGRESS");
+        static const int MODIFY_IN_PROGRESS_HASH = HashingUtils::HashString("MODIFY_IN_PROGRESS");
+        static const int ROLLBACK_IN_PROGRESS_HASH = HashingUtils::HashString("ROLLBACK_IN_PROGRESS");
         static const int DELETE_IN_PROGRESS_HASH = HashingUtils::HashString("DELETE_IN_PROGRESS");
         static const int DELETED_HASH = HashingUtils::HashString("DELETED");
         static const int DEGRADED_HASH = HashingUtils::HashString("DEGRADED");
@@ -58,6 +60,14 @@ namespace Aws
           {
             return ClusterState::UPDATE_IN_PROGRESS;
           }
+          else if (hashCode == MODIFY_IN_PROGRESS_HASH)
+          {
+            return ClusterState::MODIFY_IN_PROGRESS;
+          }
+          else if (hashCode == ROLLBACK_IN_PROGRESS_HASH)
+          {
+            return ClusterState::ROLLBACK_IN_PROGRESS;
+          }
           else if (hashCode == DELETE_IN_PROGRESS_HASH)
           {
             return ClusterState::DELETE_IN_PROGRESS;
@@ -84,6 +94,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ClusterState::NOT_SET:
+            return {};
           case ClusterState::CREATE_IN_PROGRESS:
             return "CREATE_IN_PROGRESS";
           case ClusterState::UNINITIALIZED:
@@ -96,6 +108,10 @@ namespace Aws
             return "ACTIVE";
           case ClusterState::UPDATE_IN_PROGRESS:
             return "UPDATE_IN_PROGRESS";
+          case ClusterState::MODIFY_IN_PROGRESS:
+            return "MODIFY_IN_PROGRESS";
+          case ClusterState::ROLLBACK_IN_PROGRESS:
+            return "ROLLBACK_IN_PROGRESS";
           case ClusterState::DELETE_IN_PROGRESS:
             return "DELETE_IN_PROGRESS";
           case ClusterState::DELETED:

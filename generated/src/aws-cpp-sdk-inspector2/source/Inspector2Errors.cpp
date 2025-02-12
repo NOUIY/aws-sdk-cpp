@@ -7,8 +7,8 @@
 #include <aws/core/utils/HashingUtils.h>
 #include <aws/inspector2/Inspector2Errors.h>
 #include <aws/inspector2/model/ConflictException.h>
-#include <aws/inspector2/model/ThrottlingException.h>
 #include <aws/inspector2/model/ServiceQuotaExceededException.h>
+#include <aws/inspector2/model/ThrottlingException.h>
 #include <aws/inspector2/model/InternalServerException.h>
 #include <aws/inspector2/model/ValidationException.h>
 
@@ -27,16 +27,16 @@ template<> AWS_INSPECTOR2_API ConflictException Inspector2Error::GetModeledError
   return ConflictException(this->GetJsonPayload().View());
 }
 
-template<> AWS_INSPECTOR2_API ThrottlingException Inspector2Error::GetModeledError()
-{
-  assert(this->GetErrorType() == Inspector2Errors::THROTTLING);
-  return ThrottlingException(this->GetJsonPayload().View());
-}
-
 template<> AWS_INSPECTOR2_API ServiceQuotaExceededException Inspector2Error::GetModeledError()
 {
   assert(this->GetErrorType() == Inspector2Errors::SERVICE_QUOTA_EXCEEDED);
   return ServiceQuotaExceededException(this->GetJsonPayload().View());
+}
+
+template<> AWS_INSPECTOR2_API ThrottlingException Inspector2Error::GetModeledError()
+{
+  assert(this->GetErrorType() == Inspector2Errors::THROTTLING);
+  return ThrottlingException(this->GetJsonPayload().View());
 }
 
 template<> AWS_INSPECTOR2_API InternalServerException Inspector2Error::GetModeledError()
@@ -66,19 +66,19 @@ AWSError<CoreErrors> GetErrorForName(const char* errorName)
 
   if (hashCode == CONFLICT_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(Inspector2Errors::CONFLICT), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(Inspector2Errors::CONFLICT), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == SERVICE_QUOTA_EXCEEDED_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(Inspector2Errors::SERVICE_QUOTA_EXCEEDED), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(Inspector2Errors::SERVICE_QUOTA_EXCEEDED), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == INTERNAL_SERVER_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(Inspector2Errors::INTERNAL_SERVER), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(Inspector2Errors::INTERNAL_SERVER), RetryableType::RETRYABLE);
   }
   else if (hashCode == BAD_REQUEST_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(Inspector2Errors::BAD_REQUEST), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(Inspector2Errors::BAD_REQUEST), RetryableType::NOT_RETRYABLE);
   }
   return AWSError<CoreErrors>(CoreErrors::UNKNOWN, false);
 }

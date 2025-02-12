@@ -24,25 +24,20 @@ ActionDeclaration::ActionDeclaration() :
     m_runOrder(0),
     m_runOrderHasBeenSet(false),
     m_configurationHasBeenSet(false),
+    m_commandsHasBeenSet(false),
     m_outputArtifactsHasBeenSet(false),
     m_inputArtifactsHasBeenSet(false),
+    m_outputVariablesHasBeenSet(false),
     m_roleArnHasBeenSet(false),
     m_regionHasBeenSet(false),
-    m_namespaceHasBeenSet(false)
+    m_namespaceHasBeenSet(false),
+    m_timeoutInMinutes(0),
+    m_timeoutInMinutesHasBeenSet(false)
 {
 }
 
-ActionDeclaration::ActionDeclaration(JsonView jsonValue) : 
-    m_nameHasBeenSet(false),
-    m_actionTypeIdHasBeenSet(false),
-    m_runOrder(0),
-    m_runOrderHasBeenSet(false),
-    m_configurationHasBeenSet(false),
-    m_outputArtifactsHasBeenSet(false),
-    m_inputArtifactsHasBeenSet(false),
-    m_roleArnHasBeenSet(false),
-    m_regionHasBeenSet(false),
-    m_namespaceHasBeenSet(false)
+ActionDeclaration::ActionDeclaration(JsonView jsonValue)
+  : ActionDeclaration()
 {
   *this = jsonValue;
 }
@@ -80,6 +75,16 @@ ActionDeclaration& ActionDeclaration::operator =(JsonView jsonValue)
     m_configurationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("commands"))
+  {
+    Aws::Utils::Array<JsonView> commandsJsonList = jsonValue.GetArray("commands");
+    for(unsigned commandsIndex = 0; commandsIndex < commandsJsonList.GetLength(); ++commandsIndex)
+    {
+      m_commands.push_back(commandsJsonList[commandsIndex].AsString());
+    }
+    m_commandsHasBeenSet = true;
+  }
+
   if(jsonValue.ValueExists("outputArtifacts"))
   {
     Aws::Utils::Array<JsonView> outputArtifactsJsonList = jsonValue.GetArray("outputArtifacts");
@@ -98,6 +103,16 @@ ActionDeclaration& ActionDeclaration::operator =(JsonView jsonValue)
       m_inputArtifacts.push_back(inputArtifactsJsonList[inputArtifactsIndex].AsObject());
     }
     m_inputArtifactsHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("outputVariables"))
+  {
+    Aws::Utils::Array<JsonView> outputVariablesJsonList = jsonValue.GetArray("outputVariables");
+    for(unsigned outputVariablesIndex = 0; outputVariablesIndex < outputVariablesJsonList.GetLength(); ++outputVariablesIndex)
+    {
+      m_outputVariables.push_back(outputVariablesJsonList[outputVariablesIndex].AsString());
+    }
+    m_outputVariablesHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("roleArn"))
@@ -119,6 +134,13 @@ ActionDeclaration& ActionDeclaration::operator =(JsonView jsonValue)
     m_namespace = jsonValue.GetString("namespace");
 
     m_namespaceHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("timeoutInMinutes"))
+  {
+    m_timeoutInMinutes = jsonValue.GetInteger("timeoutInMinutes");
+
+    m_timeoutInMinutesHasBeenSet = true;
   }
 
   return *this;
@@ -157,6 +179,17 @@ JsonValue ActionDeclaration::Jsonize() const
 
   }
 
+  if(m_commandsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> commandsJsonList(m_commands.size());
+   for(unsigned commandsIndex = 0; commandsIndex < commandsJsonList.GetLength(); ++commandsIndex)
+   {
+     commandsJsonList[commandsIndex].AsString(m_commands[commandsIndex]);
+   }
+   payload.WithArray("commands", std::move(commandsJsonList));
+
+  }
+
   if(m_outputArtifactsHasBeenSet)
   {
    Aws::Utils::Array<JsonValue> outputArtifactsJsonList(m_outputArtifacts.size());
@@ -179,6 +212,17 @@ JsonValue ActionDeclaration::Jsonize() const
 
   }
 
+  if(m_outputVariablesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> outputVariablesJsonList(m_outputVariables.size());
+   for(unsigned outputVariablesIndex = 0; outputVariablesIndex < outputVariablesJsonList.GetLength(); ++outputVariablesIndex)
+   {
+     outputVariablesJsonList[outputVariablesIndex].AsString(m_outputVariables[outputVariablesIndex]);
+   }
+   payload.WithArray("outputVariables", std::move(outputVariablesJsonList));
+
+  }
+
   if(m_roleArnHasBeenSet)
   {
    payload.WithString("roleArn", m_roleArn);
@@ -194,6 +238,12 @@ JsonValue ActionDeclaration::Jsonize() const
   if(m_namespaceHasBeenSet)
   {
    payload.WithString("namespace", m_namespace);
+
+  }
+
+  if(m_timeoutInMinutesHasBeenSet)
+  {
+   payload.WithInteger("timeoutInMinutes", m_timeoutInMinutes);
 
   }
 

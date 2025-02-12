@@ -29,6 +29,7 @@ CreateHostedConfigurationVersionResult::CreateHostedConfigurationVersionResult(C
     m_content(std::move(toMove.m_content)),
     m_contentType(std::move(toMove.m_contentType)),
     m_versionLabel(std::move(toMove.m_versionLabel)),
+    m_kmsKeyArn(std::move(toMove.m_kmsKeyArn)),
     m_requestId(std::move(toMove.m_requestId))
 {
 }
@@ -47,13 +48,14 @@ CreateHostedConfigurationVersionResult& CreateHostedConfigurationVersionResult::
    m_content = std::move(toMove.m_content);
    m_contentType = std::move(toMove.m_contentType);
    m_versionLabel = std::move(toMove.m_versionLabel);
+   m_kmsKeyArn = std::move(toMove.m_kmsKeyArn);
    m_requestId = std::move(toMove.m_requestId);
 
    return *this;
 }
 
-CreateHostedConfigurationVersionResult::CreateHostedConfigurationVersionResult(Aws::AmazonWebServiceResult<ResponseStream>&& result) : 
-    m_versionNumber(0)
+CreateHostedConfigurationVersionResult::CreateHostedConfigurationVersionResult(Aws::AmazonWebServiceResult<ResponseStream>&& result)
+  : CreateHostedConfigurationVersionResult()
 {
   *this = std::move(result);
 }
@@ -97,6 +99,12 @@ CreateHostedConfigurationVersionResult& CreateHostedConfigurationVersionResult::
   if(versionLabelIter != headers.end())
   {
     m_versionLabel = versionLabelIter->second;
+  }
+
+  const auto& kmsKeyArnIter = headers.find("kmskeyarn");
+  if(kmsKeyArnIter != headers.end())
+  {
+    m_kmsKeyArn = kmsKeyArnIter->second;
   }
 
   const auto& requestIdIter = headers.find("x-amzn-requestid");

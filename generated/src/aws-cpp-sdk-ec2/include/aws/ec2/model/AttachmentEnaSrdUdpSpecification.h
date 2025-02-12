@@ -22,8 +22,13 @@ namespace Model
 {
 
   /**
-   * <p>Describes the ENA Express configuration for UDP traffic on the network
-   * interface that's attached to the instance.</p><p><h3>See Also:</h3>   <a
+   * <p>ENA Express is compatible with both TCP and UDP transport protocols. When
+   * it's enabled, TCP traffic automatically uses it. However, some UDP-based
+   * applications are designed to handle network packets that are out of order,
+   * without a need for retransmission, such as live video broadcasting or other
+   * near-real-time applications. For UDP traffic, you can specify whether to use ENA
+   * Express, based on your application environment needs.</p><p><h3>See Also:</h3>  
+   * <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/AttachmentEnaSrdUdpSpecification">AWS
    * API Reference</a></p>
    */
@@ -38,30 +43,16 @@ namespace Model
     AWS_EC2_API void OutputToStream(Aws::OStream& oStream, const char* location) const;
 
 
+    ///@{
     /**
      * <p>Indicates whether UDP traffic to and from the instance uses ENA Express. To
      * specify this setting, you must first enable ENA Express.</p>
      */
     inline bool GetEnaSrdUdpEnabled() const{ return m_enaSrdUdpEnabled; }
-
-    /**
-     * <p>Indicates whether UDP traffic to and from the instance uses ENA Express. To
-     * specify this setting, you must first enable ENA Express.</p>
-     */
     inline bool EnaSrdUdpEnabledHasBeenSet() const { return m_enaSrdUdpEnabledHasBeenSet; }
-
-    /**
-     * <p>Indicates whether UDP traffic to and from the instance uses ENA Express. To
-     * specify this setting, you must first enable ENA Express.</p>
-     */
     inline void SetEnaSrdUdpEnabled(bool value) { m_enaSrdUdpEnabledHasBeenSet = true; m_enaSrdUdpEnabled = value; }
-
-    /**
-     * <p>Indicates whether UDP traffic to and from the instance uses ENA Express. To
-     * specify this setting, you must first enable ENA Express.</p>
-     */
     inline AttachmentEnaSrdUdpSpecification& WithEnaSrdUdpEnabled(bool value) { SetEnaSrdUdpEnabled(value); return *this;}
-
+    ///@}
   private:
 
     bool m_enaSrdUdpEnabled;

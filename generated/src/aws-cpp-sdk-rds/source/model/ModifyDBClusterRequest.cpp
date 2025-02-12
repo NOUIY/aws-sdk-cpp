@@ -56,6 +56,8 @@ ModifyDBClusterRequest::ModifyDBClusterRequest() :
     m_monitoringInterval(0),
     m_monitoringIntervalHasBeenSet(false),
     m_monitoringRoleArnHasBeenSet(false),
+    m_databaseInsightsMode(DatabaseInsightsMode::NOT_SET),
+    m_databaseInsightsModeHasBeenSet(false),
     m_enablePerformanceInsights(false),
     m_enablePerformanceInsightsHasBeenSet(false),
     m_performanceInsightsKMSKeyIdHasBeenSet(false),
@@ -70,7 +72,13 @@ ModifyDBClusterRequest::ModifyDBClusterRequest() :
     m_masterUserSecretKmsKeyIdHasBeenSet(false),
     m_engineModeHasBeenSet(false),
     m_allowEngineModeChange(false),
-    m_allowEngineModeChangeHasBeenSet(false)
+    m_allowEngineModeChangeHasBeenSet(false),
+    m_enableLocalWriteForwarding(false),
+    m_enableLocalWriteForwardingHasBeenSet(false),
+    m_awsBackupRecoveryPointArnHasBeenSet(false),
+    m_enableLimitlessDatabase(false),
+    m_enableLimitlessDatabaseHasBeenSet(false),
+    m_cACertificateIdentifierHasBeenSet(false)
 {
 }
 
@@ -105,12 +113,19 @@ Aws::String ModifyDBClusterRequest::SerializePayload() const
 
   if(m_vpcSecurityGroupIdsHasBeenSet)
   {
-    unsigned vpcSecurityGroupIdsCount = 1;
-    for(auto& item : m_vpcSecurityGroupIds)
+    if (m_vpcSecurityGroupIds.empty())
     {
-      ss << "VpcSecurityGroupIds.member." << vpcSecurityGroupIdsCount << "="
-          << StringUtils::URLEncode(item.c_str()) << "&";
-      vpcSecurityGroupIdsCount++;
+      ss << "VpcSecurityGroupIds=&";
+    }
+    else
+    {
+      unsigned vpcSecurityGroupIdsCount = 1;
+      for(auto& item : m_vpcSecurityGroupIds)
+      {
+        ss << "VpcSecurityGroupIds.VpcSecurityGroupId." << vpcSecurityGroupIdsCount << "="
+            << StringUtils::URLEncode(item.c_str()) << "&";
+        vpcSecurityGroupIdsCount++;
+      }
     }
   }
 
@@ -239,6 +254,11 @@ Aws::String ModifyDBClusterRequest::SerializePayload() const
     ss << "MonitoringRoleArn=" << StringUtils::URLEncode(m_monitoringRoleArn.c_str()) << "&";
   }
 
+  if(m_databaseInsightsModeHasBeenSet)
+  {
+    ss << "DatabaseInsightsMode=" << DatabaseInsightsModeMapper::GetNameForDatabaseInsightsMode(m_databaseInsightsMode) << "&";
+  }
+
   if(m_enablePerformanceInsightsHasBeenSet)
   {
     ss << "EnablePerformanceInsights=" << std::boolalpha << m_enablePerformanceInsights << "&";
@@ -287,6 +307,26 @@ Aws::String ModifyDBClusterRequest::SerializePayload() const
   if(m_allowEngineModeChangeHasBeenSet)
   {
     ss << "AllowEngineModeChange=" << std::boolalpha << m_allowEngineModeChange << "&";
+  }
+
+  if(m_enableLocalWriteForwardingHasBeenSet)
+  {
+    ss << "EnableLocalWriteForwarding=" << std::boolalpha << m_enableLocalWriteForwarding << "&";
+  }
+
+  if(m_awsBackupRecoveryPointArnHasBeenSet)
+  {
+    ss << "AwsBackupRecoveryPointArn=" << StringUtils::URLEncode(m_awsBackupRecoveryPointArn.c_str()) << "&";
+  }
+
+  if(m_enableLimitlessDatabaseHasBeenSet)
+  {
+    ss << "EnableLimitlessDatabase=" << std::boolalpha << m_enableLimitlessDatabase << "&";
+  }
+
+  if(m_cACertificateIdentifierHasBeenSet)
+  {
+    ss << "CACertificateIdentifier=" << StringUtils::URLEncode(m_cACertificateIdentifier.c_str()) << "&";
   }
 
   ss << "Version=2014-10-31";

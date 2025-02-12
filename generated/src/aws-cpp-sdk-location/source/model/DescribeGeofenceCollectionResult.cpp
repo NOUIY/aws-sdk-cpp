@@ -17,11 +17,13 @@ using namespace Aws::Utils::Json;
 using namespace Aws::Utils;
 using namespace Aws;
 
-DescribeGeofenceCollectionResult::DescribeGeofenceCollectionResult()
+DescribeGeofenceCollectionResult::DescribeGeofenceCollectionResult() : 
+    m_geofenceCount(0)
 {
 }
 
 DescribeGeofenceCollectionResult::DescribeGeofenceCollectionResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeGeofenceCollectionResult()
 {
   *this = result;
 }
@@ -29,21 +31,15 @@ DescribeGeofenceCollectionResult::DescribeGeofenceCollectionResult(const Aws::Am
 DescribeGeofenceCollectionResult& DescribeGeofenceCollectionResult::operator =(const Aws::AmazonWebServiceResult<JsonValue>& result)
 {
   JsonView jsonValue = result.GetPayload().View();
-  if(jsonValue.ValueExists("CollectionArn"))
-  {
-    m_collectionArn = jsonValue.GetString("CollectionArn");
-
-  }
-
   if(jsonValue.ValueExists("CollectionName"))
   {
     m_collectionName = jsonValue.GetString("CollectionName");
 
   }
 
-  if(jsonValue.ValueExists("CreateTime"))
+  if(jsonValue.ValueExists("CollectionArn"))
   {
-    m_createTime = jsonValue.GetString("CreateTime");
+    m_collectionArn = jsonValue.GetString("CollectionArn");
 
   }
 
@@ -68,9 +64,21 @@ DescribeGeofenceCollectionResult& DescribeGeofenceCollectionResult::operator =(c
     }
   }
 
+  if(jsonValue.ValueExists("CreateTime"))
+  {
+    m_createTime = jsonValue.GetString("CreateTime");
+
+  }
+
   if(jsonValue.ValueExists("UpdateTime"))
   {
     m_updateTime = jsonValue.GetString("UpdateTime");
+
+  }
+
+  if(jsonValue.ValueExists("GeofenceCount"))
+  {
+    m_geofenceCount = jsonValue.GetInteger("GeofenceCount");
 
   }
 

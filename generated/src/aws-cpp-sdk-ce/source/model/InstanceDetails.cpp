@@ -23,16 +23,13 @@ InstanceDetails::InstanceDetails() :
     m_rDSInstanceDetailsHasBeenSet(false),
     m_redshiftInstanceDetailsHasBeenSet(false),
     m_elastiCacheInstanceDetailsHasBeenSet(false),
-    m_eSInstanceDetailsHasBeenSet(false)
+    m_eSInstanceDetailsHasBeenSet(false),
+    m_memoryDBInstanceDetailsHasBeenSet(false)
 {
 }
 
-InstanceDetails::InstanceDetails(JsonView jsonValue) : 
-    m_eC2InstanceDetailsHasBeenSet(false),
-    m_rDSInstanceDetailsHasBeenSet(false),
-    m_redshiftInstanceDetailsHasBeenSet(false),
-    m_elastiCacheInstanceDetailsHasBeenSet(false),
-    m_eSInstanceDetailsHasBeenSet(false)
+InstanceDetails::InstanceDetails(JsonView jsonValue)
+  : InstanceDetails()
 {
   *this = jsonValue;
 }
@@ -74,6 +71,13 @@ InstanceDetails& InstanceDetails::operator =(JsonView jsonValue)
     m_eSInstanceDetailsHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("MemoryDBInstanceDetails"))
+  {
+    m_memoryDBInstanceDetails = jsonValue.GetObject("MemoryDBInstanceDetails");
+
+    m_memoryDBInstanceDetailsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -108,6 +112,12 @@ JsonValue InstanceDetails::Jsonize() const
   if(m_eSInstanceDetailsHasBeenSet)
   {
    payload.WithObject("ESInstanceDetails", m_eSInstanceDetails.Jsonize());
+
+  }
+
+  if(m_memoryDBInstanceDetailsHasBeenSet)
+  {
+   payload.WithObject("MemoryDBInstanceDetails", m_memoryDBInstanceDetails.Jsonize());
 
   }
 

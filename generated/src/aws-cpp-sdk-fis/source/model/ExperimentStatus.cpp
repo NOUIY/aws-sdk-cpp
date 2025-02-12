@@ -27,6 +27,7 @@ namespace Aws
         static const int stopping_HASH = HashingUtils::HashString("stopping");
         static const int stopped_HASH = HashingUtils::HashString("stopped");
         static const int failed_HASH = HashingUtils::HashString("failed");
+        static const int cancelled_HASH = HashingUtils::HashString("cancelled");
 
 
         ExperimentStatus GetExperimentStatusForName(const Aws::String& name)
@@ -60,6 +61,10 @@ namespace Aws
           {
             return ExperimentStatus::failed;
           }
+          else if (hashCode == cancelled_HASH)
+          {
+            return ExperimentStatus::cancelled;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -74,6 +79,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case ExperimentStatus::NOT_SET:
+            return {};
           case ExperimentStatus::pending:
             return "pending";
           case ExperimentStatus::initiating:
@@ -88,6 +95,8 @@ namespace Aws
             return "stopped";
           case ExperimentStatus::failed:
             return "failed";
+          case ExperimentStatus::cancelled:
+            return "cancelled";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

@@ -22,8 +22,8 @@ namespace ApiGatewayV2
   {
     public:
       typedef Aws::Client::AWSJsonClient BASECLASS;
-      static const char* SERVICE_NAME;
-      static const char* ALLOCATION_TAG;
+      static const char* GetServiceName();
+      static const char* GetAllocationTag();
 
       typedef ApiGatewayV2ClientConfiguration ClientConfigurationType;
       typedef ApiGatewayV2EndpointProvider EndpointProviderType;
@@ -33,14 +33,14 @@ namespace ApiGatewayV2
         * is not specified, it will be initialized to default values.
         */
         ApiGatewayV2Client(const Aws::ApiGatewayV2::ApiGatewayV2ClientConfiguration& clientConfiguration = Aws::ApiGatewayV2::ApiGatewayV2ClientConfiguration(),
-                           std::shared_ptr<ApiGatewayV2EndpointProviderBase> endpointProvider = Aws::MakeShared<ApiGatewayV2EndpointProvider>(ALLOCATION_TAG));
+                           std::shared_ptr<ApiGatewayV2EndpointProviderBase> endpointProvider = nullptr);
 
        /**
         * Initializes client to use SimpleAWSCredentialsProvider, with default http client factory, and optional client config. If client config
         * is not specified, it will be initialized to default values.
         */
         ApiGatewayV2Client(const Aws::Auth::AWSCredentials& credentials,
-                           std::shared_ptr<ApiGatewayV2EndpointProviderBase> endpointProvider = Aws::MakeShared<ApiGatewayV2EndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<ApiGatewayV2EndpointProviderBase> endpointProvider = nullptr,
                            const Aws::ApiGatewayV2::ApiGatewayV2ClientConfiguration& clientConfiguration = Aws::ApiGatewayV2::ApiGatewayV2ClientConfiguration());
 
        /**
@@ -48,7 +48,7 @@ namespace ApiGatewayV2
         * the default http client factory will be used
         */
         ApiGatewayV2Client(const std::shared_ptr<Aws::Auth::AWSCredentialsProvider>& credentialsProvider,
-                           std::shared_ptr<ApiGatewayV2EndpointProviderBase> endpointProvider = Aws::MakeShared<ApiGatewayV2EndpointProvider>(ALLOCATION_TAG),
+                           std::shared_ptr<ApiGatewayV2EndpointProviderBase> endpointProvider = nullptr,
                            const Aws::ApiGatewayV2::ApiGatewayV2ClientConfiguration& clientConfiguration = Aws::ApiGatewayV2::ApiGatewayV2ClientConfiguration());
 
 
@@ -653,7 +653,8 @@ namespace ApiGatewayV2
         }
 
         /**
-         * <p>Deletes a route request parameter.</p><p><h3>See Also:</h3>   <a
+         * <p>Deletes a route request parameter. Supported only for WebSocket
+         * APIs.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/apigatewayv2-2018-11-29/DeleteRouteRequestParameter">AWS
          * API Reference</a></p>
          */
@@ -801,32 +802,6 @@ namespace ApiGatewayV2
         }
 
         /**
-         * <p>Resets all authorizer cache entries on a stage. Supported only for HTTP
-         * APIs.</p><p><h3>See Also:</h3>   <a
-         * href="http://docs.aws.amazon.com/goto/WebAPI/apigatewayv2-2018-11-29/ResetAuthorizersCache">AWS
-         * API Reference</a></p>
-         */
-        virtual Model::ResetAuthorizersCacheOutcome ResetAuthorizersCache(const Model::ResetAuthorizersCacheRequest& request) const;
-
-        /**
-         * A Callable wrapper for ResetAuthorizersCache that returns a future to the operation so that it can be executed in parallel to other requests.
-         */
-        template<typename ResetAuthorizersCacheRequestT = Model::ResetAuthorizersCacheRequest>
-        Model::ResetAuthorizersCacheOutcomeCallable ResetAuthorizersCacheCallable(const ResetAuthorizersCacheRequestT& request) const
-        {
-            return SubmitCallable(&ApiGatewayV2Client::ResetAuthorizersCache, request);
-        }
-
-        /**
-         * An Async wrapper for ResetAuthorizersCache that queues the request into a thread executor and triggers associated callback when operation has finished.
-         */
-        template<typename ResetAuthorizersCacheRequestT = Model::ResetAuthorizersCacheRequest>
-        void ResetAuthorizersCacheAsync(const ResetAuthorizersCacheRequestT& request, const ResetAuthorizersCacheResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
-        {
-            return SubmitAsync(&ApiGatewayV2Client::ResetAuthorizersCache, request, handler, context);
-        }
-
-        /**
          * <p>Gets an Api resource.</p><p><h3>See Also:</h3>   <a
          * href="http://docs.aws.amazon.com/goto/WebAPI/apigatewayv2-2018-11-29/GetApi">AWS
          * API Reference</a></p>
@@ -906,13 +881,13 @@ namespace ApiGatewayV2
          * href="http://docs.aws.amazon.com/goto/WebAPI/apigatewayv2-2018-11-29/GetApis">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetApisOutcome GetApis(const Model::GetApisRequest& request) const;
+        virtual Model::GetApisOutcome GetApis(const Model::GetApisRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetApis that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetApisRequestT = Model::GetApisRequest>
-        Model::GetApisOutcomeCallable GetApisCallable(const GetApisRequestT& request) const
+        Model::GetApisOutcomeCallable GetApisCallable(const GetApisRequestT& request = {}) const
         {
             return SubmitCallable(&ApiGatewayV2Client::GetApis, request);
         }
@@ -921,7 +896,7 @@ namespace ApiGatewayV2
          * An Async wrapper for GetApis that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetApisRequestT = Model::GetApisRequest>
-        void GetApisAsync(const GetApisRequestT& request, const GetApisResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetApisAsync(const GetApisResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetApisRequestT& request = {}) const
         {
             return SubmitAsync(&ApiGatewayV2Client::GetApis, request, handler, context);
         }
@@ -1056,13 +1031,13 @@ namespace ApiGatewayV2
          * href="http://docs.aws.amazon.com/goto/WebAPI/apigatewayv2-2018-11-29/GetDomainNames">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetDomainNamesOutcome GetDomainNames(const Model::GetDomainNamesRequest& request) const;
+        virtual Model::GetDomainNamesOutcome GetDomainNames(const Model::GetDomainNamesRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetDomainNames that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetDomainNamesRequestT = Model::GetDomainNamesRequest>
-        Model::GetDomainNamesOutcomeCallable GetDomainNamesCallable(const GetDomainNamesRequestT& request) const
+        Model::GetDomainNamesOutcomeCallable GetDomainNamesCallable(const GetDomainNamesRequestT& request = {}) const
         {
             return SubmitCallable(&ApiGatewayV2Client::GetDomainNames, request);
         }
@@ -1071,7 +1046,7 @@ namespace ApiGatewayV2
          * An Async wrapper for GetDomainNames that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetDomainNamesRequestT = Model::GetDomainNamesRequest>
-        void GetDomainNamesAsync(const GetDomainNamesRequestT& request, const GetDomainNamesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetDomainNamesAsync(const GetDomainNamesResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetDomainNamesRequestT& request = {}) const
         {
             return SubmitAsync(&ApiGatewayV2Client::GetDomainNames, request, handler, context);
         }
@@ -1457,13 +1432,13 @@ namespace ApiGatewayV2
          * href="http://docs.aws.amazon.com/goto/WebAPI/apigatewayv2-2018-11-29/GetVpcLinks">AWS
          * API Reference</a></p>
          */
-        virtual Model::GetVpcLinksOutcome GetVpcLinks(const Model::GetVpcLinksRequest& request) const;
+        virtual Model::GetVpcLinksOutcome GetVpcLinks(const Model::GetVpcLinksRequest& request = {}) const;
 
         /**
          * A Callable wrapper for GetVpcLinks that returns a future to the operation so that it can be executed in parallel to other requests.
          */
         template<typename GetVpcLinksRequestT = Model::GetVpcLinksRequest>
-        Model::GetVpcLinksOutcomeCallable GetVpcLinksCallable(const GetVpcLinksRequestT& request) const
+        Model::GetVpcLinksOutcomeCallable GetVpcLinksCallable(const GetVpcLinksRequestT& request = {}) const
         {
             return SubmitCallable(&ApiGatewayV2Client::GetVpcLinks, request);
         }
@@ -1472,7 +1447,7 @@ namespace ApiGatewayV2
          * An Async wrapper for GetVpcLinks that queues the request into a thread executor and triggers associated callback when operation has finished.
          */
         template<typename GetVpcLinksRequestT = Model::GetVpcLinksRequest>
-        void GetVpcLinksAsync(const GetVpcLinksRequestT& request, const GetVpcLinksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        void GetVpcLinksAsync(const GetVpcLinksResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr, const GetVpcLinksRequestT& request = {}) const
         {
             return SubmitAsync(&ApiGatewayV2Client::GetVpcLinks, request, handler, context);
         }
@@ -1525,6 +1500,32 @@ namespace ApiGatewayV2
         void ReimportApiAsync(const ReimportApiRequestT& request, const ReimportApiResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
         {
             return SubmitAsync(&ApiGatewayV2Client::ReimportApi, request, handler, context);
+        }
+
+        /**
+         * <p>Resets all authorizer cache entries on a stage. Supported only for HTTP
+         * APIs.</p><p><h3>See Also:</h3>   <a
+         * href="http://docs.aws.amazon.com/goto/WebAPI/apigatewayv2-2018-11-29/ResetAuthorizersCache">AWS
+         * API Reference</a></p>
+         */
+        virtual Model::ResetAuthorizersCacheOutcome ResetAuthorizersCache(const Model::ResetAuthorizersCacheRequest& request) const;
+
+        /**
+         * A Callable wrapper for ResetAuthorizersCache that returns a future to the operation so that it can be executed in parallel to other requests.
+         */
+        template<typename ResetAuthorizersCacheRequestT = Model::ResetAuthorizersCacheRequest>
+        Model::ResetAuthorizersCacheOutcomeCallable ResetAuthorizersCacheCallable(const ResetAuthorizersCacheRequestT& request) const
+        {
+            return SubmitCallable(&ApiGatewayV2Client::ResetAuthorizersCache, request);
+        }
+
+        /**
+         * An Async wrapper for ResetAuthorizersCache that queues the request into a thread executor and triggers associated callback when operation has finished.
+         */
+        template<typename ResetAuthorizersCacheRequestT = Model::ResetAuthorizersCacheRequest>
+        void ResetAuthorizersCacheAsync(const ResetAuthorizersCacheRequestT& request, const ResetAuthorizersCacheResponseReceivedHandler& handler, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context = nullptr) const
+        {
+            return SubmitAsync(&ApiGatewayV2Client::ResetAuthorizersCache, request, handler, context);
         }
 
         /**
@@ -1885,7 +1886,6 @@ namespace ApiGatewayV2
       void init(const ApiGatewayV2ClientConfiguration& clientConfiguration);
 
       ApiGatewayV2ClientConfiguration m_clientConfiguration;
-      std::shared_ptr<Aws::Utils::Threading::Executor> m_executor;
       std::shared_ptr<ApiGatewayV2EndpointProviderBase> m_endpointProvider;
   };
 

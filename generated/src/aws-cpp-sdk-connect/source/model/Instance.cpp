@@ -32,25 +32,14 @@ Instance::Instance() :
     m_inboundCallsEnabled(false),
     m_inboundCallsEnabledHasBeenSet(false),
     m_outboundCallsEnabled(false),
-    m_outboundCallsEnabledHasBeenSet(false)
+    m_outboundCallsEnabledHasBeenSet(false),
+    m_instanceAccessUrlHasBeenSet(false),
+    m_tagsHasBeenSet(false)
 {
 }
 
-Instance::Instance(JsonView jsonValue) : 
-    m_idHasBeenSet(false),
-    m_arnHasBeenSet(false),
-    m_identityManagementType(DirectoryType::NOT_SET),
-    m_identityManagementTypeHasBeenSet(false),
-    m_instanceAliasHasBeenSet(false),
-    m_createdTimeHasBeenSet(false),
-    m_serviceRoleHasBeenSet(false),
-    m_instanceStatus(InstanceStatus::NOT_SET),
-    m_instanceStatusHasBeenSet(false),
-    m_statusReasonHasBeenSet(false),
-    m_inboundCallsEnabled(false),
-    m_inboundCallsEnabledHasBeenSet(false),
-    m_outboundCallsEnabled(false),
-    m_outboundCallsEnabledHasBeenSet(false)
+Instance::Instance(JsonView jsonValue)
+  : Instance()
 {
   *this = jsonValue;
 }
@@ -127,6 +116,23 @@ Instance& Instance::operator =(JsonView jsonValue)
     m_outboundCallsEnabledHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("InstanceAccessUrl"))
+  {
+    m_instanceAccessUrl = jsonValue.GetString("InstanceAccessUrl");
+
+    m_instanceAccessUrlHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("Tags"))
+  {
+    Aws::Map<Aws::String, JsonView> tagsJsonMap = jsonValue.GetObject("Tags").GetAllObjects();
+    for(auto& tagsItem : tagsJsonMap)
+    {
+      m_tags[tagsItem.first] = tagsItem.second.AsString();
+    }
+    m_tagsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -188,6 +194,23 @@ JsonValue Instance::Jsonize() const
   if(m_outboundCallsEnabledHasBeenSet)
   {
    payload.WithBool("OutboundCallsEnabled", m_outboundCallsEnabled);
+
+  }
+
+  if(m_instanceAccessUrlHasBeenSet)
+  {
+   payload.WithString("InstanceAccessUrl", m_instanceAccessUrl);
+
+  }
+
+  if(m_tagsHasBeenSet)
+  {
+   JsonValue tagsJsonMap;
+   for(auto& tagsItem : m_tags)
+   {
+     tagsJsonMap.WithString(tagsItem.first, tagsItem.second);
+   }
+   payload.WithObject("Tags", std::move(tagsJsonMap));
 
   }
 

@@ -44,6 +44,8 @@ static const int BATCH_EXECUTE_STATEMENT_HASH = HashingUtils::HashString("BatchE
 static const int EXECUTE_STATEMENT_HASH = HashingUtils::HashString("ExecuteStatementException");
 static const int INTERNAL_SERVER_HASH = HashingUtils::HashString("InternalServerException");
 static const int DATABASE_CONNECTION_HASH = HashingUtils::HashString("DatabaseConnectionException");
+static const int QUERY_TIMEOUT_HASH = HashingUtils::HashString("QueryTimeoutException");
+static const int ACTIVE_SESSIONS_EXCEEDED_HASH = HashingUtils::HashString("ActiveSessionsExceededException");
 static const int ACTIVE_STATEMENTS_EXCEEDED_HASH = HashingUtils::HashString("ActiveStatementsExceededException");
 
 
@@ -53,23 +55,31 @@ AWSError<CoreErrors> GetErrorForName(const char* errorName)
 
   if (hashCode == BATCH_EXECUTE_STATEMENT_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(RedshiftDataAPIServiceErrors::BATCH_EXECUTE_STATEMENT), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(RedshiftDataAPIServiceErrors::BATCH_EXECUTE_STATEMENT), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == EXECUTE_STATEMENT_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(RedshiftDataAPIServiceErrors::EXECUTE_STATEMENT), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(RedshiftDataAPIServiceErrors::EXECUTE_STATEMENT), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == INTERNAL_SERVER_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(RedshiftDataAPIServiceErrors::INTERNAL_SERVER), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(RedshiftDataAPIServiceErrors::INTERNAL_SERVER), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == DATABASE_CONNECTION_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(RedshiftDataAPIServiceErrors::DATABASE_CONNECTION), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(RedshiftDataAPIServiceErrors::DATABASE_CONNECTION), RetryableType::NOT_RETRYABLE);
+  }
+  else if (hashCode == QUERY_TIMEOUT_HASH)
+  {
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(RedshiftDataAPIServiceErrors::QUERY_TIMEOUT), RetryableType::NOT_RETRYABLE);
+  }
+  else if (hashCode == ACTIVE_SESSIONS_EXCEEDED_HASH)
+  {
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(RedshiftDataAPIServiceErrors::ACTIVE_SESSIONS_EXCEEDED), RetryableType::NOT_RETRYABLE);
   }
   else if (hashCode == ACTIVE_STATEMENTS_EXCEEDED_HASH)
   {
-    return AWSError<CoreErrors>(static_cast<CoreErrors>(RedshiftDataAPIServiceErrors::ACTIVE_STATEMENTS_EXCEEDED), false);
+    return AWSError<CoreErrors>(static_cast<CoreErrors>(RedshiftDataAPIServiceErrors::ACTIVE_STATEMENTS_EXCEEDED), RetryableType::NOT_RETRYABLE);
   }
   return AWSError<CoreErrors>(CoreErrors::UNKNOWN, false);
 }

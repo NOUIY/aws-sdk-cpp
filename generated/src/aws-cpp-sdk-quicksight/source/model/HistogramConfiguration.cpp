@@ -26,19 +26,13 @@ HistogramConfiguration::HistogramConfiguration() :
     m_binOptionsHasBeenSet(false),
     m_dataLabelsHasBeenSet(false),
     m_tooltipHasBeenSet(false),
-    m_visualPaletteHasBeenSet(false)
+    m_visualPaletteHasBeenSet(false),
+    m_interactionsHasBeenSet(false)
 {
 }
 
-HistogramConfiguration::HistogramConfiguration(JsonView jsonValue) : 
-    m_fieldWellsHasBeenSet(false),
-    m_xAxisDisplayOptionsHasBeenSet(false),
-    m_xAxisLabelOptionsHasBeenSet(false),
-    m_yAxisDisplayOptionsHasBeenSet(false),
-    m_binOptionsHasBeenSet(false),
-    m_dataLabelsHasBeenSet(false),
-    m_tooltipHasBeenSet(false),
-    m_visualPaletteHasBeenSet(false)
+HistogramConfiguration::HistogramConfiguration(JsonView jsonValue)
+  : HistogramConfiguration()
 {
   *this = jsonValue;
 }
@@ -101,6 +95,13 @@ HistogramConfiguration& HistogramConfiguration::operator =(JsonView jsonValue)
     m_visualPaletteHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("Interactions"))
+  {
+    m_interactions = jsonValue.GetObject("Interactions");
+
+    m_interactionsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -153,6 +154,12 @@ JsonValue HistogramConfiguration::Jsonize() const
   if(m_visualPaletteHasBeenSet)
   {
    payload.WithObject("VisualPalette", m_visualPalette.Jsonize());
+
+  }
+
+  if(m_interactionsHasBeenSet)
+  {
+   payload.WithObject("Interactions", m_interactions.Jsonize());
 
   }
 

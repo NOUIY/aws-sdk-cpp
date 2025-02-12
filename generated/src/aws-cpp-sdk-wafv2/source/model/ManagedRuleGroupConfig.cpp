@@ -20,13 +20,13 @@ namespace Model
 
 ManagedRuleGroupConfig::ManagedRuleGroupConfig() : 
     m_aWSManagedRulesBotControlRuleSetHasBeenSet(false),
-    m_aWSManagedRulesATPRuleSetHasBeenSet(false)
+    m_aWSManagedRulesATPRuleSetHasBeenSet(false),
+    m_aWSManagedRulesACFPRuleSetHasBeenSet(false)
 {
 }
 
-ManagedRuleGroupConfig::ManagedRuleGroupConfig(JsonView jsonValue) : 
-    m_aWSManagedRulesBotControlRuleSetHasBeenSet(false),
-    m_aWSManagedRulesATPRuleSetHasBeenSet(false)
+ManagedRuleGroupConfig::ManagedRuleGroupConfig(JsonView jsonValue)
+  : ManagedRuleGroupConfig()
 {
   *this = jsonValue;
 }
@@ -47,6 +47,13 @@ ManagedRuleGroupConfig& ManagedRuleGroupConfig::operator =(JsonView jsonValue)
     m_aWSManagedRulesATPRuleSetHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("AWSManagedRulesACFPRuleSet"))
+  {
+    m_aWSManagedRulesACFPRuleSet = jsonValue.GetObject("AWSManagedRulesACFPRuleSet");
+
+    m_aWSManagedRulesACFPRuleSetHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -63,6 +70,12 @@ JsonValue ManagedRuleGroupConfig::Jsonize() const
   if(m_aWSManagedRulesATPRuleSetHasBeenSet)
   {
    payload.WithObject("AWSManagedRulesATPRuleSet", m_aWSManagedRulesATPRuleSet.Jsonize());
+
+  }
+
+  if(m_aWSManagedRulesACFPRuleSetHasBeenSet)
+  {
+   payload.WithObject("AWSManagedRulesACFPRuleSet", m_aWSManagedRulesACFPRuleSet.Jsonize());
 
   }
 

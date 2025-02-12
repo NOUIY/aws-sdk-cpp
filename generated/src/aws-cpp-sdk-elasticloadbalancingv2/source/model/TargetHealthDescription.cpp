@@ -23,14 +23,14 @@ namespace Model
 TargetHealthDescription::TargetHealthDescription() : 
     m_targetHasBeenSet(false),
     m_healthCheckPortHasBeenSet(false),
-    m_targetHealthHasBeenSet(false)
+    m_targetHealthHasBeenSet(false),
+    m_anomalyDetectionHasBeenSet(false),
+    m_administrativeOverrideHasBeenSet(false)
 {
 }
 
-TargetHealthDescription::TargetHealthDescription(const XmlNode& xmlNode) : 
-    m_targetHasBeenSet(false),
-    m_healthCheckPortHasBeenSet(false),
-    m_targetHealthHasBeenSet(false)
+TargetHealthDescription::TargetHealthDescription(const XmlNode& xmlNode)
+  : TargetHealthDescription()
 {
   *this = xmlNode;
 }
@@ -59,6 +59,18 @@ TargetHealthDescription& TargetHealthDescription::operator =(const XmlNode& xmlN
       m_targetHealth = targetHealthNode;
       m_targetHealthHasBeenSet = true;
     }
+    XmlNode anomalyDetectionNode = resultNode.FirstChild("AnomalyDetection");
+    if(!anomalyDetectionNode.IsNull())
+    {
+      m_anomalyDetection = anomalyDetectionNode;
+      m_anomalyDetectionHasBeenSet = true;
+    }
+    XmlNode administrativeOverrideNode = resultNode.FirstChild("AdministrativeOverride");
+    if(!administrativeOverrideNode.IsNull())
+    {
+      m_administrativeOverride = administrativeOverrideNode;
+      m_administrativeOverrideHasBeenSet = true;
+    }
   }
 
   return *this;
@@ -85,6 +97,20 @@ void TargetHealthDescription::OutputToStream(Aws::OStream& oStream, const char* 
       m_targetHealth.OutputToStream(oStream, targetHealthLocationAndMemberSs.str().c_str());
   }
 
+  if(m_anomalyDetectionHasBeenSet)
+  {
+      Aws::StringStream anomalyDetectionLocationAndMemberSs;
+      anomalyDetectionLocationAndMemberSs << location << index << locationValue << ".AnomalyDetection";
+      m_anomalyDetection.OutputToStream(oStream, anomalyDetectionLocationAndMemberSs.str().c_str());
+  }
+
+  if(m_administrativeOverrideHasBeenSet)
+  {
+      Aws::StringStream administrativeOverrideLocationAndMemberSs;
+      administrativeOverrideLocationAndMemberSs << location << index << locationValue << ".AdministrativeOverride";
+      m_administrativeOverride.OutputToStream(oStream, administrativeOverrideLocationAndMemberSs.str().c_str());
+  }
+
 }
 
 void TargetHealthDescription::OutputToStream(Aws::OStream& oStream, const char* location) const
@@ -104,6 +130,18 @@ void TargetHealthDescription::OutputToStream(Aws::OStream& oStream, const char* 
       Aws::String targetHealthLocationAndMember(location);
       targetHealthLocationAndMember += ".TargetHealth";
       m_targetHealth.OutputToStream(oStream, targetHealthLocationAndMember.c_str());
+  }
+  if(m_anomalyDetectionHasBeenSet)
+  {
+      Aws::String anomalyDetectionLocationAndMember(location);
+      anomalyDetectionLocationAndMember += ".AnomalyDetection";
+      m_anomalyDetection.OutputToStream(oStream, anomalyDetectionLocationAndMember.c_str());
+  }
+  if(m_administrativeOverrideHasBeenSet)
+  {
+      Aws::String administrativeOverrideLocationAndMember(location);
+      administrativeOverrideLocationAndMember += ".AdministrativeOverride";
+      m_administrativeOverride.OutputToStream(oStream, administrativeOverrideLocationAndMember.c_str());
   }
 }
 

@@ -20,13 +20,14 @@ namespace Model
 
 ProgressiveDialerConfig::ProgressiveDialerConfig() : 
     m_bandwidthAllocation(0.0),
-    m_bandwidthAllocationHasBeenSet(false)
+    m_bandwidthAllocationHasBeenSet(false),
+    m_dialingCapacity(0.0),
+    m_dialingCapacityHasBeenSet(false)
 {
 }
 
-ProgressiveDialerConfig::ProgressiveDialerConfig(JsonView jsonValue) : 
-    m_bandwidthAllocation(0.0),
-    m_bandwidthAllocationHasBeenSet(false)
+ProgressiveDialerConfig::ProgressiveDialerConfig(JsonView jsonValue)
+  : ProgressiveDialerConfig()
 {
   *this = jsonValue;
 }
@@ -40,6 +41,13 @@ ProgressiveDialerConfig& ProgressiveDialerConfig::operator =(JsonView jsonValue)
     m_bandwidthAllocationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("dialingCapacity"))
+  {
+    m_dialingCapacity = jsonValue.GetDouble("dialingCapacity");
+
+    m_dialingCapacityHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -50,6 +58,12 @@ JsonValue ProgressiveDialerConfig::Jsonize() const
   if(m_bandwidthAllocationHasBeenSet)
   {
    payload.WithDouble("bandwidthAllocation", m_bandwidthAllocation);
+
+  }
+
+  if(m_dialingCapacityHasBeenSet)
+  {
+   payload.WithDouble("dialingCapacity", m_dialingCapacity);
 
   }
 

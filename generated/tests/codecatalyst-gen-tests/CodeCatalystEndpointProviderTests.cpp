@@ -16,10 +16,9 @@ using ResolveEndpointOutcome = Aws::Endpoint::ResolveEndpointOutcome;
 
 using EpParam = Aws::Endpoint::EndpointParameter;
 using EpProp = Aws::Endpoint::EndpointParameter; // just a container to store test expectations
-using ExpEpProps = Aws::UnorderedMap<Aws::String, Aws::Vector<EpProp>>;
+using ExpEpProps = Aws::UnorderedMap<Aws::String, Aws::Vector<Aws::Vector<EpProp>>>;
+using ExpEpAuthScheme = Aws::Vector<EpProp>;
 using ExpEpHeaders = Aws::UnorderedMap<Aws::String, Aws::Vector<Aws::String>>;
-
-class CodeCatalystEndpointProviderTests : public ::testing::TestWithParam<size_t> {};
 
 struct CodeCatalystEndpointProviderEndpointTestCase
 {
@@ -30,6 +29,7 @@ struct CodeCatalystEndpointProviderEndpointTestCase
         struct Endpoint
         {
             Aws::String url;
+            ExpEpAuthScheme authScheme;
             ExpEpProps properties;
             ExpEpHeaders headers;
         } endpoint;
@@ -53,12 +53,38 @@ struct CodeCatalystEndpointProviderEndpointTestCase
     // Aws::Vector<OperationInput> operationInput;
 };
 
-static const Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase> TEST_CASES = {
+class CodeCatalystEndpointProviderTests : public ::testing::TestWithParam<size_t>
+{
+public:
+    static const size_t TEST_CASES_SZ;
+protected:
+    static Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase> getTestCase();
+    static Aws::UniquePtrSafeDeleted<Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase>> TEST_CASES;
+    static void SetUpTestSuite()
+    {
+        TEST_CASES = Aws::MakeUniqueSafeDeleted<Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase>>(ALLOCATION_TAG, getTestCase());
+        ASSERT_TRUE(TEST_CASES) << "Failed to allocate TEST_CASES table";
+        assert(TEST_CASES->size() == TEST_CASES_SZ);
+    }
+
+    static void TearDownTestSuite()
+    {
+        TEST_CASES.reset();
+    }
+};
+
+Aws::UniquePtrSafeDeleted<Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase>> CodeCatalystEndpointProviderTests::TEST_CASES;
+const size_t CodeCatalystEndpointProviderTests::TEST_CASES_SZ = 9;
+
+Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase> CodeCatalystEndpointProviderTests::getTestCase() {
+
+  Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase> test_cases = {
   /*TEST CASE 0*/
   {"Override endpoint", // documentation
     {EpParam("Endpoint", "https://test.codecatalyst.global.api.aws")}, // params
     {}, // tags
     {{/*epUrl*/"https://test.codecatalyst.global.api.aws",
+       {/*authScheme*/}, 
        {/*properties*/},
        {/*headers*/}}, {/*No error*/}} // expect
   },
@@ -67,6 +93,7 @@ static const Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase> TEST_CASE
     {}, // params
     {}, // tags
     {{/*epUrl*/"https://codecatalyst.global.api.aws",
+       {/*authScheme*/}, 
        {/*properties*/},
        {/*headers*/}}, {/*No error*/}} // expect
   },
@@ -75,6 +102,7 @@ static const Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase> TEST_CASE
     {EpParam("UseFIPS", true)}, // params
     {}, // tags
     {{/*epUrl*/"https://codecatalyst-fips.global.api.aws",
+       {/*authScheme*/}, 
        {/*properties*/},
        {/*headers*/}}, {/*No error*/}} // expect
   },
@@ -83,6 +111,7 @@ static const Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase> TEST_CASE
     {EpParam("Region", "aws-global")}, // params
     {}, // tags
     {{/*epUrl*/"https://codecatalyst.global.api.aws",
+       {/*authScheme*/}, 
        {/*properties*/},
        {/*headers*/}}, {/*No error*/}} // expect
   },
@@ -91,6 +120,7 @@ static const Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase> TEST_CASE
     {EpParam("UseFIPS", true), EpParam("Region", "aws-global")}, // params
     {}, // tags
     {{/*epUrl*/"https://codecatalyst-fips.global.api.aws",
+       {/*authScheme*/}, 
        {/*properties*/},
        {/*headers*/}}, {/*No error*/}} // expect
   },
@@ -99,6 +129,7 @@ static const Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase> TEST_CASE
     {EpParam("Region", "us-west-2")}, // params
     {}, // tags
     {{/*epUrl*/"https://codecatalyst.global.api.aws",
+       {/*authScheme*/}, 
        {/*properties*/},
        {/*headers*/}}, {/*No error*/}} // expect
   },
@@ -107,6 +138,7 @@ static const Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase> TEST_CASE
     {EpParam("UseFIPS", true), EpParam("Region", "us-west-2")}, // params
     {}, // tags
     {{/*epUrl*/"https://codecatalyst-fips.global.api.aws",
+       {/*authScheme*/}, 
        {/*properties*/},
        {/*headers*/}}, {/*No error*/}} // expect
   },
@@ -115,6 +147,7 @@ static const Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase> TEST_CASE
     {EpParam("Region", "us-east-1")}, // params
     {}, // tags
     {{/*epUrl*/"https://codecatalyst.global.api.aws",
+       {/*authScheme*/}, 
        {/*properties*/},
        {/*headers*/}}, {/*No error*/}} // expect
   },
@@ -123,10 +156,13 @@ static const Aws::Vector<CodeCatalystEndpointProviderEndpointTestCase> TEST_CASE
     {EpParam("UseFIPS", true), EpParam("Region", "us-east-1")}, // params
     {}, // tags
     {{/*epUrl*/"https://codecatalyst-fips.global.api.aws",
+       {/*authScheme*/}, 
        {/*properties*/},
        {/*headers*/}}, {/*No error*/}} // expect
   }
-};
+  };
+  return test_cases;
+}
 
 Aws::String RulesToSdkSignerName(const Aws::String& rulesSignerName)
 {
@@ -139,6 +175,8 @@ Aws::String RulesToSdkSignerName(const Aws::String& rulesSignerName)
         sdkSigner = "NullSigner";
     } else if (rulesSignerName == "bearer") {
         sdkSigner = "Bearer";
+    } else if (rulesSignerName == "s3Express") {
+        sdkSigner = "S3ExpressSigner";
     } else {
         sdkSigner = rulesSignerName;
     }
@@ -160,9 +198,23 @@ void ValidateOutcome(const ResolveEndpointOutcome& outcome, const CodeCatalystEn
         const auto expAuthSchemesIt = expect.endpoint.properties.find("authSchemes");
         if (expAuthSchemesIt != expect.endpoint.properties.end())
         {
+            // in the list of AuthSchemes, select the one with a highest priority
+            const Aws::Vector<Aws::String> priotityList = {"s3Express", "sigv4a", "sigv4", "bearer", "none", ""};
+            const auto expectedAuthSchemePropsIt = std::find_first_of(expAuthSchemesIt->second.begin(), expAuthSchemesIt->second.end(),
+                                                                    priotityList.begin(), priotityList.end(), [](const Aws::Vector<EpProp>& props, const Aws::String& expName)
+                                                                    {
+                                                                        const auto& propNameIt = std::find_if(props.begin(), props.end(), [](const EpProp& prop)
+                                                                        {
+                                                                            return prop.GetName() == "name";
+                                                                        });
+                                                                        assert(propNameIt != props.end());
+                                                                        return propNameIt->GetStrValueNoCheck() == expName;
+                                                                    });
+            assert(expectedAuthSchemePropsIt != expAuthSchemesIt->second.end());
+
             const auto& endpointResultAttrs = outcome.GetResult().GetAttributes();
             ASSERT_TRUE(endpointResultAttrs) << "Expected non-empty EndpointAttributes (authSchemes)";
-            for (const auto& expProperty : expAuthSchemesIt->second)
+            for (const auto& expProperty : *expectedAuthSchemePropsIt)
             {
                 if (expProperty.GetName() == "name") {
                     ASSERT_TRUE(!endpointResultAttrs->authScheme.GetName().empty());
@@ -205,9 +257,10 @@ void ValidateOutcome(const ResolveEndpointOutcome& outcome, const CodeCatalystEn
 TEST_P(CodeCatalystEndpointProviderTests, EndpointProviderTest)
 {
     const size_t TEST_CASE_IDX = GetParam();
-    ASSERT_LT(TEST_CASE_IDX, TEST_CASES.size()) << "Something is wrong with the test fixture itself.";
-    const CodeCatalystEndpointProviderEndpointTestCase& TEST_CASE = TEST_CASES.at(TEST_CASE_IDX);
+    ASSERT_LT(TEST_CASE_IDX, TEST_CASES->size()) << "Something is wrong with the test fixture itself.";
+    const CodeCatalystEndpointProviderEndpointTestCase& TEST_CASE = TEST_CASES->at(TEST_CASE_IDX);
     SCOPED_TRACE(Aws::String("\nTEST CASE # ") + Aws::Utils::StringUtils::to_string(TEST_CASE_IDX) + ": " + TEST_CASE.documentation);
+    SCOPED_TRACE(Aws::String("\n--gtest_filter=EndpointTestsFromModel/CodeCatalystEndpointProviderTests.EndpointProviderTest/") + Aws::Utils::StringUtils::to_string(TEST_CASE_IDX));
 
     std::shared_ptr<CodeCatalystEndpointProvider> endpointProvider = Aws::MakeShared<CodeCatalystEndpointProvider>(ALLOCATION_TAG);
     ASSERT_TRUE(endpointProvider) << "Failed to allocate/initialize CodeCatalystEndpointProvider";
@@ -249,4 +302,4 @@ TEST_P(CodeCatalystEndpointProviderTests, EndpointProviderTest)
 
 INSTANTIATE_TEST_SUITE_P(EndpointTestsFromModel,
                          CodeCatalystEndpointProviderTests,
-                         ::testing::Range((size_t) 0u, TEST_CASES.size()));
+                         ::testing::Range((size_t) 0u, CodeCatalystEndpointProviderTests::TEST_CASES_SZ));

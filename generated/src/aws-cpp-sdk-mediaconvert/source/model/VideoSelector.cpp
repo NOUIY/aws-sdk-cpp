@@ -28,6 +28,8 @@ VideoSelector::VideoSelector() :
     m_embeddedTimecodeOverride(EmbeddedTimecodeOverride::NOT_SET),
     m_embeddedTimecodeOverrideHasBeenSet(false),
     m_hdr10MetadataHasBeenSet(false),
+    m_maxLuminance(0),
+    m_maxLuminanceHasBeenSet(false),
     m_padVideo(PadVideo::NOT_SET),
     m_padVideoHasBeenSet(false),
     m_pid(0),
@@ -41,26 +43,8 @@ VideoSelector::VideoSelector() :
 {
 }
 
-VideoSelector::VideoSelector(JsonView jsonValue) : 
-    m_alphaBehavior(AlphaBehavior::NOT_SET),
-    m_alphaBehaviorHasBeenSet(false),
-    m_colorSpace(ColorSpace::NOT_SET),
-    m_colorSpaceHasBeenSet(false),
-    m_colorSpaceUsage(ColorSpaceUsage::NOT_SET),
-    m_colorSpaceUsageHasBeenSet(false),
-    m_embeddedTimecodeOverride(EmbeddedTimecodeOverride::NOT_SET),
-    m_embeddedTimecodeOverrideHasBeenSet(false),
-    m_hdr10MetadataHasBeenSet(false),
-    m_padVideo(PadVideo::NOT_SET),
-    m_padVideoHasBeenSet(false),
-    m_pid(0),
-    m_pidHasBeenSet(false),
-    m_programNumber(0),
-    m_programNumberHasBeenSet(false),
-    m_rotate(InputRotate::NOT_SET),
-    m_rotateHasBeenSet(false),
-    m_sampleRange(InputSampleRange::NOT_SET),
-    m_sampleRangeHasBeenSet(false)
+VideoSelector::VideoSelector(JsonView jsonValue)
+  : VideoSelector()
 {
   *this = jsonValue;
 }
@@ -100,6 +84,13 @@ VideoSelector& VideoSelector::operator =(JsonView jsonValue)
     m_hdr10Metadata = jsonValue.GetObject("hdr10Metadata");
 
     m_hdr10MetadataHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("maxLuminance"))
+  {
+    m_maxLuminance = jsonValue.GetInteger("maxLuminance");
+
+    m_maxLuminanceHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("padVideo"))
@@ -167,6 +158,12 @@ JsonValue VideoSelector::Jsonize() const
   if(m_hdr10MetadataHasBeenSet)
   {
    payload.WithObject("hdr10Metadata", m_hdr10Metadata.Jsonize());
+
+  }
+
+  if(m_maxLuminanceHasBeenSet)
+  {
+   payload.WithInteger("maxLuminance", m_maxLuminance);
 
   }
 

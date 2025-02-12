@@ -28,7 +28,7 @@ namespace Model
    * if the filter is not defined, this API returns an unfiltered list. For more
    * information on Detective or Proactive Config rules, see <a
    * href="https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config-rules.html">
-   * <b>Evaluation Mode</b> </a> in the Config Developer Guide.</p><p><h3>See
+   * <b>Evaluation Mode</b> </a> in the <i>Config Developer Guide</i>.</p><p><h3>See
    * Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/config-2014-11-12/DescribeConfigRulesFilters">AWS
    * API Reference</a></p>
@@ -42,36 +42,17 @@ namespace Model
     AWS_CONFIGSERVICE_API Aws::Utils::Json::JsonValue Jsonize() const;
 
 
+    ///@{
     /**
      * <p>The mode of an evaluation. The valid values are Detective or Proactive.</p>
      */
     inline const EvaluationMode& GetEvaluationMode() const{ return m_evaluationMode; }
-
-    /**
-     * <p>The mode of an evaluation. The valid values are Detective or Proactive.</p>
-     */
     inline bool EvaluationModeHasBeenSet() const { return m_evaluationModeHasBeenSet; }
-
-    /**
-     * <p>The mode of an evaluation. The valid values are Detective or Proactive.</p>
-     */
     inline void SetEvaluationMode(const EvaluationMode& value) { m_evaluationModeHasBeenSet = true; m_evaluationMode = value; }
-
-    /**
-     * <p>The mode of an evaluation. The valid values are Detective or Proactive.</p>
-     */
     inline void SetEvaluationMode(EvaluationMode&& value) { m_evaluationModeHasBeenSet = true; m_evaluationMode = std::move(value); }
-
-    /**
-     * <p>The mode of an evaluation. The valid values are Detective or Proactive.</p>
-     */
     inline DescribeConfigRulesFilters& WithEvaluationMode(const EvaluationMode& value) { SetEvaluationMode(value); return *this;}
-
-    /**
-     * <p>The mode of an evaluation. The valid values are Detective or Proactive.</p>
-     */
     inline DescribeConfigRulesFilters& WithEvaluationMode(EvaluationMode&& value) { SetEvaluationMode(std::move(value)); return *this;}
-
+    ///@}
   private:
 
     EvaluationMode m_evaluationMode;

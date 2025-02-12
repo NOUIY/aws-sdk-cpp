@@ -23,9 +23,8 @@ DescribeFeatureGroupResult::DescribeFeatureGroupResult() :
 {
 }
 
-DescribeFeatureGroupResult::DescribeFeatureGroupResult(const Aws::AmazonWebServiceResult<JsonValue>& result) : 
-    m_featureGroupStatus(FeatureGroupStatus::NOT_SET),
-    m_onlineStoreTotalSizeBytes(0)
+DescribeFeatureGroupResult::DescribeFeatureGroupResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : DescribeFeatureGroupResult()
 {
   *this = result;
 }
@@ -87,6 +86,12 @@ DescribeFeatureGroupResult& DescribeFeatureGroupResult::operator =(const Aws::Am
   if(jsonValue.ValueExists("OfflineStoreConfig"))
   {
     m_offlineStoreConfig = jsonValue.GetObject("OfflineStoreConfig");
+
+  }
+
+  if(jsonValue.ValueExists("ThroughputConfig"))
+  {
+    m_throughputConfig = jsonValue.GetObject("ThroughputConfig");
 
   }
 

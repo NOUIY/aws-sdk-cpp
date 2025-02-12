@@ -21,7 +21,11 @@ CreateTaskRequest::CreateTaskRequest() :
     m_excludesHasBeenSet(false),
     m_scheduleHasBeenSet(false),
     m_tagsHasBeenSet(false),
-    m_includesHasBeenSet(false)
+    m_includesHasBeenSet(false),
+    m_manifestConfigHasBeenSet(false),
+    m_taskReportConfigHasBeenSet(false),
+    m_taskMode(TaskMode::NOT_SET),
+    m_taskModeHasBeenSet(false)
 {
 }
 
@@ -96,6 +100,23 @@ Aws::String CreateTaskRequest::SerializePayload() const
    }
    payload.WithArray("Includes", std::move(includesJsonList));
 
+  }
+
+  if(m_manifestConfigHasBeenSet)
+  {
+   payload.WithObject("ManifestConfig", m_manifestConfig.Jsonize());
+
+  }
+
+  if(m_taskReportConfigHasBeenSet)
+  {
+   payload.WithObject("TaskReportConfig", m_taskReportConfig.Jsonize());
+
+  }
+
+  if(m_taskModeHasBeenSet)
+  {
+   payload.WithString("TaskMode", TaskModeMapper::GetNameForTaskMode(m_taskMode));
   }
 
   return payload.View().WriteReadable();

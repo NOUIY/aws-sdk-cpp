@@ -23,11 +23,13 @@ namespace Aws
         static const int AV1_HASH = HashingUtils::HashString("AV1");
         static const int AVC_INTRA_HASH = HashingUtils::HashString("AVC_INTRA");
         static const int FRAME_CAPTURE_HASH = HashingUtils::HashString("FRAME_CAPTURE");
+        static const int GIF_HASH = HashingUtils::HashString("GIF");
         static const int H_264_HASH = HashingUtils::HashString("H_264");
         static const int H_265_HASH = HashingUtils::HashString("H_265");
         static const int MPEG2_HASH = HashingUtils::HashString("MPEG2");
         static const int PASSTHROUGH_HASH = HashingUtils::HashString("PASSTHROUGH");
         static const int PRORES_HASH = HashingUtils::HashString("PRORES");
+        static const int UNCOMPRESSED_HASH = HashingUtils::HashString("UNCOMPRESSED");
         static const int VC3_HASH = HashingUtils::HashString("VC3");
         static const int VP8_HASH = HashingUtils::HashString("VP8");
         static const int VP9_HASH = HashingUtils::HashString("VP9");
@@ -49,6 +51,10 @@ namespace Aws
           {
             return VideoCodec::FRAME_CAPTURE;
           }
+          else if (hashCode == GIF_HASH)
+          {
+            return VideoCodec::GIF;
+          }
           else if (hashCode == H_264_HASH)
           {
             return VideoCodec::H_264;
@@ -68,6 +74,10 @@ namespace Aws
           else if (hashCode == PRORES_HASH)
           {
             return VideoCodec::PRORES;
+          }
+          else if (hashCode == UNCOMPRESSED_HASH)
+          {
+            return VideoCodec::UNCOMPRESSED;
           }
           else if (hashCode == VC3_HASH)
           {
@@ -99,12 +109,16 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case VideoCodec::NOT_SET:
+            return {};
           case VideoCodec::AV1:
             return "AV1";
           case VideoCodec::AVC_INTRA:
             return "AVC_INTRA";
           case VideoCodec::FRAME_CAPTURE:
             return "FRAME_CAPTURE";
+          case VideoCodec::GIF:
+            return "GIF";
           case VideoCodec::H_264:
             return "H_264";
           case VideoCodec::H_265:
@@ -115,6 +129,8 @@ namespace Aws
             return "PASSTHROUGH";
           case VideoCodec::PRORES:
             return "PRORES";
+          case VideoCodec::UNCOMPRESSED:
+            return "UNCOMPRESSED";
           case VideoCodec::VC3:
             return "VC3";
           case VideoCodec::VP8:

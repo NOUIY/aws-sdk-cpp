@@ -81,72 +81,20 @@ Cluster::Cluster() :
     m_totalStorageCapacityInMegaBytesHasBeenSet(false),
     m_aquaConfigurationHasBeenSet(false),
     m_defaultIamRoleArnHasBeenSet(false),
-    m_reservedNodeExchangeStatusHasBeenSet(false)
+    m_reservedNodeExchangeStatusHasBeenSet(false),
+    m_customDomainNameHasBeenSet(false),
+    m_customDomainCertificateArnHasBeenSet(false),
+    m_customDomainCertificateExpiryDateHasBeenSet(false),
+    m_masterPasswordSecretArnHasBeenSet(false),
+    m_masterPasswordSecretKmsKeyIdHasBeenSet(false),
+    m_ipAddressTypeHasBeenSet(false),
+    m_multiAZHasBeenSet(false),
+    m_multiAZSecondaryHasBeenSet(false)
 {
 }
 
-Cluster::Cluster(const XmlNode& xmlNode) : 
-    m_clusterIdentifierHasBeenSet(false),
-    m_nodeTypeHasBeenSet(false),
-    m_clusterStatusHasBeenSet(false),
-    m_clusterAvailabilityStatusHasBeenSet(false),
-    m_modifyStatusHasBeenSet(false),
-    m_masterUsernameHasBeenSet(false),
-    m_dBNameHasBeenSet(false),
-    m_endpointHasBeenSet(false),
-    m_clusterCreateTimeHasBeenSet(false),
-    m_automatedSnapshotRetentionPeriod(0),
-    m_automatedSnapshotRetentionPeriodHasBeenSet(false),
-    m_manualSnapshotRetentionPeriod(0),
-    m_manualSnapshotRetentionPeriodHasBeenSet(false),
-    m_clusterSecurityGroupsHasBeenSet(false),
-    m_vpcSecurityGroupsHasBeenSet(false),
-    m_clusterParameterGroupsHasBeenSet(false),
-    m_clusterSubnetGroupNameHasBeenSet(false),
-    m_vpcIdHasBeenSet(false),
-    m_availabilityZoneHasBeenSet(false),
-    m_preferredMaintenanceWindowHasBeenSet(false),
-    m_pendingModifiedValuesHasBeenSet(false),
-    m_clusterVersionHasBeenSet(false),
-    m_allowVersionUpgrade(false),
-    m_allowVersionUpgradeHasBeenSet(false),
-    m_numberOfNodes(0),
-    m_numberOfNodesHasBeenSet(false),
-    m_publiclyAccessible(false),
-    m_publiclyAccessibleHasBeenSet(false),
-    m_encrypted(false),
-    m_encryptedHasBeenSet(false),
-    m_restoreStatusHasBeenSet(false),
-    m_dataTransferProgressHasBeenSet(false),
-    m_hsmStatusHasBeenSet(false),
-    m_clusterSnapshotCopyStatusHasBeenSet(false),
-    m_clusterPublicKeyHasBeenSet(false),
-    m_clusterNodesHasBeenSet(false),
-    m_elasticIpStatusHasBeenSet(false),
-    m_clusterRevisionNumberHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_kmsKeyIdHasBeenSet(false),
-    m_enhancedVpcRouting(false),
-    m_enhancedVpcRoutingHasBeenSet(false),
-    m_iamRolesHasBeenSet(false),
-    m_pendingActionsHasBeenSet(false),
-    m_maintenanceTrackNameHasBeenSet(false),
-    m_elasticResizeNumberOfNodeOptionsHasBeenSet(false),
-    m_deferredMaintenanceWindowsHasBeenSet(false),
-    m_snapshotScheduleIdentifierHasBeenSet(false),
-    m_snapshotScheduleState(ScheduleState::NOT_SET),
-    m_snapshotScheduleStateHasBeenSet(false),
-    m_expectedNextSnapshotScheduleTimeHasBeenSet(false),
-    m_expectedNextSnapshotScheduleTimeStatusHasBeenSet(false),
-    m_nextMaintenanceWindowStartTimeHasBeenSet(false),
-    m_resizeInfoHasBeenSet(false),
-    m_availabilityZoneRelocationStatusHasBeenSet(false),
-    m_clusterNamespaceArnHasBeenSet(false),
-    m_totalStorageCapacityInMegaBytes(0),
-    m_totalStorageCapacityInMegaBytesHasBeenSet(false),
-    m_aquaConfigurationHasBeenSet(false),
-    m_defaultIamRoleArnHasBeenSet(false),
-    m_reservedNodeExchangeStatusHasBeenSet(false)
+Cluster::Cluster(const XmlNode& xmlNode)
+  : Cluster()
 {
   *this = xmlNode;
 }
@@ -517,6 +465,54 @@ Cluster& Cluster::operator =(const XmlNode& xmlNode)
       m_reservedNodeExchangeStatus = reservedNodeExchangeStatusNode;
       m_reservedNodeExchangeStatusHasBeenSet = true;
     }
+    XmlNode customDomainNameNode = resultNode.FirstChild("CustomDomainName");
+    if(!customDomainNameNode.IsNull())
+    {
+      m_customDomainName = Aws::Utils::Xml::DecodeEscapedXmlText(customDomainNameNode.GetText());
+      m_customDomainNameHasBeenSet = true;
+    }
+    XmlNode customDomainCertificateArnNode = resultNode.FirstChild("CustomDomainCertificateArn");
+    if(!customDomainCertificateArnNode.IsNull())
+    {
+      m_customDomainCertificateArn = Aws::Utils::Xml::DecodeEscapedXmlText(customDomainCertificateArnNode.GetText());
+      m_customDomainCertificateArnHasBeenSet = true;
+    }
+    XmlNode customDomainCertificateExpiryDateNode = resultNode.FirstChild("CustomDomainCertificateExpiryDate");
+    if(!customDomainCertificateExpiryDateNode.IsNull())
+    {
+      m_customDomainCertificateExpiryDate = DateTime(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(customDomainCertificateExpiryDateNode.GetText()).c_str()).c_str(), Aws::Utils::DateFormat::ISO_8601);
+      m_customDomainCertificateExpiryDateHasBeenSet = true;
+    }
+    XmlNode masterPasswordSecretArnNode = resultNode.FirstChild("MasterPasswordSecretArn");
+    if(!masterPasswordSecretArnNode.IsNull())
+    {
+      m_masterPasswordSecretArn = Aws::Utils::Xml::DecodeEscapedXmlText(masterPasswordSecretArnNode.GetText());
+      m_masterPasswordSecretArnHasBeenSet = true;
+    }
+    XmlNode masterPasswordSecretKmsKeyIdNode = resultNode.FirstChild("MasterPasswordSecretKmsKeyId");
+    if(!masterPasswordSecretKmsKeyIdNode.IsNull())
+    {
+      m_masterPasswordSecretKmsKeyId = Aws::Utils::Xml::DecodeEscapedXmlText(masterPasswordSecretKmsKeyIdNode.GetText());
+      m_masterPasswordSecretKmsKeyIdHasBeenSet = true;
+    }
+    XmlNode ipAddressTypeNode = resultNode.FirstChild("IpAddressType");
+    if(!ipAddressTypeNode.IsNull())
+    {
+      m_ipAddressType = Aws::Utils::Xml::DecodeEscapedXmlText(ipAddressTypeNode.GetText());
+      m_ipAddressTypeHasBeenSet = true;
+    }
+    XmlNode multiAZNode = resultNode.FirstChild("MultiAZ");
+    if(!multiAZNode.IsNull())
+    {
+      m_multiAZ = Aws::Utils::Xml::DecodeEscapedXmlText(multiAZNode.GetText());
+      m_multiAZHasBeenSet = true;
+    }
+    XmlNode multiAZSecondaryNode = resultNode.FirstChild("MultiAZSecondary");
+    if(!multiAZSecondaryNode.IsNull())
+    {
+      m_multiAZSecondary = multiAZSecondaryNode;
+      m_multiAZSecondaryHasBeenSet = true;
+    }
   }
 
   return *this;
@@ -587,7 +583,7 @@ void Cluster::OutputToStream(Aws::OStream& oStream, const char* location, unsign
       for(auto& item : m_clusterSecurityGroups)
       {
         Aws::StringStream clusterSecurityGroupsSs;
-        clusterSecurityGroupsSs << location << index << locationValue << ".ClusterSecurityGroup." << clusterSecurityGroupsIdx++;
+        clusterSecurityGroupsSs << location << index << locationValue << ".ClusterSecurityGroups.ClusterSecurityGroup." << clusterSecurityGroupsIdx++;
         item.OutputToStream(oStream, clusterSecurityGroupsSs.str().c_str());
       }
   }
@@ -598,7 +594,7 @@ void Cluster::OutputToStream(Aws::OStream& oStream, const char* location, unsign
       for(auto& item : m_vpcSecurityGroups)
       {
         Aws::StringStream vpcSecurityGroupsSs;
-        vpcSecurityGroupsSs << location << index << locationValue << ".VpcSecurityGroup." << vpcSecurityGroupsIdx++;
+        vpcSecurityGroupsSs << location << index << locationValue << ".VpcSecurityGroups.VpcSecurityGroup." << vpcSecurityGroupsIdx++;
         item.OutputToStream(oStream, vpcSecurityGroupsSs.str().c_str());
       }
   }
@@ -609,7 +605,7 @@ void Cluster::OutputToStream(Aws::OStream& oStream, const char* location, unsign
       for(auto& item : m_clusterParameterGroups)
       {
         Aws::StringStream clusterParameterGroupsSs;
-        clusterParameterGroupsSs << location << index << locationValue << ".ClusterParameterGroup." << clusterParameterGroupsIdx++;
+        clusterParameterGroupsSs << location << index << locationValue << ".ClusterParameterGroups.ClusterParameterGroup." << clusterParameterGroupsIdx++;
         item.OutputToStream(oStream, clusterParameterGroupsSs.str().c_str());
       }
   }
@@ -728,7 +724,7 @@ void Cluster::OutputToStream(Aws::OStream& oStream, const char* location, unsign
       for(auto& item : m_tags)
       {
         Aws::StringStream tagsSs;
-        tagsSs << location << index << locationValue << ".Tag." << tagsIdx++;
+        tagsSs << location << index << locationValue << ".Tags.Tag." << tagsIdx++;
         item.OutputToStream(oStream, tagsSs.str().c_str());
       }
   }
@@ -749,7 +745,7 @@ void Cluster::OutputToStream(Aws::OStream& oStream, const char* location, unsign
       for(auto& item : m_iamRoles)
       {
         Aws::StringStream iamRolesSs;
-        iamRolesSs << location << index << locationValue << ".ClusterIamRole." << iamRolesIdx++;
+        iamRolesSs << location << index << locationValue << ".IamRoles.ClusterIamRole." << iamRolesIdx++;
         item.OutputToStream(oStream, iamRolesSs.str().c_str());
       }
   }
@@ -779,7 +775,7 @@ void Cluster::OutputToStream(Aws::OStream& oStream, const char* location, unsign
       for(auto& item : m_deferredMaintenanceWindows)
       {
         Aws::StringStream deferredMaintenanceWindowsSs;
-        deferredMaintenanceWindowsSs << location << index << locationValue << ".DeferredMaintenanceWindow." << deferredMaintenanceWindowsIdx++;
+        deferredMaintenanceWindowsSs << location << index << locationValue << ".DeferredMaintenanceWindows.DeferredMaintenanceWindow." << deferredMaintenanceWindowsIdx++;
         item.OutputToStream(oStream, deferredMaintenanceWindowsSs.str().c_str());
       }
   }
@@ -848,6 +844,48 @@ void Cluster::OutputToStream(Aws::OStream& oStream, const char* location, unsign
       Aws::StringStream reservedNodeExchangeStatusLocationAndMemberSs;
       reservedNodeExchangeStatusLocationAndMemberSs << location << index << locationValue << ".ReservedNodeExchangeStatus";
       m_reservedNodeExchangeStatus.OutputToStream(oStream, reservedNodeExchangeStatusLocationAndMemberSs.str().c_str());
+  }
+
+  if(m_customDomainNameHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".CustomDomainName=" << StringUtils::URLEncode(m_customDomainName.c_str()) << "&";
+  }
+
+  if(m_customDomainCertificateArnHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".CustomDomainCertificateArn=" << StringUtils::URLEncode(m_customDomainCertificateArn.c_str()) << "&";
+  }
+
+  if(m_customDomainCertificateExpiryDateHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".CustomDomainCertificateExpiryDate=" << StringUtils::URLEncode(m_customDomainCertificateExpiryDate.ToGmtString(Aws::Utils::DateFormat::ISO_8601).c_str()) << "&";
+  }
+
+  if(m_masterPasswordSecretArnHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".MasterPasswordSecretArn=" << StringUtils::URLEncode(m_masterPasswordSecretArn.c_str()) << "&";
+  }
+
+  if(m_masterPasswordSecretKmsKeyIdHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".MasterPasswordSecretKmsKeyId=" << StringUtils::URLEncode(m_masterPasswordSecretKmsKeyId.c_str()) << "&";
+  }
+
+  if(m_ipAddressTypeHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".IpAddressType=" << StringUtils::URLEncode(m_ipAddressType.c_str()) << "&";
+  }
+
+  if(m_multiAZHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".MultiAZ=" << StringUtils::URLEncode(m_multiAZ.c_str()) << "&";
+  }
+
+  if(m_multiAZSecondaryHasBeenSet)
+  {
+      Aws::StringStream multiAZSecondaryLocationAndMemberSs;
+      multiAZSecondaryLocationAndMemberSs << location << index << locationValue << ".MultiAZSecondary";
+      m_multiAZSecondary.OutputToStream(oStream, multiAZSecondaryLocationAndMemberSs.str().c_str());
   }
 
 }
@@ -1127,6 +1165,40 @@ void Cluster::OutputToStream(Aws::OStream& oStream, const char* location) const
       Aws::String reservedNodeExchangeStatusLocationAndMember(location);
       reservedNodeExchangeStatusLocationAndMember += ".ReservedNodeExchangeStatus";
       m_reservedNodeExchangeStatus.OutputToStream(oStream, reservedNodeExchangeStatusLocationAndMember.c_str());
+  }
+  if(m_customDomainNameHasBeenSet)
+  {
+      oStream << location << ".CustomDomainName=" << StringUtils::URLEncode(m_customDomainName.c_str()) << "&";
+  }
+  if(m_customDomainCertificateArnHasBeenSet)
+  {
+      oStream << location << ".CustomDomainCertificateArn=" << StringUtils::URLEncode(m_customDomainCertificateArn.c_str()) << "&";
+  }
+  if(m_customDomainCertificateExpiryDateHasBeenSet)
+  {
+      oStream << location << ".CustomDomainCertificateExpiryDate=" << StringUtils::URLEncode(m_customDomainCertificateExpiryDate.ToGmtString(Aws::Utils::DateFormat::ISO_8601).c_str()) << "&";
+  }
+  if(m_masterPasswordSecretArnHasBeenSet)
+  {
+      oStream << location << ".MasterPasswordSecretArn=" << StringUtils::URLEncode(m_masterPasswordSecretArn.c_str()) << "&";
+  }
+  if(m_masterPasswordSecretKmsKeyIdHasBeenSet)
+  {
+      oStream << location << ".MasterPasswordSecretKmsKeyId=" << StringUtils::URLEncode(m_masterPasswordSecretKmsKeyId.c_str()) << "&";
+  }
+  if(m_ipAddressTypeHasBeenSet)
+  {
+      oStream << location << ".IpAddressType=" << StringUtils::URLEncode(m_ipAddressType.c_str()) << "&";
+  }
+  if(m_multiAZHasBeenSet)
+  {
+      oStream << location << ".MultiAZ=" << StringUtils::URLEncode(m_multiAZ.c_str()) << "&";
+  }
+  if(m_multiAZSecondaryHasBeenSet)
+  {
+      Aws::String multiAZSecondaryLocationAndMember(location);
+      multiAZSecondaryLocationAndMember += ".MultiAZSecondary";
+      m_multiAZSecondary.OutputToStream(oStream, multiAZSecondaryLocationAndMember.c_str());
   }
 }
 

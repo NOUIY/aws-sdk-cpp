@@ -24,7 +24,7 @@ namespace Model
 {
 
   /**
-   * <p>Filters he operation status list based on the passed attribute
+   * <p>Filters the operation status list based on the passed attribute
    * value.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/sso-admin-2020-07-20/OperationStatusFilter">AWS
    * API Reference</a></p>
@@ -38,36 +38,17 @@ namespace Model
     AWS_SSOADMIN_API Aws::Utils::Json::JsonValue Jsonize() const;
 
 
+    ///@{
     /**
      * <p>Filters the list operations result based on the status attribute.</p>
      */
     inline const StatusValues& GetStatus() const{ return m_status; }
-
-    /**
-     * <p>Filters the list operations result based on the status attribute.</p>
-     */
     inline bool StatusHasBeenSet() const { return m_statusHasBeenSet; }
-
-    /**
-     * <p>Filters the list operations result based on the status attribute.</p>
-     */
     inline void SetStatus(const StatusValues& value) { m_statusHasBeenSet = true; m_status = value; }
-
-    /**
-     * <p>Filters the list operations result based on the status attribute.</p>
-     */
     inline void SetStatus(StatusValues&& value) { m_statusHasBeenSet = true; m_status = std::move(value); }
-
-    /**
-     * <p>Filters the list operations result based on the status attribute.</p>
-     */
     inline OperationStatusFilter& WithStatus(const StatusValues& value) { SetStatus(value); return *this;}
-
-    /**
-     * <p>Filters the list operations result based on the status attribute.</p>
-     */
     inline OperationStatusFilter& WithStatus(StatusValues&& value) { SetStatus(std::move(value)); return *this;}
-
+    ///@}
   private:
 
     StatusValues m_status;

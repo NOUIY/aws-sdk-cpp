@@ -31,24 +31,13 @@ ConnectorDetail::ConnectorDetail() :
     m_registeredByHasBeenSet(false),
     m_connectorProvisioningType(ConnectorProvisioningType::NOT_SET),
     m_connectorProvisioningTypeHasBeenSet(false),
-    m_connectorModesHasBeenSet(false)
+    m_connectorModesHasBeenSet(false),
+    m_supportedDataTransferTypesHasBeenSet(false)
 {
 }
 
-ConnectorDetail::ConnectorDetail(JsonView jsonValue) : 
-    m_connectorDescriptionHasBeenSet(false),
-    m_connectorNameHasBeenSet(false),
-    m_connectorOwnerHasBeenSet(false),
-    m_connectorVersionHasBeenSet(false),
-    m_applicationTypeHasBeenSet(false),
-    m_connectorType(ConnectorType::NOT_SET),
-    m_connectorTypeHasBeenSet(false),
-    m_connectorLabelHasBeenSet(false),
-    m_registeredAtHasBeenSet(false),
-    m_registeredByHasBeenSet(false),
-    m_connectorProvisioningType(ConnectorProvisioningType::NOT_SET),
-    m_connectorProvisioningTypeHasBeenSet(false),
-    m_connectorModesHasBeenSet(false)
+ConnectorDetail::ConnectorDetail(JsonView jsonValue)
+  : ConnectorDetail()
 {
   *this = jsonValue;
 }
@@ -135,6 +124,16 @@ ConnectorDetail& ConnectorDetail::operator =(JsonView jsonValue)
     m_connectorModesHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("supportedDataTransferTypes"))
+  {
+    Aws::Utils::Array<JsonView> supportedDataTransferTypesJsonList = jsonValue.GetArray("supportedDataTransferTypes");
+    for(unsigned supportedDataTransferTypesIndex = 0; supportedDataTransferTypesIndex < supportedDataTransferTypesJsonList.GetLength(); ++supportedDataTransferTypesIndex)
+    {
+      m_supportedDataTransferTypes.push_back(SupportedDataTransferTypeMapper::GetSupportedDataTransferTypeForName(supportedDataTransferTypesJsonList[supportedDataTransferTypesIndex].AsString()));
+    }
+    m_supportedDataTransferTypesHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -207,6 +206,17 @@ JsonValue ConnectorDetail::Jsonize() const
      connectorModesJsonList[connectorModesIndex].AsString(m_connectorModes[connectorModesIndex]);
    }
    payload.WithArray("connectorModes", std::move(connectorModesJsonList));
+
+  }
+
+  if(m_supportedDataTransferTypesHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> supportedDataTransferTypesJsonList(m_supportedDataTransferTypes.size());
+   for(unsigned supportedDataTransferTypesIndex = 0; supportedDataTransferTypesIndex < supportedDataTransferTypesJsonList.GetLength(); ++supportedDataTransferTypesIndex)
+   {
+     supportedDataTransferTypesJsonList[supportedDataTransferTypesIndex].AsString(SupportedDataTransferTypeMapper::GetNameForSupportedDataTransferType(m_supportedDataTransferTypes[supportedDataTransferTypesIndex]));
+   }
+   payload.WithArray("supportedDataTransferTypes", std::move(supportedDataTransferTypesJsonList));
 
   }
 

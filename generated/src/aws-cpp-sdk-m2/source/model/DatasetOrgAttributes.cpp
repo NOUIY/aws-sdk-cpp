@@ -20,13 +20,14 @@ namespace Model
 
 DatasetOrgAttributes::DatasetOrgAttributes() : 
     m_gdgHasBeenSet(false),
+    m_poHasBeenSet(false),
+    m_psHasBeenSet(false),
     m_vsamHasBeenSet(false)
 {
 }
 
-DatasetOrgAttributes::DatasetOrgAttributes(JsonView jsonValue) : 
-    m_gdgHasBeenSet(false),
-    m_vsamHasBeenSet(false)
+DatasetOrgAttributes::DatasetOrgAttributes(JsonView jsonValue)
+  : DatasetOrgAttributes()
 {
   *this = jsonValue;
 }
@@ -38,6 +39,20 @@ DatasetOrgAttributes& DatasetOrgAttributes::operator =(JsonView jsonValue)
     m_gdg = jsonValue.GetObject("gdg");
 
     m_gdgHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("po"))
+  {
+    m_po = jsonValue.GetObject("po");
+
+    m_poHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("ps"))
+  {
+    m_ps = jsonValue.GetObject("ps");
+
+    m_psHasBeenSet = true;
   }
 
   if(jsonValue.ValueExists("vsam"))
@@ -57,6 +72,18 @@ JsonValue DatasetOrgAttributes::Jsonize() const
   if(m_gdgHasBeenSet)
   {
    payload.WithObject("gdg", m_gdg.Jsonize());
+
+  }
+
+  if(m_poHasBeenSet)
+  {
+   payload.WithObject("po", m_po.Jsonize());
+
+  }
+
+  if(m_psHasBeenSet)
+  {
+   payload.WithObject("ps", m_ps.Jsonize());
 
   }
 

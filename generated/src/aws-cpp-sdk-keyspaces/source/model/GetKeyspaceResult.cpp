@@ -17,11 +17,13 @@ using namespace Aws::Utils::Json;
 using namespace Aws::Utils;
 using namespace Aws;
 
-GetKeyspaceResult::GetKeyspaceResult()
+GetKeyspaceResult::GetKeyspaceResult() : 
+    m_replicationStrategy(Rs::NOT_SET)
 {
 }
 
 GetKeyspaceResult::GetKeyspaceResult(const Aws::AmazonWebServiceResult<JsonValue>& result)
+  : GetKeyspaceResult()
 {
   *this = result;
 }
@@ -39,6 +41,30 @@ GetKeyspaceResult& GetKeyspaceResult::operator =(const Aws::AmazonWebServiceResu
   {
     m_resourceArn = jsonValue.GetString("resourceArn");
 
+  }
+
+  if(jsonValue.ValueExists("replicationStrategy"))
+  {
+    m_replicationStrategy = RsMapper::GetRsForName(jsonValue.GetString("replicationStrategy"));
+
+  }
+
+  if(jsonValue.ValueExists("replicationRegions"))
+  {
+    Aws::Utils::Array<JsonView> replicationRegionsJsonList = jsonValue.GetArray("replicationRegions");
+    for(unsigned replicationRegionsIndex = 0; replicationRegionsIndex < replicationRegionsJsonList.GetLength(); ++replicationRegionsIndex)
+    {
+      m_replicationRegions.push_back(replicationRegionsJsonList[replicationRegionsIndex].AsString());
+    }
+  }
+
+  if(jsonValue.ValueExists("replicationGroupStatuses"))
+  {
+    Aws::Utils::Array<JsonView> replicationGroupStatusesJsonList = jsonValue.GetArray("replicationGroupStatuses");
+    for(unsigned replicationGroupStatusesIndex = 0; replicationGroupStatusesIndex < replicationGroupStatusesJsonList.GetLength(); ++replicationGroupStatusesIndex)
+    {
+      m_replicationGroupStatuses.push_back(replicationGroupStatusesJsonList[replicationGroupStatusesIndex].AsObject());
+    }
   }
 
 

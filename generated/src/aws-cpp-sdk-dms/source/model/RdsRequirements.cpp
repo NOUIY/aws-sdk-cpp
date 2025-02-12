@@ -28,21 +28,13 @@ RdsRequirements::RdsRequirements() :
     m_storageSizeHasBeenSet(false),
     m_storageIops(0),
     m_storageIopsHasBeenSet(false),
-    m_deploymentOptionHasBeenSet(false)
+    m_deploymentOptionHasBeenSet(false),
+    m_engineVersionHasBeenSet(false)
 {
 }
 
-RdsRequirements::RdsRequirements(JsonView jsonValue) : 
-    m_engineEditionHasBeenSet(false),
-    m_instanceVcpu(0.0),
-    m_instanceVcpuHasBeenSet(false),
-    m_instanceMemory(0.0),
-    m_instanceMemoryHasBeenSet(false),
-    m_storageSize(0),
-    m_storageSizeHasBeenSet(false),
-    m_storageIops(0),
-    m_storageIopsHasBeenSet(false),
-    m_deploymentOptionHasBeenSet(false)
+RdsRequirements::RdsRequirements(JsonView jsonValue)
+  : RdsRequirements()
 {
   *this = jsonValue;
 }
@@ -91,6 +83,13 @@ RdsRequirements& RdsRequirements::operator =(JsonView jsonValue)
     m_deploymentOptionHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("EngineVersion"))
+  {
+    m_engineVersion = jsonValue.GetString("EngineVersion");
+
+    m_engineVersionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -131,6 +130,12 @@ JsonValue RdsRequirements::Jsonize() const
   if(m_deploymentOptionHasBeenSet)
   {
    payload.WithString("DeploymentOption", m_deploymentOption);
+
+  }
+
+  if(m_engineVersionHasBeenSet)
+  {
+   payload.WithString("EngineVersion", m_engineVersion);
 
   }
 

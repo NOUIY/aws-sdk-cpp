@@ -24,6 +24,7 @@ namespace Aws
         static const int DMARC_HASH = HashingUtils::HashString("DMARC");
         static const int SPF_HASH = HashingUtils::HashString("SPF");
         static const int BIMI_HASH = HashingUtils::HashString("BIMI");
+        static const int COMPLAINT_HASH = HashingUtils::HashString("COMPLAINT");
 
 
         RecommendationType GetRecommendationTypeForName(const Aws::String& name)
@@ -45,6 +46,10 @@ namespace Aws
           {
             return RecommendationType::BIMI;
           }
+          else if (hashCode == COMPLAINT_HASH)
+          {
+            return RecommendationType::COMPLAINT;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -59,6 +64,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case RecommendationType::NOT_SET:
+            return {};
           case RecommendationType::DKIM:
             return "DKIM";
           case RecommendationType::DMARC:
@@ -67,6 +74,8 @@ namespace Aws
             return "SPF";
           case RecommendationType::BIMI:
             return "BIMI";
+          case RecommendationType::COMPLAINT:
+            return "COMPLAINT";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

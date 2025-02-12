@@ -25,6 +25,9 @@ namespace Aws
         static const int EbsVolume_HASH = HashingUtils::HashString("EbsVolume");
         static const int LambdaFunction_HASH = HashingUtils::HashString("LambdaFunction");
         static const int EcsService_HASH = HashingUtils::HashString("EcsService");
+        static const int License_HASH = HashingUtils::HashString("License");
+        static const int RdsDBInstance_HASH = HashingUtils::HashString("RdsDBInstance");
+        static const int RdsDBInstanceStorage_HASH = HashingUtils::HashString("RdsDBInstanceStorage");
 
 
         RecommendationSourceType GetRecommendationSourceTypeForName(const Aws::String& name)
@@ -50,6 +53,18 @@ namespace Aws
           {
             return RecommendationSourceType::EcsService;
           }
+          else if (hashCode == License_HASH)
+          {
+            return RecommendationSourceType::License;
+          }
+          else if (hashCode == RdsDBInstance_HASH)
+          {
+            return RecommendationSourceType::RdsDBInstance;
+          }
+          else if (hashCode == RdsDBInstanceStorage_HASH)
+          {
+            return RecommendationSourceType::RdsDBInstanceStorage;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -64,6 +79,8 @@ namespace Aws
         {
           switch(enumValue)
           {
+          case RecommendationSourceType::NOT_SET:
+            return {};
           case RecommendationSourceType::Ec2Instance:
             return "Ec2Instance";
           case RecommendationSourceType::AutoScalingGroup:
@@ -74,6 +91,12 @@ namespace Aws
             return "LambdaFunction";
           case RecommendationSourceType::EcsService:
             return "EcsService";
+          case RecommendationSourceType::License:
+            return "License";
+          case RecommendationSourceType::RdsDBInstance:
+            return "RdsDBInstance";
+          case RecommendationSourceType::RdsDBInstanceStorage:
+            return "RdsDBInstanceStorage";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)

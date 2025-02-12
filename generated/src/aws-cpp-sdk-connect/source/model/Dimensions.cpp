@@ -22,15 +22,13 @@ Dimensions::Dimensions() :
     m_queueHasBeenSet(false),
     m_channel(Channel::NOT_SET),
     m_channelHasBeenSet(false),
-    m_routingProfileHasBeenSet(false)
+    m_routingProfileHasBeenSet(false),
+    m_routingStepExpressionHasBeenSet(false)
 {
 }
 
-Dimensions::Dimensions(JsonView jsonValue) : 
-    m_queueHasBeenSet(false),
-    m_channel(Channel::NOT_SET),
-    m_channelHasBeenSet(false),
-    m_routingProfileHasBeenSet(false)
+Dimensions::Dimensions(JsonView jsonValue)
+  : Dimensions()
 {
   *this = jsonValue;
 }
@@ -58,6 +56,13 @@ Dimensions& Dimensions::operator =(JsonView jsonValue)
     m_routingProfileHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("RoutingStepExpression"))
+  {
+    m_routingStepExpression = jsonValue.GetString("RoutingStepExpression");
+
+    m_routingStepExpressionHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -79,6 +84,12 @@ JsonValue Dimensions::Jsonize() const
   if(m_routingProfileHasBeenSet)
   {
    payload.WithObject("RoutingProfile", m_routingProfile.Jsonize());
+
+  }
+
+  if(m_routingStepExpressionHasBeenSet)
+  {
+   payload.WithString("RoutingStepExpression", m_routingStepExpression);
 
   }
 

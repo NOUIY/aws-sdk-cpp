@@ -24,9 +24,10 @@ namespace Model
 {
 
   /**
-   * <p>Indicates that the provided Amazon S3 bucket or AWS KMS encryption key is
-   * invalid, or that Amazon SES could not publish to the bucket, possibly due to
-   * permissions issues. For information about giving permissions, see the <a
+   * <p>Indicates that the provided Amazon S3 bucket or Amazon Web Services KMS
+   * encryption key is invalid, or that Amazon SES could not publish to the bucket,
+   * possibly due to permissions issues. For information about giving permissions,
+   * see the <a
    * href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-permissions.html">Amazon
    * SES Developer Guide</a>.</p><p><h3>See Also:</h3>   <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/email-2010-12-01/InvalidS3ConfigurationException">AWS
@@ -43,46 +44,19 @@ namespace Model
     AWS_SES_API void OutputToStream(Aws::OStream& oStream, const char* location) const;
 
 
+    ///@{
     /**
      * <p>Indicated that the S3 Bucket was not found.</p>
      */
     inline const Aws::String& GetBucket() const{ return m_bucket; }
-
-    /**
-     * <p>Indicated that the S3 Bucket was not found.</p>
-     */
     inline bool BucketHasBeenSet() const { return m_bucketHasBeenSet; }
-
-    /**
-     * <p>Indicated that the S3 Bucket was not found.</p>
-     */
     inline void SetBucket(const Aws::String& value) { m_bucketHasBeenSet = true; m_bucket = value; }
-
-    /**
-     * <p>Indicated that the S3 Bucket was not found.</p>
-     */
     inline void SetBucket(Aws::String&& value) { m_bucketHasBeenSet = true; m_bucket = std::move(value); }
-
-    /**
-     * <p>Indicated that the S3 Bucket was not found.</p>
-     */
     inline void SetBucket(const char* value) { m_bucketHasBeenSet = true; m_bucket.assign(value); }
-
-    /**
-     * <p>Indicated that the S3 Bucket was not found.</p>
-     */
     inline InvalidS3ConfigurationException& WithBucket(const Aws::String& value) { SetBucket(value); return *this;}
-
-    /**
-     * <p>Indicated that the S3 Bucket was not found.</p>
-     */
     inline InvalidS3ConfigurationException& WithBucket(Aws::String&& value) { SetBucket(std::move(value)); return *this;}
-
-    /**
-     * <p>Indicated that the S3 Bucket was not found.</p>
-     */
     inline InvalidS3ConfigurationException& WithBucket(const char* value) { SetBucket(value); return *this;}
-
+    ///@}
   private:
 
     Aws::String m_bucket;

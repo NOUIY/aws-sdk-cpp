@@ -46,37 +46,18 @@ Stack::Stack() :
     m_enableTerminationProtectionHasBeenSet(false),
     m_parentIdHasBeenSet(false),
     m_rootIdHasBeenSet(false),
-    m_driftInformationHasBeenSet(false)
+    m_driftInformationHasBeenSet(false),
+    m_retainExceptOnCreate(false),
+    m_retainExceptOnCreateHasBeenSet(false),
+    m_deletionMode(DeletionMode::NOT_SET),
+    m_deletionModeHasBeenSet(false),
+    m_detailedStatus(DetailedStatus::NOT_SET),
+    m_detailedStatusHasBeenSet(false)
 {
 }
 
-Stack::Stack(const XmlNode& xmlNode) : 
-    m_stackIdHasBeenSet(false),
-    m_stackNameHasBeenSet(false),
-    m_changeSetIdHasBeenSet(false),
-    m_descriptionHasBeenSet(false),
-    m_parametersHasBeenSet(false),
-    m_creationTimeHasBeenSet(false),
-    m_deletionTimeHasBeenSet(false),
-    m_lastUpdatedTimeHasBeenSet(false),
-    m_rollbackConfigurationHasBeenSet(false),
-    m_stackStatus(StackStatus::NOT_SET),
-    m_stackStatusHasBeenSet(false),
-    m_stackStatusReasonHasBeenSet(false),
-    m_disableRollback(false),
-    m_disableRollbackHasBeenSet(false),
-    m_notificationARNsHasBeenSet(false),
-    m_timeoutInMinutes(0),
-    m_timeoutInMinutesHasBeenSet(false),
-    m_capabilitiesHasBeenSet(false),
-    m_outputsHasBeenSet(false),
-    m_roleARNHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_enableTerminationProtection(false),
-    m_enableTerminationProtectionHasBeenSet(false),
-    m_parentIdHasBeenSet(false),
-    m_rootIdHasBeenSet(false),
-    m_driftInformationHasBeenSet(false)
+Stack::Stack(const XmlNode& xmlNode)
+  : Stack()
 {
   *this = xmlNode;
 }
@@ -249,6 +230,24 @@ Stack& Stack::operator =(const XmlNode& xmlNode)
       m_driftInformation = driftInformationNode;
       m_driftInformationHasBeenSet = true;
     }
+    XmlNode retainExceptOnCreateNode = resultNode.FirstChild("RetainExceptOnCreate");
+    if(!retainExceptOnCreateNode.IsNull())
+    {
+      m_retainExceptOnCreate = StringUtils::ConvertToBool(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(retainExceptOnCreateNode.GetText()).c_str()).c_str());
+      m_retainExceptOnCreateHasBeenSet = true;
+    }
+    XmlNode deletionModeNode = resultNode.FirstChild("DeletionMode");
+    if(!deletionModeNode.IsNull())
+    {
+      m_deletionMode = DeletionModeMapper::GetDeletionModeForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(deletionModeNode.GetText()).c_str()).c_str());
+      m_deletionModeHasBeenSet = true;
+    }
+    XmlNode detailedStatusNode = resultNode.FirstChild("DetailedStatus");
+    if(!detailedStatusNode.IsNull())
+    {
+      m_detailedStatus = DetailedStatusMapper::GetDetailedStatusForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(detailedStatusNode.GetText()).c_str()).c_str());
+      m_detailedStatusHasBeenSet = true;
+    }
   }
 
   return *this;
@@ -396,6 +395,21 @@ void Stack::OutputToStream(Aws::OStream& oStream, const char* location, unsigned
       m_driftInformation.OutputToStream(oStream, driftInformationLocationAndMemberSs.str().c_str());
   }
 
+  if(m_retainExceptOnCreateHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".RetainExceptOnCreate=" << std::boolalpha << m_retainExceptOnCreate << "&";
+  }
+
+  if(m_deletionModeHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".DeletionMode=" << DeletionModeMapper::GetNameForDeletionMode(m_deletionMode) << "&";
+  }
+
+  if(m_detailedStatusHasBeenSet)
+  {
+      oStream << location << index << locationValue << ".DetailedStatus=" << DetailedStatusMapper::GetNameForDetailedStatus(m_detailedStatus) << "&";
+  }
+
 }
 
 void Stack::OutputToStream(Aws::OStream& oStream, const char* location) const
@@ -517,6 +531,18 @@ void Stack::OutputToStream(Aws::OStream& oStream, const char* location) const
       Aws::String driftInformationLocationAndMember(location);
       driftInformationLocationAndMember += ".DriftInformation";
       m_driftInformation.OutputToStream(oStream, driftInformationLocationAndMember.c_str());
+  }
+  if(m_retainExceptOnCreateHasBeenSet)
+  {
+      oStream << location << ".RetainExceptOnCreate=" << std::boolalpha << m_retainExceptOnCreate << "&";
+  }
+  if(m_deletionModeHasBeenSet)
+  {
+      oStream << location << ".DeletionMode=" << DeletionModeMapper::GetNameForDeletionMode(m_deletionMode) << "&";
+  }
+  if(m_detailedStatusHasBeenSet)
+  {
+      oStream << location << ".DetailedStatus=" << DetailedStatusMapper::GetNameForDetailedStatus(m_detailedStatus) << "&";
   }
 }
 

@@ -45,38 +45,16 @@ Image::Image() :
     m_imageSource(ImageSource::NOT_SET),
     m_imageSourceHasBeenSet(false),
     m_scanStateHasBeenSet(false),
-    m_imageScanningConfigurationHasBeenSet(false)
+    m_imageScanningConfigurationHasBeenSet(false),
+    m_deprecationTimeHasBeenSet(false),
+    m_lifecycleExecutionIdHasBeenSet(false),
+    m_executionRoleHasBeenSet(false),
+    m_workflowsHasBeenSet(false)
 {
 }
 
-Image::Image(JsonView jsonValue) : 
-    m_arnHasBeenSet(false),
-    m_type(ImageType::NOT_SET),
-    m_typeHasBeenSet(false),
-    m_nameHasBeenSet(false),
-    m_versionHasBeenSet(false),
-    m_platform(Platform::NOT_SET),
-    m_platformHasBeenSet(false),
-    m_enhancedImageMetadataEnabled(false),
-    m_enhancedImageMetadataEnabledHasBeenSet(false),
-    m_osVersionHasBeenSet(false),
-    m_stateHasBeenSet(false),
-    m_imageRecipeHasBeenSet(false),
-    m_containerRecipeHasBeenSet(false),
-    m_sourcePipelineNameHasBeenSet(false),
-    m_sourcePipelineArnHasBeenSet(false),
-    m_infrastructureConfigurationHasBeenSet(false),
-    m_distributionConfigurationHasBeenSet(false),
-    m_imageTestsConfigurationHasBeenSet(false),
-    m_dateCreatedHasBeenSet(false),
-    m_outputResourcesHasBeenSet(false),
-    m_tagsHasBeenSet(false),
-    m_buildType(BuildType::NOT_SET),
-    m_buildTypeHasBeenSet(false),
-    m_imageSource(ImageSource::NOT_SET),
-    m_imageSourceHasBeenSet(false),
-    m_scanStateHasBeenSet(false),
-    m_imageScanningConfigurationHasBeenSet(false)
+Image::Image(JsonView jsonValue)
+  : Image()
 {
   *this = jsonValue;
 }
@@ -240,6 +218,37 @@ Image& Image::operator =(JsonView jsonValue)
     m_imageScanningConfigurationHasBeenSet = true;
   }
 
+  if(jsonValue.ValueExists("deprecationTime"))
+  {
+    m_deprecationTime = jsonValue.GetDouble("deprecationTime");
+
+    m_deprecationTimeHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("lifecycleExecutionId"))
+  {
+    m_lifecycleExecutionId = jsonValue.GetString("lifecycleExecutionId");
+
+    m_lifecycleExecutionIdHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("executionRole"))
+  {
+    m_executionRole = jsonValue.GetString("executionRole");
+
+    m_executionRoleHasBeenSet = true;
+  }
+
+  if(jsonValue.ValueExists("workflows"))
+  {
+    Aws::Utils::Array<JsonView> workflowsJsonList = jsonValue.GetArray("workflows");
+    for(unsigned workflowsIndex = 0; workflowsIndex < workflowsJsonList.GetLength(); ++workflowsIndex)
+    {
+      m_workflows.push_back(workflowsJsonList[workflowsIndex].AsObject());
+    }
+    m_workflowsHasBeenSet = true;
+  }
+
   return *this;
 }
 
@@ -377,6 +386,34 @@ JsonValue Image::Jsonize() const
   if(m_imageScanningConfigurationHasBeenSet)
   {
    payload.WithObject("imageScanningConfiguration", m_imageScanningConfiguration.Jsonize());
+
+  }
+
+  if(m_deprecationTimeHasBeenSet)
+  {
+   payload.WithDouble("deprecationTime", m_deprecationTime.SecondsWithMSPrecision());
+  }
+
+  if(m_lifecycleExecutionIdHasBeenSet)
+  {
+   payload.WithString("lifecycleExecutionId", m_lifecycleExecutionId);
+
+  }
+
+  if(m_executionRoleHasBeenSet)
+  {
+   payload.WithString("executionRole", m_executionRole);
+
+  }
+
+  if(m_workflowsHasBeenSet)
+  {
+   Aws::Utils::Array<JsonValue> workflowsJsonList(m_workflows.size());
+   for(unsigned workflowsIndex = 0; workflowsIndex < workflowsJsonList.GetLength(); ++workflowsIndex)
+   {
+     workflowsJsonList[workflowsIndex].AsObject(m_workflows[workflowsIndex].Jsonize());
+   }
+   payload.WithArray("workflows", std::move(workflowsJsonList));
 
   }
 
